@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2018 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.micronaut.configuration.rabbitmq.intercept;
 
 import com.rabbitmq.client.*;
@@ -25,6 +41,14 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * An {@link ExecutableMethodProcessor} that will process all beans annotated
+ * with {@link RabbitListener} and create and subscribe the relevant methods
+ * as consumers to RabbitMQ queues.
+ *
+ * @author James Kleeh
+ * @since 1.1.0
+ */
 @Singleton
 public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitListener>, AutoCloseable {
 
@@ -33,6 +57,13 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final RabbitBinderRegistry binderRegistry;
     private final List<Channel> consumerChannels = new ArrayList<>();
 
+    /**
+     * Default constructor.
+     *
+     * @param beanContext                  The bean context
+     * @param channelPool                  The pool to retrieve channels from
+     * @param binderRegistry               The registry to bind arguments to the method
+     */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ChannelPool channelPool,
                                   RabbitBinderRegistry binderRegistry) {
@@ -120,7 +151,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         }
     }
 
-
+    /**
+     * @return A channel to publish with
+     */
     protected Channel getChannel() {
         try {
             return channelPool.getChannel();

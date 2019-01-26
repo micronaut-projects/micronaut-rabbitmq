@@ -1,22 +1,21 @@
 package io.micronaut.configuration.rabbitmq
 
-
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperties
 import io.micronaut.configuration.rabbitmq.annotation.Queue
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
-import io.micronaut.configuration.rabbitmq.annotation.RoutingKey
+import io.micronaut.configuration.rabbitmq.annotation.Binding
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Body
-import io.micronaut.messaging.annotation.Header
+import io.reactivex.Completable
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
+
+import java.util.concurrent.TimeUnit
 
 class RabbitClientTest extends Specification {
 
@@ -33,14 +32,19 @@ class RabbitClientTest extends Specification {
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                 "spec.name": getClass().simpleName], "test")
         PollingConditions conditions = new PollingConditions(timeout: 3)
+        MyProducer producer = applicationContext.getBean(MyProducer)
+        MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
         when:
-        applicationContext.getBean(MyProducer).go("abc".bytes)
+        producer.go("abc".bytes)
+        boolean success = producer.goConfirm("def".bytes).blockingAwait(2, TimeUnit.SECONDS)
 
         then:
+        success
         conditions.eventually {
-            applicationContext.getBean(MyConsumer).messages.size() == 1
-            applicationContext.getBean(MyConsumer).messages[0] == "abc".bytes
+            consumer.messages.size() == 2
+            consumer.messages[0] == "abc".bytes
+            consumer.messages[1] == "def".bytes
         }
     }
 
@@ -48,8 +52,11 @@ class RabbitClientTest extends Specification {
     @RabbitClient
     static interface MyProducer {
 
-        @RoutingKey("abc")
+        @Binding("abc")
         void go(@Body byte[] data)
+
+        @Binding("abc")
+        Completable goConfirm(@Body byte[] data)
     }
 
     @Requires(property = "spec.name", value = "RabbitClientTest")
