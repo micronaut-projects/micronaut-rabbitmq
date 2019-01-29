@@ -83,7 +83,7 @@ subprojects { Project subproject ->
         jvmArgs '-Duser.country=US'
         jvmArgs '-Duser.language=en'
         testLogging {
-            showStandardStreams = true
+            //showStandardStreams = true
             exceptionFormat = 'full'
         }
         afterSuite {
@@ -144,6 +144,7 @@ subprojects { Project subproject ->
     }
 
     checkstyleTest.enabled = false
+    licenseTest.enabled = false
 }
 
 apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-docs/v1.0.0.M1/gradle/docs.gradle"
