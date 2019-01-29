@@ -26,7 +26,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel;
-import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.bind.annotation.Bindable;
@@ -69,6 +69,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      *
      * @param channelPool The pool to retrieve a channel from
      * @param conversionService The conversion service
+     * @param serDesRegistry The registry to find a serDes to serialize the body
      */
     public RabbitMQIntroductionAdvice(ChannelPool channelPool,
                                       ConversionService<?> conversionService,

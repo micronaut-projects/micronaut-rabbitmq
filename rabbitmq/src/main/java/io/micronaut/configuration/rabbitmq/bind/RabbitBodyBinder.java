@@ -16,7 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
-import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.messaging.annotation.Body;
@@ -39,6 +39,7 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
      * Default constructor.
      *
      * @param conversionService The conversion service to convert the body
+     * @param serDesRegistry The registry to get a deserializer
      */
     public RabbitBodyBinder(ConversionService conversionService,
                             RabbitMessageSerDesRegistry serDesRegistry) {

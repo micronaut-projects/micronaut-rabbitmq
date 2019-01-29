@@ -16,9 +16,8 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
-import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
-import io.micronaut.core.convert.ConversionService;
 
 import javax.inject.Singleton;
 

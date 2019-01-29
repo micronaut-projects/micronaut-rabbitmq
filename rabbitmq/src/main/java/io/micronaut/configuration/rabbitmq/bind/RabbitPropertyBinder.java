@@ -73,6 +73,10 @@ public class RabbitPropertyBinder implements RabbitAnnotatedArgumentBinder<Rabbi
                 .flatMap(prop -> conversionService.convert(prop, context));
     }
 
+    /**
+     * @param context The argument context
+     * @return True if this binder can bind the argument
+     */
     public boolean supports(ArgumentConversionContext<Object> context) {
         return properties.containsKey(getParameterName(context));
     }

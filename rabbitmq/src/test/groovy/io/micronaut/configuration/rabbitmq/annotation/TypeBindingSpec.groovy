@@ -1,11 +1,15 @@
 package io.micronaut.configuration.rabbitmq.annotation
 
+import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Envelope
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import spock.util.concurrent.PollingConditions
 
-class RabbitPropertyTest extends AbstractRabbitMQTest {
+import java.util.concurrent.atomic.AtomicInteger
+
+class TypeBindingSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming with rabbitmq properties"() {
         ApplicationContext applicationContext = ApplicationContext.run(
@@ -16,42 +20,37 @@ class RabbitPropertyTest extends AbstractRabbitMQTest {
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
         when:
-        //https://www.rabbitmq.com/validated-user-id.html
-        producer.go("property", "guest", new Person(name: "abc"))
+        producer.go(4)
 
         then:
         conditions.eventually {
-            consumer.messages.size() == 1
-            consumer.messages.keySet()[0].name == "abc"
-            consumer.messages.values()[0] == "application/json|guest"
+            consumer.messages.get() == 4
         }
 
         cleanup:
         applicationContext.close()
     }
 
-    static class Person {
-        String name
-    }
-
-    @Requires(property = "spec.name", value = "RabbitPropertyTest")
+    @Requires(property = "spec.name", value = "TypeBindingSpec")
     @RabbitClient
     static interface MyProducer {
 
-        @RabbitProperty(name = "contentType", value = "application/json")
-        void go(@Binding String binding, String userId, Person data)
+        @Binding("type")
+        void go(Integer data)
 
     }
 
-    @Requires(property = "spec.name", value = "RabbitPropertyTest")
+    @Requires(property = "spec.name", value = "TypeBindingSpec")
     @RabbitListener
     static class MyConsumer {
 
-        public static Map<Person, String> messages = [:]
+        public static AtomicInteger messages = new AtomicInteger()
 
-        @Queue("property")
-        void listen(Person data, String contentType, @RabbitProperty("userId") String user) {
-            messages.put(data, contentType + '|' + user)
+        @Queue("type")
+        void listen(Integer data, Envelope envelope, BasicProperties basicProperties) {
+            assert envelope != null
+            assert basicProperties != null
+            messages.updateAndGet({l -> l + data})
         }
     }
 }

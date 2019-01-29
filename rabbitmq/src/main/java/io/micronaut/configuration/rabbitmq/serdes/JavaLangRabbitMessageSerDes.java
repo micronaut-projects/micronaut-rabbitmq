@@ -1,28 +1,70 @@
-package io.micronaut.configuration.rabbitmq.serialization;
+/*
+ * Copyright 2017-2018 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import io.micronaut.core.reflect.ClassUtils;
+package io.micronaut.configuration.rabbitmq.serdes;
+
 import io.micronaut.core.serialize.exceptions.SerializationException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Serializes and deserializes standard Java types.
+ *
+ * @author James Kleeh
+ * @since 1.1.0
+ */
 @Singleton
-public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
+public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
+
+    protected final Map<Class, RabbitMessageSerDes> javaSerDes = new HashMap<>();
+
+    /**
+     * Default constructor.
+     */
+    public JavaLangRabbitMessageSerDes() {
+        javaSerDes.put(String.class, getStringSerDes());
+        javaSerDes.put(Short.class, getShortSerDes());
+        javaSerDes.put(Integer.class, getIntegerSerDes());
+        javaSerDes.put(Long.class, getLongSerDes());
+        javaSerDes.put(Float.class, getFloatSerDes());
+        javaSerDes.put(Double.class, getDoubleSerDes());
+        javaSerDes.put(byte[].class, getByteArraySerDes());
+        javaSerDes.put(ByteBuffer.class, getByteBufferSerDes());
+        javaSerDes.put(UUID.class, getUUIDSerDes());
+    }
 
     @Override
-    public byte[] serialize(T data) {
+    public byte[] serialize(Object data) {
         return findSerDes(data.getClass()).serialize(data);
     }
 
     @Override
-    public T deserialize(byte[] data, Class<T> type) {
-        return (T) findSerDes(type).deserialize(data, type);
+    public Object deserialize(byte[] data, Class<Object> type) {
+        return findSerDes(type).deserialize(data, type);
     }
 
     @Override
-    public boolean supports(Class<T> type) {
+    public boolean supports(Class<Object> type) {
         return findSerDes(type) != null;
     }
 
@@ -31,60 +73,102 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         return 10;
     }
 
+    /**
+     * Finds the correct serDes based on the type.
+     *
+     * @param type The java type
+     * @return The serdes, or null if none can be found
+     */
+    @Nullable
     protected RabbitMessageSerDes findSerDes(Class type) {
-        if (String.class.isAssignableFrom(type)) {
-            return getStringSerDes();
-        }
-
-        if (Short.class.isAssignableFrom(type)) {
-            return getShortSerDes();
-        }
-
-        if (Integer.class.isAssignableFrom(type)) {
-            return getIntegerSerDes();
-        }
-
-        if (Long.class.isAssignableFrom(type)) {
-            return getLongSerDes();
-        }
-
-        if (Float.class.isAssignableFrom(type)) {
-            return getFloatSerDes();
-        }
-
-        if (Double.class.isAssignableFrom(type)) {
-            return getDoubleSerDes();
-        }
-
-        if (byte[].class.isAssignableFrom(type)) {
-            return getByteArraySerDes();
-        }
-
-        if (ByteBuffer.class.isAssignableFrom(type)) {
-            return getByteBufferSerDes();
-        }
-
-        if (UUID.class.isAssignableFrom(type)) {
-            return getUUIDSerDes();
-        }
-
-        return null;
+        return javaSerDes.get(type);
     }
 
+    /**
+     * @return The serDes that handles {@link String}
+     */
+    @Nonnull
     protected RabbitMessageSerDes<String> getStringSerDes() {
         return new StringSerDes();
     }
 
+    /**
+     * @return The serDes that handles {@link Short}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Short> getShortSerDes() {
+        return new ShortSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link Integer}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Integer> getIntegerSerDes() {
+        return new IntegerSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link Long}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Long> getLongSerDes() {
+        return new LongSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link Float}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Float> getFloatSerDes() {
+        return new FloatSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link Double}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Double> getDoubleSerDes() {
+        return new DoubleSerDes();
+    }
+
+    /**
+     * @return The serDes that handles byte[]
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<byte[]> getByteArraySerDes() {
+        return new ByteArraySerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link ByteBuffer}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<ByteBuffer> getByteBufferSerDes() {
+        return new ByteBufferSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link UUID}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<UUID> getUUIDSerDes() {
+        return new UUIDSerDes();
+    }
+
+    /**
+     * Serializes/deserializes a {@link String}.
+     */
     static class StringSerDes implements RabbitMessageSerDes<String> {
 
-        private static final Charset encoding = Charset.forName("UTF8");
+        private static final Charset ENCODING = Charset.forName("UTF8");
 
         @Override
         public String deserialize(byte[] data, Class<String> type) {
             if (data == null) {
                 return null;
             } else {
-                return new String(data, encoding);
+                return new String(data, ENCODING);
             }
         }
 
@@ -93,7 +177,7 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
             if (data == null) {
                 return null;
             } else {
-                return data.getBytes(encoding);
+                return data.getBytes(ENCODING);
             }
         }
 
@@ -103,10 +187,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<Short> getShortSerDes() {
-        return new ShortSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link Short}.
+     */
     static class ShortSerDes implements RabbitMessageSerDes<Short> {
 
         @Override
@@ -143,10 +226,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<Integer> getIntegerSerDes() {
-        return new IntegerSerDes();
-    }
-
+    /**
+     * Serializes/deserializes an {@link Integer}.
+     */
     static class IntegerSerDes implements RabbitMessageSerDes<Integer> {
 
         @Override
@@ -185,10 +267,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<Long> getLongSerDes() {
-        return new LongSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link Long}.
+     */
     static class LongSerDes implements RabbitMessageSerDes<Long> {
 
         @Override
@@ -231,10 +312,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<Float> getFloatSerDes() {
-        return new FloatSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link Float}.
+     */
     static class FloatSerDes implements RabbitMessageSerDes<Float> {
 
         @Override
@@ -274,10 +354,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<Double> getDoubleSerDes() {
-        return new DoubleSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link Double}.
+     */
     static class DoubleSerDes implements RabbitMessageSerDes<Double> {
 
         @Override
@@ -321,10 +400,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<byte[]> getByteArraySerDes() {
-        return new ByteArraySerDes();
-    }
-
+    /**
+     * Serializes/deserializes a byte[].
+     */
     static class ByteArraySerDes implements RabbitMessageSerDes<byte[]> {
 
         @Override
@@ -343,10 +421,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<ByteBuffer> getByteBufferSerDes() {
-        return new ByteBufferSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link ByteBuffer}.
+     */
     static class ByteBufferSerDes implements RabbitMessageSerDes<ByteBuffer> {
 
         @Override
@@ -385,10 +462,9 @@ public class JavaLangRabbitMessageSerDes<T> implements RabbitMessageSerDes<T> {
         }
     }
 
-    protected RabbitMessageSerDes<UUID> getUUIDSerDes() {
-        return new UUIDSerDes();
-    }
-
+    /**
+     * Serializes/deserializes a {@link UUID}.
+     */
     static class UUIDSerDes implements RabbitMessageSerDes<UUID> {
 
         StringSerDes stringSerDes = new StringSerDes();

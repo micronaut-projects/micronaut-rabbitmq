@@ -9,7 +9,7 @@ import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.TimeUnit
 
-class RabbitAopTest extends AbstractRabbitMQTest {
+class BasicAopSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming"() {
         ApplicationContext applicationContext = ApplicationContext.run(
@@ -35,7 +35,7 @@ class RabbitAopTest extends AbstractRabbitMQTest {
         applicationContext.close()
     }
 
-    @Requires(property = "spec.name", value = "RabbitAopTest")
+    @Requires(property = "spec.name", value = "BasicAopSpec")
     @RabbitClient
     static interface MyProducer {
 
@@ -46,7 +46,7 @@ class RabbitAopTest extends AbstractRabbitMQTest {
         Completable goConfirm(byte[] data)
     }
 
-    @Requires(property = "spec.name", value = "RabbitAopTest")
+    @Requires(property = "spec.name", value = "BasicAopSpec")
     @RabbitListener
     static class MyConsumer {
 

@@ -19,6 +19,8 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
             channel.queueDeclare("pojo", true, false, false, new HashMap<>())
             channel.queueDeclare("header", true, false, false, new HashMap<>())
             channel.queueDeclare("property", true, false, false, new HashMap<>())
+            channel.queueDeclare("type", true, false, false, new HashMap<>())
+            channel.queueDeclare("boolean", true, false, false, new HashMap<>())
             pool.returnChannel(channel)
         } catch (IOException e) {
             //no-op

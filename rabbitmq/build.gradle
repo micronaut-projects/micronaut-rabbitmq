@@ -6,7 +6,10 @@ dependencies {
     compile "io.micronaut:micronaut-messaging"
     compile 'com.rabbitmq:amqp-client:5.2.0'
     compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
+    compileOnly "io.micronaut:micronaut-management"
     
     testCompile "io.micronaut:micronaut-inject-groovy"
     testCompile "org.testcontainers:spock:1.10.5"
+    testCompile "io.micronaut:micronaut-management"
+
 }

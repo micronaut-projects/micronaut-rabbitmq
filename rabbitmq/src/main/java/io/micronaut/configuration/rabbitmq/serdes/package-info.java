@@ -15,10 +15,9 @@
  */
 
 /**
- * Contains classes specific to converting the RabbitMQ java client API to
- * an RxJava API.
+ * Classes for serializing and deserializing RabbitMQ message bodies.
  *
- * @author James Kleeh
- * @since 1.1.0
+ * @author graemerocher
+ * @since 1.0
  */
-package io.micronaut.configuration.rabbitmq.reactivex;
+package io.micronaut.configuration.rabbitmq.serdes;

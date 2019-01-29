@@ -3,12 +3,11 @@ package io.micronaut.configuration.rabbitmq.annotation
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
 import spock.util.concurrent.PollingConditions
 
-class RabbitHeaderTest extends AbstractRabbitMQTest {
+class PropertyBindingSpec extends AbstractRabbitMQTest {
 
-    void "test simple producing and consuming with the header annotation"() {
+    void "test simple producing and consuming with rabbitmq properties"() {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
@@ -17,13 +16,14 @@ class RabbitHeaderTest extends AbstractRabbitMQTest {
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
         when:
-        producer.go(new Person(name: "abc"), "some header")
+        //https://www.rabbitmq.com/validated-user-id.html
+        producer.go("property", "guest", new Person(name: "abc"))
 
         then:
         conditions.eventually {
             consumer.messages.size() == 1
             consumer.messages.keySet()[0].name == "abc"
-            consumer.messages.values()[0] == "some header|static header"
+            consumer.messages.values()[0] == "application/json|guest"
         }
 
         cleanup:
@@ -34,25 +34,24 @@ class RabbitHeaderTest extends AbstractRabbitMQTest {
         String name
     }
 
-    @Requires(property = "spec.name", value = "RabbitHeaderTest")
+    @Requires(property = "spec.name", value = "PropertyBindingSpec")
     @RabbitClient
     static interface MyProducer {
 
-        @Binding("header")
-        @Header(name = "static", value = "static header")
-        void go(Person data, @Header String myHeader)
+        @RabbitProperty(name = "contentType", value = "application/json")
+        void go(@Binding String binding, String userId, Person data)
 
     }
 
-    @Requires(property = "spec.name", value = "RabbitHeaderTest")
+    @Requires(property = "spec.name", value = "PropertyBindingSpec")
     @RabbitListener
     static class MyConsumer {
 
         public static Map<Person, String> messages = [:]
 
-        @Queue("header")
-        void listen(Person data, @Header String myHeader, @Header("static") String otherHeader) {
-            messages.put(data, myHeader + '|' + otherHeader)
+        @Queue("property")
+        void listen(Person data, String contentType, @RabbitProperty("userId") String user) {
+            messages.put(data, contentType + '|' + user)
         }
     }
 }

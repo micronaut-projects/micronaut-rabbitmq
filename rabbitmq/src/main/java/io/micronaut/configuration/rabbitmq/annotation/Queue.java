@@ -16,8 +16,6 @@
 
 package io.micronaut.configuration.rabbitmq.annotation;
 
-import io.micronaut.core.bind.annotation.Bindable;
-
 import java.lang.annotation.*;
 
 /**
