@@ -1,0 +1,7 @@
+To create a project with RabbitMQ support using the Micronaut CLI, supply the `rabbitmq` feature to the `features` flag.
+
+----
+$ mn create-app my-rabbitmq-app --features rabbitmq
+----
+
+This will create a project with the minimum necessary configuration for RabbitMQ.

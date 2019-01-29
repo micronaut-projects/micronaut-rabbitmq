@@ -1,4 +1,30 @@
 introduction: Introduction
-setup: Setting up the Neo4j Bolt Driver
-config: Configuring the Neo4j Bolt Driver
-testing: Neo4j and Testing
+cli: Using the Micronaut CLI
+quickStart: RabbitMQ Quick Start
+config: Configuring The Connection
+producer:
+  title: RabbitMQ Producers Using @RabbitClient
+  producerMethods:
+    title: Defining @RabbitClient Methods
+    producerAcknowledge: Broker Acknowledgement
+    producerBinding:
+      title: Argument Binding
+      producerProperties: RabbitMQ Properties
+      producerHeaders: Headers
+consumer:
+  title: RabbitMQ Consumers Using @RabbitListener
+  consumerMethods:
+    title: Defining @RabbitListener Methods
+    consumerAcknowledge: Acknowledging Messages
+    consumerBinding:
+      title: Argument Binding
+      consumerProperties: Properties
+      consumerHeaders: Headers
+      consumerTypes: RabbitMQ Types
+      consumerCustom: Customizing Binding Behavior
+  consumerExecutor: Consumer Execution
+serdes:
+  title: Message Serialization/Deserialization (SerDes)
+  custom: Custom SerDes
+health: RabbitMQ Health Indicator
+metrics: RabbitMQ Metrics

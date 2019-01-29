@@ -1,0 +1,3 @@
+The example in the quick start presented a trivial definition of a class that listens for messages using the ann:configuration.rabbitmq.annotation.RabbitListener[] annotation.
+
+The implementation that powers `@RabbitListener` (defined by the api:configuration.rabbitmq.intercept.RabbitMQConsumerAdvice[] class) is, however, very flexible and offers a range of options for defining RabbitMQ consumers.

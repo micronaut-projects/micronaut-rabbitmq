@@ -1,0 +1,35 @@
+All properties on the link:{apirabbit}client/ConnectionFactory.html[ConnectionFactory] are available to be modified, either through configuration or a link:{apimicronaut}context/event/BeanCreatedEventListener.html[BeanCreatedEventListener].
+
+The properties that can be converted from the string values in a configuration file can be configured directly. For example:
+
+.application.yml
+[source,yaml]
+----
+rabbitmq:
+    uri:
+//or
+rabbitmq:
+    host:
+    port:
+    username:
+    password:
+    virtual-host:
+----
+
+NOTE: Without any configuration the defaults in the `ConnectionFactory` will be used.
+
+To configure things like the link:{apirabbit}client/SaslConfig.html[SaslConfig] a bean created event listener can be registered to intercept the creation of the connection factory.
+
+[source,java]
+----
+@Singleton
+public class ConnectionFactoryInterceptor implements BeanCreatedEventListener<ConnectionFactory> {
+
+    @Override
+    public ConnectionFactory onCreated(BeanCreatedEvent<ConnectionFactory> event) {
+        ConnectionFactory connectionFactory = event.getBean();
+        connectionFactory.setSaslConfig(...);
+        return connectionFactory;
+    }
+}
+----

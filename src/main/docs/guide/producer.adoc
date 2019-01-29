@@ -1,0 +1,3 @@
+The example in the quick start presented a trivial definition of an interface that be implemented automatically for you using the ann:configuration.rabbitmq.annotation.RabbitClient[] annotation.
+
+The implementation that powers `@RabbitClient` (defined by the api:configuration.rabbitmq.intercept.RabbitMQIntroductionAdvice[] class) is, however, very flexible and offers a range of options for defining RabbitMQ producers.
