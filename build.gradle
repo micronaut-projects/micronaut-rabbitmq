@@ -144,7 +144,6 @@ subprojects { Project subproject ->
     }
 
     checkstyleTest.enabled = false
-    licenseTest.enabled = false
 }
 
 apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-docs/v1.0.0.M1/gradle/docs.gradle"

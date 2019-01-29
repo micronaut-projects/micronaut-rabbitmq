@@ -11,5 +11,6 @@ dependencies {
     testCompile "io.micronaut:micronaut-inject-groovy"
     testCompile "org.testcontainers:spock:1.10.5"
     testCompile "io.micronaut:micronaut-management"
-
 }
+
+licenseTest.enabled = false
