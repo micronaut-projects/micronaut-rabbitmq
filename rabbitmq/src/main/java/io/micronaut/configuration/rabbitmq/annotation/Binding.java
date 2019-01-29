@@ -17,6 +17,7 @@
 package io.micronaut.configuration.rabbitmq.annotation;
 
 import io.micronaut.context.annotation.AliasFor;
+import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.messaging.annotation.MessageMapping;
 
 import java.lang.annotation.*;
@@ -32,11 +33,14 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
+@Bindable
 public @interface Binding {
 
     /**
+     * Should always be supplied when the annotation is applied to a method.
+     *
      * @return The binding (routing key) to publish messages to.
      */
     @AliasFor(annotation = MessageMapping.class, member = "value")
-    String value();
+    String value() default "";
 }

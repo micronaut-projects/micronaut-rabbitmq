@@ -16,6 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
+import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.messaging.annotation.Body;
@@ -32,14 +33,17 @@ import javax.inject.Singleton;
 public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
 
     private final ConversionService conversionService;
+    private final RabbitMessageSerDesRegistry serDesRegistry;
 
     /**
      * Default constructor.
      *
      * @param conversionService The conversion service to convert the body
      */
-    public RabbitBodyBinder(ConversionService conversionService) {
+    public RabbitBodyBinder(ConversionService conversionService,
+                            RabbitMessageSerDesRegistry serDesRegistry) {
         this.conversionService = conversionService;
+        this.serDesRegistry = serDesRegistry;
     }
 
     @Override
@@ -49,6 +53,9 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
-        return () -> conversionService.convert(source.getBody(), context);
+        Class<Object> bodyType = context.getArgument().getType();
+
+        return () -> serDesRegistry.findSerdes(bodyType)
+                .map(serDes -> serDes.deserialize(source.getBody(), bodyType));
     }
 }

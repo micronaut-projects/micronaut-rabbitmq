@@ -75,13 +75,6 @@ public class ReactiveChannel {
                 synchronized (unconfirmed) {
                     if (unconfirmed.containsKey(deliveryTag)) {
                         if (multiple) {
-                            unconfirmed.entrySet()
-                                    .stream()
-                                    .filter(entry -> entry.getKey() <= deliveryTag)
-                                    .forEach(entry -> {
-                                        completables.add(entry.getValue());
-                                        unconfirmed.remove(entry.getKey());
-                                    });
                             final Iterator<Map.Entry<Long, CompletableEmitter>> iterator = unconfirmed.entrySet().iterator();
                             while (iterator.hasNext()) {
                                 Map.Entry<Long, CompletableEmitter> entry = iterator.next();
@@ -123,8 +116,9 @@ public class ReactiveChannel {
          message to be published twice
          */
         Completable publish = initializePublish()
-                .andThen(Completable.create((emitter) -> publishInternal(exchange, routingKey, properties, body, emitter))
-                        .cache());
+                .andThen(Completable.create((emitter) ->
+                        publishInternal(exchange, routingKey, properties, body, emitter))
+                .cache());
         allCompletables.add(publish);
         return publish;
     }

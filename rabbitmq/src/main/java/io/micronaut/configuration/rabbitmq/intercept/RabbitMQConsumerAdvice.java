@@ -19,9 +19,11 @@ package io.micronaut.configuration.rabbitmq.intercept;
 import com.rabbitmq.client.*;
 import io.micronaut.configuration.rabbitmq.annotation.Queue;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
@@ -34,8 +36,8 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.exceptions.MessageListenerException;
-import io.micronaut.messaging.exceptions.MessagingClientException;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -88,7 +90,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
         Map<String, Object> arguments = new HashMap<>();
 
-        method.getAnnotationValuesByType(Property.class).forEach((prop) -> {
+        method.getAnnotationValuesByType(RabbitProperty.class).forEach((prop) -> {
             String name = prop.getRequiredValue("name", String.class);
             String value = prop.getValue(String.class).orElse(null);
 
@@ -120,23 +122,32 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     long deliveryTag = envelope.getDeliveryTag();
-
                     RabbitMessageState state = new RabbitMessageState(envelope, properties, body);
+                    boolean ack = false;
 
                     try {
-                        ((BoundExecutable) binder.bind(method, binderRegistry, state)).invoke(bean);
-                        channel.basicAck(deliveryTag, false);
+                        Object returnedValue = ((BoundExecutable) binder.bind(method, binderRegistry, state)).invoke(bean);
+
+                        if (returnedValue instanceof Boolean) {
+                            ack = ((Boolean) returnedValue);
+                        } else {
+                            ack = true;
+                        }
                     } catch (UnsatisfiedArgumentException e) {
-                        channel.basicNack(deliveryTag, false, reQueue);
                         throw e;
                     } catch (Throwable e) {
-                        channel.basicNack(deliveryTag, false, reQueue);
+                        throw new MessageListenerException("An error occurred executing the listener", e);
+                    } finally {
+                        if (ack) {
+                            channel.basicAck(deliveryTag, false);
+                        } else {
+                            channel.basicNack(deliveryTag, false, reQueue);
+                        }
                     }
-
                 }
             });
         } catch (IOException e) {
-            throw new MessagingClientException("An error occurred subscribing to a queue", e);
+            throw new MessageListenerException("An error occurred subscribing to a queue", e);
         } finally {
             channelPool.returnChannel(channel);
             consumerChannels.remove(channel);
@@ -144,6 +155,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
     }
 
+    @PreDestroy
     @Override
     public void close() throws Exception {
         for (Channel channel : consumerChannels) {
@@ -158,7 +170,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         try {
             return channelPool.getChannel();
         } catch (IOException e) {
-            throw new MessagingClientException("Could not retrieve a channel", e);
+            throw new MessageListenerException("Could not retrieve a channel", e);
         }
     }
 }

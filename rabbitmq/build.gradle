@@ -8,5 +8,5 @@ dependencies {
     compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
     
     testCompile "io.micronaut:micronaut-inject-groovy"
-    testCompile "org.testcontainers:spock:1.10.1"
+    testCompile "org.testcontainers:spock:1.10.5"
 }

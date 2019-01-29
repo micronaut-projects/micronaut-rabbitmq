@@ -1,4 +1,4 @@
-package io.micronaut.configuration.rabbitmq
+package io.micronaut.configuration.rabbitmq.connect
 
 import com.rabbitmq.client.Channel
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool
@@ -16,6 +16,9 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
         try {
             Channel channel = pool.getChannel()
             channel.queueDeclare("abc", true, false, false, new HashMap<>())
+            channel.queueDeclare("pojo", true, false, false, new HashMap<>())
+            channel.queueDeclare("header", true, false, false, new HashMap<>())
+            channel.queueDeclare("property", true, false, false, new HashMap<>())
             pool.returnChannel(channel)
         } catch (IOException e) {
             //no-op

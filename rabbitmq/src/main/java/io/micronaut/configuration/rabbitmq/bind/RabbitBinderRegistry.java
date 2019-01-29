@@ -37,7 +37,6 @@ public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitMessag
 
     private final Map<Class<? extends Annotation>, ArgumentBinder<?, RabbitMessageState>> byAnnotation = new LinkedHashMap<>();
     private final Map<Integer, ArgumentBinder<?, RabbitMessageState>> byType = new LinkedHashMap<>();
-    private final List<ArgumentBinder<?, RabbitMessageState>> otherBinders = new ArrayList<>();
     private final RabbitDefaultBinder defaultBinder;
 
     /**

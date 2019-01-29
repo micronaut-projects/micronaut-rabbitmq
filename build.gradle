@@ -19,7 +19,7 @@ plugins {
 }
 
 repositories {
-    // mavenLocal()
+    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -48,6 +48,7 @@ subprojects { Project subproject ->
 
     
     repositories {
+        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
@@ -82,6 +83,7 @@ subprojects { Project subproject ->
         jvmArgs '-Duser.country=US'
         jvmArgs '-Duser.language=en'
         testLogging {
+            showStandardStreams = true
             exceptionFormat = 'full'
         }
         afterSuite {

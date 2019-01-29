@@ -26,6 +26,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel;
+import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.bind.annotation.Bindable;
@@ -60,6 +61,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private final ChannelPool channelPool;
     private final ConversionService<?> conversionService;
+    private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Map<String, BiConsumer<Object, Builder>> properties = new HashMap<>();
 
     /**
@@ -69,9 +71,11 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      * @param conversionService The conversion service
      */
     public RabbitMQIntroductionAdvice(ChannelPool channelPool,
-                               ConversionService<?> conversionService) {
+                                      ConversionService<?> conversionService,
+                                      RabbitMessageSerDesRegistry serDesRegistry) {
         this.channelPool = channelPool;
         this.conversionService = conversionService;
+        this.serDesRegistry = serDesRegistry;
         properties.put("contentType", (prop, builder) -> builder.contentType((String) prop));
         properties.put("contentEncoding", (prop, builder) -> builder.contentEncoding((String) prop));
         properties.put("deliveryMode", (prop, builder) -> builder.deliveryMode((Integer) prop));
@@ -95,7 +99,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             String exchange = client.getValue(String.class).orElse("");
 
-            String routingKey = findRoutingKey(context).map(ann -> ann.getRequiredValue(String.class)).orElseThrow(() -> new MessagingClientException("No routing key specified for method: " + context));
+            String routingKey = findRoutingKey(context).orElseThrow(() -> new MessagingClientException("No routing key specified for method: " + context));
 
             Argument bodyArgument = findBodyArgument(context).orElseThrow(() -> new MessagingClientException("No valid message body argument found for method: " + context));
 
@@ -125,17 +129,20 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Map<String, Object> parameterValues = context.getParameterValueMap();
             for (Argument argument : arguments) {
                 AnnotationValue<Header> headerAnn = argument.getAnnotation(Header.class);
+                AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
                 if (headerAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, headerAnn, parameterValues);
                     if (entry.getValue() != null) {
                         headers.put(entry.getKey(), entry.getValue());
                     }
-                }
-
-                AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
-                if (propertyAnn != null) {
+                } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
                     setBasicProperty(builder, entry.getKey(), entry.getValue());
+                } else if (argument != bodyArgument) {
+                    String argumentName = argument.getName();
+                    if (properties.containsKey(argumentName)) {
+                        properties.get(argumentName).accept(parameterValues.get(argumentName), builder);
+                    }
                 }
             }
 
@@ -156,7 +163,9 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Channel channel = getChannel();
 
             Object body = parameterValues.get(bodyArgument.getName());
-            byte[] converted = conversionService.convert(body, byte[].class).orElseThrow(() -> new MessagingClientException("Could not convert the body argument of type [%s] to a byte[] for publishing"));
+            byte[] converted = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType())
+                    .map(serDes -> serDes.serialize(body))
+                    .orElseThrow(() -> new MessagingClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType())));
 
             try {
                 if (isReactiveReturnType) {
@@ -169,7 +178,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     try {
                         Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted);
 
-                        return conversionService.convert(completable, javaReturnType).orElseThrow(() -> new MessagingClientException("Could not convert the publish response to the return type of the method"));
+                        return conversionService.convert(completable, javaReturnType).orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
                     } finally {
                         reactiveChannel.finish().doOnSuccess(chnl -> {
                             if (LOG.isDebugEnabled()) {
@@ -223,13 +232,17 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         }
     }
 
-    private Optional<AnnotationValue<Binding>> findRoutingKey(ExecutableMethod<?, ?> method) {
+    private Optional<String> findRoutingKey(MethodInvocationContext<Object, Object> method) {
         if (method.hasAnnotation(Binding.class)) {
-            return Optional.ofNullable(method.getAnnotation(Binding.class));
+            return Optional.ofNullable(method.getAnnotation(Binding.class).getRequiredValue(String.class));
         } else {
+            Map<String, Object> argumentValues = method.getParameterValueMap();
             return Arrays.stream(method.getArguments())
-                    .map(arg -> arg.getAnnotation(Binding.class))
+                    .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Binding.class))
+                    .map(Argument::getName)
+                    .map(argumentValues::get)
                     .filter(Objects::nonNull)
+                    .map(Object::toString)
                     .findFirst();
         }
     }
@@ -241,6 +254,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .orElseGet(() ->
                         Arrays.stream(method.getArguments())
                                 .filter(arg -> !arg.getAnnotationMetadata().hasStereotype(Bindable.class))
+                                .filter(arg -> !properties.containsKey(arg.getName()))
                                 .findFirst()
                                 .orElse(null)
                 ));

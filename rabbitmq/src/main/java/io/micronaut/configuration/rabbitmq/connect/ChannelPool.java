@@ -16,11 +16,13 @@
 
 package io.micronaut.configuration.rabbitmq.connect;
 
+import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -110,6 +112,7 @@ public class ChannelPool implements AutoCloseable {
         return channel;
     }
 
+    @PreDestroy
     @Override
     public void close() {
         synchronized (channels) {
@@ -123,6 +126,8 @@ public class ChannelPool implements AutoCloseable {
                 if (channel.isOpen()) {
                     try {
                         channel.close();
+                    } catch (AlreadyClosedException e) {
+                        //no-op
                     } catch (IOException | TimeoutException e) {
                         if (LOG.isWarnEnabled()) {
                             LOG.warn("Failed to close channel", e);

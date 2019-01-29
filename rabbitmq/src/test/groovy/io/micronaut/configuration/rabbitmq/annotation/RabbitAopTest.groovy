@@ -1,33 +1,17 @@
-package io.micronaut.configuration.rabbitmq
+package io.micronaut.configuration.rabbitmq.annotation
 
-import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
-import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Body
 import io.reactivex.Completable
-import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
-import spock.lang.AutoCleanup
-import spock.lang.Shared
-import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.TimeUnit
 
-class RabbitClientTest extends Specification {
-
-    @Shared
-    @AutoCleanup
-    GenericContainer rabbitContainer =
-            new GenericContainer("library/rabbitmq:3.7")
-                    .withExposedPorts(5672)
-                    .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
+class RabbitAopTest extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming"() {
-        rabbitContainer.start()
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                 "spec.name": getClass().simpleName], "test")
@@ -46,9 +30,12 @@ class RabbitClientTest extends Specification {
             consumer.messages[0] == "abc".bytes
             consumer.messages[1] == "def".bytes
         }
+
+        cleanup:
+        applicationContext.close()
     }
 
-    @Requires(property = "spec.name", value = "RabbitClientTest")
+    @Requires(property = "spec.name", value = "RabbitAopTest")
     @RabbitClient
     static interface MyProducer {
 
@@ -56,10 +43,10 @@ class RabbitClientTest extends Specification {
         void go(@Body byte[] data)
 
         @Binding("abc")
-        Completable goConfirm(@Body byte[] data)
+        Completable goConfirm(byte[] data)
     }
 
-    @Requires(property = "spec.name", value = "RabbitClientTest")
+    @Requires(property = "spec.name", value = "RabbitAopTest")
     @RabbitListener
     static class MyConsumer {
 

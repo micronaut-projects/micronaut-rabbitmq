@@ -16,6 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
+import io.micronaut.configuration.rabbitmq.serialization.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
 
@@ -31,29 +32,30 @@ import javax.inject.Singleton;
 public class RabbitDefaultBinder implements RabbitArgumentBinder<Object> {
 
     private final RabbitPropertyBinder propertyBinder;
-    private final ConversionService conversionService;
+    private final RabbitMessageSerDesRegistry serDesRegistry;
 
     /**
      * Default constructor.
      *
      * @param propertyBinder The property binder
-     * @param conversionService The conversion service to convert the body
+     * @param serDesRegistry The registry to find a serializer
      */
     public RabbitDefaultBinder(RabbitPropertyBinder propertyBinder,
-                               ConversionService conversionService) {
+                               RabbitMessageSerDesRegistry serDesRegistry) {
         this.propertyBinder = propertyBinder;
-        this.conversionService = conversionService;
+        this.serDesRegistry = serDesRegistry;
     }
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
+        if (propertyBinder.supports(context)) {
+            return propertyBinder.bind(context, source);
+        } else {
+            byte[] value = source.getBody();
+            Class<Object> bodyType = context.getArgument().getType();
 
-        BindingResult<Object> result = propertyBinder.bind(context, source);
-        if (result.isPresentAndSatisfied()) {
-            return result;
+            return () -> serDesRegistry.findSerdes(bodyType)
+                    .map(serDes -> serDes.deserialize(value, bodyType));
         }
-
-        Object value = source.getBody();
-        return () -> conversionService.convert(value, context);
     }
 }

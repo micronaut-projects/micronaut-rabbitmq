@@ -68,10 +68,16 @@ public class RabbitPropertyBinder implements RabbitAnnotatedArgumentBinder<Rabbi
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
-        String parameterName = context.getAnnotationMetadata().getValue(RabbitProperty.class, String.class).orElse(context.getArgument().getName());
-
-        return () -> Optional.ofNullable(properties.get(parameterName))
+        return () -> Optional.ofNullable(properties.get(getParameterName(context)))
                 .map(f -> f.apply(source.getProperties()))
                 .flatMap(prop -> conversionService.convert(prop, context));
+    }
+
+    public boolean supports(ArgumentConversionContext<Object> context) {
+        return properties.containsKey(getParameterName(context));
+    }
+
+    private String getParameterName(ArgumentConversionContext<Object> context) {
+        return context.getAnnotationMetadata().getValue(RabbitProperty.class, String.class).orElse(context.getArgument().getName());
     }
 }

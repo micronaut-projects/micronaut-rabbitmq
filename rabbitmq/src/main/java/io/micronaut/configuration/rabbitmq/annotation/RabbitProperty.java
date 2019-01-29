@@ -32,6 +32,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * While consuming the annotation can be applied to a parameter to bind the
  * property to the argument.
  *
+ * @see com.rabbitmq.client.BasicProperties
+ *
  * @author James Kleeh
  * @since 1.1.0
  */

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.configuration.rabbitmq
+package io.micronaut.configuration.rabbitmq.connect
 
 import com.rabbitmq.client.ConnectionFactory
 import io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig
