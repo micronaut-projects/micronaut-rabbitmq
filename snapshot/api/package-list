@@ -1,0 +1,9 @@
+io.micronaut.configuration.rabbitmq.annotation
+io.micronaut.configuration.rabbitmq.bind
+io.micronaut.configuration.rabbitmq.connect
+io.micronaut.configuration.rabbitmq.executor
+io.micronaut.configuration.rabbitmq.health
+io.micronaut.configuration.rabbitmq.intercept
+io.micronaut.configuration.rabbitmq.metrics
+io.micronaut.configuration.rabbitmq.reactivex
+io.micronaut.configuration.rabbitmq.serdes
