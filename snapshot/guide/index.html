@@ -45,11 +45,21 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#setup"><strong>2</strong><span>Setting up the Neo4j Bolt Driver</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cli"><strong>2</strong><span>Using the Micronaut CLI</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#config"><strong>3</strong><span>Configuring the Neo4j Bolt Driver</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#quickStart"><strong>3</strong><span>RabbitMQ Quick Start</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#testing"><strong>4</strong><span>Neo4j and Testing</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>8</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>9</strong><span>RabbitMQ Metrics</span></a></div>
                                 
                             </div>
                         </div>
@@ -83,11 +93,49 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-introduction"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-setup"><a href="#setup"><strong>2</strong><span>Setting up the Neo4j Bolt Driver</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cli"><a href="#cli"><strong>2</strong><span>Using the Micronaut CLI</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>3</strong><span>Configuring the Neo4j Bolt Driver</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-quickStart"><a href="#quickStart"><strong>3</strong><span>RabbitMQ Quick Start</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-testing"><a href="#testing"><strong>4</strong><span>Neo4j and Testing</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-producerMethods"><a href="#producerMethods"><strong>5.1</strong><span>Defining @RabbitClient Methods</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>5.1.1</strong><span>Broker Acknowledgement</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.2</strong><span>Argument Binding</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>5.1.2.1</strong><span>RabbitMQ Properties</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>5.1.2.2</strong><span>Headers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>6.1</strong><span>Defining @RabbitListener Methods</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>6.1.1</strong><span>Acknowledging Messages</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerBinding"><a href="#consumerBinding"><strong>6.1.2</strong><span>Argument Binding</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>6.1.2.1</strong><span>Properties</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>6.1.2.2</strong><span>Headers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>6.1.2.3</strong><span>RabbitMQ Types</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.2.4</strong><span>Customizing Binding Behavior</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.2</strong><span>Consumer Execution</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>7.1</strong><span>Custom SerDes</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>8</strong><span>RabbitMQ Health Indicator</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>9</strong><span>RabbitMQ Metrics</span></a></div>
         
         </div>
     </div>
@@ -115,91 +163,161 @@
 </div>
 
 
-<h1 id="setup">2 Setting up the Neo4j Bolt Driver</h1>
+<h1 id="cli">2 Using the Micronaut CLI</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/setup.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/cli.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">Using the CLI</div>
 <div class="paragraph">
-<p>If you are creating your project using the Micronaut CLI, supply the <code>neo4j-bolt</code> feature to configure the Neo4j Bolt driver in your project:</p>
+<p>To create a project with RabbitMQ support using the Micronaut CLI, supply the <code>rabbitmq</code> feature to the <code>features</code> flag.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ mn create-app my-app --features neo4j-bolt</pre>
+<pre>$ mn create-app my-rabbitmq-app --features rabbitmq</pre>
 </div>
-</div>
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>To configure the Neo4j Bolt driver you should first add the <code>neo4j-bolt</code> module to your classpath:</p>
+<p>This will create a project with the minimum necessary configuration for RabbitMQ.</p>
+</div>
+
+
+<h1 id="quickStart">3 RabbitMQ Quick Start</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To add support for RabbitMQ to an existing project, you should first add the Micronaut RabbitMQ configuration to your build configuration. For example:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.configuration:micronaut-:micronaut-neo4j-bolt'</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.configuration:micronaut-rabbitmq'</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.configuration&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-:micronaut-neo4j-bolt&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </p>
 </div>
+<div class="sect2">
+<h3 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h3>
 <div class="paragraph">
-<p>You should then configure the URI of the Neo4j server you wish to communicate with in <code>application.yml</code>:</p>
+<p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example the following is a trivial <code>@RabbitClient</code> interface:</p>
 </div>
 <div class="listingblock">
-<div class="title">Configuring <code>neo4j.uri</code></div>
+<div class="title">ProductClient.java</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">neo4j:
-    uri: bolt://localhost</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+
+@RabbitClient <i class="conum" data-value="1"></i><b>(1)</b>
+public interface ProductClient {
+
+    @Binding("product") <i class="conum" data-value="2"></i><b>(2)</b>
+    void send(byte[] data); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
 </div>
 </div>
-<div class="admonitionblock tip">
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-The <code>neo4j.uri</code> setting should be in the format as described in the <a href="https://neo4j.com/docs/developer-manual/current/drivers/client-applications/#driver-connection-uris">Connection URIs</a> section of the Neo4j documentation
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation is used to designate this interface as a client</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation indicates which binding or routing key the message should be routed to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The 'send' method accepts single parameter which is the body of the message.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Once you have the above configuration in place you can inject an instance of the <code>org.neo4j.driver.v1.Driver</code> bean, which features both a synchronous blocking API and a non-blocking API based on <code>CompletableFuture</code>.</p>
+<p>At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of <code>ProductClient</code> either by looking up the bean from the <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a> or by injecting the bean with <code>@Inject</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using ProductClient</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient)
+productClient.send("message body".getBytes())</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that since the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_neo4j_health_checks">Neo4j Health Checks</h3>
+<h3 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h3>
 <div class="paragraph">
-<p>When the <code>micronaut-neo4j-bolt</code> module is activated a <a href="../api/io/micronaut/configuration/neo4j/bolt/health/Neo4jHealthIndicator.html">Neo4jHealthIndicator</a> is activated resulting in the <code>/health</code> endpoint and <a href="https://docs.micronaut.io/latest/api/io/micronaut/health/CurrentHealthStatus.html">CurrentHealthStatus</a> interface resolving the health of the Neo4j connection.</p>
+<p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
 </div>
 <div class="paragraph">
-<p>See the section on the <a href="https://docs.micronaut.io/latest/guide/index.html#healthEndpoint">Health Endpoint</a> for more information.</p>
+<p>The following example will listen for messages published by the <code>ProductClient</code> in the previous section:</p>
+</div>
+<div class="listingblock">
+<div class="title">ProductListener.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RabbitListener <i class="conum" data-value="1"></i><b>(1)</b>
+public class ProductListener {
+
+    public List&lt;Integer&gt; messageLengths = new ArrayList&lt;&gt;();
+
+    @Queue("product") <i class="conum" data-value="2"></i><b>(2)</b>
+    void receive(byte[] data) { <i class="conum" data-value="3"></i><b>(3)</b>
+        Integer length = data.length;
+        messageLengths.add(length);
+        System.out.println("Received " + length + " bytes from RabbitMQ");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> is used to designate the bean as a message listener.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is used to indicate which queue to subscribe to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
+</tr>
+</table>
 </div>
 </div>
 
 
-<h1 id="config">3 Configuring the Neo4j Bolt Driver</h1>
+<h1 id="config">4 Configuring The Connection</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/config.adoc"'>
@@ -208,54 +326,326 @@ The <code>neo4j.uri</code> setting should be in the format as described in the <
 </div>
 
 
+<div class="paragraph">
+<p>All properties on the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/ConnectionFactory.html">ConnectionFactory</a> are available to be modified, either through configuration or a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a>.</p>
+</div>
+<div class="paragraph">
+<p>The properties that can be converted from the string values in a configuration file can be configured directly. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
+    uri:
+//or
+rabbitmq:
+    host:
+    port:
+    username:
+    password:
+    virtual-host:</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Without any configuration the defaults in the <code>ConnectionFactory</code> will be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/SaslConfig.html">SaslConfig</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Singleton
+public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    @Override
+    public ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
+        ConnectionFactory connectionFactory = event.getBean();
+        connectionFactory.setSaslConfig(...);
+        return connectionFactory;
+    }
+}</code></pre>
+</div>
+</div>
 
 
-
-<h1 id="testing">4 Neo4j and Testing</h1>
+<h1 id="producer">5 RabbitMQ Producers Using @RabbitClient</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/testing.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>You can embed Neo4j for testing by including a dependency on the Neo4j test harness:</p>
+<p>The example in the quick start presented a trivial definition of an interface that be implemented automatically for you using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.</p>
 </div>
 <div class="paragraph">
-<p>        <div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">test <span class="hljs-string">'org.neo4j.test:neo4j-harness'</span></code></pre>
+<p>The implementation that powers <code>@RabbitClient</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ producers.</p>
 </div>
+
+
+<h2 id="producerMethods">5.1 Defining @RabbitClient Methods</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;org.neo4j.test&lt;/groupId&gt;
-    &lt;artifactId&gt;neo4j-harness&lt;/artifactId&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
+
+
+<div class="paragraph">
+<p>TODO</p>
 </div>
+
+
+<h2 id="producerAcknowledge">5.1.1 Broker Acknowledgement</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
 </div>
-</p>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="producerBinding">5.1.2 Argument Binding</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="producerProperties">5.1.2.1 RabbitMQ Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="producerHeaders">5.1.2.2 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h1 id="consumer">6 RabbitMQ Consumers Using @RabbitListener</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The example in the quick start presented a trivial definition of a class that listens for messages using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation.</p>
 </div>
 <div class="paragraph">
-<p>If the Neo4j server is not already running on the configured port an embedded version will be started.</p>
+<p>The implementation that powers <code>@RabbitListener</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ consumers.</p>
 </div>
+
+
+<h2 id="consumerMethods">6.1 Defining @RabbitListener Methods</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
 <div class="paragraph">
-<p>You can configure the options for the embedded Neo4j server using the <code>neo4j.embedded</code> settings exposed by <a href="../api/io/micronaut/configuration/neo4j/bolt/Neo4jBoltConfiguration.html">Neo4jBoltConfiguration</a>.</p>
+<p>TODO</p>
 </div>
+
+
+<h2 id="consumerAcknowledge">6.1.1 Acknowledging Messages</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
 <div class="paragraph">
-<p>One useful option is <code>ephemeral</code> which ensures the data is cleaned up between test runs. For example in <code>application-test.yml</code>:</p>
+<p>TODO</p>
 </div>
-<div class="listingblock">
-<div class="title">Using ephemeral</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">neo4j:
-    embedded:
-        ephemeral: true</code></pre>
+
+
+<h2 id="consumerBinding">6.1.2 Argument Binding</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
 </div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerProperties">6.1.2.1 Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerHeaders">6.1.2.2 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerTypes">6.1.2.3 RabbitMQ Types</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerTypes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerCustom">6.1.2.4 Customizing Binding Behavior</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerCustom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerExecutor">6.2 Consumer Execution</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h1 id="serdes">7 Message Serialization/Deserialization (SerDes)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="custom">7.1 Custom SerDes</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h1 id="health">8 RabbitMQ Health Indicator</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h1 id="metrics">9 RabbitMQ Metrics</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/metrics.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
 </div>
 
     </div>

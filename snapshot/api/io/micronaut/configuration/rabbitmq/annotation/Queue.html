@@ -96,7 +96,7 @@
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">Queue</span></pre>
 <div class="block">Used to specify which queue messages should be consumed
- from.</div>
+ from. The queue must already exist in the broker.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.1.0</dd>
@@ -142,6 +142,10 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#exclusive--">exclusive</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -179,13 +183,33 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <li class="blockList"><a name="reQueue--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>reQueue</h4>
 <pre>public abstract&nbsp;boolean&nbsp;reQueue</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether nacks should re-queue the message.</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="exclusive--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>exclusive</h4>
+<pre>public abstract&nbsp;boolean&nbsp;exclusive</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the consumer is exclusive to the queue</dd>
 </dl>
 <dl>
 <dt>Default:</dt>
