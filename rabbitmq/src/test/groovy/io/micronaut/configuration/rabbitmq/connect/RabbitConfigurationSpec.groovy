@@ -40,7 +40,7 @@ class RabbitConfigurationSpec extends Specification {
             cf.getVirtualHost() == "/"
             cf.getHost() == "localhost"
             cf.getPort() == 5672
-            cf.getRequestedChannelMax() == 0
+            cf.getRequestedChannelMax() == 2047
             cf.getRequestedFrameMax() == 0
             cf.getRequestedHeartbeat() == 60
             cf.getConnectionTimeout() == 60000

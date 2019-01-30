@@ -30,7 +30,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * to set the property differently per execution.
  *
  * While consuming the annotation can be applied to a parameter to bind the
- * property to the argument.
+ * property to the argument. In addition, it may also be used to supply any arguments
+ * to the broker.
  *
  * @see com.rabbitmq.client.BasicProperties
  *

@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 
 /**
  * Used to specify which queue messages should be consumed
- * from.
+ * from. The queue must already exist in the broker.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -39,4 +39,9 @@ public @interface Queue {
      * @return Whether nacks should re-queue the message.
      */
     boolean reQueue() default false;
+
+    /**
+     * @return Whether the consumer is exclusive to the queue
+     */
+    boolean exclusive() default false;
 }

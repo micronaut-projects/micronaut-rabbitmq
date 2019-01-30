@@ -75,12 +75,13 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     @Override
     public void process(BeanDefinition<?> beanDefinition, ExecutableMethod<?, ?> method) {
 
-        Optional<AnnotationValue<Queue>> queueAnn = method.findAnnotation(Queue.class);
-        String queue = queueAnn.map(ann -> ann.getRequiredValue(String.class)).orElseThrow(() -> new MessageListenerException("No queue specified for method " + method));
+        AnnotationValue<Queue> queueAnn = method.findAnnotation(Queue.class).orElseThrow(() -> new MessageListenerException("No queue specified for method " + method));
+        String queue = queueAnn.getRequiredValue(String.class);
 
         String clientTag = method.getDeclaringType().getSimpleName() + '#' + method.toString();
 
-        boolean reQueue = queueAnn.get().getRequiredValue("reQueue", boolean.class);
+        boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
+        boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
 
         Channel channel = getChannel();
 
@@ -109,7 +110,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         try {
             DefaultExecutableBinder<RabbitMessageState> binder = new DefaultExecutableBinder<>();
 
-            channel.basicConsume(queue, false, clientTag, false, false, arguments, new DefaultConsumer() {
+            channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
 
                 @Override
                 public void handleTerminate(String consumerTag) {
