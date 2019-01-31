@@ -194,7 +194,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     ReactiveChannel reactiveChannel = new ReactiveChannel(channel);
                    // try {
                         Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted)
-                                .doAfterTerminate(() -> {
+                                .doFinally(() -> {
                                     if (LOG.isDebugEnabled()) {
                                         LOG.debug("The publish has terminated. Returning the channel to the pool");
                                     }

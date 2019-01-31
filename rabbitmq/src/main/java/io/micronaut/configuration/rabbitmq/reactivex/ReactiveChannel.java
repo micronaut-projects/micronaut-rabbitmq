@@ -112,8 +112,8 @@ public class ReactiveChannel {
     public Completable publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         return initializePublish()
                 .andThen(Completable.create((emitter) ->
-                        publishInternal(exchange, routingKey, properties, body, emitter))
-                .doAfterTerminate(this::cleanupChannel));
+                        publishInternal(exchange, routingKey, properties, body, emitter)))
+                .andThen(Completable.fromAction(this::cleanupChannel));
     }
 
     private void publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body, CompletableEmitter emitter) {
