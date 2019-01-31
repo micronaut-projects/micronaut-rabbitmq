@@ -8,10 +8,13 @@ import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer
 import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel
 import io.micronaut.context.ApplicationContext
 import io.reactivex.Completable
+import spock.lang.Stepwise
+import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
+@Stepwise
 class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
     void "test ack multiple"() {
@@ -43,12 +46,53 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "jkl".bytes)]
 
         then:
-        reactiveChannel.finish()
-                .doAfterSuccess({c -> channelPool.returnChannel(c)})
-                .blockingGet()
         Completable.merge(completables).blockingGet(2, TimeUnit.SECONDS) == null
 
         cleanup:
+        applicationContext.close()
+    }
+
+    void "test reinitialization"() {
+        ApplicationContext applicationContext = ApplicationContext.run(
+                ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
+        ChannelPool channelPool = applicationContext.getBean(ChannelPool)
+        PollingConditions conditions = new PollingConditions(timeout: 3, initialDelay: 1)
+        AtomicInteger messageCount = new AtomicInteger()
+        Channel channel = channelPool.getChannel()
+        channel.basicConsume("abc", true, new DefaultConsumer() {
+            @Override
+            void handleTerminate(String consumerTag) {}
+
+            @Override
+            void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                messageCount.incrementAndGet()
+            }
+        })
+        ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
+
+        when:
+        reactiveChannel
+                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
+                .subscribe()
+
+        then:
+        conditions.eventually {
+            messageCount.get() == 1
+        }
+
+        when:
+        reactiveChannel
+                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes)
+                .subscribe()
+
+
+        then:
+        conditions.eventually {
+            messageCount.get() == 2
+        }
+
+        cleanup:
+        channelPool.returnChannel(channel)
         applicationContext.close()
     }
 }

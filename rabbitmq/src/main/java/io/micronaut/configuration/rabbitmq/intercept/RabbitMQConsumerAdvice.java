@@ -114,8 +114,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                 @Override
                 public void handleTerminate(String consumerTag) {
-                    channelPool.returnChannel(channel);
-                    consumerChannels.remove(channel);
+                    if (consumerChannels.contains(channel)) {
+                        channelPool.returnChannel(channel);
+                        consumerChannels.remove(channel);
+                    }
                 }
 
                 @Override
@@ -146,12 +148,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 }
             });
         } catch (IOException e) {
-            throw new MessageListenerException("An error occurred subscribing to a queue", e);
-        } finally {
             channelPool.returnChannel(channel);
             consumerChannels.remove(channel);
+            throw new MessageListenerException("An error occurred subscribing to a queue", e);
         }
-
     }
 
     @PreDestroy
@@ -160,6 +160,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         for (Channel channel : consumerChannels) {
             channelPool.returnChannel(channel);
         }
+        consumerChannels.clear();
     }
 
     /**

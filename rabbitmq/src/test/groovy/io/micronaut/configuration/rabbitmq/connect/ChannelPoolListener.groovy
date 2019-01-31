@@ -22,6 +22,20 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
             channel.queueDeclare("type", true, false, false, new HashMap<>())
             channel.queueDeclare("boolean", true, false, false, new HashMap<>())
             channel.queueDeclare("product", true, false, false, new HashMap<>())
+
+            channel.exchangeDeclare("animals", "headers", true);
+            channel.queueDeclare("dogs", true, false, false, null);
+            channel.queueDeclare("cats", true, false, false, null);
+            Map<String, Object> catArgs = new HashMap<String, Object>()
+            catArgs.put("x-match", "all")
+            catArgs.put("animalType", "Cat")
+            channel.queueBind("cats", "animals", "", catArgs)
+
+            Map<String, Object> dogArgs = new HashMap<String, Object>()
+            dogArgs.put("x-match", "all")
+            dogArgs.put("animalType", "Dog")
+            channel.queueBind("dogs", "animals", "", dogArgs)
+
             pool.returnChannel(channel)
         } catch (IOException e) {
             //no-op

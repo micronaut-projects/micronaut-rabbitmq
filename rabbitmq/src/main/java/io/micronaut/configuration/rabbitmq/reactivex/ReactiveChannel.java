@@ -32,14 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This class provides a wrapper around a {@link Channel} to provide
  * reactive implementations of the common actions that can be performed
  * on a channel.
  *
- * After all operations on the channel have been executed, subscribe to
- * the {@link #finish()} method to get back the original channel.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -47,10 +46,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ReactiveChannel {
 
     private final ConcurrentHashMap<Long, CompletableEmitter> unconfirmed = new ConcurrentHashMap<>();
-    private final List<CompletableSource> allCompletables = new ArrayList<>();
     private final Channel channel;
     private final ConfirmListener listener;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
+    private final AtomicLong publishCount = new AtomicLong(0);
 
     /**
      * Default constructor.
@@ -111,16 +110,10 @@ public class ReactiveChannel {
      * @return A completable that will complete if the message is confirmed
      */
     public Completable publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
-        /*The result must be cached because the finish method will subscribe to the
-         completables and thus 2 subscribers (this and downstream) will cause the
-         message to be published twice
-         */
-        Completable publish = initializePublish()
+        return initializePublish()
                 .andThen(Completable.create((emitter) ->
                         publishInternal(exchange, routingKey, properties, body, emitter))
-                .cache());
-        allCompletables.add(publish);
-        return publish;
+                .doAfterTerminate(this::cleanupChannel));
     }
 
     private void publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body, CompletableEmitter emitter) {
@@ -133,6 +126,7 @@ public class ReactiveChannel {
                     props,
                     body
             );
+            publishCount.incrementAndGet();
         } catch (IOException e) {
             unconfirmed.remove(nextPublishSeqNo);
             emitter.onError(e);
@@ -153,14 +147,11 @@ public class ReactiveChannel {
         }
     }
 
-    /**
-     * @return A Single that will never error that returns the channel
-     * after all actions are terminated.
-     */
-    public Single<Channel> finish() {
-        return Completable.mergeDelayError(allCompletables)
-                .onErrorComplete()
-                .doOnTerminate(() -> channel.removeConfirmListener(listener))
-                .toSingle(() -> channel);
+    private void cleanupChannel() {
+        if (publishCount.decrementAndGet() == 0) {
+            channel.removeConfirmListener(listener);
+            initialized.set(false);
+        }
     }
+
 }

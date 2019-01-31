@@ -46,6 +46,7 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Implementation of the {@link RabbitClient} advice annotation.
@@ -77,19 +78,34 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         this.channelPool = channelPool;
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
-        properties.put("contentType", (prop, builder) -> builder.contentType((String) prop));
-        properties.put("contentEncoding", (prop, builder) -> builder.contentEncoding((String) prop));
-        properties.put("deliveryMode", (prop, builder) -> builder.deliveryMode((Integer) prop));
-        properties.put("priority", (prop, builder) -> builder.priority((Integer) prop));
-        properties.put("correlationId", (prop, builder) -> builder.correlationId((String) prop));
-        properties.put("replyTo", (prop, builder) -> builder.replyTo((String) prop));
-        properties.put("expiration", (prop, builder) -> builder.expiration((String) prop));
-        properties.put("messageId", (prop, builder) -> builder.messageId((String) prop));
-        properties.put("timestamp", (prop, builder) -> builder.timestamp(new Date((Integer) prop)));
-        properties.put("type", (prop, builder) -> builder.type((String) prop));
-        properties.put("userId", (prop, builder) -> builder.userId((String) prop));
-        properties.put("appId", (prop, builder) -> builder.appId((String) prop));
-        properties.put("clusterId", (prop, builder) -> builder.clusterId((String) prop));
+
+
+        properties.put("contentType", (prop, builder) ->
+                convert("contentType", prop, String.class, builder::contentType));
+        properties.put("contentEncoding", (prop, builder) ->
+                convert("contentEncoding", prop, String.class, builder::contentEncoding));
+        properties.put("deliveryMode", (prop, builder) ->
+                convert("deliveryMode", prop, Integer.class, builder::deliveryMode));
+        properties.put("priority", (prop, builder) ->
+                convert("priority", prop, Integer.class, builder::priority));
+        properties.put("correlationId", (prop, builder) ->
+                convert("correlationId", prop, String.class, builder::correlationId));
+        properties.put("replyTo", (prop, builder) ->
+                convert("replyTo", prop, String.class, builder::replyTo));
+        properties.put("expiration", (prop, builder) ->
+                convert("expiration", prop, String.class, builder::expiration));
+        properties.put("messageId", (prop, builder) ->
+                convert("messageId", prop, String.class, builder::messageId));
+        properties.put("timestamp", (prop, builder) ->
+                convert("timestamp", prop, Date.class, builder::timestamp));
+        properties.put("type", (prop, builder) ->
+                convert("type", prop, String.class, builder::type));
+        properties.put("userId", (prop, builder) ->
+                convert("userId", prop, String.class, builder::userId));
+        properties.put("appId", (prop, builder) ->
+                convert("appId", prop, String.class, builder::appId));
+        properties.put("clusterId", (prop, builder) ->
+                convert("clusterId", prop, String.class, builder::clusterId));
     }
 
     @Override
@@ -100,7 +116,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             String exchange = client.getValue(String.class).orElse("");
 
-            String routingKey = findRoutingKey(context).orElseThrow(() -> new MessagingClientException("No routing key specified for method: " + context));
+            String routingKey = findRoutingKey(context).orElse("");
 
             Argument bodyArgument = findBodyArgument(context).orElseThrow(() -> new MessagingClientException("No valid message body argument found for method: " + context));
 
@@ -176,18 +192,24 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
 
                     ReactiveChannel reactiveChannel = new ReactiveChannel(channel);
-                    try {
-                        Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted);
-
+                   // try {
+                        Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted)
+                                .doAfterTerminate(() -> {
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("The publish has terminated. Returning the channel to the pool");
+                                    }
+                                    channelPool.returnChannel(channel);
+                                });
                         return conversionService.convert(completable, javaReturnType).orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
-                    } finally {
+                  /*  } finally {
+
                         reactiveChannel.finish().doOnSuccess(chnl -> {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("The publish has terminated. Returning the channel to the pool");
                             }
                             channelPool.returnChannel(chnl);
                         }).subscribe();
-                    }
+                    }*/
                 } else {
 
                     if (LOG.isDebugEnabled()) {
@@ -233,6 +255,11 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         }
     }
 
+    private <T> void convert(String name, Object value, Class<T> type, Consumer<? super T> consumer) {
+        consumer.accept(conversionService.convert(value, type)
+                .orElseThrow(() -> new MessagingClientException(String.format("Attempted to set property [%s], but could not convert the value to the required type [%s]", name, type.getName()))));
+    }
+
     private Optional<String> findRoutingKey(MethodInvocationContext<Object, Object> method) {
         if (method.hasAnnotation(Binding.class)) {
             return Optional.ofNullable(method.getAnnotation(Binding.class).getRequiredValue(String.class));
@@ -266,16 +293,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             LOG.debug("Retrieving a channel from the pool");
         }
 
-        Channel channel = null;
         try {
-            channel = channelPool.getChannel();
-            return channel;
+            return channelPool.getChannel();
         } catch (IOException e) {
             throw new MessagingClientException("Could not retrieve a channel from the pool", e);
-        } finally {
-            if (channel != null) {
-                channelPool.returnChannel(channel);
-            }
         }
     }
 }

@@ -1,1 +1,1 @@
-This project includes integration between Micronaut and RabbitMQ.
+This project includes integration between Micronaut and RabbitMQ. The standard link:https://www.rabbitmq.com/java-client.html[Java Client] is used to do the actual publishing and consuming.

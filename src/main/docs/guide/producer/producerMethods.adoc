@@ -1,1 +1,6 @@
-TODO
+All methods that publish messages to RabbitMQ must meet the following conditions:
+
+* The method must reside in a class annotated with ann:configuration.rabbitmq.annotation.RabbitClient[].
+* The method must contain an argument representing the body of the message.
+
+IMPORTANT: If a body argument cannot be found, an exception will be thrown.

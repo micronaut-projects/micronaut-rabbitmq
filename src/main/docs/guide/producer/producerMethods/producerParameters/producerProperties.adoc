@@ -1,0 +1,19 @@
+It is also supported to supply properties when publishing messages. Any of the link:{apirabbit}client/BasicProperties.html[BasicProperties] can be set dynamically per execution or statically for all executions. Properties can be set using the ann:configuration.rabbitmq.annotation.RabbitProperty[] annotation.
+
+[source,java]
+----
+//Value static for every execution
+//Multiple properties can be set
+@RabbitProperty(name = "conentType", value = "application/json")
+@RabbitProperty(name = "priority", value = "3")
+public void go(byte[] body)
+
+//Value set per execution
+public void go(@RabbitProperty("userId") String user, byte[] body)
+----
+
+For method arguments, if the value is not supplied to the annotation, the argument name will be used as the property name. For example, `@RabbitProperty String userId` would result in the property `userId` being set on the properties object before publishing.
+
+IMPORTANT: If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied value cannot be converted to the type defined in link:{apirabbit}client/BasicProperties.html[BasicProperties], an exception will be thrown.
+
+TIP: Kotlin users must use the ann:configuration.rabbitmq.annotation.RabbitProperties[] annotation to supply multiple properties.

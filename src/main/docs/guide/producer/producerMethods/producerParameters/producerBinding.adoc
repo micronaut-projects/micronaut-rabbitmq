@@ -1,0 +1,10 @@
+If you need to specify the routing key of the message, apply the ann:configuration.rabbitmq.annotation.Binding[] annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.
+
+[source,java]
+----
+//Value static for every execution
+@Binding("products")
+public void go(byte[] body)
+
+//Value set per execution
+public void go(@Binding String binding, byte[] body)

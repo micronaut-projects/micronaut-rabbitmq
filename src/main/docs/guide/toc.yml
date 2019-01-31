@@ -3,21 +3,22 @@ cli: Using the Micronaut CLI
 quickStart: RabbitMQ Quick Start
 config: Configuring The Connection
 producer:
-  title: RabbitMQ Producers Using @RabbitClient
+  title: RabbitMQ Producers
   producerMethods:
     title: Defining @RabbitClient Methods
-    producerAcknowledge: Broker Acknowledgement
-    producerBinding:
-      title: Argument Binding
+    producerParameters:
+      title: Publishing Parameters
+      producerBinding: Routing Key
       producerProperties: RabbitMQ Properties
       producerHeaders: Headers
+    producerAcknowledge: Broker Acknowledgement
 consumer:
-  title: RabbitMQ Consumers Using @RabbitListener
+  title: RabbitMQ Consumers
   consumerMethods:
     title: Defining @RabbitListener Methods
     consumerAcknowledge: Acknowledging Messages
     consumerBinding:
-      title: Argument Binding
+      title: Consumer Parameters
       consumerProperties: Properties
       consumerHeaders: Headers
       consumerTypes: RabbitMQ Types

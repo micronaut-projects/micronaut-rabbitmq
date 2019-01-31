@@ -1,1 +1,6 @@
-TODO
+Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.
+
+Since the publisher is cold, the message will not actually be published until the stream is subscribed to.
+
+Micronaut comes with RxJava2 by default, and the link:http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html[Completable] type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.
+

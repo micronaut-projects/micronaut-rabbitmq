@@ -1,0 +1,18 @@
+Headers can be set on the message with the link:{apimicronaut}messaging/annotation/Header.html[@Header] annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.
+
+[source,java]
+----
+//Value static for every execution
+//Multiple headers can be supplied
+@Binding("products")
+@Header(name = "x-product-packaging", value = "canned")
+@Header(name = "x-product-size", value = "small")
+public void go(byte[] body)
+
+//Value set per execution
+public void go(@Header("x-product-type") String productType, byte[] body)
+----
+
+NOTE: For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, `@Header String productType` would result in a header with the name `productType` being sent.
+
+TIP: Kotlin users must use the link:{apimicronaut}messaging/annotation/Headers.html[@Headers] annotation to supply multiple headers.
