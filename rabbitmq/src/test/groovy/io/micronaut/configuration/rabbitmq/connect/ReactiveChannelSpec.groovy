@@ -23,22 +23,28 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
 
         when:
-        Channel channel = channelPool.getChannel()
-        channel.basicConsume("abc", false, new DefaultConsumer() {
+        Channel consumeChannel = channelPool.getChannel()
+        Boolean consumerAckd = false
+        PollingConditions conditions = new PollingConditions(timeout: 5)
+        consumeChannel.basicConsume("abc", false, new DefaultConsumer() {
             AtomicInteger count = new AtomicInteger()
             @Override
             void handleTerminate(String consumerTag) {
-
+                println "consumer terminated"
             }
 
             @Override
             void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                println "received message " + new String(body)
                 if (count.incrementAndGet() == 4) {
-                    channel.basicAck(envelope.getDeliveryTag(), true)
+                    println "count is 4, ack multiple"
+                    consumeChannel.basicAck(envelope.getDeliveryTag(), true)
+                    consumerAckd = true
                 }
             }
         })
-        ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
+        Channel publishChannel = channelPool.getChannel()
+        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel)
         List<Completable> completables = [
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes),
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes),
@@ -46,9 +52,16 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "jkl".bytes)]
 
         then:
-        Completable.merge(completables).blockingGet(5, TimeUnit.SECONDS) == null
+        Completable.merge(completables)
+                .doFinally({ -> channelPool.returnChannel(publishChannel) })
+                .blockingGet(10, TimeUnit.SECONDS) == null
+
+        conditions.eventually {
+            consumerAckd
+        }
 
         cleanup:
+        channelPool.returnChannel(consumeChannel)
         applicationContext.close()
     }
 
@@ -58,8 +71,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
         PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
-        Channel channel = channelPool.getChannel()
-        channel.basicConsume("def", true, new DefaultConsumer() {
+        Channel consumeChannel = channelPool.getChannel()
+        consumeChannel.basicConsume("abc", true, new DefaultConsumer() {
             @Override
             void handleTerminate(String consumerTag) {}
 
@@ -68,11 +81,12 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 messageCount.incrementAndGet()
             }
         })
-        ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
+        Channel produceChannel = channelPool.getChannel()
+        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel)
 
         when:
         reactiveChannel
-                .publish("", "def", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
+                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
                 .subscribe()
 
         then:
@@ -82,7 +96,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish("", "def", new AMQP.BasicProperties.Builder().build(), "def".bytes)
+                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes)
                 .subscribe()
 
 
@@ -92,7 +106,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         }
 
         cleanup:
-        channelPool.returnChannel(channel)
+        channelPool.returnChannel(produceChannel)
+        channelPool.returnChannel(consumeChannel)
         applicationContext.close()
     }
 }

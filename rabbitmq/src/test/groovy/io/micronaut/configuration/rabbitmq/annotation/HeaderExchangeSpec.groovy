@@ -13,7 +13,7 @@ class HeaderExchangeSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        PollingConditions conditions = new PollingConditions(timeout: 5)
         AnimalProducer producer = applicationContext.getBean(AnimalProducer)
         AnimalListener consumer = applicationContext.getBean(AnimalListener)
 

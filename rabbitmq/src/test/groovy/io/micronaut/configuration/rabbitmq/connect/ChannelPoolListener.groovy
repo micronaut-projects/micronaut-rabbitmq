@@ -15,18 +15,17 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
         ChannelPool pool = event.getBean()
         try {
             Channel channel = pool.getChannel()
-            channel.queueDeclare("abc", true, false, false, new HashMap<>())
-            channel.queueDeclare("def", true, false, false, new HashMap<>())
-            channel.queueDeclare("pojo", true, false, false, new HashMap<>())
-            channel.queueDeclare("header", true, false, false, new HashMap<>())
-            channel.queueDeclare("property", true, false, false, new HashMap<>())
-            channel.queueDeclare("type", true, false, false, new HashMap<>())
-            channel.queueDeclare("boolean", true, false, false, new HashMap<>())
-            channel.queueDeclare("product", true, false, false, new HashMap<>())
+            channel.queueDeclare("abc", false, false, false, new HashMap<>())
+            channel.queueDeclare("pojo", false, false, false, new HashMap<>())
+            channel.queueDeclare("header", false, false, false, new HashMap<>())
+            channel.queueDeclare("property", false, false, false, new HashMap<>())
+            channel.queueDeclare("type", false, false, false, new HashMap<>())
+            channel.queueDeclare("boolean", false, false, false, new HashMap<>())
+            channel.queueDeclare("product", false, false, false, new HashMap<>())
 
-            channel.exchangeDeclare("animals", "headers", true);
-            channel.queueDeclare("dogs", true, false, false, null);
-            channel.queueDeclare("cats", true, false, false, null);
+            channel.exchangeDeclare("animals", "headers", false);
+            channel.queueDeclare("dogs", false, false, false, null);
+            channel.queueDeclare("cats", false, false, false, null);
             Map<String, Object> catArgs = new HashMap<String, Object>()
             catArgs.put("x-match", "all")
             catArgs.put("animalType", "Cat")

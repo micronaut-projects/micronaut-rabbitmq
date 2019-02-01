@@ -146,9 +146,9 @@ public class ReactiveChannel {
     }
 
     private void cleanupChannel() {
-        if (publishCount.decrementAndGet() == 0) {
+        if (publishCount.decrementAndGet() == 0 &&
+                initialized.compareAndSet(true, false)) {
             channel.removeConfirmListener(listener);
-            initialized.set(false);
         }
     }
 

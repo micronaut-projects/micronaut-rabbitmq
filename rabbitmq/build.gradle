@@ -16,3 +16,12 @@ dependencies {
 }
 
 licenseTest.enabled = false
+
+test {
+    jvmArgs '-Duser.country=US'
+    jvmArgs '-Duser.language=en'
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}

@@ -15,7 +15,7 @@ class ColdObservableSpec extends AbstractRabbitMQTest {
             ApplicationContext applicationContext = ApplicationContext.run(
                     ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                      "spec.name": getClass().simpleName], "test")
-            PollingConditions conditions = new PollingConditions(timeout: 3, initialDelay: 1)
+            PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
             MyProducer producer = applicationContext.getBean(MyProducer)
             MyConsumer consumer = applicationContext.getBean(MyConsumer)
 

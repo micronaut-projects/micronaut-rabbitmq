@@ -15,7 +15,7 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
         ChannelPool pool = event.bean
         try {
             Channel channel = pool.channel
-            channel.queueDeclare("product", true, false, false, [:])
+            channel.queueDeclare("product", false, false, false, [:])
             pool.returnChannel(channel)
         } catch (IOException e) {
             //no-op

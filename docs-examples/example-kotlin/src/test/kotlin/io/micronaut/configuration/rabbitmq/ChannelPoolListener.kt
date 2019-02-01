@@ -15,7 +15,7 @@ class ChannelPoolListener : BeanCreatedEventListener<ChannelPool> {
         val pool = event.bean
         try {
             val channel = pool.channel
-            channel.queueDeclare("product", true, false, false, HashMap())
+            channel.queueDeclare("product", false, false, false, HashMap())
             pool.returnChannel(channel)
         } catch (e: IOException) {
             //no-op

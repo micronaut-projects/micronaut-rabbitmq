@@ -14,13 +14,14 @@ class QuickstartSpec: AbstractRabbitMQTest({
                         "spec.name" to specName))
 
         `when`("the message is published") {
+            val productListener = ctx.getBean(ProductListener::class.java)
+
 // tag::producer[]
 val productClient = ctx.getBean(ProductClient::class.java)
 productClient.send("message body".toByteArray())
 // end::producer[]
 
             then("the message is consumed") {
-                val productListener = ctx.getBean(ProductListener::class.java)
                 eventually(10.seconds) {
                     productListener.messageLengths.size shouldBe 1
                     productListener.messageLengths[0] shouldBe 12

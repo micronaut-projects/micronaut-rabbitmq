@@ -17,7 +17,7 @@ public class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool
         ChannelPool pool = event.getBean();
         try {
             Channel channel = pool.getChannel();
-            channel.queueDeclare("product", true, false, false, new HashMap());
+            channel.queueDeclare("product", false, false, false, new HashMap());
             pool.returnChannel(channel);
         } catch (IOException e) {
             //no-op
