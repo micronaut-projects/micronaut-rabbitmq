@@ -34,6 +34,8 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.exceptions.MessageListenerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Qualifier;
@@ -51,6 +53,8 @@ import java.util.*;
  */
 @Singleton
 public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitListener>, AutoCloseable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RabbitMQConsumerAdvice.class);
 
     private final BeanContext beanContext;
     private final ChannelPool channelPool;
@@ -126,23 +130,37 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     RabbitMessageState state = new RabbitMessageState(envelope, properties, body);
                     boolean ack = false;
 
+                    BoundExecutable boundExecutable = null;
                     try {
-                        Object returnedValue = ((BoundExecutable) binder.bind(method, binderRegistry, state)).invoke(bean);
+                        boundExecutable = binder.bind(method, binderRegistry, state);
 
-                        if (returnedValue instanceof Boolean) {
-                            ack = ((Boolean) returnedValue);
-                        } else {
-                            ack = true;
-                        }
-                    } catch (UnsatisfiedArgumentException e) {
-                        throw e;
                     } catch (Throwable e) {
-                        throw new MessageListenerException("An error occurred executing the listener", e);
-                    } finally {
-                        if (ack) {
-                            channel.basicAck(deliveryTag, false);
-                        } else {
-                            channel.basicNack(deliveryTag, false, reQueue);
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error("Error binding the message to the method", e);
+                        }
+                    }
+
+                    if (boundExecutable != null) {
+                        try {
+                            Object returnedValue = boundExecutable.invoke(bean);
+
+                            if (returnedValue instanceof Boolean) {
+                                ack = ((Boolean) returnedValue);
+                            } else {
+                                ack = true;
+                            }
+                        } catch (Throwable e) {
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error("An error occurred executing the listener", e);
+                            }
+                        } finally {
+                            if (channel.isOpen()) {
+                                if (ack) {
+                                    channel.basicAck(deliveryTag, false);
+                                } else {
+                                    channel.basicNack(deliveryTag, false, reQueue);
+                                }
+                            }
                         }
                     }
                 }

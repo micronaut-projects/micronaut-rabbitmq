@@ -1,24 +1,12 @@
 All properties on the link:{apirabbit}client/ConnectionFactory.html[ConnectionFactory] are available to be modified, either through configuration or a link:{apimicronaut}context/event/BeanCreatedEventListener.html[BeanCreatedEventListener].
 
-The properties that can be converted from the string values in a configuration file can be configured directly. For example:
+The properties that can be converted from the string values in a configuration file can be configured directly.
 
-.application.yml
-[source,yaml]
-----
-rabbitmq:
-    uri:
-//or
-rabbitmq:
-    host:
-    port:
-    username:
-    password:
-    virtual-host:
-----
+include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig.adoc[]
 
-NOTE: Without any configuration the defaults in the `ConnectionFactory` will be used.
+
+NOTE: Without any configuration the defaults in the link:{apirabbit}client/ConnectionFactory.html[ConnectionFactory] will be used.
 
 To configure things like the link:{apirabbit}client/impl/CredentialsProvider.html[CredentialsProvider] a bean created event listener can be registered to intercept the creation of the connection factory.
-
 
 snippet::io.micronaut.configuration.rabbitmq.docs.config.ConnectionFactoryInterceptor[] project-base="docs-examples/example]
