@@ -16,6 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.serdes;
 
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
 import io.micronaut.core.order.Ordered;
 
 /**
@@ -34,7 +35,7 @@ public interface RabbitMessageSerDes<T> extends Ordered {
      * @param type The type to be returned
      * @return The deserialized body
      */
-    T deserialize(byte[] data, Class<T> type);
+    T deserialize(byte[] data, Class<T> type, RabbitMessageState messageState);
 
     /**
      * Serializes the data into a byte[] to be published

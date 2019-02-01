@@ -192,24 +192,15 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
 
                     ReactiveChannel reactiveChannel = new ReactiveChannel(channel);
-                   // try {
-                        Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted)
-                                .doFinally(() -> {
-                                    if (LOG.isDebugEnabled()) {
-                                        LOG.debug("The publish has terminated. Returning the channel to the pool");
-                                    }
-                                    channelPool.returnChannel(channel);
-                                });
-                        return conversionService.convert(completable, javaReturnType).orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
-                  /*  } finally {
-
-                        reactiveChannel.finish().doOnSuccess(chnl -> {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("The publish has terminated. Returning the channel to the pool");
-                            }
-                            channelPool.returnChannel(chnl);
-                        }).subscribe();
-                    }*/
+                    Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted)
+                            .doFinally(() -> {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("The publish has terminated. Returning the channel to the pool");
+                                }
+                                channelPool.returnChannel(channel);
+                            });
+                    return conversionService.convert(completable, javaReturnType)
+                            .orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
                 } else {
 
                     if (LOG.isDebugEnabled()) {

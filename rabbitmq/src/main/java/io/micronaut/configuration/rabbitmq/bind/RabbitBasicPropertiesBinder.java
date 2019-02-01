@@ -38,7 +38,7 @@ public class RabbitBasicPropertiesBinder implements RabbitTypeArgumentBinder<Bas
     }
 
     @Override
-    public BindingResult<BasicProperties> bind(ArgumentConversionContext<BasicProperties> context, RabbitMessageState source) {
-        return () -> Optional.of(source.getProperties());
+    public BindingResult<BasicProperties> bind(ArgumentConversionContext<BasicProperties> context, RabbitMessageState messageState) {
+        return () -> Optional.of(messageState.getProperties());
     }
 }

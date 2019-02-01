@@ -18,18 +18,7 @@ rabbitmq:
 
 NOTE: Without any configuration the defaults in the `ConnectionFactory` will be used.
 
-To configure things like the link:{apirabbit}client/SaslConfig.html[SaslConfig] a bean created event listener can be registered to intercept the creation of the connection factory.
+To configure things like the link:{apirabbit}client/impl/CredentialsProvider.html[CredentialsProvider] a bean created event listener can be registered to intercept the creation of the connection factory.
 
-[source,java]
-----
-@Singleton
-public class ConnectionFactoryInterceptor implements BeanCreatedEventListener<ConnectionFactory> {
 
-    @Override
-    public ConnectionFactory onCreated(BeanCreatedEvent<ConnectionFactory> event) {
-        ConnectionFactory connectionFactory = event.getBean();
-        connectionFactory.setSaslConfig(...);
-        return connectionFactory;
-    }
-}
-----
+snippet::io.micronaut.configuration.rabbitmq.docs.config.ConnectionFactoryInterceptor[] project-base="docs-examples/example]

@@ -14,10 +14,10 @@ class QuickstartSpec extends AbstractRabbitMQTest {
 
 
         when:
-        // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient)
-        productClient.send("message body".getBytes())
-        // end::producer[]
+// tag::producer[]
+def productClient = applicationContext.getBean(ProductClient)
+productClient.send("message body".getBytes())
+// end::producer[]
 
         ProductListener productListener = applicationContext.getBean(ProductListener)
 

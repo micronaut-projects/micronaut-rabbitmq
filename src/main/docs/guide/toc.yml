@@ -11,6 +11,7 @@ producer:
       producerBinding: Routing Key
       producerProperties: RabbitMQ Properties
       producerHeaders: Headers
+      producerBody: Message Body
     producerAcknowledge: Broker Acknowledgement
 consumer:
   title: RabbitMQ Consumers
@@ -22,7 +23,7 @@ consumer:
       consumerProperties: Properties
       consumerHeaders: Headers
       consumerTypes: RabbitMQ Types
-      consumerCustom: Customizing Binding Behavior
+      consumerBody: Message Body
   consumerExecutor: Consumer Execution
 serdes:
   title: Message Serialization/Deserialization (SerDes)

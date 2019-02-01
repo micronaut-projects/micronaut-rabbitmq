@@ -8,13 +8,8 @@ To create a RabbitMQ client that produces messages you can simply define an inte
 
 For example the following is a trivial `@RabbitClient` interface:
 
-.ProductClient.java
-[source,java]
-----
-include::{testsrabbit}quickstart/ProductClient.java[tags=imports, indent=0]
+snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
-include::{testsrabbit}quickstart/ProductClient.java[tags=clazz, indent=0]
-----
 
 <1> The ann:configuration.rabbitmq.annotation.RabbitClient[] annotation is used to designate this interface as a client
 <2> The ann:configuration.rabbitmq.annotation.Binding[] annotation indicates which binding or routing key the message should be routed to.
@@ -23,14 +18,9 @@ include::{testsrabbit}quickstart/ProductClient.java[tags=clazz, indent=0]
 
 At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of `ProductClient` either by looking up the bean from the link:{apimicronaut}context/ApplicationContext.html[ApplicationContext] or by injecting the bean with `@Inject`:
 
-.Using ProductClient
-[source,java]
-----
-include::{testsrabbit}quickstart/QuickstartSpec.groovy[tags=producer, indent=0]
-----
+snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.QuickstartSpec[tags="producer"] project-base="docs-examples/example]
 
-
-Note that since the `send` method returns `void` this means the method will publish the message and return immediately without any acknowledgement from the broker.
+NOTE: Because the `send` method returns `void` this means the method will publish the message and return immediately without any acknowledgement from the broker.
 
 
 === Creating a RabbitMQ Consumer with @RabbitListener
@@ -39,13 +29,8 @@ To listen to RabbitMQ messages you can use the ann:configuration.rabbitmq.annota
 
 The following example will listen for messages published by the `ProductClient` in the previous section:
 
-.ProductListener.java
-[source,java]
-----
-include::{testsrabbit}quickstart/ProductListener.java[tags=imports, indent=0]
+snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.ProductListener[tags="imports,class"] project-base="docs-examples/example]
 
-include::{testsrabbit}quickstart/ProductListener.java[tags=class, indent=0]
-----
 
 <1> The ann:configuration.rabbitmq.annotation.RabbitListener[] is used to designate the bean as a message listener.
 <2> The ann:configuration.rabbitmq.annotation.Queue[] annotation is used to indicate which queue to subscribe to.

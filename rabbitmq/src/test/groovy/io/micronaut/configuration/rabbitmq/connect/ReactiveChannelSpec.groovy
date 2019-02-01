@@ -46,7 +46,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "jkl".bytes)]
 
         then:
-        Completable.merge(completables).blockingGet(2, TimeUnit.SECONDS) == null
+        Completable.merge(completables).blockingGet(5, TimeUnit.SECONDS) == null
 
         cleanup:
         applicationContext.close()
@@ -56,10 +56,10 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
-        PollingConditions conditions = new PollingConditions(timeout: 3, initialDelay: 1)
+        PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel channel = channelPool.getChannel()
-        channel.basicConsume("abc", true, new DefaultConsumer() {
+        channel.basicConsume("def", true, new DefaultConsumer() {
             @Override
             void handleTerminate(String consumerTag) {}
 
@@ -72,7 +72,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
+                .publish("", "def", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
                 .subscribe()
 
         then:
@@ -82,7 +82,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes)
+                .publish("", "def", new AMQP.BasicProperties.Builder().build(), "def".bytes)
                 .subscribe()
 
 

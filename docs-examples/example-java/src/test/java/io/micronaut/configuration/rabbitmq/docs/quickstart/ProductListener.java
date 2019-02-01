@@ -14,10 +14,10 @@ import java.util.List;
 @RabbitListener // <1>
 public class ProductListener {
 
-    public List<Integer> messageLengths = new ArrayList<>();
+    List<Integer> messageLengths = new ArrayList<>();
 
     @Queue("product") // <2>
-    void receive(byte[] data) { // <3>
+    public void receive(byte[] data) { // <3>
         Integer length = data.length;
         messageLengths.add(length);
         System.out.println("Received " + length + " bytes from RabbitMQ");

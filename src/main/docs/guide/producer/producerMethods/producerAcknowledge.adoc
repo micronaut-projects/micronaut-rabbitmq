@@ -4,3 +4,10 @@ Since the publisher is cold, the message will not actually be published until th
 
 Micronaut comes with RxJava2 by default, and the link:http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html[Completable] type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.
 
+For example:
+
+[source,java]
+----
+public Completable publishAcknowledge(byte[] data);
+----
+

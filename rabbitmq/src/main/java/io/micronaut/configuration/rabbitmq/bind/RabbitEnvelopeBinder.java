@@ -38,7 +38,7 @@ public class RabbitEnvelopeBinder implements RabbitTypeArgumentBinder<Envelope> 
     }
 
     @Override
-    public BindingResult<Envelope> bind(ArgumentConversionContext<Envelope> context, RabbitMessageState source) {
-        return () -> Optional.of(source.getEnvelope());
+    public BindingResult<Envelope> bind(ArgumentConversionContext<Envelope> context, RabbitMessageState messageState) {
+        return () -> Optional.of(messageState.getEnvelope());
     }
 }

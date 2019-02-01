@@ -49,9 +49,9 @@ public class RabbitHeaderBinder implements RabbitAnnotatedArgumentBinder<Header>
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
         String parameterName = context.getAnnotationMetadata().getValue(Header.class, String.class).orElse(context.getArgument().getName());
-        return () -> Optional.ofNullable(source.getProperties().getHeaders().get(parameterName))
+        return () -> Optional.ofNullable(messageState.getProperties().getHeaders().get(parameterName))
                 .flatMap(prop -> conversionService.convert(prop, context));
     }
 }

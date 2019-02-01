@@ -53,10 +53,10 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
         Class<Object> bodyType = context.getArgument().getType();
 
         return () -> serDesRegistry.findSerdes(bodyType)
-                .map(serDes -> serDes.deserialize(source.getBody(), bodyType));
+                .map(serDes -> serDes.deserialize(messageState.getBody(), bodyType, messageState));
     }
 }

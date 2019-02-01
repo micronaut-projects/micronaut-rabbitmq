@@ -16,13 +16,13 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
-import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
 
 import javax.inject.Singleton;
 
 /**
- * The default binder for binding an argument from the {@link RabbitMessageState}.
+ * The default binder for binding an argument from the {@link RabbitMessageState}
+ * that is used if no other binder supports the argument.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -31,30 +31,26 @@ import javax.inject.Singleton;
 public class RabbitDefaultBinder implements RabbitArgumentBinder<Object> {
 
     private final RabbitPropertyBinder propertyBinder;
-    private final RabbitMessageSerDesRegistry serDesRegistry;
+    private final RabbitBodyBinder bodyBinder;
 
     /**
      * Default constructor.
      *
      * @param propertyBinder The property binder
-     * @param serDesRegistry The registry to find a serializer
+     * @param bodyBinder     The body binder
      */
     public RabbitDefaultBinder(RabbitPropertyBinder propertyBinder,
-                               RabbitMessageSerDesRegistry serDesRegistry) {
+                               RabbitBodyBinder bodyBinder) {
         this.propertyBinder = propertyBinder;
-        this.serDesRegistry = serDesRegistry;
+        this.bodyBinder = bodyBinder;
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
         if (propertyBinder.supports(context)) {
-            return propertyBinder.bind(context, source);
+            return propertyBinder.bind(context, messageState);
         } else {
-            byte[] value = source.getBody();
-            Class<Object> bodyType = context.getArgument().getType();
-
-            return () -> serDesRegistry.findSerdes(bodyType)
-                    .map(serDes -> serDes.deserialize(value, bodyType));
+            return bodyBinder.bind(context, messageState);
         }
     }
 }

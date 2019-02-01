@@ -52,6 +52,10 @@ subprojects { Project subproject ->
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
+
+    if (subproject.parent.name == "docs-examples") {
+        return
+    }
     
     apply plugin:"groovy"
     apply plugin:"java"
