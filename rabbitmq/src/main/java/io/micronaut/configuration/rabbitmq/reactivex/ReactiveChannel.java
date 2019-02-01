@@ -22,8 +22,6 @@ import com.rabbitmq.client.ConfirmListener;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableSource;
-import io.reactivex.Single;
 
 import java.io.IOException;
 import java.util.ArrayList;

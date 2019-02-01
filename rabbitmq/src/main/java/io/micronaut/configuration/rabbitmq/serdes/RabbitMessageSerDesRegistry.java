@@ -16,8 +16,6 @@
 
 package io.micronaut.configuration.rabbitmq.serdes;
 
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
-
 import java.util.Optional;
 
 /**

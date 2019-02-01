@@ -45,7 +45,8 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     }
 
     @Override
-    public Object deserialize(byte[] body, Class<Object> type, RabbitMessageState messageState) {
+    public Object deserialize(RabbitMessageState messageState, Class<Object> type) {
+        byte[] body = messageState.getBody();
         return objectSerializer.deserialize(body, type)
                 .orElseThrow(() -> new SerializationException("Unable to deserialize data: " + Arrays.toString(body)));
     }

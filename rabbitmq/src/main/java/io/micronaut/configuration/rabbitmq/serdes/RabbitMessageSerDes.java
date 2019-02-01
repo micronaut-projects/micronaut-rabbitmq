@@ -31,11 +31,11 @@ public interface RabbitMessageSerDes<T> extends Ordered {
     /**
      * Deserializes the message into the requested type.
      *
-     * @param data The message body
+     * @param messageState The message to deserialize
      * @param type The type to be returned
      * @return The deserialized body
      */
-    T deserialize(byte[] data, Class<T> type, RabbitMessageState messageState);
+    T deserialize(RabbitMessageState messageState, Class<T> type);
 
     /**
      * Serializes the data into a byte[] to be published
