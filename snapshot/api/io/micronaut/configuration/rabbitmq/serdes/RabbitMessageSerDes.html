@@ -155,7 +155,7 @@ extends io.micronaut.core.order.Ordered</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-byte:A-java.lang.Class-">deserialize</a></span>(byte[]&nbsp;data,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-java.lang.Class-">deserialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;messageState,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</code>
 <div class="block">Deserializes the message into the requested type.</div>
 </td>
@@ -195,18 +195,18 @@ extends io.micronaut.core.order.Ordered</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="deserialize-byte:A-java.lang.Class-">
+<a name="deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-java.lang.Class-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>deserialize</h4>
-<pre><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;deserialize(byte[]&nbsp;data,
+<pre><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;deserialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;messageState,
               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</pre>
 <div class="block">Deserializes the message into the requested type.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>data</code> - The message body</dd>
+<dd><code>messageState</code> - The message to deserialize</dd>
 <dd><code>type</code> - The type to be returned</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The deserialized body</dd>

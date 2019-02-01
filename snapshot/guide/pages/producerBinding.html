@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1.2 Argument Binding 1.1.0.BUILD-SNAPSHOT</title>
+    <title>5.1.1.1 Routing Key 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -41,10 +41,10 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
@@ -80,70 +80,41 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>5.1.2 Argument Binding</h1>
+                    <h1>5.1.1.1 Routing Key</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
 
                 
-                <div id="table-of-content">
-                    <h2>Table of Contents</h2>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#producerProperties"><strong>5.1</strong><span>RabbitMQ Properties</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#producerHeaders"><strong>5.2</strong><span>Headers</span></a>
-                    </div>
-                    
-                </div>
-                
 
                 
 
-<h2 id="producerBinding">5.1.2 Argument Binding</h2>
+<h2 id="producerBinding">5.1.1.1 Routing Key</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>If you need to specify the routing key of the message, apply the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
+@Binding("products")
+public void go(byte[] body)
 
-
-<h2 id="producerProperties">5.1.2.1 RabbitMQ Properties</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerProperties.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
+//Value set per execution
+public void go(@Binding String binding, byte[] body)</code></pre>
 </div>
-
-
-<div class="paragraph">
-<p>TODO</p>
-</div>
-
-
-<h2 id="producerHeaders">5.1.2.2 Headers</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerHeaders.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>TODO</p>
 </div>
 
 
@@ -151,7 +122,7 @@ function addJsClass() {
                 
                     <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>4</strong><span>Configuring The Connection</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

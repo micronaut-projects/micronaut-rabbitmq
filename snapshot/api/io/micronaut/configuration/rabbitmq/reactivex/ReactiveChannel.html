@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -111,10 +111,7 @@ var activeTableTab = "activeTableTab";
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">This class provides a wrapper around a <code>Channel</code> to provide
  reactive implementations of the common actions that can be performed
- on a channel.
-
- After all operations on the channel have been executed, subscribe to
- the <a href="../../../../../io/micronaut/configuration/rabbitmq/reactivex/ReactiveChannel.html#finish--"><code>finish()</code></a> method to get back the original channel.</div>
+ on a channel.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.1.0</dd>
@@ -159,10 +156,6 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>io.reactivex.Single&lt;com.rabbitmq.client.Channel&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactivex/ReactiveChannel.html#finish--">finish</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>io.reactivex.Completable</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactivex/ReactiveChannel.html#publish-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">publish</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;exchange,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;routingKey,
@@ -218,7 +211,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="publish-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>publish</h4>
 <pre>public&nbsp;io.reactivex.Completable&nbsp;publish(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;exchange,
@@ -234,20 +227,6 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <dd><code>body</code> - The body</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A completable that will complete if the message is confirmed</dd>
-</dl>
-</li>
-</ul>
-<a name="finish--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>finish</h4>
-<pre>public&nbsp;io.reactivex.Single&lt;com.rabbitmq.client.Channel&gt;&nbsp;finish()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A Single that will never error that returns the channel
- after all actions are terminated.</dd>
 </dl>
 </li>
 </ul>

@@ -145,11 +145,11 @@
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#deserialize-byte:A-java.lang.Class-">deserialize(byte[], Class&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-java.lang.Class-">deserialize(RabbitMessageState, Class&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#deserialize-byte:A-java.lang.Class-">deserialize(byte[], Class&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JsonRabbitMessageSerDes</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-java.lang.Class-">deserialize(RabbitMessageState, Class&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JsonRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-byte:A-java.lang.Class-">deserialize(byte[], Class&lt;T&gt;)</a></span> - Method in interface io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-java.lang.Class-">deserialize(RabbitMessageState, Class&lt;T&gt;)</a></span> - Method in interface io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a></dt>
 <dd>
 <div class="block">Deserializes the message into the requested type.</div>
 </dd>
@@ -171,8 +171,6 @@
 <dd>
 <div class="block">Returns the serdes that supports the given type.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactivex/ReactiveChannel.html#finish--">finish()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactivex.<a href="io/micronaut/configuration/rabbitmq/reactivex/ReactiveChannel.html" title="class in io.micronaut.configuration.rabbitmq.reactivex">ReactiveChannel</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <a name="I:G">
 <!--   -->
@@ -378,7 +376,7 @@
 <dd>
 <div class="block">Binds an argument of with the <code>Body</code> annotation from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html#RabbitBodyBinder-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">RabbitBodyBinder(ConversionService, RabbitMessageSerDesRegistry)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBodyBinder</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html#RabbitBodyBinder-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">RabbitBodyBinder(RabbitMessageSerDesRegistry)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBodyBinder</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -406,9 +404,10 @@
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitDefaultBinder</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/bind/package-summary.html">io.micronaut.configuration.rabbitmq.bind</a></dt>
 <dd>
-<div class="block">The default binder for binding an argument from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
+<div class="block">The default binder for binding an argument from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>
+ that is used if no other binder supports the argument.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html#RabbitDefaultBinder-io.micronaut.configuration.rabbitmq.bind.RabbitPropertyBinder-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">RabbitDefaultBinder(RabbitPropertyBinder, RabbitMessageSerDesRegistry)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitDefaultBinder</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html#RabbitDefaultBinder-io.micronaut.configuration.rabbitmq.bind.RabbitPropertyBinder-io.micronaut.configuration.rabbitmq.bind.RabbitBodyBinder-">RabbitDefaultBinder(RabbitPropertyBinder, RabbitBodyBinder)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitDefaultBinder</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>

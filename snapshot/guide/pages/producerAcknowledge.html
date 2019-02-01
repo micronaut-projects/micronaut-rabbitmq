@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1.1 Broker Acknowledgement 1.1.0.BUILD-SNAPSHOT</title>
+    <title>5.1.2 Broker Acknowledgement 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -41,10 +41,10 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
@@ -80,12 +80,12 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>5.1.1 Broker Acknowledgement</h1>
+                    <h1>5.1.2 Broker Acknowledgement</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,7 +94,7 @@ function addJsClass() {
 
                 
 
-<h2 id="producerAcknowledge">5.1.1 Broker Acknowledgement</h2>
+<h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
@@ -104,7 +104,21 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
+</div>
+<div class="paragraph">
+<p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
+</div>
+<div class="paragraph">
+<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Completable publishAcknowledge(byte[] data);</code></pre>
+</div>
 </div>
 
 
@@ -112,7 +126,7 @@ function addJsClass() {
                 
                     <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>4</strong><span>Configuring The Connection</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

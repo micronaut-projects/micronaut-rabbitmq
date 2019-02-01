@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1 Defining @RabbitClient Methods 1.1.0.BUILD-SNAPSHOT</title>
+    <title>5.1.1 Publishing Parameters 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -85,7 +85,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>5.1 Defining @RabbitClient Methods</h1>
+                    <h1>5.1.1 Publishing Parameters</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,64 +94,22 @@ function addJsClass() {
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#producerParameters"><strong>5.1</strong><span>Publishing Parameters</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#producerBinding"><strong>5.1</strong><span>Routing Key</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:10px"><a href="#producerBinding"><strong>5.1.1</strong><span>Routing Key</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#producerProperties"><strong>5.2</strong><span>RabbitMQ Properties</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:10px"><a href="#producerProperties"><strong>5.1.2</strong><span>RabbitMQ Properties</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#producerHeaders"><strong>5.3</strong><span>Headers</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:10px"><a href="#producerHeaders"><strong>5.1.3</strong><span>Headers</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:10px"><a href="#producerBody"><strong>5.1.4</strong><span>Message Body</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#producerAcknowledge"><strong>5.2</strong><span>Broker Acknowledgement</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#producerBody"><strong>5.4</strong><span>Message Body</span></a>
                     </div>
                     
                 </div>
                 
 
                 
-
-<h2 id="producerMethods">5.1 Defining @RabbitClient Methods</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>All methods that publish messages to RabbitMQ must meet the following conditions:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
-</li>
-<li>
-<p>The method must contain an argument representing the body of the message.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-If a body argument cannot be found, an exception will be thrown.
-</td>
-</tr>
-</table>
-</div>
-
 
 <h2 id="producerParameters">5.1.1 Publishing Parameters</h2>
 
@@ -305,34 +263,6 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 
 
 
-
-
-<h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
-</div>
-<div class="paragraph">
-<p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
-</div>
-<div class="paragraph">
-<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.</p>
-</div>
-<div class="paragraph">
-<p>For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Completable publishAcknowledge(byte[] data);</code></pre>
-</div>
-</div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>

@@ -51,9 +51,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers</span></a></div>
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
                                 
@@ -99,25 +99,29 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers</span></a></div>
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-producerMethods"><a href="#producerMethods"><strong>5.1</strong><span>Defining @RabbitClient Methods</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>5.1.1</strong><span>Broker Acknowledgement</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerParameters"><a href="#producerParameters"><strong>5.1.1</strong><span>Publishing Parameters</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.2</strong><span>Argument Binding</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.1.1</strong><span>Routing Key</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>5.1.2.1</strong><span>RabbitMQ Properties</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>5.1.1.2</strong><span>RabbitMQ Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>5.1.2.2</strong><span>Headers</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>5.1.1.3</strong><span>Headers</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBody"><a href="#producerBody"><strong>5.1.1.4</strong><span>Message Body</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>5.1.2</strong><span>Broker Acknowledgement</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers</span></a></div>
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>6.1</strong><span>Defining @RabbitListener Methods</span></a></div>
         
         <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>6.1.1</strong><span>Acknowledging Messages</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerBinding"><a href="#consumerBinding"><strong>6.1.2</strong><span>Argument Binding</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerBinding"><a href="#consumerBinding"><strong>6.1.2</strong><span>Consumer Parameters</span></a></div>
         
         <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>6.1.2.1</strong><span>Properties</span></a></div>
         
@@ -125,7 +129,7 @@
         
         <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>6.1.2.3</strong><span>RabbitMQ Types</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.2.4</strong><span>Customizing Binding Behavior</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>6.1.2.4</strong><span>Message Body</span></a></div>
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.2</strong><span>Consumer Execution</span></a></div>
         
@@ -159,7 +163,7 @@
 
 
 <div class="paragraph">
-<p>This project includes integration between Micronaut and RabbitMQ.</p>
+<p>This project includes integration between Micronaut and RabbitMQ. The standard <a href="https://www.rabbitmq.com/java-client.html">Java Client</a> is used to do the actual publishing and consuming.</p>
 </div>
 
 
@@ -221,18 +225,45 @@
 <div class="paragraph">
 <p>For example the following is a trivial <code>@RabbitClient</code> interface:</p>
 </div>
-<div class="listingblock">
-<div class="title">ProductClient.java</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
 import io.micronaut.context.annotation.Requires;
 
-@RabbitClient <i class="conum" data-value="1"></i><b>(1)</b>
+@RabbitClient <b class="conum">(1)</b>
 public interface ProductClient {
 
-    @Binding("product") <i class="conum" data-value="2"></i><b>(2)</b>
-    void send(byte[] data); <i class="conum" data-value="3"></i><b>(3)</b>
+    @Binding("product") <b class="conum">(2)</b>
+    void send(byte[] data); <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(2)</b>
+    void send(byte[] data) <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(2)</b>
+    fun send(data: ByteArray)  <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -255,15 +286,35 @@ public interface ProductClient {
 <div class="paragraph">
 <p>At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of <code>ProductClient</code> either by looking up the bean from the <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a> or by injecting the bean with <code>@Inject</code>:</p>
 </div>
-<div class="listingblock">
-<div class="title">Using ProductClient</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient)
+<pre class="highlight"><code class="language-java" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient.class);
+productClient.send("message body".getBytes());</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def productClient = applicationContext.getBean(ProductClient)
 productClient.send("message body".getBytes())</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Note that since the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.</p>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val productClient = ctx.getBean(ProductClient::class.java)
+productClient.send("message body".toByteArray())</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Because the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -274,26 +325,68 @@ productClient.send("message body".getBytes())</code></pre>
 <div class="paragraph">
 <p>The following example will listen for messages published by the <code>ProductClient</code> in the previous section:</p>
 </div>
-<div class="listingblock">
-<div class="title">ProductListener.java</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RabbitListener <i class="conum" data-value="1"></i><b>(1)</b>
+@RabbitListener <b class="conum">(1)</b>
 public class ProductListener {
 
-    public List&lt;Integer&gt; messageLengths = new ArrayList&lt;&gt;();
+    List&lt;Integer&gt; messageLengths = new ArrayList&lt;&gt;();
 
-    @Queue("product") <i class="conum" data-value="2"></i><b>(2)</b>
-    void receive(byte[] data) { <i class="conum" data-value="3"></i><b>(3)</b>
+    @Queue("product") <b class="conum">(2)</b>
+    public void receive(byte[] data) { <b class="conum">(3)</b>
         Integer length = data.length;
         messageLengths.add(length);
         System.out.println("Received " + length + " bytes from RabbitMQ");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener <b class="conum">(1)</b>
+class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = []
+
+    @Queue("product") <b class="conum">(2)</b>
+    void receive(byte[] data) { <b class="conum">(3)</b>
+        Integer length = data.length
+        messageLengths.add(length)
+        println("Received ${length} bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.ArrayList
+
+@RabbitListener <b class="conum">(1)</b>
+class ProductListener {
+
+    @JvmField
+    var messageLengths: MutableList&lt;Int&gt; = ArrayList()
+
+    @Queue("product") <b class="conum">(2)</b>
+    fun receive(data: ByteArray) { <b class="conum">(3)</b>
+        val length = data.size
+        messageLengths.add(length)
+        println("Received $length bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
@@ -359,25 +452,78 @@ Without any configuration the defaults in the <code>ConnectionFactory</code> wil
 </table>
 </div>
 <div class="paragraph">
-<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/SaslConfig.html">SaslConfig</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
+<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/impl/CredentialsProvider.html">CredentialsProvider</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Singleton
+<pre class="highlight"><code class="language-java" data-lang="java">package io.micronaut.configuration.rabbitmq.docs.config;
+
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.impl.DefaultCredentialsProvider;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
+
+import javax.inject.Singleton;
+
+@Singleton
 public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
 
     @Override
     public ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
         ConnectionFactory connectionFactory = event.getBean();
-        connectionFactory.setSaslConfig(...);
+        connectionFactory.setCredentialsProvider(new DefaultCredentialsProvider("guest", "guest"));
         return connectionFactory;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.configuration.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    @Override
+    ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
+        def connectionFactory = event.bean
+        connectionFactory.credentialsProvider = new DefaultCredentialsProvider("guest", "guest")
+        connectionFactory
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.configuration.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    override fun onCreated(event: BeanCreatedEvent&lt;ConnectionFactory&gt;?): ConnectionFactory {
+        val connectionFactory = event!!.bean
+        connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
+        return connectionFactory
     }
 }</code></pre>
 </div>
 </div>
 
 
-<h1 id="producer">5 RabbitMQ Producers Using @RabbitClient</h1>
+<h1 id="producer">5 RabbitMQ Producers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
@@ -392,6 +538,25 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 <div class="paragraph">
 <p>The implementation that powers <code>@RabbitClient</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ producers.</p>
 </div>
+<div class="sect1">
+<h2 id="_exchange">Exchange</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The exchange to publish messages to can be provided through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@RabbitClient("amq.topic")
+static interface ProductClient {
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 
 
 <h2 id="producerMethods">5.1 Defining @RabbitClient Methods</h2>
@@ -404,11 +569,187 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>All methods that publish messages to RabbitMQ must meet the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
+</li>
+<li>
+<p>The method must contain an argument representing the body of the message.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If a body argument cannot be found, an exception will be thrown.
+</td>
+</tr>
+</table>
 </div>
 
 
-<h2 id="producerAcknowledge">5.1.1 Broker Acknowledgement</h2>
+<h2 id="producerParameters">5.1.1 Publishing Parameters</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All options are available to be set for publishing messages. The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicPublish(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)">basicPublish</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> to publish messages and all arguments can be set through annotations or method arguments.</p>
+</div>
+
+
+<h2 id="producerBinding">5.1.1.1 Routing Key</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>If you need to specify the routing key of the message, apply the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
+@Binding("products")
+public void go(byte[] body)
+
+//Value set per execution
+public void go(@Binding String binding, byte[] body)</code></pre>
+</div>
+</div>
+
+
+<h2 id="producerProperties">5.1.1.2 RabbitMQ Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>It is also supported to supply properties when publishing messages. Any of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a> can be set dynamically per execution or statically for all executions. Properties can be set using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html">@RabbitProperty</a> annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
+//Multiple properties can be set
+@RabbitProperty(name = "conentType", value = "application/json")
+@RabbitProperty(name = "priority", value = "3")
+public void go(byte[] body)
+
+//Value set per execution
+public void go(@RabbitProperty("userId") String user, byte[] body)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For method arguments, if the value is not supplied to the annotation, the argument name will be used as the property name. For example, <code>@RabbitProperty String userId</code> would result in the property <code>userId</code> being set on the properties object before publishing.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied value cannot be converted to the type defined in <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Kotlin users must use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperties.html">@RabbitProperties</a> annotation to supply multiple properties.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="producerHeaders">5.1.1.3 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
+//Multiple headers can be supplied
+@Binding("products")
+@Header(name = "x-product-packaging", value = "canned")
+@Header(name = "x-product-size", value = "small")
+public void publishProduct(byte[] body)
+
+//Value set per execution
+public void publishProduct(@Header("x-product-type") String productType, byte[] body)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, <code>@Header String productType</code> would result in a header with the name <code>productType</code> being sent.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Headers.html">@Headers</a> annotation to supply multiple headers.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="producerBody">5.1.1.4 Message Body</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+
+
+
+<h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
@@ -418,53 +759,25 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
 </div>
-
-
-<h2 id="producerBinding">5.1.2 Argument Binding</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
 <div class="paragraph">
-<p>TODO</p>
+<p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
 </div>
-
-
-<h2 id="producerProperties">5.1.2.1 RabbitMQ Properties</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerProperties.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
 <div class="paragraph">
-<p>TODO</p>
+<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.</p>
 </div>
-
-
-<h2 id="producerHeaders">5.1.2.2 Headers</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerBinding/producerHeaders.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
 <div class="paragraph">
-<p>TODO</p>
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Completable publishAcknowledge(byte[] data);</code></pre>
+</div>
 </div>
 
 
-<h1 id="consumer">6 RabbitMQ Consumers Using @RabbitListener</h1>
+<h1 id="consumer">6 RabbitMQ Consumers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
@@ -509,7 +822,7 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 </div>
 
 
-<h2 id="consumerBinding">6.1.2 Argument Binding</h2>
+<h2 id="consumerBinding">6.1.2 Consumer Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding.adoc"'>
@@ -565,10 +878,10 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 </div>
 
 
-<h2 id="consumerCustom">6.1.2.4 Customizing Binding Behavior</h2>
+<h2 id="consumerBody">6.1.2.4 Message Body</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerCustom.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerBody.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>

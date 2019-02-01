@@ -41,10 +41,10 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers Using @RabbitListener</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
                         <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
@@ -80,7 +80,7 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span> >></a></div>
                 
 
 
@@ -136,18 +136,71 @@ Without any configuration the defaults in the <code>ConnectionFactory</code> wil
 </table>
 </div>
 <div class="paragraph">
-<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/SaslConfig.html">SaslConfig</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
+<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/impl/CredentialsProvider.html">CredentialsProvider</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Singleton
+<pre class="highlight"><code class="language-java" data-lang="java">package io.micronaut.configuration.rabbitmq.docs.config;
+
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.impl.DefaultCredentialsProvider;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
+
+import javax.inject.Singleton;
+
+@Singleton
 public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
 
     @Override
     public ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
         ConnectionFactory connectionFactory = event.getBean();
-        connectionFactory.setSaslConfig(...);
+        connectionFactory.setCredentialsProvider(new DefaultCredentialsProvider("guest", "guest"));
         return connectionFactory;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.configuration.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    @Override
+    ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
+        def connectionFactory = event.bean
+        connectionFactory.credentialsProvider = new DefaultCredentialsProvider("guest", "guest")
+        connectionFactory
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.configuration.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    override fun onCreated(event: BeanCreatedEvent&lt;ConnectionFactory&gt;?): ConnectionFactory {
+        val connectionFactory = event!!.bean
+        connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
+        return connectionFactory
     }
 }</code></pre>
 </div>
@@ -158,7 +211,7 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
                 
                     <div class="toc-item prev-left"><a href="../guide/quickStart.html">&lt;&lt; <strong>3</strong><span>RabbitMQ Quick Start</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers Using @RabbitClient</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

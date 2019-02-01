@@ -155,8 +155,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/Rabb
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html#RabbitBodyBinder-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">RabbitBodyBinder</a></span>(io.micronaut.core.convert.ConversionService&nbsp;conversionService,
-                <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html#RabbitBodyBinder-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">RabbitBodyBinder</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -178,7 +177,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/Rabb
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>io.micronaut.core.bind.ArgumentBinder.BindingResult&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html#bind-io.micronaut.core.convert.ArgumentConversionContext-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">bind</a></span>(io.micronaut.core.convert.ArgumentConversionContext&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;context,
-    <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;source)</code>&nbsp;</td>
+    <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;messageState)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;io.micronaut.messaging.annotation.Body&gt;</code></td>
@@ -206,18 +205,16 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/Rabb
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitBodyBinder-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">
+<a name="RabbitBodyBinder-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RabbitBodyBinder</h4>
-<pre>public&nbsp;RabbitBodyBinder(io.micronaut.core.convert.ConversionService&nbsp;conversionService,
-                        <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry)</pre>
+<pre>public&nbsp;RabbitBodyBinder(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>conversionService</code> - The conversion service to convert the body</dd>
 <dd><code>serDesRegistry</code> - The registry to get a deserializer</dd>
 </dl>
 </li>
@@ -250,7 +247,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/Rabb
 <li class="blockList">
 <h4>bind</h4>
 <pre>public&nbsp;io.micronaut.core.bind.ArgumentBinder.BindingResult&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;bind(io.micronaut.core.convert.ArgumentConversionContext&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;context,
-                                                                        <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;source)</pre>
+                                                                        <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&nbsp;messageState)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>bind</code>&nbsp;in interface&nbsp;<code>io.micronaut.core.bind.ArgumentBinder&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>,<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a>&gt;</code></dd>
