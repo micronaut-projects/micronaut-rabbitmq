@@ -23,6 +23,8 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
+import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -59,6 +61,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final BeanContext beanContext;
     private final ChannelPool channelPool;
     private final RabbitBinderRegistry binderRegistry;
+    private final RabbitListenerExceptionHandler exceptionHandler;
     private final List<Channel> consumerChannels = new ArrayList<>();
 
     /**
@@ -70,91 +73,89 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ChannelPool channelPool,
-                                  RabbitBinderRegistry binderRegistry) {
+                                  RabbitBinderRegistry binderRegistry,
+                                  RabbitListenerExceptionHandler exceptionHandler) {
         this.beanContext = beanContext;
         this.channelPool = channelPool;
         this.binderRegistry = binderRegistry;
+        this.exceptionHandler = exceptionHandler;
     }
 
     @Override
     public void process(BeanDefinition<?> beanDefinition, ExecutableMethod<?, ?> method) {
 
-        AnnotationValue<Queue> queueAnn = method.findAnnotation(Queue.class).orElseThrow(() -> new MessageListenerException("No queue specified for method " + method));
-        String queue = queueAnn.getRequiredValue(String.class);
+        AnnotationValue<Queue> queueAnn = method.getAnnotation(Queue.class);
 
-        String clientTag = method.getDeclaringType().getSimpleName() + '#' + method.toString();
+        if (queueAnn != null) {
+            String queue = queueAnn.getRequiredValue(String.class);
 
-        boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
-        boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
+            String clientTag = method.getDeclaringType().getSimpleName() + '#' + method.toString();
 
-        Channel channel = getChannel();
+            boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
+            boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
 
-        consumerChannels.add(channel);
+            Channel channel = getChannel();
 
-        Map<String, Object> arguments = new HashMap<>();
+            consumerChannels.add(channel);
 
-        method.getAnnotationValuesByType(RabbitProperty.class).forEach((prop) -> {
-            String name = prop.getRequiredValue("name", String.class);
-            String value = prop.getValue(String.class).orElse(null);
+            Map<String, Object> arguments = new HashMap<>();
 
-            if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                arguments.put(name, value);
-            }
-        });
-        
-        io.micronaut.context.Qualifier<Object> qualifer = beanDefinition
-                .getAnnotationTypeByStereotype(Qualifier.class)
-                .map(type -> Qualifiers.byAnnotation(beanDefinition, type))
-                .orElse(null);
+            method.getAnnotationValuesByType(RabbitProperty.class).forEach((prop) -> {
+                String name = prop.getRequiredValue("name", String.class);
+                String value = prop.getValue(String.class).orElse(null);
 
-        Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
-
-        Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
-
-        try {
-            DefaultExecutableBinder<RabbitMessageState> binder = new DefaultExecutableBinder<>();
-
-            channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
-
-                @Override
-                public void handleTerminate(String consumerTag) {
-                    if (consumerChannels.contains(channel)) {
-                        channelPool.returnChannel(channel);
-                        consumerChannels.remove(channel);
-                    }
+                if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                    arguments.put(name, value);
                 }
+            });
 
-                @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    long deliveryTag = envelope.getDeliveryTag();
-                    RabbitMessageState state = new RabbitMessageState(envelope, properties, body);
-                    boolean ack = false;
+            io.micronaut.context.Qualifier<Object> qualifer = beanDefinition
+                    .getAnnotationTypeByStereotype(Qualifier.class)
+                    .map(type -> Qualifiers.byAnnotation(beanDefinition, type))
+                    .orElse(null);
 
-                    BoundExecutable boundExecutable = null;
-                    try {
-                        boundExecutable = binder.bind(method, binderRegistry, state);
+            Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
 
-                    } catch (Throwable e) {
-                        if (LOG.isErrorEnabled()) {
-                            LOG.error("Error binding the message to the method", e);
+            Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
+
+            try {
+                DefaultExecutableBinder<RabbitMessageState> binder = new DefaultExecutableBinder<>();
+
+                channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
+
+                    @Override
+                    public void handleTerminate(String consumerTag) {
+                        if (consumerChannels.contains(channel)) {
+                            channelPool.returnChannel(channel);
+                            consumerChannels.remove(channel);
                         }
                     }
 
-                    if (boundExecutable != null) {
-                        try {
-                            Object returnedValue = boundExecutable.invoke(bean);
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        long deliveryTag = envelope.getDeliveryTag();
+                        RabbitMessageState state = new RabbitMessageState(envelope, properties, body);
+                        boolean ack = false;
 
-                            if (returnedValue instanceof Boolean) {
-                                ack = ((Boolean) returnedValue);
-                            } else {
-                                ack = true;
-                            }
+                        BoundExecutable boundExecutable = null;
+                        try {
+                            boundExecutable = binder.bind(method, binderRegistry, state);
                         } catch (Throwable e) {
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error("An error occurred executing the listener", e);
-                            }
-                        } finally {
-                            if (channel.isOpen()) {
+                            handleException(new RabbitListenerException("An error occurred binding the message to the method", e, bean, state));
+                        }
+
+                        if (boundExecutable != null) {
+                            try {
+                                Object returnedValue = boundExecutable.invoke(bean);
+
+                                if (returnedValue instanceof Boolean) {
+                                    ack = ((Boolean) returnedValue);
+                                } else {
+                                    ack = true;
+                                }
+                            } catch (Throwable e) {
+                                handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
+                            } finally {
                                 if (ack) {
                                     channel.basicAck(deliveryTag, false);
                                 } else {
@@ -163,13 +164,14 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                             }
                         }
                     }
-                }
-            });
-        } catch (IOException e) {
-            channelPool.returnChannel(channel);
-            consumerChannels.remove(channel);
-            throw new MessageListenerException("An error occurred subscribing to a queue", e);
+                });
+            } catch (IOException e) {
+                channelPool.returnChannel(channel);
+                consumerChannels.remove(channel);
+                handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
+            }
         }
+
     }
 
     @PreDestroy
@@ -189,6 +191,15 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             return channelPool.getChannel();
         } catch (IOException e) {
             throw new MessageListenerException("Could not retrieve a channel", e);
+        }
+    }
+
+    private void handleException(RabbitListenerException exception) {
+        Object bean = exception.getListener();
+        if (bean instanceof RabbitListenerExceptionHandler) {
+            ((RabbitListenerExceptionHandler) bean).handle(exception);
+        } else {
+            exceptionHandler.handle(exception);
         }
     }
 }
