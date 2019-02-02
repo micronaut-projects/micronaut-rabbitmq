@@ -17,8 +17,19 @@ dependencies {
     testCompile 'org.awaitility:awaitility:3.1.6'
     testCompile "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testRuntime "ch.qos.logback:logback-classic:1.2.3"
 }
+
+compileJava.options.compilerArgs += '-parameters'
+compileTestJava.options.compilerArgs += '-parameters'
 
 test {
     useJUnitPlatform()
+    
+    jvmArgs '-Duser.country=US'
+    jvmArgs '-Duser.language=en'
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
 }

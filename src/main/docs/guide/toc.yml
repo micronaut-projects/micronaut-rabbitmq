@@ -24,6 +24,7 @@ consumer:
       consumerHeaders: Headers
       consumerTypes: RabbitMQ Types
       consumerBody: Message Body
+      consumerCustom: Custom Parameter Binding
   consumerExecutor: Consumer Execution
 serdes:
   title: Message Serialization/Deserialization (SerDes)

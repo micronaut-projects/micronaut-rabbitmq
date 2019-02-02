@@ -70,22 +70,17 @@ public class ReactiveChannel {
             private void handleAckNack(long deliveryTag, boolean multiple, boolean ack) {
                 List<CompletableEmitter> completables = new ArrayList<>();
                 synchronized (unconfirmed) {
-                    System.out.println("received delivery tag " + deliveryTag);
                     if (unconfirmed.containsKey(deliveryTag)) {
-                        System.out.println("delivery tag is in unconfirmed list");
                         if (multiple) {
-                            System.out.println("multiple ack");
                             final Iterator<Map.Entry<Long, CompletableEmitter>> iterator = unconfirmed.entrySet().iterator();
                             while (iterator.hasNext()) {
                                 Map.Entry<Long, CompletableEmitter> entry = iterator.next();
                                 if (entry.getKey() <= deliveryTag) {
-                                    System.out.println("adding " + entry.getKey() + " to the to be completed list");
                                     completables.add(entry.getValue());
                                     iterator.remove();
                                 }
                             }
                         } else {
-                            System.out.println("adding " + deliveryTag + " to the to be completed list");
                             completables.add(unconfirmed.remove(deliveryTag));
                         }
                     }
@@ -93,10 +88,8 @@ public class ReactiveChannel {
 
                 for (CompletableEmitter completable: completables) {
                     if (ack) {
-                        System.out.println("completable complete");
                         completable.onComplete();
                     } else {
-                        System.out.println("completable error");
                         completable.onError(new MessagingClientException("Message could not be delivered to the broker"));
                     }
                 }
@@ -125,17 +118,14 @@ public class ReactiveChannel {
         long nextPublishSeqNo = channel.getNextPublishSeqNo();
         try {
             unconfirmed.put(nextPublishSeqNo, emitter);
-            System.out.println("sending delivery tag " + nextPublishSeqNo);
             channel.basicPublish(
                     exchange,
                     routingKey,
                     props,
                     body
             );
-            System.out.println("incrementing publish count");
             publishCount.incrementAndGet();
         } catch (IOException e) {
-            System.out.println("error publishing");
             unconfirmed.remove(nextPublishSeqNo);
             emitter.onError(e);
         }
@@ -147,14 +137,11 @@ public class ReactiveChannel {
                 try {
                     channel.confirmSelect();
                     channel.addConfirmListener(listener);
-                    System.out.println("initialize successful");
                     emitter.onComplete();
                 } catch (IOException e) {
-                    System.out.println("initialize error");
                     emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
                 }
             } else {
-                System.out.println("already initialized");
                 emitter.onComplete();
             }
         });
@@ -163,7 +150,6 @@ public class ReactiveChannel {
     private void cleanupChannel() {
         if (publishCount.decrementAndGet() == 0 &&
                 initialized.compareAndSet(true, false)) {
-            System.out.println("removing confirm listener");
             channel.removeConfirmListener(listener);
         }
     }

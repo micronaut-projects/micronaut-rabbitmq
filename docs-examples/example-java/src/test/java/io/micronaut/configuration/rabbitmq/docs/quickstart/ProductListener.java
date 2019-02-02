@@ -20,7 +20,7 @@ public class ProductListener {
     public void receive(byte[] data) { // <3>
         Integer length = data.length;
         messageLengths.add(length);
-        System.out.println("Received " + length + " bytes from RabbitMQ");
+        System.out.println("Java received " + length + " bytes from RabbitMQ");
     }
 }
 // end::class[]

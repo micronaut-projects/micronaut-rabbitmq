@@ -27,7 +27,7 @@ productClient.send("message body".getBytes());
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
         await().atMost(5, SECONDS).until(() ->
-                productListener.messageLengths.size() == 1 &&
+            productListener.messageLengths.size() == 1 &&
             productListener.messageLengths.get(0) == 12
         );
 

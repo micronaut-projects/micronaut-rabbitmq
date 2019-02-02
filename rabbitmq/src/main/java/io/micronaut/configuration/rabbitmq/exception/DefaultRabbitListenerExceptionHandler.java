@@ -34,7 +34,8 @@ import java.util.Optional;
 @Singleton
 @Primary
 public class DefaultRabbitListenerExceptionHandler implements RabbitListenerExceptionHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(RabbitListenerExceptionHandler.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultRabbitListenerExceptionHandler.class);
 
     @Override
     public void handle(RabbitListenerException exception) {

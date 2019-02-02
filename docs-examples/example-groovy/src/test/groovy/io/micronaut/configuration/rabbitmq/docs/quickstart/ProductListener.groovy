@@ -17,7 +17,7 @@ class ProductListener {
     void receive(byte[] data) { // <3>
         Integer length = data.length
         messageLengths.add(length)
-        println("Received ${length} bytes from RabbitMQ")
+        println("Groovy received ${length} bytes from RabbitMQ")
     }
 }
 // end::class[]

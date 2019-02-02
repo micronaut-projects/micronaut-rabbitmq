@@ -13,14 +13,13 @@ import java.util.ArrayList
 @RabbitListener // <1>
 class ProductListener {
 
-    @JvmField
-    var messageLengths: MutableList<Int> = ArrayList()
+    val messageLengths: MutableList<Int> = ArrayList()
 
     @Queue("product") // <2>
     fun receive(data: ByteArray) { // <3>
         val length = data.size
         messageLengths.add(length)
-        println("Received $length bytes from RabbitMQ")
+        println("Kotlin received $length bytes from RabbitMQ")
     }
 }
 // end::class[]
