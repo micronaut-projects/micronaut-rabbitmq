@@ -3,6 +3,7 @@ package io.micronaut.configuration.rabbitmq.docs.quickstart
 import io.kotlintest.*
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import org.opentest4j.AssertionFailedError
 
 class QuickstartSpec: AbstractRabbitMQTest({
 
@@ -22,7 +23,7 @@ productClient.send("message body".toByteArray())
 // end::producer[]
 
             then("the message is consumed") {
-                eventually(10.seconds) {
+                eventually(10.seconds, AssertionFailedError::class.java) {
                     productListener.messageLengths.size shouldBe 1
                     productListener.messageLengths[0] shouldBe 12
                 }
