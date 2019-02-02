@@ -8,7 +8,7 @@ producer:
     title: Defining @RabbitClient Methods
     producerParameters:
       title: Publishing Parameters
-      producerBinding: Routing Key
+      producerBinding: Binding (Routing Key)
       producerProperties: RabbitMQ Properties
       producerHeaders: Headers
       producerBody: Message Body

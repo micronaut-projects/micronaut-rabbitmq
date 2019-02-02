@@ -1,7 +1,11 @@
 package io.micronaut.configuration.rabbitmq;
 
+import io.micronaut.context.ApplicationContext;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractRabbitMQTest {
 
@@ -13,4 +17,10 @@ public abstract class AbstractRabbitMQTest {
         rabbitContainer.start();
     }
 
+    protected ApplicationContext startContext() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("rabbitmq.port", rabbitContainer.getMappedPort(5672));
+        config.put("spec.name", this.getClass().getSimpleName());
+        return ApplicationContext.run(config, "test");
+    }
 }

@@ -3,6 +3,7 @@ package io.micronaut.configuration.rabbitmq
 import io.kotlintest.specs.AbstractBehaviorSpec
 import io.kotlintest.specs.BehaviorSpec
 import io.micronaut.configuration.KGenericContainer
+import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 
 abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}): BehaviorSpec(body) {
@@ -15,5 +16,13 @@ abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}):
         init {
             rabbitContainer.start()
         }
+    }
+
+    val specName = javaClass.simpleName
+
+    fun startContext(): ApplicationContext {
+        return ApplicationContext.run(
+                mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
+                        "spec.name" to specName))
     }
 }

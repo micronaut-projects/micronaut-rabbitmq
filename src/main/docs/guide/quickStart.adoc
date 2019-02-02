@@ -10,7 +10,6 @@ For example the following is a trivial `@RabbitClient` interface:
 
 snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
-
 <1> The ann:configuration.rabbitmq.annotation.RabbitClient[] annotation is used to designate this interface as a client
 <2> The ann:configuration.rabbitmq.annotation.Binding[] annotation indicates which binding or routing key the message should be routed to.
 <3> The 'send' method accepts single parameter which is the body of the message.

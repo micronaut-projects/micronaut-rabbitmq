@@ -253,7 +253,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private Optional<String> findRoutingKey(MethodInvocationContext<Object, Object> method) {
         if (method.hasAnnotation(Binding.class)) {
-            return Optional.ofNullable(method.getAnnotation(Binding.class).getRequiredValue(String.class));
+            return method.getAnnotation(Binding.class).getValue(String.class);
         } else {
             Map<String, Object> argumentValues = method.getParameterValueMap();
             return Arrays.stream(method.getArguments())

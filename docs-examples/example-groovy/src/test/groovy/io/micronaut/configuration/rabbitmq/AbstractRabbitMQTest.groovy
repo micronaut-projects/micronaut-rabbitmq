@@ -1,5 +1,6 @@
 package io.micronaut.configuration.rabbitmq
 
+import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import spock.lang.Specification
@@ -13,5 +14,11 @@ abstract class AbstractRabbitMQTest extends Specification {
 
     static {
         rabbitContainer.start()
+    }
+
+    protected ApplicationContext startContext() {
+        ApplicationContext.run(
+                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
+                 "spec.name": getClass().simpleName], "test")
     }
 }

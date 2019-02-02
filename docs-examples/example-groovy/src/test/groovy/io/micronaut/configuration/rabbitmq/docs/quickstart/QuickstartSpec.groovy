@@ -7,11 +7,8 @@ import spock.util.concurrent.PollingConditions
 class QuickstartSpec extends AbstractRabbitMQTest {
 
     void "test product client and listener"() {
-        ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                 "spec.name": getClass().simpleName], "test")
+        ApplicationContext applicationContext = startContext()
         PollingConditions conditions = new PollingConditions(timeout: 3)
-
 
         when:
 // tag::producer[]
