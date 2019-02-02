@@ -30,7 +30,6 @@ import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.BoundExecutable;
 import io.micronaut.core.bind.DefaultExecutableBinder;
-import io.micronaut.core.bind.exceptions.UnsatisfiedArgumentException;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
@@ -67,9 +66,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     /**
      * Default constructor.
      *
-     * @param beanContext                  The bean context
-     * @param channelPool                  The pool to retrieve channels from
-     * @param binderRegistry               The registry to bind arguments to the method
+     * @param beanContext       The bean context
+     * @param channelPool       The pool to retrieve channels from
+     * @param binderRegistry    The registry to bind arguments to the method
+     * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ChannelPool channelPool,
