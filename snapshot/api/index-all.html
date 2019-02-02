@@ -137,6 +137,13 @@
 <div class="block">A default <code>Consumer</code> that delegates cancelled or shutdown
  with a single method <a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html#handleTerminate-java.lang.String-"><code>DefaultConsumer.handleTerminate(String)</code></a>.</div>
 </dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html" title="class in io.micronaut.configuration.rabbitmq.exception"><span class="typeNameLink">DefaultRabbitListenerExceptionHandler</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/exception/package-summary.html">io.micronaut.configuration.rabbitmq.exception</a></dt>
+<dd>
+<div class="block">The default ExceptionHandler used when a <a href="io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitListener</code></a>
+ fails to process a RabbitMQ message.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html#DefaultRabbitListenerExceptionHandler--">DefaultRabbitListenerExceptionHandler()</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html" title="class in io.micronaut.configuration.rabbitmq.exception">DefaultRabbitListenerExceptionHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/serdes/DefaultRabbitMessageSerDesRegistry.html" title="class in io.micronaut.configuration.rabbitmq.serdes"><span class="typeNameLink">DefaultRabbitMessageSerDesRegistry</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/serdes/package-summary.html">io.micronaut.configuration.rabbitmq.serdes</a></dt>
 <dd>
 <div class="block">Default implementation of <a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes"><code>RabbitMessageSerDesRegistry</code></a>.</div>
@@ -207,7 +214,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getIntegerSerDes--">getIntegerSerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html#getListener--">getListener()</a></span> - Method in exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitListenerException</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getLongSerDes--">getLongSerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html#getMessageState--">getMessageState()</a></span> - Method in exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitListenerException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/health/RabbitMQHealthIndicator.html#getName--">getName()</a></span> - Method in class io.micronaut.configuration.rabbitmq.health.<a href="io/micronaut/configuration/rabbitmq/health/RabbitMQHealthIndicator.html" title="class in io.micronaut.configuration.rabbitmq.health">RabbitMQHealthIndicator</a></dt>
 <dd>&nbsp;</dd>
@@ -229,6 +240,8 @@
 </a>
 <h2 class="title">H</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html#handle-io.micronaut.configuration.rabbitmq.exception.RabbitListenerException-">handle(RabbitListenerException)</a></span> - Method in class io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html" title="class in io.micronaut.configuration.rabbitmq.exception">DefaultRabbitListenerExceptionHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html#handleCancel-java.lang.String-">handleCancel(String)</a></span> - Method in interface io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html" title="interface in io.micronaut.configuration.rabbitmq.intercept">DefaultConsumer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html#handleCancelOk-java.lang.String-">handleCancelOk(String)</a></span> - Method in interface io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html" title="interface in io.micronaut.configuration.rabbitmq.intercept">DefaultConsumer</a></dt>
@@ -262,6 +275,10 @@
 <dt><a href="io/micronaut/configuration/rabbitmq/connect/package-summary.html">io.micronaut.configuration.rabbitmq.connect</a> - package io.micronaut.configuration.rabbitmq.connect</dt>
 <dd>
 <div class="block">Classes handling the connection RabbitMQ.</div>
+</dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/exception/package-summary.html">io.micronaut.configuration.rabbitmq.exception</a> - package io.micronaut.configuration.rabbitmq.exception</dt>
+<dd>
+<div class="block">RabbitMQ specific exceptions.</div>
 </dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/executor/package-summary.html">io.micronaut.configuration.rabbitmq.executor</a> - package io.micronaut.configuration.rabbitmq.executor</dt>
 <dd>
@@ -430,6 +447,26 @@
 <div class="block">Class level annotation to indicate that a bean will be consumers of messages
  from RabbitMQ.</div>
 </dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception"><span class="typeNameLink">RabbitListenerException</span></a> - Exception in <a href="io/micronaut/configuration/rabbitmq/exception/package-summary.html">io.micronaut.configuration.rabbitmq.exception</a></dt>
+<dd>
+<div class="block">Exception thrown when an error occurs processing a RabbitMQ message via a <a href="io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitListener</code></a>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html#RabbitListenerException-java.lang.String-java.lang.Object-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">RabbitListenerException(String, Object, RabbitMessageState)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitListenerException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html#RabbitListenerException-java.lang.String-java.lang.Throwable-java.lang.Object-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">RabbitListenerException(String, Throwable, Object, RabbitMessageState)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitListenerException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html#RabbitListenerException-java.lang.Throwable-java.lang.Object-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">RabbitListenerException(Throwable, Object, RabbitMessageState)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitListenerException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception"><span class="typeNameLink">RabbitListenerExceptionHandler</span></a> - Interface in <a href="io/micronaut/configuration/rabbitmq/exception/package-summary.html">io.micronaut.configuration.rabbitmq.exception</a></dt>
+<dd>
+<div class="block">Interface that <a href="io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitListener</code></a> beans can implement to handle exceptions.</div>
+</dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes"><span class="typeNameLink">RabbitMessageSerDes</span></a>&lt;<a href="io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt; - Interface in <a href="io/micronaut/configuration/rabbitmq/serdes/package-summary.html">io.micronaut.configuration.rabbitmq.serdes</a></dt>
 <dd>
 <div class="block">Responsible for serializing and deserializing RabbitMQ message bodies.</div>
@@ -460,7 +497,7 @@
  with <a href="io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitListener</code></a> and create and subscribe the relevant methods
  as consumers to RabbitMQ queues.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-">RabbitMQConsumerAdvice(BeanContext, ChannelPool, RabbitBinderRegistry)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html" title="class in io.micronaut.configuration.rabbitmq.intercept">RabbitMQConsumerAdvice</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-">RabbitMQConsumerAdvice(BeanContext, ChannelPool, RabbitBinderRegistry, RabbitListenerExceptionHandler)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html" title="class in io.micronaut.configuration.rabbitmq.intercept">RabbitMQConsumerAdvice</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>

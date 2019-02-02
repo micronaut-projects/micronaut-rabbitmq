@@ -142,9 +142,10 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
                       <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
-                      <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry)</code>
+                      <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
+                      <a href="../../../../../io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -198,7 +199,7 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-">
+<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -206,13 +207,15 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <h4>RabbitMQConsumerAdvice</h4>
 <pre>public&nbsp;RabbitMQConsumerAdvice(io.micronaut.context.BeanContext&nbsp;beanContext,
                               <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
-                              <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry)</pre>
+                              <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
+                              <a href="../../../../../io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>beanContext</code> - The bean context</dd>
 <dd><code>channelPool</code> - The pool to retrieve channels from</dd>
 <dd><code>binderRegistry</code> - The registry to bind arguments to the method</dd>
+<dd><code>exceptionHandler</code> - The exception handler to use if the consumer isn't a handler</dd>
 </dl>
 </li>
 </ul>

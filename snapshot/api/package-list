@@ -1,6 +1,7 @@
 io.micronaut.configuration.rabbitmq.annotation
 io.micronaut.configuration.rabbitmq.bind
 io.micronaut.configuration.rabbitmq.connect
+io.micronaut.configuration.rabbitmq.exception
 io.micronaut.configuration.rabbitmq.executor
 io.micronaut.configuration.rabbitmq.health
 io.micronaut.configuration.rabbitmq.intercept
