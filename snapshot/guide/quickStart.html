@@ -248,7 +248,7 @@ public class ProductListener {
     public void receive(byte[] data) { <b class="conum">(3)</b>
         Integer length = data.length;
         messageLengths.add(length);
-        System.out.println("Received " + length + " bytes from RabbitMQ");
+        System.out.println("Java received " + length + " bytes from RabbitMQ");
     }
 }</code></pre>
 </div>
@@ -268,7 +268,7 @@ class ProductListener {
     void receive(byte[] data) { <b class="conum">(3)</b>
         Integer length = data.length
         messageLengths.add(length)
-        println("Received ${length} bytes from RabbitMQ")
+        println("Groovy received ${length} bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
@@ -284,14 +284,13 @@ import java.util.ArrayList
 @RabbitListener <b class="conum">(1)</b>
 class ProductListener {
 
-    @JvmField
-    var messageLengths: MutableList&lt;Int&gt; = ArrayList()
+    val messageLengths: MutableList&lt;Int&gt; = ArrayList()
 
     @Queue("product") <b class="conum">(2)</b>
     fun receive(data: ByteArray) { <b class="conum">(3)</b>
         val length = data.size
         messageLengths.add(length)
-        println("Received $length bytes from RabbitMQ")
+        println("Kotlin received $length bytes from RabbitMQ")
     }
 }</code></pre>
 </div>

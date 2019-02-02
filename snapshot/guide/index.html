@@ -131,6 +131,8 @@
         
         <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>6.1.2.4</strong><span>Message Body</span></a></div>
         
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.2.5</strong><span>Custom Parameter Binding</span></a></div>
+        
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.2</strong><span>Consumer Execution</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
@@ -343,7 +345,7 @@ public class ProductListener {
     public void receive(byte[] data) { <b class="conum">(3)</b>
         Integer length = data.length;
         messageLengths.add(length);
-        System.out.println("Received " + length + " bytes from RabbitMQ");
+        System.out.println("Java received " + length + " bytes from RabbitMQ");
     }
 }</code></pre>
 </div>
@@ -363,7 +365,7 @@ class ProductListener {
     void receive(byte[] data) { <b class="conum">(3)</b>
         Integer length = data.length
         messageLengths.add(length)
-        println("Received ${length} bytes from RabbitMQ")
+        println("Groovy received ${length} bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
@@ -379,14 +381,13 @@ import java.util.ArrayList
 @RabbitListener <b class="conum">(1)</b>
 class ProductListener {
 
-    @JvmField
-    var messageLengths: MutableList&lt;Int&gt; = ArrayList()
+    val messageLengths: MutableList&lt;Int&gt; = ArrayList()
 
     @Queue("product") <b class="conum">(2)</b>
     fun receive(data: ByteArray) { <b class="conum">(3)</b>
         val length = data.size
         messageLengths.add(length)
-        println("Received $length bytes from RabbitMQ")
+        println("Kotlin received $length bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
@@ -1076,6 +1077,20 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerBody.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>TODO</p>
+</div>
+
+
+<h2 id="consumerCustom">6.1.2.5 Custom Parameter Binding</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerCustom.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
