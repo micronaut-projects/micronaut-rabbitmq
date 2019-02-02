@@ -105,7 +105,7 @@
         
         <div class="toc-item" style="margin-left:20px" id="toc-item-producerParameters"><a href="#producerParameters"><strong>5.1.1</strong><span>Publishing Parameters</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.1.1</strong><span>Routing Key</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.1.1</strong><span>Binding (Routing Key)</span></a></div>
         
         <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>5.1.1.2</strong><span>RabbitMQ Properties</span></a></div>
         
@@ -737,16 +737,18 @@ class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactor
 <h2 id="_exchange">Exchange</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The exchange to publish messages to can be provided through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.</p>
+<p>The exchange to publish messages to can be provided through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation. In this example, the client is publishing messages to a custom header exchange called <code>animals</code>.</p>
 </div>
-<div class="paragraph">
-<p>For example:</p>
-</div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@RabbitClient("amq.topic")
-static interface ProductClient {
-    ...
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.messaging.annotation.Header;
+
+@RabbitClient("animals") <b class="conum">(1)</b>
+public interface AnimalClient {
+
+    void send(@Header String animalType, Animal animal); <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -804,7 +806,7 @@ If a body argument cannot be found, an exception will be thrown.
 </div>
 
 
-<h2 id="producerBinding">5.1.1.1 Routing Key</h2>
+<h2 id="producerBinding">5.1.1.1 Binding (Routing Key)</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
@@ -816,15 +818,65 @@ If a body argument cannot be found, an exception will be thrown.
 <div class="paragraph">
 <p>If you need to specify the routing key of the message, apply the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
-@Binding("products")
-public void go(byte[] body)
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
 
-//Value set per execution
-public void go(@Binding String binding, byte[] body)</code></pre>
+@RabbitClient
+public interface ProductClient {
+
+    @Binding("product") <b class="conum">(1)</b>
+    void send(byte[] data);
+
+    void send(@Binding String binding, byte[] data); <b class="conum">(2)</b>
+}</code></pre>
 </div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(1)</b>
+    void send(byte[] data)
+
+    void send(@Binding String binding, byte[] data) <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(1)</b>
+    fun send(data: ByteArray)
+
+    fun send(@Binding binding: String, data: ByteArray)  <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The binding is static</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The binding must be set per execution</td>
+</tr>
+</table>
 </div>
 
 
