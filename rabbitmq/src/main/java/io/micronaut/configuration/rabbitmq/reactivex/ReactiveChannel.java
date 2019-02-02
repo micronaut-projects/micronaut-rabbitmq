@@ -142,20 +142,22 @@ public class ReactiveChannel {
     }
 
     private Completable initializePublish() {
-        if (initialized.compareAndSet(false, true)) {
-            try {
-                channel.confirmSelect();
-                channel.addConfirmListener(listener);
-                System.out.println("initialize successful");
-                return Completable.complete();
-            } catch (IOException e) {
-                System.out.println("initialize error");
-                return Completable.error(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
+        return Completable.create((emitter) -> {
+            if (initialized.compareAndSet(false, true)) {
+                try {
+                    channel.confirmSelect();
+                    channel.addConfirmListener(listener);
+                    System.out.println("initialize successful");
+                    emitter.onComplete();
+                } catch (IOException e) {
+                    System.out.println("initialize error");
+                    emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
+                }
+            } else {
+                System.out.println("already initialized");
+                emitter.onComplete();
             }
-        } else {
-            System.out.println("already initialized");
-            return Completable.complete();
-        }
+        });
     }
 
     private void cleanupChannel() {
