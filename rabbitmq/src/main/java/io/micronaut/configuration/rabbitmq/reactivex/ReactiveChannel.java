@@ -111,7 +111,7 @@ public class ReactiveChannel {
         return initializePublish()
                 .andThen(Completable.create((emitter) ->
                         publishInternal(exchange, routingKey, properties, body, emitter)))
-                .andThen(Completable.fromAction(this::cleanupChannel));
+                .andThen(cleanupChannel());
     }
 
     private void publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body, CompletableEmitter emitter) {
@@ -153,11 +153,19 @@ public class ReactiveChannel {
         });
     }
 
-    private void cleanupChannel() {
-        if (publishCount.decrementAndGet() == 0 &&
-                initialized.compareAndSet(true, false)) {
-            channel.removeConfirmListener(listener);
-        }
+    private Completable cleanupChannel() {
+        return Completable.create((emitter) -> {
+            if (!initialized.get()) {
+                emitter.onComplete();
+            } else {
+                synchronized (this) {
+                    if (publishCount.decrementAndGet() == 0 && initialized.compareAndSet(true, false)) {
+                        channel.removeConfirmListener(listener);
+                    }
+                    emitter.onComplete();
+                }
+            }
+        });
     }
 
 }
