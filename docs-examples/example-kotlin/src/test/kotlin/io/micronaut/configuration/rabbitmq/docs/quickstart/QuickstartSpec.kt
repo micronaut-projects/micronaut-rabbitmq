@@ -10,9 +10,7 @@ class QuickstartSpec: AbstractRabbitMQTest({
     val specName = javaClass.simpleName
 
     given("A basic producer and consumer") {
-        val ctx = ApplicationContext.run(
-                mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
-                        "spec.name" to specName))
+        val ctx = startContext(specName)
 
         `when`("the message is published") {
             val productListener = ctx.getBean(ProductListener::class.java)

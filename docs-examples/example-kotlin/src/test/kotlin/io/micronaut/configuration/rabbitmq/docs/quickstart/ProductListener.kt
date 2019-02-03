@@ -4,8 +4,8 @@ package io.micronaut.configuration.rabbitmq.docs.quickstart
 import io.micronaut.configuration.rabbitmq.annotation.Queue
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
+import java.util.*
 
-import java.util.ArrayList
 // end::imports[]
 
 @Requires(property = "spec.name", value = "QuickstartSpec")
@@ -13,7 +13,7 @@ import java.util.ArrayList
 @RabbitListener // <1>
 class ProductListener {
 
-    val messageLengths: MutableList<Int> = ArrayList()
+    val messageLengths: MutableList<Int> = Collections.synchronizedList(ArrayList())
 
     @Queue("product") // <2>
     fun receive(data: ByteArray) { // <3>

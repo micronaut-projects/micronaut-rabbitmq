@@ -7,3 +7,5 @@ The implementation that powers `@RabbitClient` (defined by the api:configuration
 The exchange to publish messages to can be provided through the ann:configuration.rabbitmq.annotation.RabbitClient[] annotation. In this example, the client is publishing messages to a custom header exchange called `animals`.
 
 snippet::io.micronaut.configuration.rabbitmq.docs.exchange.AnimalClient[tags="imports,clazz", project-base="docs-examples/example]
+
+NOTE: Exchanges must already exist before you can publish messages to them.

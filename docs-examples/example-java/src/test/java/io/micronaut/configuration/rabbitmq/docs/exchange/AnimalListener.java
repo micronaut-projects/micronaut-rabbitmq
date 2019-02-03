@@ -6,6 +6,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 // end::imports[]
 
@@ -14,7 +15,7 @@ import java.util.List;
 @RabbitListener // <1>
 public class AnimalListener {
 
-    List<Animal> receivedAnimals = new ArrayList<>();
+    List<Animal> receivedAnimals = Collections.synchronizedList(new ArrayList<>());
 
     @Queue("cats") // <2>
     public void receive(Cat cat) { // <3>

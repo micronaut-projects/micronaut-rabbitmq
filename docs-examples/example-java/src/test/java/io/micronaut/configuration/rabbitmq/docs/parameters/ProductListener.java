@@ -5,13 +5,14 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Requires(property = "spec.name", value = "BindingSpec")
 @RabbitListener
 public class ProductListener {
 
-    List<Integer> messageLengths = new ArrayList<>();
+    List<Integer> messageLengths = Collections.synchronizedList(new ArrayList<>());
 
     @Queue("product")
     public void receive(byte[] data) {

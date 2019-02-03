@@ -1,1 +1,1 @@
-TODO
+NOTE: Queues must already exist before you can listen to messages from them.

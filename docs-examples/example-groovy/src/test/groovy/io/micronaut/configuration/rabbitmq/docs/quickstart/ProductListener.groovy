@@ -11,7 +11,7 @@ import io.micronaut.context.annotation.Requires
 @RabbitListener // <1>
 class ProductListener {
 
-    List<Integer> messageLengths = []
+    List<Integer> messageLengths = Collections.synchronizedList([])
 
     @Queue("product") // <2>
     void receive(byte[] data) { // <3>

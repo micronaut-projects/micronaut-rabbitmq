@@ -16,13 +16,12 @@ abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}):
         init {
             rabbitContainer.start()
         }
+
+        fun startContext(specName: String): ApplicationContext {
+            return ApplicationContext.run(
+                    mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
+                            "spec.name" to specName))
+        }
     }
 
-    val specName = javaClass.simpleName
-
-    fun startContext(): ApplicationContext {
-        return ApplicationContext.run(
-                mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
-                        "spec.name" to specName))
-    }
 }

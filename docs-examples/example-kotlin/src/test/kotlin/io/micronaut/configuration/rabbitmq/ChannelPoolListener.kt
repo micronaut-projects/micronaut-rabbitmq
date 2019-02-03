@@ -16,6 +16,21 @@ class ChannelPoolListener : BeanCreatedEventListener<ChannelPool> {
         try {
             val channel = pool.channel
             channel.queueDeclare("product", false, false, false, HashMap())
+
+            //docs/exchange
+            channel.exchangeDeclare("animals", "headers", false)
+            channel.queueDeclare("snakes", false, false, false, null)
+            channel.queueDeclare("cats", false, false, false, null)
+            val catArgs = HashMap<String, Any>()
+            catArgs["x-match"] = "all"
+            catArgs["animalType"] = "Cat"
+            channel.queueBind("cats", "animals", "", catArgs)
+
+            val snakeArgs = HashMap<String, Any>()
+            snakeArgs["x-match"] = "all"
+            snakeArgs["animalType"] = "Snake"
+            channel.queueBind("snakes", "animals", "", snakeArgs)
+
             pool.returnChannel(channel)
         } catch (e: IOException) {
             //no-op

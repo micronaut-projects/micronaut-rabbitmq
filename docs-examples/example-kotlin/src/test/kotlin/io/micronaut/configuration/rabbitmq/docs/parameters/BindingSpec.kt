@@ -3,7 +3,6 @@ package io.micronaut.configuration.rabbitmq.docs.parameters
 import io.kotlintest.*
 import io.kotlintest.matchers.collections.shouldContain
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.context.ApplicationContext
 import org.opentest4j.AssertionFailedError
 
 class BindingSpec: AbstractRabbitMQTest({
@@ -11,9 +10,7 @@ class BindingSpec: AbstractRabbitMQTest({
     val specName = javaClass.simpleName
 
     given("A basic producer and consumer") {
-        val ctx = ApplicationContext.run(
-                mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
-                        "spec.name" to specName))
+        val ctx = startContext(specName)
 
         `when`("The messages are published") {
             val productListener = ctx.getBean(ProductListener::class.java)

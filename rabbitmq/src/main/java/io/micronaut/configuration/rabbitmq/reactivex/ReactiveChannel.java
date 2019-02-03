@@ -133,16 +133,22 @@ public class ReactiveChannel {
 
     private Completable initializePublish() {
         return Completable.create((emitter) -> {
-            if (initialized.compareAndSet(false, true)) {
-                try {
-                    channel.confirmSelect();
-                    channel.addConfirmListener(listener);
-                    emitter.onComplete();
-                } catch (IOException e) {
-                    emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
-                }
-            } else {
+            if (initialized.get()) {
                 emitter.onComplete();
+            } else {
+                synchronized (this) {
+                    if (initialized.compareAndSet(false, true)) {
+                        try {
+                            channel.confirmSelect();
+                            channel.addConfirmListener(listener);
+                            emitter.onComplete();
+                        } catch (IOException e) {
+                            emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
+                        }
+                    } else {
+                        emitter.onComplete();
+                    }
+                }
             }
         });
     }

@@ -16,6 +16,21 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
         try {
             Channel channel = pool.channel
             channel.queueDeclare("product", false, false, false, [:])
+
+            //docs/exchange
+            channel.exchangeDeclare("animals", "headers", false)
+            channel.queueDeclare("snakes", false, false, false, null)
+            channel.queueDeclare("cats", false, false, false, null)
+            Map<String, Object> catArgs = [:]
+            catArgs.put("x-match", "all")
+            catArgs.put("animalType", "Cat")
+            channel.queueBind("cats", "animals", "", catArgs)
+
+            Map<String, Object> snakeArgs = [:]
+            snakeArgs.put("x-match", "all")
+            snakeArgs.put("animalType", "Snake")
+            channel.queueBind("snakes", "animals", "", snakeArgs)
+
             pool.returnChannel(channel)
         } catch (IOException e) {
             //no-op
