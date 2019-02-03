@@ -120,6 +120,17 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         AtomicInteger integer = new AtomicInteger(2)
         ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
         PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
+        AtomicInteger messageCount = new AtomicInteger()
+        Channel consumeChannel = channelPool.getChannel()
+        consumeChannel.basicConsume("abc", true, new DefaultConsumer() {
+            @Override
+            void handleTerminate(String consumerTag) {}
+
+            @Override
+            void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                messageCount.incrementAndGet()
+            }
+        })
 
         when:
         List<Completable> publishes = []
@@ -139,6 +150,12 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         then:
         conditions.eventually {
             integer.get() == 0
+            messageCount.get() == 75
         }
+
+        cleanup:
+        channelPool.returnChannel(channel)
+        channelPool.returnChannel(consumeChannel)
+        applicationContext.stop()
     }
 }
