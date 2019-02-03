@@ -211,17 +211,87 @@ interface ProductClient {
 <div class="paragraph">
 <p>It is also supported to supply properties when publishing messages. Any of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a> can be set dynamically per execution or statically for all executions. Properties can be set using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html">@RabbitProperty</a> annotation.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
-//Multiple properties can be set
-@RabbitProperty(name = "conentType", value = "application/json")
-@RabbitProperty(name = "priority", value = "3")
-public void go(byte[] body)
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
 
-//Value set per execution
-public void go(@RabbitProperty("userId") String user, byte[] body)</code></pre>
+@RabbitClient
+@RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+public interface ProductClient {
+
+    @Binding("product")
+    @RabbitProperty(name = "contentType", value = "application/json") <b class="conum">(2)</b>
+    @RabbitProperty(name = "userId", value = "guest")
+    void send(byte[] data);
+
+    @Binding("product")
+    void send(@RabbitProperty("userId") String user, @RabbitProperty String contentType, byte[] data); <b class="conum">(3)</b>
+}</code></pre>
 </div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient
+@RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product")
+    @RabbitProperty(name = "contentType", value = "application/json") <b class="conum">(2)</b>
+    @RabbitProperty(name = "userId", value = "guest")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@RabbitProperty("userId") String user, @RabbitProperty String contentType, byte[] data) <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperties
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient
+@RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product")
+    @RabbitProperties( <b class="conum">(2)</b>
+        RabbitProperty(name = "contentType", value = "application/json"),
+        RabbitProperty(name = "userId", value = "guest")
+    )
+    fun send(data: ByteArray)
+
+    @Binding("product")
+    fun send(@RabbitProperty("userId") user: String, @RabbitProperty contentType: String?, data: ByteArray)  <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Properties can be defined at the class level and will apply to all methods. If an annotation is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple properties on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Properties can be set per execution</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>For method arguments, if the value is not supplied to the annotation, the argument name will be used as the property name. For example, <code>@RabbitProperty String userId</code> would result in the property <code>userId</code> being set on the properties object before publishing.</p>
@@ -234,18 +304,6 @@ public void go(@RabbitProperty("userId") String user, byte[] body)</code></pre>
 </td>
 <td class="content">
 If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied value cannot be converted to the type defined in <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>, an exception will be thrown.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Kotlin users must use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperties.html">@RabbitProperties</a> annotation to supply multiple properties.
 </td>
 </tr>
 </table>
