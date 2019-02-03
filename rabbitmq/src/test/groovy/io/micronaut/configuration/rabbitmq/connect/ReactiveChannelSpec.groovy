@@ -11,6 +11,7 @@ import io.reactivex.Completable
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -109,5 +110,35 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         channelPool.returnChannel(produceChannel)
         channelPool.returnChannel(consumeChannel)
         applicationContext.close()
+    }
+
+    void "test highly concurrent access"() {
+        ApplicationContext applicationContext = ApplicationContext.run(
+                ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
+        ChannelPool channelPool = applicationContext.getBean(ChannelPool)
+        Channel channel = channelPool.getChannel()
+        AtomicInteger integer = new AtomicInteger(2)
+        ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
+        PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
+
+        when:
+        List<Completable> publishes = []
+        50.times {
+            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+        }
+
+        List<Completable> publishes2 = []
+        25.times {
+            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+        }
+
+        Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})
+        Thread.sleep(10)
+        Completable.merge(publishes2).subscribe({ -> integer.decrementAndGet()})
+
+        then:
+        conditions.eventually {
+            integer.get() == 0
+        }
     }
 }

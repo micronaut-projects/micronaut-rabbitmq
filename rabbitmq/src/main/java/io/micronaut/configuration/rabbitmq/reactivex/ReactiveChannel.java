@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This class provides a wrapper around a {@link Channel} to provide
@@ -47,7 +46,6 @@ public class ReactiveChannel {
     private final Channel channel;
     private final ConfirmListener listener;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
-    private final AtomicLong publishCount = new AtomicLong(0);
 
     /**
      * Default constructor.
@@ -69,20 +67,18 @@ public class ReactiveChannel {
 
             private void handleAckNack(long deliveryTag, boolean multiple, boolean ack) {
                 List<CompletableEmitter> completables = new ArrayList<>();
-                synchronized (unconfirmed) {
-                    if (unconfirmed.containsKey(deliveryTag)) {
-                        if (multiple) {
-                            final Iterator<Map.Entry<Long, CompletableEmitter>> iterator = unconfirmed.entrySet().iterator();
-                            while (iterator.hasNext()) {
-                                Map.Entry<Long, CompletableEmitter> entry = iterator.next();
-                                if (entry.getKey() <= deliveryTag) {
-                                    completables.add(entry.getValue());
-                                    iterator.remove();
-                                }
+                if (unconfirmed.containsKey(deliveryTag)) {
+                    if (multiple) {
+                        final Iterator<Map.Entry<Long, CompletableEmitter>> iterator = unconfirmed.entrySet().iterator();
+                        while (iterator.hasNext()) {
+                            Map.Entry<Long, CompletableEmitter> entry = iterator.next();
+                            if (entry.getKey() <= deliveryTag) {
+                                completables.add(entry.getValue());
+                                iterator.remove();
                             }
-                        } else {
-                            completables.add(unconfirmed.remove(deliveryTag));
                         }
+                    } else {
+                        completables.add(unconfirmed.remove(deliveryTag));
                     }
                 }
 
@@ -109,26 +105,26 @@ public class ReactiveChannel {
      */
     public Completable publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         return initializePublish()
-                .andThen(Completable.create((emitter) ->
-                        publishInternal(exchange, routingKey, properties, body, emitter)))
+                .andThen(publishInternal(exchange, routingKey, properties, body))
                 .andThen(cleanupChannel());
     }
 
-    private void publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body, CompletableEmitter emitter) {
-        long nextPublishSeqNo = channel.getNextPublishSeqNo();
-        try {
-            unconfirmed.put(nextPublishSeqNo, emitter);
-            channel.basicPublish(
-                    exchange,
-                    routingKey,
-                    props,
-                    body
-            );
-            publishCount.incrementAndGet();
-        } catch (IOException e) {
-            unconfirmed.remove(nextPublishSeqNo);
-            emitter.onError(e);
-        }
+    private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
+        return Completable.create((emitter) -> {
+            long nextPublishSeqNo = channel.getNextPublishSeqNo();
+            try {
+                unconfirmed.put(nextPublishSeqNo, emitter);
+                channel.basicPublish(
+                        exchange,
+                        routingKey,
+                        props,
+                        body
+                );
+            } catch (IOException e) {
+                unconfirmed.remove(nextPublishSeqNo);
+                emitter.onError(e);
+            }
+        });
     }
 
     private Completable initializePublish() {
@@ -136,17 +132,18 @@ public class ReactiveChannel {
             if (initialized.get()) {
                 emitter.onComplete();
             } else {
-                synchronized (this) {
-                    if (initialized.compareAndSet(false, true)) {
+                synchronized (initialized) {
+                    if (initialized.get()) {
+                        emitter.onComplete();
+                    } else {
                         try {
                             channel.confirmSelect();
                             channel.addConfirmListener(listener);
+                            initialized.set(true);
                             emitter.onComplete();
                         } catch (IOException e) {
                             emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
                         }
-                    } else {
-                        emitter.onComplete();
                     }
                 }
             }
@@ -155,15 +152,15 @@ public class ReactiveChannel {
 
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
-            if (!initialized.get()) {
-                emitter.onComplete();
-            } else {
-                synchronized (this) {
-                    if (publishCount.decrementAndGet() == 0 && initialized.compareAndSet(true, false)) {
+            if (initialized.get()) {
+                synchronized (initialized) {
+                    if (unconfirmed.isEmpty() && initialized.compareAndSet(true, false)) {
                         channel.removeConfirmListener(listener);
                     }
                     emitter.onComplete();
                 }
+            } else {
+                emitter.onComplete();
             }
         });
     }
