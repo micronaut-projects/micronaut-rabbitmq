@@ -11,7 +11,6 @@ import io.reactivex.Completable
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 

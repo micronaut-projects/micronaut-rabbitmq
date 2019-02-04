@@ -35,22 +35,24 @@ public class CustomExchangeSpec extends AbstractRabbitMQTest {
         names.add("Buttercup");
         names.add("Monty the Python");
 
-        await().atMost(10, SECONDS).until(() ->
-                listener.receivedAnimals.size() == 4 &&
-                listener.receivedAnimals.stream()
-                        .filter(Cat.class::isInstance)
-                        .anyMatch(cat -> cat.getName().equals("Whiskers") && ((Cat) cat).getLives() == 9) &&
-                listener.receivedAnimals.stream()
-                        .filter(Cat.class::isInstance)
-                        .anyMatch(cat -> cat.getName().equals("Mr. Bigglesworth") && ((Cat) cat).getLives() == 8) &&
-                listener.receivedAnimals.stream()
-                        .filter(Snake.class::isInstance)
-                        .anyMatch(snake -> snake.getName().equals("Buttercup") && !((Snake) snake).isVenomous()) &&
-                listener.receivedAnimals.stream()
-                        .filter(Snake.class::isInstance)
-                        .anyMatch(snake -> snake.getName().equals("Monty the Python") && ((Snake) snake).isVenomous())
-        );
-
-        applicationContext.close();
+        try {
+            await().atMost(10, SECONDS).until(() ->
+                    listener.receivedAnimals.size() == 4 &&
+                            listener.receivedAnimals.stream()
+                                    .filter(Cat.class::isInstance)
+                                    .anyMatch(cat -> cat.getName().equals("Whiskers") && ((Cat) cat).getLives() == 9) &&
+                            listener.receivedAnimals.stream()
+                                    .filter(Cat.class::isInstance)
+                                    .anyMatch(cat -> cat.getName().equals("Mr. Bigglesworth") && ((Cat) cat).getLives() == 8) &&
+                            listener.receivedAnimals.stream()
+                                    .filter(Snake.class::isInstance)
+                                    .anyMatch(snake -> snake.getName().equals("Buttercup") && !((Snake) snake).isVenomous()) &&
+                            listener.receivedAnimals.stream()
+                                    .filter(Snake.class::isInstance)
+                                    .anyMatch(snake -> snake.getName().equals("Monty the Python") && ((Snake) snake).isVenomous())
+            );
+        } finally {
+            applicationContext.close();
+        }
     }
 }

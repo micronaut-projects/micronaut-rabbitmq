@@ -1,18 +1,9 @@
 Headers can be set on the message with the link:{apimicronaut}messaging/annotation/Header.html[@Header] annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.
 
-[source,java]
-----
-//Value static for every execution
-//Multiple headers can be supplied
-@Binding("products")
-@Header(name = "x-product-packaging", value = "canned")
-@Header(name = "x-product-size", value = "small")
-public void publishProduct(byte[] body)
+snippet::io.micronaut.configuration.rabbitmq.docs.headers.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
-//Value set per execution
-public void publishProduct(@Header("x-product-type") String productType, byte[] body)
-----
+<1> Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.
+<2> Multiple annotations can be used to set multiple headers on the method or class level.
+<3> Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.
 
 NOTE: For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, `@Header String productType` would result in a header with the name `productType` being sent.
-
-TIP: Kotlin users must use the link:{apimicronaut}messaging/annotation/Headers.html[@Headers] annotation to supply multiple headers.

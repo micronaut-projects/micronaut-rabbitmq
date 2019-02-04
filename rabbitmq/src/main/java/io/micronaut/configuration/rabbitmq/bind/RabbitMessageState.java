@@ -17,8 +17,10 @@
 package io.micronaut.configuration.rabbitmq.bind;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -33,6 +35,7 @@ public class RabbitMessageState {
     private final Envelope envelope;
     private final AMQP.BasicProperties properties;
     private final byte[] body;
+    private final Channel channel;
 
     /**
      * Default constructor.
@@ -40,11 +43,16 @@ public class RabbitMessageState {
      * @param envelope The envelope
      * @param properties The properties
      * @param body The body
+     * @param channel The channel that consumed the message
      */
-    public RabbitMessageState(Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+    public RabbitMessageState(Envelope envelope,
+                              AMQP.BasicProperties properties,
+                              byte[] body,
+                              Channel channel) {
         this.envelope = envelope;
         this.properties = properties;
         this.body = body;
+        this.channel = channel;
     }
 
     /**
@@ -57,6 +65,7 @@ public class RabbitMessageState {
     /**
      * @return The properties
      */
+    @Nonnull
     public AMQP.BasicProperties getProperties() {
         return properties;
     }
@@ -64,7 +73,20 @@ public class RabbitMessageState {
     /**
      * @return The envelope
      */
+    @Nonnull
     public Envelope getEnvelope() {
         return envelope;
+    }
+
+    /**
+     * This channel is being used exclusively by the consumer that
+     * consumed this message. Attempts to use this channel for any
+     * purpose other than acknowledgement may result in errors because
+     * channels are not thread safe.
+     *
+     * @return The channel
+     */
+    public Channel getChannel() {
+        return channel;
     }
 }

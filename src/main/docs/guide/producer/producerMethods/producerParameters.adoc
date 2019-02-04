@@ -1,1 +1,2 @@
 All options are available to be set for publishing messages. The link:{apirabbit}client/Channel.html#basicPublish(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)[basicPublish] method is used by the api:configuration.rabbitmq.intercept.RabbitMQIntroductionAdvice[] to publish messages and all arguments can be set through annotations or method arguments.
+

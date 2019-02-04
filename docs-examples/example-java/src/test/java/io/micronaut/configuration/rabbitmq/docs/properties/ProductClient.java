@@ -11,6 +11,7 @@ import io.micronaut.context.annotation.Requires;
 // tag::clazz[]
 @RabbitClient
 @RabbitProperty(name = "appId", value = "myApp") // <1>
+@RabbitProperty(name = "userId", value = "admin")
 public interface ProductClient {
 
     @Binding("product")

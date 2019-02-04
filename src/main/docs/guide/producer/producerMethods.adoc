@@ -4,3 +4,5 @@ All methods that publish messages to RabbitMQ must meet the following conditions
 * The method must contain an argument representing the body of the message.
 
 IMPORTANT: If a body argument cannot be found, an exception will be thrown.
+
+NOTE: In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to `true`. If your application was created with the Micronaut CLI, then that has already been configured for you.

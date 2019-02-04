@@ -79,7 +79,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
 
-
         properties.put("contentType", (prop, builder) ->
                 convert("contentType", prop, String.class, builder::contentType));
         properties.put("contentEncoding", (prop, builder) ->
@@ -124,7 +123,9 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             Map<String, Object> headers = new HashMap<>();
 
-            context.getAnnotationValuesByType(Header.class).forEach((header) -> {
+            List<AnnotationValue<Header>> headerAnnotations = context.getAnnotationValuesByType(Header.class);
+            Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
+            headerAnnotations.forEach((header) -> {
                 String name = header.get("name", String.class).orElse(null);
                 String value = header.getValue(String.class).orElse(null);
 
@@ -133,7 +134,9 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 }
             });
 
-            context.getAnnotationValuesByType(RabbitProperty.class).forEach((prop) -> {
+            List<AnnotationValue<RabbitProperty>> propertyAnnotations = context.getAnnotationValuesByType(RabbitProperty.class);
+            Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
+            propertyAnnotations.forEach((prop) -> {
                 String name = prop.get("name", String.class).orElse(null);
                 String value = prop.getValue(String.class).orElse(null);
 
@@ -149,9 +152,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
                 if (headerAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, headerAnn, parameterValues);
-                    if (entry.getValue() != null) {
-                        headers.put(entry.getKey(), entry.getValue());
-                    }
+                    headers.put(entry.getKey(), entry.getValue());
                 } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
                     setBasicProperty(builder, entry.getKey(), entry.getValue());
@@ -236,19 +237,22 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     }
 
     private void setBasicProperty(Builder builder, String name, Object value) {
-        if (value != null) {
-            BiConsumer<Object, Builder> consumer = properties.get(name);
-            if (consumer != null) {
-                consumer.accept(value, builder);
-            } else {
-                throw new MessagingClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
-            }
+        BiConsumer<Object, Builder> consumer = properties.get(name);
+        if (consumer != null) {
+            consumer.accept(value, builder);
+        } else {
+            throw new MessagingClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
         }
     }
 
     private <T> void convert(String name, Object value, Class<T> type, Consumer<? super T> consumer) {
-        consumer.accept(conversionService.convert(value, type)
-                .orElseThrow(() -> new MessagingClientException(String.format("Attempted to set property [%s], but could not convert the value to the required type [%s]", name, type.getName()))));
+        if (value == null) {
+            consumer.accept(null);
+        } else {
+            consumer.accept(conversionService.convert(value, type)
+                    .orElseThrow(() -> new MessagingClientException(String.format("Attempted to set property [%s], but could not convert the value to the required type [%s]", name, type.getName()))));
+        }
+
     }
 
     private Optional<String> findRoutingKey(MethodInvocationContext<Object, Object> method) {

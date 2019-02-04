@@ -21,6 +21,7 @@ import io.micronaut.configuration.rabbitmq.annotation.Queue;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
@@ -34,6 +35,8 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
+import io.micronaut.messaging.Acknowledgement;
+import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +97,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
             boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
 
+            boolean hasAckArg = Arrays.stream(method.getArguments())
+                    .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
+
             Channel channel = getChannel();
 
             consumerChannels.add(channel);
@@ -128,14 +134,15 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         if (consumerChannels.contains(channel)) {
                             channelPool.returnChannel(channel);
                             consumerChannels.remove(channel);
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
+                            }
                         }
                     }
 
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        long deliveryTag = envelope.getDeliveryTag();
-                        RabbitMessageState state = new RabbitMessageState(envelope, properties, body);
-                        boolean ack = false;
+                        RabbitMessageState state = new RabbitMessageState(envelope, properties, body, channel);
 
                         BoundExecutable boundExecutable = null;
                         try {
@@ -145,29 +152,40 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         }
 
                         if (boundExecutable != null) {
-                            try {
+                            try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue)) {
                                 Object returnedValue = boundExecutable.invoke(bean);
 
-                                if (returnedValue instanceof Boolean) {
-                                    ack = ((Boolean) returnedValue);
-                                } else {
-                                    ack = true;
+                                if (!hasAckArg) {
+                                    if (returnedValue instanceof Boolean) {
+                                        closeable.setAcknowledge((Boolean) returnedValue);
+                                    } else {
+                                        closeable.setAcknowledge(true);
+                                    }
                                 }
+                            } catch (MessageAcknowledgementException e) {
+                                throw e;
                             } catch (Throwable e) {
                                 handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
-                            } finally {
-                                if (ack) {
-                                    channel.basicAck(deliveryTag, false);
-                                } else {
-                                    channel.basicNack(deliveryTag, false, reQueue);
-                                }
                             }
                         }
                     }
                 });
+            } catch (MessageAcknowledgementException e) {
+                if (channel.isOpen()) {
+                    handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
+                } else {
+                    channelPool.returnChannel(channel);
+                    consumerChannels.remove(channel);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                    }
+                }
             } catch (IOException e) {
                 channelPool.returnChannel(channel);
                 consumerChannels.remove(channel);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                }
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
             }
         }

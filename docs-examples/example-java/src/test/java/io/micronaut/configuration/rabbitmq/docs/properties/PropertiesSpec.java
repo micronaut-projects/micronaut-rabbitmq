@@ -22,15 +22,15 @@ public class PropertiesSpec extends AbstractRabbitMQTest {
 
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
-        await().atMost(5, SECONDS).until(() ->
-                productListener.messageProperties.size() == 3 &&
-                productListener.messageProperties.contains("guest|application/json|myApp") &&
-                productListener.messageProperties.contains("guest|text/html|myApp") &&
-                productListener.messageProperties.contains("guest|null|myApp")
-        );
-
-
-
-        applicationContext.close();
+        try {
+            await().atMost(5, SECONDS).until(() ->
+                    productListener.messageProperties.size() == 3 &&
+                    productListener.messageProperties.contains("guest|application/json|myApp") &&
+                    productListener.messageProperties.contains("guest|text/html|myApp") &&
+                    productListener.messageProperties.contains("guest|null|myApp")
+            );
+        } finally {
+            applicationContext.close();
+        }
     }
 }
