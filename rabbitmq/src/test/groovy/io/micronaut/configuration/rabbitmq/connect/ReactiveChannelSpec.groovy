@@ -8,6 +8,7 @@ import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer
 import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel
 import io.micronaut.context.ApplicationContext
 import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
@@ -44,7 +45,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             }
         })
         Channel publishChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel)
+        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel, Schedulers.io())
         List<Completable> completables = [
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes),
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes),
@@ -82,7 +83,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             }
         })
         Channel produceChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel)
+        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel, Schedulers.io())
 
         when:
         reactiveChannel
@@ -118,7 +119,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         Channel channel = channelPool.getChannel()
         AtomicInteger integer = new AtomicInteger(2)
         ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
-        PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
+        PollingConditions conditions = new PollingConditions(timeout: 100, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel consumeChannel = channelPool.getChannel()
         consumeChannel.basicConsume("abc", true, new DefaultConsumer() {
@@ -142,9 +143,9 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
         }
 
-        Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes).subscribeOn(Schedulers.newThread()).subscribe({ -> integer.decrementAndGet()})
         Thread.sleep(10)
-        Completable.merge(publishes2).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes2).subscribeOn(Schedulers.newThread()).subscribe({ -> integer.decrementAndGet()})
 
         then:
         conditions.eventually {

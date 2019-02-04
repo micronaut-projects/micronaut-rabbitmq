@@ -1,0 +1,27 @@
+package io.micronaut.configuration.rabbitmq.docs.acknowledge.publisher;
+
+// tag::imports[]
+import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+// end::imports[]
+
+@Requires(property = "spec.name", value = "PublisherAcknowledgeSpec")
+// tag::class[]
+@RabbitListener // <1>
+public class ProductListener {
+
+    List<Integer> messageLengths = Collections.synchronizedList(new ArrayList<>());
+
+    @Queue("product") // <2>
+    public void receive(byte[] data) { // <3>
+        Integer length = data.length;
+        messageLengths.add(length);
+        System.out.println("Java received " + length + " bytes from RabbitMQ");
+    }
+}
+// end::class[]

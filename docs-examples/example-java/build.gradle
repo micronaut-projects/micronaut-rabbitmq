@@ -18,6 +18,7 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     testRuntime "ch.qos.logback:logback-classic:1.2.3"
+    testCompile "io.projectreactor:reactor-core"
 }
 
 compileJava.options.compilerArgs += '-parameters'

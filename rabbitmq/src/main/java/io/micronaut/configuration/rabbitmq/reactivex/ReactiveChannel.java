@@ -111,18 +111,20 @@ public class ReactiveChannel {
 
     private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
         return Completable.create((emitter) -> {
-            long nextPublishSeqNo = channel.getNextPublishSeqNo();
-            try {
-                unconfirmed.put(nextPublishSeqNo, emitter);
-                channel.basicPublish(
-                        exchange,
-                        routingKey,
-                        props,
-                        body
-                );
-            } catch (IOException e) {
-                unconfirmed.remove(nextPublishSeqNo);
-                emitter.onError(e);
+            synchronized (channel) {
+                long nextPublishSeqNo = channel.getNextPublishSeqNo();
+                try {
+                    unconfirmed.put(nextPublishSeqNo, emitter);
+                    channel.basicPublish(
+                            exchange,
+                            routingKey,
+                            props,
+                            body
+                    );
+                } catch (IOException e) {
+                    unconfirmed.remove(nextPublishSeqNo);
+                    emitter.onError(e);
+                }
             }
         });
     }
@@ -154,8 +156,9 @@ public class ReactiveChannel {
         return Completable.create((emitter) -> {
             if (initialized.get()) {
                 synchronized (initialized) {
-                    if (unconfirmed.isEmpty() && initialized.compareAndSet(true, false)) {
+                    if (initialized.get() && unconfirmed.isEmpty()) {
                         channel.removeConfirmListener(listener);
+                        initialized.set(false);
                     }
                     emitter.onComplete();
                 }
