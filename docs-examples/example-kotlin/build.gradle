@@ -30,7 +30,6 @@ test {
         showStandardStreams = true
         exceptionFormat = 'full'
     }
-    failFast = true
 }
 
 compileTestKotlin {
