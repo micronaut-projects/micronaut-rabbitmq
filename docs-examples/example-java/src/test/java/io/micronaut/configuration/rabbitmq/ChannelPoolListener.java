@@ -19,7 +19,9 @@ public class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool
         try {
             Channel channel = pool.getChannel();
             //docs/quickstart
-            channel.queueDeclare("product", false, false, false, null);
+            Map<String, Object> args = new HashMap<>();
+            args.put("x-max-priority", 100);
+            channel.queueDeclare("product", false, false, false, args);
 
             //docs/exchange
             channel.exchangeDeclare("animals", "headers", false);

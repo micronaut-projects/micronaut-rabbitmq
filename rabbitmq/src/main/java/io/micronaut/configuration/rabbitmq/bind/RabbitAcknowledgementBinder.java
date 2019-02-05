@@ -52,9 +52,7 @@ public class RabbitAcknowledgementBinder implements RabbitTypeArgumentBinder<Ack
             }
 
             private void ackNack(boolean ack, boolean multiple, boolean requeue)  throws MessageAcknowledgementException {
-                RabbitMessageCloseable closeable = new RabbitMessageCloseable(source, multiple, requeue);
-                closeable.setAcknowledge(ack);
-                closeable.close();
+                new RabbitMessageCloseable(source, multiple, requeue).withAcknowledge(ack).close();
             }
         };
         return () -> Optional.of(acknowledgement);

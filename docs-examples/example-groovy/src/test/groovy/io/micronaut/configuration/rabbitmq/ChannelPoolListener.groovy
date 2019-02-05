@@ -15,7 +15,7 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
         ChannelPool pool = event.bean
         try {
             Channel channel = pool.channel
-            channel.queueDeclare("product", false, false, false, [:])
+            channel.queueDeclare("product", false, false, false, ["x-max-priority": 100])
 
             //docs/exchange
             channel.exchangeDeclare("animals", "headers", false)

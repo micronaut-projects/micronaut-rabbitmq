@@ -60,4 +60,13 @@ public @interface RabbitProperty {
      * @return The name of property
      */
     String name() default "";
+
+
+    /**
+     * Only to be used when defining consumer arguments to convert the value to the
+     * required type by RabbitMQ.
+     *
+     * @return The type to convert the value to
+     */
+    Class type() default Void.class;
 }

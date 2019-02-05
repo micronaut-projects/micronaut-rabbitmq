@@ -1,0 +1,9 @@
+A ann:configuration.rabbitmq.annotation.Queue[] annotation is required for a method to be a consumer of messages from RabbitMQ. Simply apply the annotation to the method and supply the name of the queue you would like to listen to.
+
+IMPORTANT: Queues must already exist before you can listen to messages from them.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.parameters.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.
+
+TIP: The ann:configuration.rabbitmq.annotation.Queue[] annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.

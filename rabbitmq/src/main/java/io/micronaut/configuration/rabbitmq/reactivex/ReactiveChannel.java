@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class provides a wrapper around a {@link Channel} to provide
@@ -45,7 +44,7 @@ public class ReactiveChannel {
     private final ConcurrentHashMap<Long, CompletableEmitter> unconfirmed = new ConcurrentHashMap<>();
     private final Channel channel;
     private final ConfirmListener listener;
-    private final AtomicBoolean initialized = new AtomicBoolean(false);
+    private volatile Boolean initialized = false;
 
     /**
      * Default constructor.
@@ -89,7 +88,6 @@ public class ReactiveChannel {
                         completable.onError(new MessagingClientException("Message could not be delivered to the broker"));
                     }
                 }
-
             }
         };
     }
@@ -131,17 +129,17 @@ public class ReactiveChannel {
 
     private Completable initializePublish() {
         return Completable.create((emitter) -> {
-            if (initialized.get()) {
+            if (initialized) {
                 emitter.onComplete();
             } else {
-                synchronized (initialized) {
-                    if (initialized.get()) {
+                synchronized (this) {
+                    if (initialized) {
                         emitter.onComplete();
                     } else {
                         try {
                             channel.confirmSelect();
                             channel.addConfirmListener(listener);
-                            initialized.set(true);
+                            initialized = true;
                             emitter.onComplete();
                         } catch (IOException e) {
                             emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
@@ -154,17 +152,16 @@ public class ReactiveChannel {
 
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
-            if (initialized.get()) {
-                synchronized (initialized) {
-                    if (initialized.get() && unconfirmed.isEmpty()) {
+            if (initialized && unconfirmed.isEmpty()) {
+                synchronized (this) {
+                    if (initialized && unconfirmed.isEmpty()) {
                         channel.removeConfirmListener(listener);
-                        initialized.set(false);
+                        initialized = false;
                     }
-                    emitter.onComplete();
+
                 }
-            } else {
-                emitter.onComplete();
             }
+            emitter.onComplete();
         });
     }
 

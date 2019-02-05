@@ -11,16 +11,16 @@ import io.micronaut.messaging.annotation.Header
 // tag::clazz[]
 @RabbitClient
 @Header(name = "x-product-sealed", value = "true") // <1>
-@Header(name = "x-product-size", value = "large")
+@Header(name = "productSize", value = "large")
 interface ProductClient {
 
     @Binding("product")
     @Header(name = "x-product-count", value = "10") // <2>
-    @Header(name = "x-product-size", value = "small")
+    @Header(name = "productSize", value = "small")
     void send(byte[] data)
 
     @Binding("product")
-    void send(@Header("x-product-size") String size, // <3>
+    void send(@Header String productSize, // <3>
               @Header("x-product-count") Long count,
               byte[] data)
 }

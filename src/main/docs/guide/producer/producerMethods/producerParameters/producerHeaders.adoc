@@ -5,5 +5,3 @@ snippet::io.micronaut.configuration.rabbitmq.docs.headers.ProductClient[tags="im
 <1> Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.
 <2> Multiple annotations can be used to set multiple headers on the method or class level.
 <3> Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.
-
-NOTE: For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, `@Header String productType` would result in a header with the name `productType` being sent.

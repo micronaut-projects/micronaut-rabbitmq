@@ -9,7 +9,7 @@ import java.util.*
 // end::imports[]
 
 @Requires(property = "spec.name", value = "CustomExchangeSpec")
-// tag::class[]
+// tag::clazz[]
 @RabbitListener // <1>
 class AnimalListener {
 
@@ -25,4 +25,4 @@ class AnimalListener {
         receivedAnimals.add(snake)
     }
 }
-// end::class[]
+// end::clazz[]

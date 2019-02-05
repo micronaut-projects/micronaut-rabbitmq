@@ -45,7 +45,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             }
         })
         Channel publishChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel, Schedulers.io())
+        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel)
         List<Completable> completables = [
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes),
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes),
@@ -83,7 +83,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             }
         })
         Channel produceChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel, Schedulers.io())
+        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel)
 
         when:
         reactiveChannel
@@ -135,17 +135,17 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Completable> publishes = []
         50.times {
-            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
         }
 
         List<Completable> publishes2 = []
         25.times {
-            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
         }
 
-        Completable.merge(publishes).subscribeOn(Schedulers.newThread()).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes).subscribeOn(Schedulers.io()).subscribe({ -> integer.decrementAndGet()})
         Thread.sleep(10)
-        Completable.merge(publishes2).subscribeOn(Schedulers.newThread()).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes2).subscribeOn(Schedulers.io()).subscribe({ -> integer.decrementAndGet()})
 
         then:
         conditions.eventually {

@@ -1,4 +1,4 @@
-package io.micronaut.configuration.rabbitmq.docs.quickstart
+package io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.annotation.Queue
@@ -6,7 +6,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 // end::imports[]
 
-@Requires(property = "spec.name", value = "QuickstartSpec")
+@Requires(property = "spec.name", value = "PublisherAcknowledgeSpec")
 // tag::clazz[]
 @RabbitListener // <1>
 class ProductListener {
@@ -17,7 +17,7 @@ class ProductListener {
     void receive(byte[] data) { // <3>
         Integer length = data.length
         messageLengths.add(length)
-        println("Groovy received ${length} bytes from RabbitMQ")
+        println("Java received " + length + " bytes from RabbitMQ")
     }
 }
 // end::clazz[]

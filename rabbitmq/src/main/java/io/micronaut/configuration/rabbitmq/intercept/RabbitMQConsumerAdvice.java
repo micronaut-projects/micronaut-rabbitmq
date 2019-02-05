@@ -31,6 +31,7 @@ import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.BoundExecutable;
 import io.micronaut.core.bind.DefaultExecutableBinder;
+import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
@@ -64,6 +65,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final ChannelPool channelPool;
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
+    private final ConversionService conversionService;
     private final List<Channel> consumerChannels = new ArrayList<>();
 
     /**
@@ -77,11 +79,13 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ChannelPool channelPool,
                                   RabbitBinderRegistry binderRegistry,
-                                  RabbitListenerExceptionHandler exceptionHandler) {
+                                  RabbitListenerExceptionHandler exceptionHandler,
+                                  ConversionService conversionService) {
         this.beanContext = beanContext;
         this.channelPool = channelPool;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -106,12 +110,25 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
             Map<String, Object> arguments = new HashMap<>();
 
-            method.getAnnotationValuesByType(RabbitProperty.class).forEach((prop) -> {
+            List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
+            Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
+            propertyAnnotations.forEach((prop) -> {
                 String name = prop.getRequiredValue("name", String.class);
                 String value = prop.getValue(String.class).orElse(null);
+                Class type = prop.get("type", Class.class).orElse(null);
 
                 if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                    arguments.put(name, value);
+                    if (type != null && type != Void.class) {
+                        Optional<Object> converted = conversionService.convert(value, type);
+                        if (converted.isPresent()) {
+                            arguments.put(name, converted.get());
+                        } else {
+                            throw new MessageListenerException(String.format("Could not convert the argument [%s] to the required type [%s]", name, type));
+                        }
+                    } else {
+                        arguments.put(name, value);
+                    }
+
                 }
             });
 
@@ -157,9 +174,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                                 if (!hasAckArg) {
                                     if (returnedValue instanceof Boolean) {
-                                        closeable.setAcknowledge((Boolean) returnedValue);
+                                        closeable.withAcknowledge((Boolean) returnedValue);
                                     } else {
-                                        closeable.setAcknowledge(true);
+                                        closeable.withAcknowledge(true);
                                     }
                                 }
                             } catch (MessageAcknowledgementException e) {
@@ -167,24 +184,27 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                             } catch (Throwable e) {
                                 handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
                             }
+                        } else {
+                            new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
                         }
                     }
                 });
             } catch (MessageAcknowledgementException e) {
-                if (channel.isOpen()) {
-                    handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
-                } else {
+                if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
                     consumerChannels.remove(channel);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
                     }
                 }
+                handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
             } catch (IOException e) {
-                channelPool.returnChannel(channel);
-                consumerChannels.remove(channel);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                if (!channel.isOpen()) {
+                    channelPool.returnChannel(channel);
+                    consumerChannels.remove(channel);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                    }
                 }
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
             }

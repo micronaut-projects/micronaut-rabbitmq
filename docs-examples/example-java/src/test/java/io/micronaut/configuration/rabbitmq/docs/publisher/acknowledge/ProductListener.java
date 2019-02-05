@@ -1,4 +1,4 @@
-package io.micronaut.configuration.rabbitmq.docs.acknowledge.publisher;
+package io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge;
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.annotation.Queue;
@@ -11,7 +11,7 @@ import java.util.List;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "PublisherAcknowledgeSpec")
-// tag::class[]
+// tag::clazz[]
 @RabbitListener // <1>
 public class ProductListener {
 
@@ -21,7 +21,7 @@ public class ProductListener {
     public void receive(byte[] data) { // <3>
         Integer length = data.length;
         messageLengths.add(length);
-        System.out.println("Java received " + length + " bytes from RabbitMQ");
+        System.out.println("Groovy received " + length + " bytes from RabbitMQ");
     }
 }
-// end::class[]
+// end::clazz[]

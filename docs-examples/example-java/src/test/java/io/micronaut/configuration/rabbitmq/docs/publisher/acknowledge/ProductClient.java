@@ -1,4 +1,4 @@
-package io.micronaut.configuration.rabbitmq.docs.acknowledge.publisher;
+package io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge;
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.annotation.Binding;

@@ -82,7 +82,8 @@ public class RabbitMessageCloseable implements AutoCloseable {
      *
      * @param acknowledge The acknowledge parameter.
      */
-    public void setAcknowledge(@Nullable Boolean acknowledge) {
+    public RabbitMessageCloseable withAcknowledge(@Nullable Boolean acknowledge) {
         this.acknowledge = acknowledge;
+        return this;
     }
 }

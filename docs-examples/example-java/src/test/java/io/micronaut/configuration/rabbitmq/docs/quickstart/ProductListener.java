@@ -11,7 +11,7 @@ import java.util.List;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "QuickstartSpec")
-// tag::class[]
+// tag::clazz[]
 @RabbitListener // <1>
 public class ProductListener {
 
@@ -24,4 +24,4 @@ public class ProductListener {
         System.out.println("Java received " + length + " bytes from RabbitMQ");
     }
 }
-// end::class[]
+// end::clazz[]

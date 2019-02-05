@@ -1,13 +1,16 @@
 package io.micronaut.configuration.rabbitmq.docs.headers;
 
+// tag::imports[]
 import io.micronaut.configuration.rabbitmq.annotation.Queue
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
 import javax.annotation.Nullable
+// end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
+// tag::clazz[]
 @RabbitListener
 class ProductListener {
 
@@ -15,9 +18,10 @@ class ProductListener {
 
     @Queue("product")
     void receive(byte[] data,
-                 @Header("x-product-sealed") Boolean sealed,
-                 @Header("x-product-count") Long count,
-                 @Nullable @Header("x-product-size") String size) {
-        messageProperties.add(sealed.toString() + "|" + count + "|" + size)
+                 @Header("x-product-sealed") Boolean sealed, // <1>
+                 @Header("x-product-count") Long count, // <2>
+                 @Nullable @Header String productSize) { // <3>
+        messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
     }
 }
+// end::clazz[]

@@ -15,7 +15,7 @@ class ChannelPoolListener : BeanCreatedEventListener<ChannelPool> {
         val pool = event.bean
         try {
             val channel = pool.channel
-            channel.queueDeclare("product", false, false, false, HashMap())
+            channel.queueDeclare("product", false, false, false, mapOf("x-max-priority" to 100))
 
             //docs/exchange
             channel.exchangeDeclare("animals", "headers", false)

@@ -18,6 +18,7 @@ dependencies {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
     testRuntime "ch.qos.logback:logback-classic:1.2.3"
+    testCompile "io.projectreactor:reactor-core"
 }
 
 test {
@@ -27,4 +28,8 @@ test {
         showStandardStreams = true
         exceptionFormat = 'full'
     }
+}
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
 }

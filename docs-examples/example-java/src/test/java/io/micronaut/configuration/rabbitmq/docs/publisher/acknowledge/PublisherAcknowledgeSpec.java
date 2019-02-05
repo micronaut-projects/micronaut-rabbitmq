@@ -1,7 +1,6 @@
-package io.micronaut.configuration.rabbitmq.docs.acknowledge.publisher;
+package io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge;
 
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest;
-import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.context.ApplicationContext;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;

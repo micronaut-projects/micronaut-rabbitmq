@@ -1,1 +1,6 @@
-NOTE: Queues must already exist before you can listen to messages from them.
+All methods that consume messages from RabbitMQ must meet the following conditions:
+
+* The method must reside in a class annotated with ann:configuration.rabbitmq.annotation.RabbitListener[].
+* The method must be annotated with ann:configuration.rabbitmq.annotation.Queue[].
+
+NOTE: In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to `true`. If your application was created with the Micronaut CLI, then that has already been configured for you.

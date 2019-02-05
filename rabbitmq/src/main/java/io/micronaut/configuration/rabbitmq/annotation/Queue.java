@@ -44,4 +44,5 @@ public @interface Queue {
      * @return Whether the consumer is exclusive to the queue
      */
     boolean exclusive() default false;
+
 }

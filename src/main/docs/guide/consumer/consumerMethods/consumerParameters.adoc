@@ -1,0 +1,3 @@
+The link:{apirabbit}client/Channel.html#basicConsume(java.lang.String,boolean,java.lang.String,boolean,boolean,java.util.Map,com.rabbitmq.client.Consumer)[basicConsume] method is used by the api:configuration.rabbitmq.intercept.RabbitMQConsumerAdvice[] to consume messages. Some of the options can be directly configured through annotations.
+
+IMPORTANT: In order for the consumer method to be invoked, all arguments must be satisfied. To allow execution of the method with a null value, the argument *must* be declared as nullable. If the arguments cannot be satisfied, the message will be rejected.

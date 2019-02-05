@@ -8,4 +8,4 @@ The exchange to publish messages to can be provided through the ann:configuratio
 
 snippet::io.micronaut.configuration.rabbitmq.docs.exchange.AnimalClient[tags="imports,clazz", project-base="docs-examples/example]
 
-NOTE: Exchanges must already exist before you can publish messages to them.
+IMPORTANT: Exchanges must already exist before you can publish messages to them.

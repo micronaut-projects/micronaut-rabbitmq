@@ -1,0 +1,5 @@
+Arguments can also be bound based on their type. Several types are supported by default and each type has a corresponding api:configuration.rabbitmq.bind.RabbitTypeArgumentBinder[]. The argument binders are covered in detail in the section on <<consumerCustom, Custom Parameter Binding>>.
+
+There are only two types that are supported for retrieving data about the message. They are the link:{apirabbit}client/Envelope.html[Envelope] and link:{apirabbit}client/BasicProperties.html[BasicProperties].
+
+TODO - add snippet

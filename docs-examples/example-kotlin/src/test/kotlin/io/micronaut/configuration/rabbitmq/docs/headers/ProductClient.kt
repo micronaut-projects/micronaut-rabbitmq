@@ -6,7 +6,6 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.messaging.annotation.Headers
-
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
@@ -14,19 +13,19 @@ import io.micronaut.messaging.annotation.Headers
 @RabbitClient
 @Headers(
     Header(name = "x-product-sealed", value = "true"), // <1>
-    Header(name = "x-product-size", value = "large")
+    Header(name = "productSize", value = "large")
 )
 interface ProductClient {
 
     @Binding("product")
     @Headers(
         Header(name = "x-product-count", value = "10"), // <2>
-        Header(name = "x-product-size", value = "small")
+        Header(name = "productSize", value = "small")
     )
     fun send(data: ByteArray)
 
     @Binding("product")
-    fun send(@Header("x-product-size") size: String?, // <3>
+    fun send(@Header productSize: String?, // <3>
              @Header("x-product-count") count: Long,
              data: ByteArray)
 }

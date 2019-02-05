@@ -17,14 +17,16 @@ consumer:
   title: RabbitMQ Consumers
   consumerMethods:
     title: Defining @RabbitListener Methods
-    consumerAcknowledge: Acknowledging Messages
-    consumerBinding:
+    consumerParameters:
       title: Consumer Parameters
+      consumerQueue: Queue
       consumerProperties: Properties
       consumerHeaders: Headers
       consumerTypes: RabbitMQ Types
       consumerBody: Message Body
       consumerCustom: Custom Parameter Binding
+    consumerAcknowledge: Acknowledging Messages
+  consumerExceptions: Handling Consumer Exceptions
   consumerExecutor: Consumer Execution
 serdes:
   title: Message Serialization/Deserialization (SerDes)
