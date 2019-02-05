@@ -1,0 +1,10 @@
+Exceptions can occur in a number of different ways. Possible problem areas include:
+
+* Binding the message to the method arguments
+* Exceptions thrown from the consumer methods
+* Exceptions as a result of message acknowledgement
+* Exceptions thrown attempting to add the consumer to the channel
+
+If the consumer bean implements api:configuration.rabbitmq.exception.RabbitListenerExceptionHandler[], then exceptions will be sent to the method implementation.
+
+If the consumer bean does not implement api:configuration.rabbitmq.exception.RabbitListenerExceptionHandler[], then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the api:configuration.rabbitmq.exception.DefaultRabbitListenerExceptionHandler[] with your own implementation that is designated as `@Primary`.

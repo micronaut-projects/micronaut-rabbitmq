@@ -44,7 +44,7 @@ public class RabbitConsumerExecutorFactory {
     @Bean
     @Named(TaskExecutors.MESSAGE_CONSUMER)
     ExecutorConfiguration executor() {
-        return UserExecutorConfiguration.of(ExecutorType.FIXED, 75);
+        return UserExecutorConfiguration.of(ExecutorType.FIXED);
     }
 
 }

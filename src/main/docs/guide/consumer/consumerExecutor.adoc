@@ -1,1 +1,15 @@
-TODO
+RabbitMQ allows an link:{jdkapi}/java/util/concurrent/ExecutorService.html[ExecutorService] to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the `consumer` named executor service. The executor can be configured through application configuration. See link:{apimicronaut}/scheduling/executor/ExecutorConfiguration.html[ExecutorConfiguration] for the full list of options.
+
+For example:
+
+.Configuring the `consumer` thread pool
+[source,yaml]
+----
+micronaut:
+    executors:
+        consumer:
+            type: fixed
+            nThreads: 25
+----
+
+If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.

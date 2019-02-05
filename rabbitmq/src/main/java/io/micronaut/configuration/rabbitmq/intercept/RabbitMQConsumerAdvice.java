@@ -174,8 +174,11 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                 Object returnedValue = boundExecutable.invoke(bean);
 
                                 if (!hasAckArg) {
-                                    if (returnedValue instanceof Boolean) {
-                                        closeable.withAcknowledge((Boolean) returnedValue);
+                                    if (method.getReturnType().getType().equals(Boolean.class)) {
+                                        Boolean ack = (Boolean) returnedValue;
+                                        if (ack != null) {
+                                            closeable.withAcknowledge(ack);
+                                        }
                                     } else {
                                         closeable.withAcknowledge(true);
                                     }
@@ -194,8 +197,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
                     consumerChannels.remove(channel);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
                     }
                 }
                 handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
@@ -203,8 +206,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
                     consumerChannels.remove(channel);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
                     }
                 }
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));

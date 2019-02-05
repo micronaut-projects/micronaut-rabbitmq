@@ -1,19 +1,17 @@
 package io.micronaut.configuration.rabbitmq.docs.consumer.custom.type;
 
 // tag::imports[]
+import io.micronaut.configuration.rabbitmq.bind.RabbitHeaderConvertibleValues;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
 import io.micronaut.configuration.rabbitmq.bind.RabbitTypeArgumentBinder;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ArgumentConversionContext;
-import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.ConversionError;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
 
 import javax.inject.Singleton;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSpec")
@@ -34,29 +32,15 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder<ProductIn
 
     @Override
     public BindingResult<ProductInfo> bind(ArgumentConversionContext<ProductInfo> context, RabbitMessageState source) {
-        Map<String, Object> headers = source.getProperties().getHeaders(); //<4>
+        Map<String, Object> rawHeaders = source.getProperties().getHeaders(); //<4>
 
-        String size = Optional.ofNullable(headers.get("productSize"))
-                .map(Object::toString)
-                .flatMap((header) -> conversionService.convert(header, String.class))
-                .orElse(null); //<5>
+        RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
 
-        ArgumentConversionContext<Long> countContext = ConversionContext.of(Long.class);
-        Optional<Long> count = Optional.ofNullable(headers.get("x-product-count"))
-                .map(Object::toString)
-                .flatMap((header) -> conversionService.convert(header, countContext)); //<6>
+        String size = headers.get("productSize", String.class).orElse(null);  //<5>
+        Optional<Long> count = headers.get("x-product-count", Long.class); //<6>
+        Optional<Boolean> sealed = headers.get("x-product-sealed", Boolean.class); // <7>
 
-        ArgumentConversionContext<Boolean> sealedContext = ConversionContext.of(Boolean.class);
-        Optional<Boolean> sealed = Optional.ofNullable(headers.get("x-product-sealed"))
-                .map(Object::toString)
-                .flatMap((header) -> conversionService.convert(header, sealedContext)); //<7>
-
-        List<ConversionError> conversionErrors = Stream.of(countContext.getLastError(), sealedContext.getLastError())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-
-        if (conversionErrors.isEmpty() && count.isPresent() && sealed.isPresent()) {
+        if (headers.getConversionErrors().isEmpty() && count.isPresent() && sealed.isPresent()) {
             return () -> Optional.of(new ProductInfo(size, count.get(), sealed.get())); //<8>
         } else {
             return new BindingResult<ProductInfo>() {
@@ -67,7 +51,7 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder<ProductIn
 
                 @Override
                 public List<ConversionError> getConversionErrors() {
-                    return conversionErrors; //<9>
+                    return headers.getConversionErrors(); //<9>
                 }
             };
         }

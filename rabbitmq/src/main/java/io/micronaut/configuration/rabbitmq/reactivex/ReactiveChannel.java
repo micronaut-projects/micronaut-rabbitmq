@@ -26,7 +26,6 @@ import io.reactivex.CompletableEmitter;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class provides a wrapper around a {@link Channel} to provide

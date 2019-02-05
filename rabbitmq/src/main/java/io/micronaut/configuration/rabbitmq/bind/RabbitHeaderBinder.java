@@ -21,7 +21,7 @@ import io.micronaut.core.convert.ConversionService;
 import io.micronaut.messaging.annotation.Header;
 
 import javax.inject.Singleton;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * Binds an argument of with the {@link Header} annotation from the {@link RabbitMessageState}.
@@ -50,8 +50,14 @@ public class RabbitHeaderBinder implements RabbitAnnotatedArgumentBinder<Header>
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
-        String parameterName = context.getAnnotationMetadata().getValue(Header.class, String.class).orElse(context.getArgument().getName());
-        return () -> Optional.ofNullable(messageState.getProperties().getHeaders().get(parameterName))
-                .flatMap(prop -> conversionService.convert(prop.toString(), context));
+        String parameterName = context.getAnnotationMetadata()
+                .getValue(Header.class, String.class)
+                .orElse(context.getArgument().getName());
+
+        Map<String, Object> rawHeaders = messageState.getProperties().getHeaders();
+
+        RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
+
+        return () -> headers.get(parameterName, context);
     }
 }
