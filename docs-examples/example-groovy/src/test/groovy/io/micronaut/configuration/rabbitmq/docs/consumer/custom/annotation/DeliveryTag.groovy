@@ -9,8 +9,8 @@ import java.lang.annotation.*;
 // tag::clazz[]
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
+@Target([ElementType.PARAMETER])
 @Bindable // <1>
-public @interface DeliveryTag {
+@interface DeliveryTag {
 }
 // end::clazz[]
