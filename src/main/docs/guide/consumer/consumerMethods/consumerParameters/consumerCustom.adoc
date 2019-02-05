@@ -1,1 +1,62 @@
-TODO
+== Default Binding Functionality
+
+Consumer argument binding is achieved through an link:{apimicronaut}core/bind/ArgumentBinderRegistry.html[ArgumentBinderRegistry]  that is specific for binding consumers from RabbitMQ messages. The class responsible for this is the api:configuration.rabbitmq.bind.RabbitBinderRegistry[].
+
+The registry supports argument binders that are used based on an annotation applied to the argument or the argument type. All argument binders must implement either api:configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder[] or api:configuration.rabbitmq.bind.RabbitTypeArgumentBinder[]. The exception to that rule is the api:configuration.rabbitmq.bind.RabbitDefaultBinder[] which is used when no other binders support a given argument.
+
+When an argument needs bound, the api:configuration.rabbitmq.bind.RabbitMessageState[] is used as the source of all of the available data. The binder registry follows a small sequence of steps to attempt to find a binder that supports the argument.
+
+. Search the annotation based binders for one that matches any annotation on the argument that is annotated with link:{apimicronaut}core/bind/annotation/Bindable.html[@Bindable].
+. Search the type based binders for one that matches or is a subclass of the argument type.
+. Return the default binder.
+
+The default binder checks if the argument name matches one of the link:{apirabbit}client/BasicProperties.html[BasicProperties]. If the name does not match, the body of the message is bound to the argument.
+
+== Custom Binding
+
+To inject your own argument binding behavior, it is as simple as registering a bean. The existing binder registry will inject it and include it in the normal processing.
+
+=== Annotation Binding
+
+A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the api:configuration.rabbitmq.bind.RabbitMessageState[] to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.DeliveryTag[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The link:{apimicronaut}core/bind/annotation/Bindable.html[@Bindable] annotation is required for the annotation to be considered for binding.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.DeliveryTagAnnotationBinder[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The class is made a bean by annotating with `@Singleton`.
+<2> The custom annotation is used as the generic type for the interface.
+<3> The conversion service is injected into the instance.
+<4> The delivery tag is retrieved from the message state.
+<5> The tag is converted to the argument type. For example this allows the argument to be a `String` even though the delivery tag is a `Long`.
+
+The annotation can now be used on the argument in a consumer method.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+
+=== Type Binding
+
+A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.type.ProductInfo[tags="clazz", project-base="docs-examples/example]
+
+<1> The `size` argument is not required
+<2> The `count` argument is required
+<3> The `sealed` argument is required
+
+A type argument binder can then be created to create the `ProductInfo` instance to bind to your consumer method argument.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.type.ProductInfoTypeBinder[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The class is made a bean by annotating with `@Singleton`.
+<2> The custom type is used as the generic type for the interface.
+<3> The conversion service is injected into the instance.
+<4> The headers are retrieved from the message state.
+<5> The `productSize` header is retrieved, defaulting to null if the value was not found or could not be converted.
+<6> The `x-product-count` header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.
+<7> The `x-product-sealed` header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.
+<8> There are no conversion errors and the two required arguments are present, so the instance can be constructed.
+<9> There are conversion errors or one of the required arguments is not present so a custom `BindingResult` is returned that allows the conversion errors to be handled appropriately.
+

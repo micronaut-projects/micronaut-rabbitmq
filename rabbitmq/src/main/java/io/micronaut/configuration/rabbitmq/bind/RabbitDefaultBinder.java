@@ -45,6 +45,14 @@ public class RabbitDefaultBinder implements RabbitArgumentBinder<Object> {
         this.bodyBinder = bodyBinder;
     }
 
+    /**
+     * Checks if the argument name matches one of the {@link com.rabbitmq.client.BasicProperties}.
+     * If the name does not match, the body of the message is bound to the argument.
+     *
+     * @param context The conversion context
+     * @param messageState The message state
+     * @return A binding result
+     */
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
         if (propertyBinder.supports(context)) {

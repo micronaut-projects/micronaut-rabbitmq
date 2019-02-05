@@ -17,10 +17,7 @@ public class CustomExchangeSpec extends AbstractRabbitMQTest {
 
     @Test
     void testUsingACustomExchange() {
-        Map<String, Object> config = new HashMap<>();
-        config.put("rabbitmq.port", rabbitContainer.getMappedPort(5672));
-        config.put("spec.name", this.getClass().getSimpleName());
-        ApplicationContext applicationContext = ApplicationContext.run(config, "test");
+        ApplicationContext applicationContext = startContext();
 
         AnimalClient client = applicationContext.getBean(AnimalClient.class);
         AnimalListener listener = applicationContext.getBean(AnimalListener.class);

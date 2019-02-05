@@ -23,11 +23,9 @@ import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -35,16 +33,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * reactive implementations of the common actions that can be performed
  * on a channel.
  *
+ * Because channels are not thread safe, neither is this class. The reactive
+ * types returned from methods in this class must not be subscribed on a
+ * thread pool.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
+@NotThreadSafe
 public class ReactiveChannel {
 
-    private final ConcurrentHashMap<Long, CompletableEmitter> unconfirmed = new ConcurrentHashMap<>();
+    private final HashMap<Long, CompletableEmitter> unconfirmed = new LinkedHashMap<>();
     private final Channel channel;
     private final ConfirmListener listener;
-    private volatile Boolean initialized = false;
+    private Boolean initialized = false;
 
     /**
      * Default constructor.
@@ -109,20 +111,18 @@ public class ReactiveChannel {
 
     private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
         return Completable.create((emitter) -> {
-            synchronized (channel) {
-                long nextPublishSeqNo = channel.getNextPublishSeqNo();
-                try {
-                    unconfirmed.put(nextPublishSeqNo, emitter);
-                    channel.basicPublish(
-                            exchange,
-                            routingKey,
-                            props,
-                            body
-                    );
-                } catch (IOException e) {
-                    unconfirmed.remove(nextPublishSeqNo);
-                    emitter.onError(e);
-                }
+            long nextPublishSeqNo = channel.getNextPublishSeqNo();
+            try {
+                unconfirmed.put(nextPublishSeqNo, emitter);
+                channel.basicPublish(
+                        exchange,
+                        routingKey,
+                        props,
+                        body
+                );
+            } catch (IOException e) {
+                unconfirmed.remove(nextPublishSeqNo);
+                emitter.onError(e);
             }
         });
     }
@@ -132,19 +132,13 @@ public class ReactiveChannel {
             if (initialized) {
                 emitter.onComplete();
             } else {
-                synchronized (this) {
-                    if (initialized) {
-                        emitter.onComplete();
-                    } else {
-                        try {
-                            channel.confirmSelect();
-                            channel.addConfirmListener(listener);
-                            initialized = true;
-                            emitter.onComplete();
-                        } catch (IOException e) {
-                            emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
-                        }
-                    }
+                try {
+                    channel.confirmSelect();
+                    channel.addConfirmListener(listener);
+                    initialized = true;
+                    emitter.onComplete();
+                } catch (IOException e) {
+                    emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
                 }
             }
         });
@@ -153,13 +147,8 @@ public class ReactiveChannel {
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
             if (initialized && unconfirmed.isEmpty()) {
-                synchronized (this) {
-                    if (initialized && unconfirmed.isEmpty()) {
-                        channel.removeConfirmListener(listener);
-                        initialized = false;
-                    }
-
-                }
+                channel.removeConfirmListener(listener);
+                initialized = false;
             }
             emitter.onComplete();
         });

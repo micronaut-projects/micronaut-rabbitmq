@@ -1,1 +1,5 @@
-TODO
+There are three ways a message can be acknowledged, rejected, or not acknowledged.
+
+. For methods that accept an argument of type api:configuration.rabbitmq.bind.RabbitAcknowledgement[], the message will only be acknowledged when the respective methods on that class are executed. This way can provide a use case for not acknowledging messages at all.
+. For methods that return `Boolean`, the message will be acknowledged if the value is `true`, otherwise the message will be rejected.
+. For methods that return any other type, including `void`, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.

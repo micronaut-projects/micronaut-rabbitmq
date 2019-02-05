@@ -112,14 +112,14 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         applicationContext.close()
     }
 
-    void "test highly concurrent access"() {
+    void "test publishing many messages"() {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
         Channel channel = channelPool.getChannel()
         AtomicInteger integer = new AtomicInteger(2)
         ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
-        PollingConditions conditions = new PollingConditions(timeout: 100, initialDelay: 1)
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel consumeChannel = channelPool.getChannel()
         consumeChannel.basicConsume("abc", true, new DefaultConsumer() {
@@ -135,17 +135,17 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Completable> publishes = []
         50.times {
-            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
+            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
         }
 
         List<Completable> publishes2 = []
         25.times {
-            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
+            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
         }
 
-        Completable.merge(publishes).subscribeOn(Schedulers.io()).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})
         Thread.sleep(10)
-        Completable.merge(publishes2).subscribeOn(Schedulers.io()).subscribe({ -> integer.decrementAndGet()})
+        Completable.merge(publishes2).subscribe({ -> integer.decrementAndGet()})
 
         then:
         conditions.eventually {
