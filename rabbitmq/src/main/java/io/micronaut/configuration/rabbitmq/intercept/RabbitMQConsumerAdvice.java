@@ -75,6 +75,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
      * @param channelPool       The pool to retrieve channels from
      * @param binderRegistry    The registry to bind arguments to the method
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
+     * @param conversionService The service to convert consume argument values
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ChannelPool channelPool,

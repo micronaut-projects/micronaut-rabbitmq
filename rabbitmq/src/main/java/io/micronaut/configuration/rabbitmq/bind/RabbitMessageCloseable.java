@@ -74,13 +74,14 @@ public class RabbitMessageCloseable implements AutoCloseable {
     }
 
     /**
-     * Sets whether the message should be acknowledged.
+     * Builder style sets whether the message should be acknowledged.
      *
      * Set to true if the message should be acknowledged.
      * Set to false if the message should be rejected.
      * Set to null if the message should not be acknowledged or rejected.
      *
      * @param acknowledge The acknowledge parameter.
+     * @return The same instance
      */
     public RabbitMessageCloseable withAcknowledge(@Nullable Boolean acknowledge) {
         this.acknowledge = acknowledge;
