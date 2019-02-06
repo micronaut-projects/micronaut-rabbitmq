@@ -285,7 +285,7 @@ interface ProductClient {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The 'send' method accepts single parameter which is the body of the message.</td>
+<td>The <code>send</code> method accepts single parameter which is the body of the message.</td>
 </tr>
 </table>
 </div>
@@ -1179,7 +1179,7 @@ interface ProductClient {
 
 
 <div class="paragraph">
-<p>Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
+<p>Client methods support two return types, <code>void</code> and a reactive type. If the method returns <code>void</code>, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
 </div>
 <div class="paragraph">
 <p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
@@ -2347,7 +2347,7 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 
 
 <div class="paragraph">
-<p>RabbitMQ allows an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut//scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
+<p>RabbitMQ allows an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut/scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>

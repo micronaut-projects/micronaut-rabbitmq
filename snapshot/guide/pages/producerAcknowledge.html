@@ -104,7 +104,7 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>Client methods support 2 return types, void and a reactive type. If the method returns void, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
+<p>Client methods support two return types, <code>void</code> and a reactive type. If the method returns <code>void</code>, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
 </div>
 <div class="paragraph">
 <p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
