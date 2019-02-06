@@ -135,12 +135,12 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Completable> publishes = []
         50.times {
-            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
         }
 
         List<Completable> publishes2 = []
         25.times {
-            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes))
+            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
         }
 
         Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})

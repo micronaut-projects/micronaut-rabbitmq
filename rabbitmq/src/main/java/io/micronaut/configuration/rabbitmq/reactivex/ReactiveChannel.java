@@ -22,6 +22,7 @@ import com.rabbitmq.client.ConfirmListener;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
+import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * reactive implementations of the common actions that can be performed
  * on a channel.
  *
- * Because channels are not thread safe, neither is this class. The reactive
- * types returned from methods in this class must not be subscribed on a
- * thread pool.
- *
  * @author James Kleeh
  * @since 1.1.0
  */
@@ -50,7 +47,9 @@ public class ReactiveChannel {
     private final ConcurrentHashMap<Long, CompletableEmitter> unconfirmed = new ConcurrentHashMap<>();
     private final Channel channel;
     private final ConfirmListener listener;
-    private Boolean initialized = false;
+    private volatile boolean initialized = false;
+    private final Object initLock = new Object();
+    private final Object confirmLock = new Object();
 
     /**
      * Default constructor.
@@ -72,7 +71,7 @@ public class ReactiveChannel {
 
             private void handleAckNack(long deliveryTag, boolean multiple, boolean ack) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(System.identityHashCode(Thread.currentThread()) + " Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
+                    LOG.debug("Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
                 }
                 List<CompletableEmitter> completables = new ArrayList<>();
                 if (unconfirmed.containsKey(deliveryTag)) {
@@ -113,62 +112,75 @@ public class ReactiveChannel {
     public Completable publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         return initializePublish()
                 .andThen(publishInternal(exchange, routingKey, properties, body))
-                .andThen(cleanupChannel());
+                .doFinally(this::cleanupChannel);
     }
 
     private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
         return Completable.create((emitter) -> {
-            long nextPublishSeqNo = channel.getNextPublishSeqNo();
-            unconfirmed.put(nextPublishSeqNo, emitter);
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(System.identityHashCode(Thread.currentThread()) + " Publishing message sequence number [{}] ...", nextPublishSeqNo);
-            }
-            try {
-                channel.basicPublish(
-                        exchange,
-                        routingKey,
-                        props,
-                        body
-                );
-            } catch (IOException e) {
-                unconfirmed.remove(nextPublishSeqNo);
-                emitter.onError(e);
+            synchronized (confirmLock) {
+                long nextPublishSeqNo = channel.getNextPublishSeqNo();
+                unconfirmed.put(nextPublishSeqNo, emitter);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Publishing message sequence number [{}] ...", nextPublishSeqNo);
+                }
+                try {
+                    channel.basicPublish(
+                            exchange,
+                            routingKey,
+                            props,
+                            body
+                    );
+                } catch (IOException e) {
+                    unconfirmed.remove(nextPublishSeqNo);
+                    emitter.onError(e);
+                }
             }
         });
     }
 
     private Completable initializePublish() {
         return Completable.create((emitter) -> {
-            if (initialized) {
-                emitter.onComplete();
-            } else {
-                try {
-                    channel.confirmSelect();
-                    channel.addConfirmListener(listener);
-                    initialized = true;
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(System.identityHashCode(Thread.currentThread()) + " Added publisher acknowledgement listener to the channel");
+            if (!initialized) {
+                synchronized (initLock) {
+                    if (!initialized) {
+                        try {
+                            channel.confirmSelect();
+                            channel.addConfirmListener(listener);
+                            initialized = true;
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Added publisher acknowledgement listener to the channel");
+                            }
+                        } catch (IOException e) {
+                            emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
+                        }
                     }
                     emitter.onComplete();
-                } catch (IOException e) {
-                    emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
                 }
+            } else {
+                emitter.onComplete();
             }
         });
     }
 
-    private Completable cleanupChannel() {
-        return Completable.create((emitter) -> {
-            if (initialized && unconfirmed.isEmpty()) {
-                channel.removeConfirmListener(listener);
-                initialized = false;
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(System.identityHashCode(Thread.currentThread()) + " Removed publisher acknowledgement listener from the channel");
+    /**
+     * Synchronization is necessary because the acknowledgement
+     * thread is calling onComplete() so that thread is used to
+     * clean up the channel.
+     */
+    private void cleanupChannel() {
+        if (initialized && unconfirmed.isEmpty()) {
+            synchronized (initLock) {
+                synchronized (confirmLock) {
+                    if (initialized && unconfirmed.isEmpty()) {
+                        channel.removeConfirmListener(listener);
+                        initialized = false;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Removed publisher acknowledgement listener from the channel");
+                        }
+                    }
                 }
             }
-            emitter.onComplete();
-        });
+        }
     }
 
 }
