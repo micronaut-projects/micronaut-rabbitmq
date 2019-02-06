@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.1.2 Acknowledging Messages 1.1.0.BUILD-SNAPSHOT</title>
+    <title>6.1.1.1 Queue 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -85,7 +85,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>6.1.2 Acknowledging Messages</h1>
+                    <h1>6.1.1.1 Queue</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,30 +94,108 @@ function addJsClass() {
 
                 
 
-<h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
+<h2 id="consumerQueue">6.1.1.1 Queue</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>There are three ways a message can be acknowledged, rejected, or not acknowledged.</p>
+<p>A <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is required for a method to be a consumer of messages from RabbitMQ. Simply apply the annotation to the method and supply the name of the queue you would like to listen to.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
-</li>
-<li>
-<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value is <code>true</code>. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.</p>
-</li>
-<li>
-<p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
-</li>
-</ol>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Queues must already exist before you can listen to messages from them.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product") <b class="conum">(1)</b>
+    public void receive(byte[] data) {
+        messageLengths.add(data.length);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue("product") <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths.add(data.length)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import java.util.*
+
+@RabbitListener
+class ProductListener {
+
+    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product") <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(data.size)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.
+</td>
+</tr>
+</table>
 </div>
 
 

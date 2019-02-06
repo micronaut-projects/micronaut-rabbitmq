@@ -115,6 +115,7 @@ import io.micronaut.context.annotation.Requires;
 
 @RabbitClient
 @RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+@RabbitProperty(name = "userId", value = "admin")
 public interface ProductClient {
 
     @Binding("product")
@@ -176,7 +177,7 @@ interface ProductClient {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Properties can be defined at the class level and will apply to all methods. If an annotation is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+<td>Properties can be defined at the class level and will apply to all methods. If a property is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -184,7 +185,7 @@ interface ProductClient {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Properties can be set per execution</td>
+<td>Properties can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>

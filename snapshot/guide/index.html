@@ -119,21 +119,25 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>6.1</strong><span>Defining @RabbitListener Methods</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>6.1.1</strong><span>Acknowledging Messages</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerParameters"><a href="#consumerParameters"><strong>6.1.1</strong><span>Consumer Parameters</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerBinding"><a href="#consumerBinding"><strong>6.1.2</strong><span>Consumer Parameters</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerQueue"><a href="#consumerQueue"><strong>6.1.1.1</strong><span>Queue</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>6.1.2.1</strong><span>Properties</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>6.1.1.2</strong><span>Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>6.1.2.2</strong><span>Headers</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>6.1.1.3</strong><span>Headers</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>6.1.2.3</strong><span>RabbitMQ Types</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>6.1.1.4</strong><span>RabbitMQ Types</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>6.1.2.4</strong><span>Message Body</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>6.1.1.5</strong><span>Message Body</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.2.5</strong><span>Custom Parameter Binding</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.1.6</strong><span>Custom Parameter Binding</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.2</strong><span>Consumer Execution</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>6.1.2</strong><span>Acknowledging Messages</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExceptions"><a href="#consumerExceptions"><strong>6.2</strong><span>Handling Consumer Exceptions</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.3</strong><span>Consumer Execution</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
         
@@ -779,11 +783,11 @@ interface AnimalClient {
 }</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
 Exchanges must already exist before you can publish messages to them.
@@ -825,6 +829,18 @@ Exchanges must already exist before you can publish messages to them.
 </td>
 <td class="content">
 If a body argument cannot be found, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
 </td>
 </tr>
 </table>
@@ -940,6 +956,7 @@ import io.micronaut.context.annotation.Requires;
 
 @RabbitClient
 @RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+@RabbitProperty(name = "userId", value = "admin")
 public interface ProductClient {
 
     @Binding("product")
@@ -1001,7 +1018,7 @@ interface ProductClient {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Properties can be defined at the class level and will apply to all methods. If an annotation is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+<td>Properties can be defined at the class level and will apply to all methods. If a property is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1009,7 +1026,7 @@ interface ProductClient {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Properties can be set per execution</td>
+<td>Properties can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>
@@ -1042,40 +1059,97 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <div class="paragraph">
 <p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
-//Multiple headers can be supplied
-@Binding("products")
-@Header(name = "x-product-packaging", value = "canned")
-@Header(name = "x-product-size", value = "small")
-public void publishProduct(byte[] body)
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.messaging.annotation.Header;
 
-//Value set per execution
-public void publishProduct(@Header("x-product-type") String productType, byte[] body)</code></pre>
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+public interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data);
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data);
+}</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data)
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.Headers
+
+@RabbitClient
+@Headers(
+    Header(name = "x-product-sealed", value = "true"), <b class="conum">(1)</b>
+    Header(name = "productSize", value = "large")
+)
+interface ProductClient {
+
+    @Binding("product")
+    @Headers(
+        Header(name = "x-product-count", value = "10"), <b class="conum">(2)</b>
+        Header(name = "productSize", value = "small")
+    )
+    fun send(data: ByteArray)
+
+    @Binding("product")
+    fun send(@Header productSize: String?, <b class="conum">(3)</b>
+             @Header("x-product-count") count: Long,
+             data: ByteArray)
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, <code>@Header String productType</code> would result in a header with the name <code>productType</code> being sent.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Headers.html">@Headers</a> annotation to supply multiple headers.
-</td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple headers on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>
@@ -1090,7 +1164,9 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 </div>
 
 
-
+<div class="paragraph">
+<p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON serialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and serialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
+</div>
 
 
 <h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
@@ -1109,15 +1185,123 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 <p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
 </div>
 <div class="paragraph">
-<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.</p>
+<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged (completed) or not (error).</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Completable publishAcknowledge(byte[] data);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
+
+@RabbitClient
+public interface ProductClient {
+
+    @Binding("product")
+    Completable send(byte[] data); <b class="conum">(1)</b>
+
+    @Binding("product")
+    Maybe&lt;Void&gt; sendMaybe(byte[] data); <b class="conum">(2)</b>
+
+    @Binding("product")
+    Mono&lt;Void&gt; sendMono(byte[] data); <b class="conum">(3)</b>
+
+    @Binding("product")
+    Publisher&lt;Void&gt; sendPublisher(byte[] data); <b class="conum">(4)</b>
+}</code></pre>
 </div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product")
+    Completable send(byte[] data) <b class="conum">(1)</b>
+
+    @Binding("product")
+    Maybe&lt;Void&gt; sendMaybe(byte[] data) <b class="conum">(2)</b>
+
+    @Binding("product")
+    Mono&lt;Void&gt; sendMono(byte[] data) <b class="conum">(3)</b>
+
+    @Binding("product")
+    Publisher&lt;Void&gt; sendPublisher(byte[] data) <b class="conum">(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product")
+    fun send(data: ByteArray): Completable  <b class="conum">(1)</b>
+
+    @Binding("product")
+    fun sendMaybe(data: ByteArray): Maybe&lt;Void&gt;  <b class="conum">(2)</b>
+
+    @Binding("product")
+    fun sendMono(data: ByteArray): Mono&lt;Void&gt;  <b class="conum">(3)</b>
+
+    @Binding("product")
+    fun sendPublisher(data: ByteArray): Publisher&lt;Void&gt;  <b class="conum">(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The recommended approach of using a <code>Completable</code> as the return type for those using <a href="https://github.com/ReactiveX/RxJava">RxJava 2</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <code>Maybe</code> also closely matches the use case of publisher acknowledgement.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>For those that prefer <a href="https://projectreactor.io/">Project Reactor</a>, a <code>Mono</code> can be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>For those who prefer not to use any reactive library in their code, a <code>Publisher</code> can be returned. Note that Micronaut does not ship with this library.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+RxJava 1 is not supported.
+</td>
+</tr>
+</table>
 </div>
 
 
@@ -1147,6 +1331,19 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 </div>
 
 
+<div class="paragraph">
+<p>All methods that consume messages from RabbitMQ must meet the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a>.</p>
+</li>
+<li>
+<p>The method must be annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a>.</p>
+</li>
+</ul>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1154,14 +1351,930 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Queues must already exist before you can listen to messages from them.
+In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
 </td>
 </tr>
 </table>
 </div>
 
 
-<h2 id="consumerAcknowledge">6.1.1 Acknowledging Messages</h2>
+<h2 id="consumerParameters">6.1.1 Consumer Parameters</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicConsume(java.lang.String,boolean,java.lang.String,boolean,boolean,java.util.Map,com.rabbitmq.client.Consumer)">basicConsume</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> to consume messages. Some of the options can be directly configured through annotations.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In order for the consumer method to be invoked, all arguments must be satisfied. To allow execution of the method with a null value, the argument <strong>must</strong> be declared as nullable. If the arguments cannot be satisfied, the message will be rejected.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="consumerQueue">6.1.1.1 Queue</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>A <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is required for a method to be a consumer of messages from RabbitMQ. Simply apply the annotation to the method and supply the name of the queue you would like to listen to.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Queues must already exist before you can listen to messages from them.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product") <b class="conum">(1)</b>
+    public void receive(byte[] data) {
+        messageLengths.add(data.length);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue("product") <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths.add(data.length)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import java.util.*
+
+@RabbitListener
+class ProductListener {
+
+    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product") <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(data.size)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="consumerProperties">6.1.1.2 Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The arguments passed to <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicConsume(java.lang.String,boolean,java.lang.String,boolean,boolean,java.util.Map,com.rabbitmq.client.Consumer)">basicConsume</a> can be configured through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html">@RabbitProperty</a> annotation.</p>
+</div>
+<div class="paragraph">
+<p>In addition, any method parameters can be annotated to bind to properties from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a> received with the message.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;String&gt; messageProperties = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product")
+    @RabbitProperty(name = "x-priority", value = "10", type = Integer.class) <b class="conum">(1)</b>
+    public void receive(byte[] data,
+                        @RabbitProperty("userId") String user,  <b class="conum">(2)</b>
+                        @Nullable @RabbitProperty String contentType,  <b class="conum">(3)</b>
+                        String appId) {  <b class="conum">(4)</b>
+        messageProperties.add(user + "|" + contentType + "|" + appId);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+import io.micronaut.context.annotation.Requires
+
+import javax.annotation.Nullable
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messageProperties = Collections.synchronizedList([])
+
+    @Queue("product")
+    @RabbitProperty(name = "x-priority", value = "10", type = Integer.class) <b class="conum">(1)</b>
+    void receive(byte[] data,
+                 @RabbitProperty("userId") String user, <b class="conum">(2)</b>
+                 @Nullable @RabbitProperty String contentType, <b class="conum">(3)</b>
+                 String appId) { <b class="conum">(4)</b>
+        messageProperties.add(user + "|" + contentType + "|" + appId)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+import io.micronaut.context.annotation.Requires
+import java.util.*
+
+@RabbitListener
+class ProductListener {
+
+    val messageProperties: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    @RabbitProperty(name = "x-priority", value = "10", type = Integer::class) <b class="conum">(1)</b>
+    fun receive(data: ByteArray,
+                @RabbitProperty("userId") user: String, <b class="conum">(2)</b>
+                @RabbitProperty contentType: String?, <b class="conum">(3)</b>
+                appId: String) { <b class="conum">(4)</b>
+        messageProperties.add("$user|$contentType|$appId")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The property is sent as an argument to the Java client consume method. Properties could also be defined on the class level to apply to all consumers in the class. Note the type is required here if RabbitMQ expects something other than a <code>String</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The argument is bound from the <code>userId</code> property.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The property name to bind from is inferred from the argument name. This argument allows null values.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If the argument name matches one of the defined property names, it will be bound from that property.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied type cannot be converted from the type defined in <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="consumerHeaders">6.1.1.3 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Headers can be retrieved with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the arguments of the method.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.messaging.annotation.Header;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;String&gt; messageProperties = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product")
+    public void receive(byte[] data,
+                        @Header("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
+                        @Header("x-product-count") Long count, <b class="conum">(2)</b>
+                        @Nullable @Header String productSize) { <b class="conum">(3)</b>
+        messageProperties.add(sealed + "|" + count + "|" + productSize);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+
+import javax.annotation.Nullable
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messageProperties = Collections.synchronizedList(new ArrayList&lt;&gt;())
+
+    @Queue("product")
+    void receive(byte[] data,
+                 @Header("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
+                 @Header("x-product-count") Long count, <b class="conum">(2)</b>
+                 @Nullable @Header String productSize) { <b class="conum">(3)</b>
+        messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+import java.util.ArrayList
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    var messageProperties: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    fun receive(data: ByteArray,
+                @Header("x-product-sealed") sealed: Boolean, <b class="conum">(1)</b>
+                @Header("x-product-count") count: Long, <b class="conum">(2)</b>
+                @Header productSize: String?) { <b class="conum">(3)</b>
+        messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The header name comes from the annotation and the value is retrieved and converted to a Boolean.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header name comes from the annotation and the value is retrieved and converted to a Long.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The header name comes from the argument name. This argument allows null values.</td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="consumerTypes">6.1.1.4 RabbitMQ Types</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Arguments can also be bound based on their type. Several types are supported by default and each type has a corresponding <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html">RabbitTypeArgumentBinder</a>. The argument binders are covered in detail in the section on <a href="#consumerCustom">Custom Parameter Binding</a>.</p>
+</div>
+<div class="paragraph">
+<p>There are only two types that are supported for retrieving data about the message. They are the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a> and <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.BasicProperties;
+import com.rabbitmq.client.Envelope;
+import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;String&gt; messages = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product")
+    public void receive(byte[] data,
+                        Envelope envelope, <b class="conum">(1)</b>
+                        BasicProperties basicProperties) { <b class="conum">(2)</b>
+        messages.add(String.format("exchange: [%s], routingKey: [%s], contentType: [%s]",
+                envelope.getExchange(), envelope.getRoutingKey(), basicProperties.getContentType()));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Envelope
+import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messages = Collections.synchronizedList([])
+
+    @Queue("product")
+    void receive(byte[] data,
+                 Envelope envelope, <b class="conum">(1)</b>
+                 BasicProperties basicProperties) { <b class="conum">(2)</b>
+        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]".toString())
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Envelope
+import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.ArrayList
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messages: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    fun receive(data: ByteArray,
+                envelope: Envelope, <b class="conum">(1)</b>
+                basicProperties: BasicProperties) { <b class="conum">(2)</b>
+        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a></td>
+</tr>
+</table>
+</div>
+
+
+<h2 id="consumerBody">6.1.1.5 Message Body</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON deserialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and deserialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
+</div>
+
+
+<h2 id="consumerCustom">6.1.1.6 Custom Parameter Binding</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect1">
+<h2 id="_default_binding_functionality">Default Binding Functionality</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Consumer argument binding is achieved through an <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/ArgumentBinderRegistry.html">ArgumentBinderRegistry</a>  that is specific for binding consumers from RabbitMQ messages. The class responsible for this is the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html">RabbitBinderRegistry</a>.</p>
+</div>
+<div class="paragraph">
+<p>The registry supports argument binders that are used based on an annotation applied to the argument or the argument type. All argument binders must implement either <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAnnotatedArgumentBinder.html">RabbitAnnotatedArgumentBinder</a> or <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html">RabbitTypeArgumentBinder</a>. The exception to that rule is the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html">RabbitDefaultBinder</a> which is used when no other binders support a given argument.</p>
+</div>
+<div class="paragraph">
+<p>When an argument needs bound, the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html">RabbitMessageState</a> is used as the source of all of the available data. The binder registry follows a small sequence of steps to attempt to find a binder that supports the argument.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Search the annotation based binders for one that matches any annotation on the argument that is annotated with <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/annotation/Bindable.html">@Bindable</a>.</p>
+</li>
+<li>
+<p>Search the type based binders for one that matches or is a subclass of the argument type.</p>
+</li>
+<li>
+<p>Return the default binder.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The default binder checks if the argument name matches one of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>. If the name does not match, the body of the message is bound to the argument.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_binding">Custom Binding</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To inject your own argument binding behavior, it is as simple as registering a bean. The existing binder registry will inject it and include it in the normal processing.</p>
+</div>
+<div class="sect2">
+<h3 id="_annotation_binding">Annotation Binding</h3>
+<div class="paragraph">
+<p>A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html">RabbitMessageState</a> to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.core.bind.annotation.Bindable;
+
+import java.lang.annotation.*;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER})
+@Bindable <b class="conum">(1)</b>
+public @interface DeliveryTag {
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.core.bind.annotation.Bindable;
+
+import java.lang.annotation.*;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target([ElementType.PARAMETER])
+@Bindable <b class="conum">(1)</b>
+@interface DeliveryTag {
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.core.bind.annotation.Bindable
+import java.lang.annotation.Documented
+
+@Documented
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Bindable <b class="conum">(1)</b>
+annotation class DeliveryTag</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/annotation/Bindable.html">@Bindable</a> annotation is required for the annotation to be considered for binding.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder;
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.convert.ArgumentConversionContext;
+import io.micronaut.core.convert.ConversionService;
+
+import javax.inject.Singleton;
+
+@Singleton <b class="conum">(1)</b>
+public class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
+
+    private final ConversionService conversionService;
+
+    public DeliveryTagAnnotationBinder(ConversionService conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService;
+    }
+
+    @Override
+    public Class&lt;DeliveryTag&gt; getAnnotationType() {
+        return DeliveryTag.class;
+    }
+
+    @Override
+    public BindingResult&lt;Object&gt; bind(ArgumentConversionContext&lt;Object&gt; context, RabbitMessageState source) {
+        Long deliveryTag = source.getEnvelope().getDeliveryTag(); <b class="conum">(4)</b>
+        return () -&gt; conversionService.convert(deliveryTag, context); <b class="conum">(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ArgumentConversionContext
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+
+@Singleton <b class="conum">(1)</b>
+class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
+
+    private final ConversionService conversionService;
+
+    DeliveryTagAnnotationBinder(ConversionService conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService
+    }
+
+    @Override
+    Class&lt;DeliveryTag&gt; getAnnotationType() {
+        DeliveryTag
+    }
+
+    @Override
+    BindingResult&lt;Object&gt; bind(ArgumentConversionContext&lt;Object&gt; context, RabbitMessageState source) {
+        Long deliveryTag = source.envelope.deliveryTag <b class="conum">(4)</b>
+        return { -&gt; conversionService.convert(deliveryTag, context) } <b class="conum">(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.bind.ArgumentBinder
+import io.micronaut.core.convert.ArgumentConversionContext
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+
+@Singleton <b class="conum">(1)</b>
+class DeliveryTagAnnotationBinder(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
+    : RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
+
+    override fun getAnnotationType(): Class&lt;DeliveryTag&gt; {
+        return DeliveryTag::class.java
+    }
+
+    override fun bind(context: ArgumentConversionContext&lt;Any&gt;, source: RabbitMessageState): ArgumentBinder.BindingResult&lt;Any&gt; {
+        val deliveryTag = source.envelope.deliveryTag <b class="conum">(4)</b>
+        return ArgumentBinder.BindingResult { conversionService.convert(deliveryTag, context) } <b class="conum">(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is made a bean by annotating with <code>@Singleton</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The custom annotation is used as the generic type for the interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected into the instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The delivery tag is retrieved from the message state.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The tag is converted to the argument type. For example this allows the argument to be a <code>String</code> even though the delivery tag is a <code>Long</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The annotation can now be used on the argument in a consumer method.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.*;
+
+@RabbitListener
+public class ProductListener {
+
+    Set&lt;Long&gt; messages = Collections.synchronizedSet(new HashSet&lt;&gt;());
+
+    @Queue("product")
+    public void receive(byte[] data, @DeliveryTag Long tag) { <b class="conum">(1)</b>
+        messages.add(tag);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    Set&lt;Long&gt; messages = Collections.synchronizedSet(new HashSet&lt;&gt;())
+
+    @Queue("product")
+    void receive(byte[] data, @DeliveryTag Long tag) { <b class="conum">(1)</b>
+        messages.add(tag)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.Collections
+import java.util.HashSet
+
+@RabbitListener
+class ProductListener {
+
+    val messages: MutableSet&lt;Long&gt; = Collections.synchronizedSet(HashSet())
+
+    @Queue("product")
+    fun receive(data: ByteArray, @DeliveryTag tag: Long) { <b class="conum">(1)</b>
+        messages.add(tag)
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_type_binding">Type Binding</h3>
+<div class="paragraph">
+<p>A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+
+@Immutable
+public class ProductInfo {
+
+    private String size;
+    private Long count;
+    private Boolean sealed;
+
+    public ProductInfo(@Nullable String size, <b class="conum">(1)</b>
+                       @Nonnull Long count, <b class="conum">(2)</b>
+                       @Nonnull Boolean sealed) { <b class="conum">(3)</b>
+        this.size = size;
+        this.count = count;
+        this.sealed = sealed;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public Boolean getSealed() {
+        return sealed;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>size</code> argument is not required</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>count</code> argument is required</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>sealed</code> argument is required</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A type argument binder can then be created to create the <code>ProductInfo</code> instance to bind to your consumer method argument.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitHeaderConvertibleValues;
+import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitTypeArgumentBinder;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.convert.ArgumentConversionContext;
+import io.micronaut.core.convert.ConversionError;
+import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.type.Argument;
+
+import javax.inject.Singleton;
+import java.util.*;
+
+@Singleton <b class="conum">(1)</b>
+public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private final ConversionService&lt;?&gt; conversionService;
+
+    ProductInfoTypeBinder(ConversionService&lt;?&gt; conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService;
+    }
+
+    @Override
+    public Argument&lt;ProductInfo&gt; argumentType() {
+        return Argument.of(ProductInfo.class);
+    }
+
+    @Override
+    public BindingResult&lt;ProductInfo&gt; bind(ArgumentConversionContext&lt;ProductInfo&gt; context, RabbitMessageState source) {
+        Map&lt;String, Object&gt; rawHeaders = source.getProperties().getHeaders(); <b class="conum">(4)</b>
+
+        RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
+
+        String size = headers.get("productSize", String.class).orElse(null);  <b class="conum">(5)</b>
+        Optional&lt;Long&gt; count = headers.get("x-product-count", Long.class); <b class="conum">(6)</b>
+        Optional&lt;Boolean&gt; sealed = headers.get("x-product-sealed", Boolean.class); <b class="conum">(7)</b>
+
+        if (headers.getConversionErrors().isEmpty() &amp;&amp; count.isPresent() &amp;&amp; sealed.isPresent()) {
+            return () -&gt; Optional.of(new ProductInfo(size, count.get(), sealed.get())); <b class="conum">(8)</b>
+        } else {
+            return new BindingResult&lt;ProductInfo&gt;() {
+                @Override
+                public Optional&lt;ProductInfo&gt; getValue() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public List&lt;ConversionError&gt; getConversionErrors() {
+                    return headers.getConversionErrors(); <b class="conum">(9)</b>
+                }
+            };
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is made a bean by annotating with <code>@Singleton</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The custom type is used as the generic type for the interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected into the instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The headers are retrieved from the message state.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>productSize</code> header is retrieved, defaulting to null if the value was not found or could not be converted.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The <code>x-product-count</code> header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The <code>x-product-sealed</code> header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>There are no conversion errors and the two required arguments are present, so the instance can be constructed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>There are conversion errors or one of the required arguments is not present so a custom <code>BindingResult</code> is returned that allows the conversion errors to be handled appropriately.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+<h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
@@ -1171,95 +2284,60 @@ Queues must already exist before you can listen to messages from them.
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>There are three ways a message can be acknowledged, rejected, or not acknowledged.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
+</li>
+<li>
+<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value is <code>true</code>. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.</p>
+</li>
+<li>
+<p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
+</li>
+</ol>
 </div>
 
 
-<h2 id="consumerBinding">6.1.2 Consumer Parameters</h2>
+<h2 id="consumerExceptions">6.2 Handling Consumer Exceptions</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>Exceptions can occur in a number of different ways. Possible problem areas include:</p>
 </div>
-
-
-<h2 id="consumerProperties">6.1.2.1 Properties</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerProperties.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
+<div class="ulist">
+<ul>
+<li>
+<p>Binding the message to the method arguments</p>
+</li>
+<li>
+<p>Exceptions thrown from the consumer methods</p>
+</li>
+<li>
+<p>Exceptions as a result of message acknowledgement</p>
+</li>
+<li>
+<p>Exceptions thrown attempting to add the consumer to the channel</p>
+</li>
+</ul>
 </div>
-
-
 <div class="paragraph">
-<p>TODO</p>
+<p>If the consumer bean implements <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then exceptions will be sent to the method implementation.</p>
 </div>
-
-
-<h2 id="consumerHeaders">6.1.2.2 Headers</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerHeaders.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
 <div class="paragraph">
-<p>TODO</p>
+<p>If the consumer bean does not implement <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the <a href="../api/io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html">DefaultRabbitListenerExceptionHandler</a> with your own implementation that is designated as <code>@Primary</code>.</p>
 </div>
 
 
-<h2 id="consumerTypes">6.1.2.3 RabbitMQ Types</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerTypes.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>TODO</p>
-</div>
-
-
-<h2 id="consumerBody">6.1.2.4 Message Body</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerBody.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>TODO</p>
-</div>
-
-
-<h2 id="consumerCustom">6.1.2.5 Custom Parameter Binding</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerCustom.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>TODO</p>
-</div>
-
-
-<h2 id="consumerExecutor">6.2 Consumer Execution</h2>
+<h2 id="consumerExecutor">6.3 Consumer Execution</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
@@ -1269,7 +2347,23 @@ Queues must already exist before you can listen to messages from them.
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>RabbitMQ allows an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut//scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the <code>consumer</code> thread pool</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    executors:
+        consumer:
+            type: fixed
+            nThreads: 25</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.</p>
 </div>
 
 

@@ -151,6 +151,18 @@ If a body argument cannot be found, an exception will be thrown.
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
+</td>
+</tr>
+</table>
+</div>
 
 
 <h2 id="producerParameters">5.1.1 Publishing Parameters</h2>
@@ -262,6 +274,7 @@ import io.micronaut.context.annotation.Requires;
 
 @RabbitClient
 @RabbitProperty(name = "appId", value = "myApp") <b class="conum">(1)</b>
+@RabbitProperty(name = "userId", value = "admin")
 public interface ProductClient {
 
     @Binding("product")
@@ -323,7 +336,7 @@ interface ProductClient {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Properties can be defined at the class level and will apply to all methods. If an annotation is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+<td>Properties can be defined at the class level and will apply to all methods. If a property is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -331,7 +344,7 @@ interface ProductClient {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Properties can be set per execution</td>
+<td>Properties can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>
@@ -364,40 +377,97 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <div class="paragraph">
 <p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
-//Multiple headers can be supplied
-@Binding("products")
-@Header(name = "x-product-packaging", value = "canned")
-@Header(name = "x-product-size", value = "small")
-public void publishProduct(byte[] body)
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.messaging.annotation.Header;
 
-//Value set per execution
-public void publishProduct(@Header("x-product-type") String productType, byte[] body)</code></pre>
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+public interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data);
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data);
+}</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data)
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.Headers
+
+@RabbitClient
+@Headers(
+    Header(name = "x-product-sealed", value = "true"), <b class="conum">(1)</b>
+    Header(name = "productSize", value = "large")
+)
+interface ProductClient {
+
+    @Binding("product")
+    @Headers(
+        Header(name = "x-product-count", value = "10"), <b class="conum">(2)</b>
+        Header(name = "productSize", value = "small")
+    )
+    fun send(data: ByteArray)
+
+    @Binding("product")
+    fun send(@Header productSize: String?, <b class="conum">(3)</b>
+             @Header("x-product-count") count: Long,
+             data: ByteArray)
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, <code>@Header String productType</code> would result in a header with the name <code>productType</code> being sent.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Headers.html">@Headers</a> annotation to supply multiple headers.
-</td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple headers on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>
@@ -412,7 +482,9 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 </div>
 
 
-
+<div class="paragraph">
+<p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON serialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and serialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
+</div>
 
 
 <h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
@@ -431,15 +503,123 @@ Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micro
 <p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
 </div>
 <div class="paragraph">
-<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged or not.</p>
+<p>Micronaut comes with RxJava2 by default, and the <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html">Completable</a> type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged (completed) or not (error).</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public Completable publishAcknowledge(byte[] data);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
+
+@RabbitClient
+public interface ProductClient {
+
+    @Binding("product")
+    Completable send(byte[] data); <b class="conum">(1)</b>
+
+    @Binding("product")
+    Maybe&lt;Void&gt; sendMaybe(byte[] data); <b class="conum">(2)</b>
+
+    @Binding("product")
+    Mono&lt;Void&gt; sendMono(byte[] data); <b class="conum">(3)</b>
+
+    @Binding("product")
+    Publisher&lt;Void&gt; sendPublisher(byte[] data); <b class="conum">(4)</b>
+}</code></pre>
 </div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product")
+    Completable send(byte[] data) <b class="conum">(1)</b>
+
+    @Binding("product")
+    Maybe&lt;Void&gt; sendMaybe(byte[] data) <b class="conum">(2)</b>
+
+    @Binding("product")
+    Mono&lt;Void&gt; sendMono(byte[] data) <b class="conum">(3)</b>
+
+    @Binding("product")
+    Publisher&lt;Void&gt; sendPublisher(byte[] data) <b class="conum">(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product")
+    fun send(data: ByteArray): Completable  <b class="conum">(1)</b>
+
+    @Binding("product")
+    fun sendMaybe(data: ByteArray): Maybe&lt;Void&gt;  <b class="conum">(2)</b>
+
+    @Binding("product")
+    fun sendMono(data: ByteArray): Mono&lt;Void&gt;  <b class="conum">(3)</b>
+
+    @Binding("product")
+    fun sendPublisher(data: ByteArray): Publisher&lt;Void&gt;  <b class="conum">(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The recommended approach of using a <code>Completable</code> as the return type for those using <a href="https://github.com/ReactiveX/RxJava">RxJava 2</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <code>Maybe</code> also closely matches the use case of publisher acknowledgement.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>For those that prefer <a href="https://projectreactor.io/">Project Reactor</a>, a <code>Mono</code> can be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>For those who prefer not to use any reactive library in their code, a <code>Publisher</code> can be returned. Note that Micronaut does not ship with this library.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+RxJava 1 is not supported.
+</td>
+</tr>
+</table>
 </div>
 
 

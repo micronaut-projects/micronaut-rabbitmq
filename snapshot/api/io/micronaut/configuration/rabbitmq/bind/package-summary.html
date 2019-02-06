@@ -85,18 +85,24 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitAcknowledgement</a></td>
+<td class="colLast">
+<div class="block">A contract for acknowledging or rejecting RabbitMQ messages.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitAnnotatedArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitAnnotatedArgumentBinder</a>&lt;A extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>&gt;</td>
 <td class="colLast">
 <div class="block">An interface for RabbitMQ argument binding based on an annotation.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitArgumentBinder</a>&lt;T&gt;</td>
 <td class="colLast">
 <div class="block">An interface for RabbitMQ argument binding.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitTypeArgumentBinder</a>&lt;T&gt;</td>
 <td class="colLast">
 <div class="block">An interface for RabbitMQ argument binding based on argument type.</div>
@@ -114,49 +120,67 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitAcknowledgementBinder</a></td>
+<td class="colLast">
+<div class="block">Binds an argument of type <code>Acknowledgement</code> from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBasicPropertiesBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBasicPropertiesBinder</a></td>
 <td class="colLast">
 <div class="block">Binds an argument of type <code>BasicProperties</code> from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a></td>
 <td class="colLast">
 <div class="block">Used to determine which <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind"><code>RabbitArgumentBinder</code></a> to use for any given argument.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBodyBinder</a></td>
 <td class="colLast">
 <div class="block">Binds an argument of with the <code>Body</code> annotation from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitDefaultBinder</a></td>
 <td class="colLast">
 <div class="block">The default binder for binding an argument from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>
  that is used if no other binder supports the argument.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitEnvelopeBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitEnvelopeBinder</a></td>
 <td class="colLast">
 <div class="block">Binds an argument of type <code>Envelope</code> from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitHeaderBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitHeaderBinder</a></td>
 <td class="colLast">
 <div class="block">Binds an argument of with the <code>Header</code> annotation from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitHeaderConvertibleValues.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitHeaderConvertibleValues</a></td>
+<td class="colLast">
+<div class="block">Converts RabbitMQ header values to the requested type.</div>
+</td>
+</tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageCloseable.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageCloseable</a></td>
+<td class="colLast">
+<div class="block">Responsible for acknowledging or rejecting a message.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitMessageState</a></td>
 <td class="colLast">
 <div class="block">Stores the state of a RabbitMQ message.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitPropertyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitPropertyBinder</a></td>
 <td class="colLast">
 <div class="block">Binds an argument of with the <a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitProperty</code></a> annotation from the <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>

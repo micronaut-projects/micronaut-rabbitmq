@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6 RabbitMQ Consumers 1.1.0.BUILD-SNAPSHOT</title>
+    <title>6.1.1 Consumer Parameters 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -25,35 +25,35 @@ function addJsClass() {
         <ul>
             <li>
                 <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
-                    <a href="../guide/index.html" class="button">Table of contents</a>
+                    <a href="../../guide/index.html" class="button">Table of contents</a>
 
                     <div id="nav-summary-childs" style="display:none;">
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>2</strong><span>Using the Micronaut CLI</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/cli.html"><strong>2</strong><span>Using the Micronaut CLI</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>3</strong><span>RabbitMQ Quick Start</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/quickStart.html"><strong>3</strong><span>RabbitMQ Quick Start</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>8</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/health.html"><strong>8</strong><span>RabbitMQ Health Indicator</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>9</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/metrics.html"><strong>9</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -74,18 +74,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>6 RabbitMQ Consumers</h1>
+                    <h1>6.1.1 Consumer Parameters</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,96 +94,28 @@ function addJsClass() {
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#consumerMethods"><strong>6.1</strong><span>Defining @RabbitListener Methods</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerQueue"><strong>6.1</strong><span>Queue</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:10px"><a href="#consumerParameters"><strong>6.1.1</strong><span>Consumer Parameters</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerProperties"><strong>6.2</strong><span>Properties</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerQueue"><strong>6.1.1.1</strong><span>Queue</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerHeaders"><strong>6.3</strong><span>Headers</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerProperties"><strong>6.1.1.2</strong><span>Properties</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerTypes"><strong>6.4</strong><span>RabbitMQ Types</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerHeaders"><strong>6.1.1.3</strong><span>Headers</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerBody"><strong>6.5</strong><span>Message Body</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerTypes"><strong>6.1.1.4</strong><span>RabbitMQ Types</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerBody"><strong>6.1.1.5</strong><span>Message Body</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:20px"><a href="#consumerCustom"><strong>6.1.1.6</strong><span>Custom Parameter Binding</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:10px"><a href="#consumerAcknowledge"><strong>6.1.2</strong><span>Acknowledging Messages</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#consumerExceptions"><strong>6.2</strong><span>Handling Consumer Exceptions</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#consumerExecutor"><strong>6.3</strong><span>Consumer Execution</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#consumerCustom"><strong>6.6</strong><span>Custom Parameter Binding</span></a>
                     </div>
                     
                 </div>
                 
 
                 
-
-<h1 id="consumer">6 RabbitMQ Consumers</h1>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>The example in the quick start presented a trivial definition of a class that listens for messages using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation.</p>
-</div>
-<div class="paragraph">
-<p>The implementation that powers <code>@RabbitListener</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ consumers.</p>
-</div>
-
-
-<h2 id="consumerMethods">6.1 Defining @RabbitListener Methods</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>All methods that consume messages from RabbitMQ must meet the following conditions:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a>.</p>
-</li>
-<li>
-<p>The method must be annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a>.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
-</td>
-</tr>
-</table>
-</div>
-
 
 <h2 id="consumerParameters">6.1.1 Consumer Parameters</h2>
 
@@ -1101,104 +1033,11 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 </div>
 
 
-<h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>There are three ways a message can be acknowledged, rejected, or not acknowledged.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
-</li>
-<li>
-<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value is <code>true</code>. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.</p>
-</li>
-<li>
-<p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
-</li>
-</ol>
-</div>
-
-
-<h2 id="consumerExceptions">6.2 Handling Consumer Exceptions</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>Exceptions can occur in a number of different ways. Possible problem areas include:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Binding the message to the method arguments</p>
-</li>
-<li>
-<p>Exceptions thrown from the consumer methods</p>
-</li>
-<li>
-<p>Exceptions as a result of message acknowledgement</p>
-</li>
-<li>
-<p>Exceptions thrown attempting to add the consumer to the channel</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>If the consumer bean implements <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then exceptions will be sent to the method implementation.</p>
-</div>
-<div class="paragraph">
-<p>If the consumer bean does not implement <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the <a href="../api/io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html">DefaultRabbitListenerExceptionHandler</a> with your own implementation that is designated as <code>@Primary</code>.</p>
-</div>
-
-
-<h2 id="consumerExecutor">6.3 Consumer Execution</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>RabbitMQ allows an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut//scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
-</div>
-<div class="paragraph">
-<p>For example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Configuring the <code>consumer</code> thread pool</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
-    executors:
-        consumer:
-            type: fixed
-            nThreads: 25</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.</p>
-</div>
-
-
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
@@ -1206,7 +1045,7 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
         <td id="col2">
             <div class="local clearfix">
                 <div class="local-title">
-                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
                     <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
                 </div>
                 <div class="menu">

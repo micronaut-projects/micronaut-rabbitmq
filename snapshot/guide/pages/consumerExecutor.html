@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.2 Consumer Execution 1.1.0.BUILD-SNAPSHOT</title>
+    <title>6.3 Consumer Execution 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -85,7 +85,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>6.2 Consumer Execution</h1>
+                    <h1>6.3 Consumer Execution</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,7 +94,7 @@ function addJsClass() {
 
                 
 
-<h2 id="consumerExecutor">6.2 Consumer Execution</h2>
+<h2 id="consumerExecutor">6.3 Consumer Execution</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
@@ -104,7 +104,23 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>RabbitMQ allows an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut//scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the <code>consumer</code> thread pool</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    executors:
+        consumer:
+            type: fixed
+            nThreads: 25</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.</p>
 </div>
 
 

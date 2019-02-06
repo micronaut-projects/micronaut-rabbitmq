@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitHeaderBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageCloseable.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitPropertyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -135,9 +135,10 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#RabbitMessageState-com.rabbitmq.client.Envelope-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">RabbitMessageState</a></span>(com.rabbitmq.client.Envelope&nbsp;envelope,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#RabbitMessageState-com.rabbitmq.client.Envelope-com.rabbitmq.client.AMQP.BasicProperties-byte:A-com.rabbitmq.client.Channel-">RabbitMessageState</a></span>(com.rabbitmq.client.Envelope&nbsp;envelope,
                   com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
-                  byte[]&nbsp;body)</code>
+                  byte[]&nbsp;body,
+                  com.rabbitmq.client.Channel&nbsp;channel)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -161,10 +162,17 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#getBody--">getBody</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>com.rabbitmq.client.Channel</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#getChannel--">getChannel</a></span>()</code>
+<div class="block">This channel is being used exclusively by the consumer that
+ consumed this message.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>com.rabbitmq.client.Envelope</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#getEnvelope--">getEnvelope</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>com.rabbitmq.client.AMQP.BasicProperties</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html#getProperties--">getProperties</a></span>()</code>&nbsp;</td>
 </tr>
@@ -190,7 +198,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMessageState-com.rabbitmq.client.Envelope-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">
+<a name="RabbitMessageState-com.rabbitmq.client.Envelope-com.rabbitmq.client.AMQP.BasicProperties-byte:A-com.rabbitmq.client.Channel-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -198,13 +206,15 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <h4>RabbitMessageState</h4>
 <pre>public&nbsp;RabbitMessageState(com.rabbitmq.client.Envelope&nbsp;envelope,
                           com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
-                          byte[]&nbsp;body)</pre>
+                          byte[]&nbsp;body,
+                          com.rabbitmq.client.Channel&nbsp;channel)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>envelope</code> - The envelope</dd>
 <dd><code>properties</code> - The properties</dd>
 <dd><code>body</code> - The body</dd>
+<dd><code>channel</code> - The channel that consumed the message</dd>
 </dl>
 </li>
 </ul>
@@ -235,7 +245,8 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getProperties</h4>
-<pre>public&nbsp;com.rabbitmq.client.AMQP.BasicProperties&nbsp;getProperties()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public&nbsp;com.rabbitmq.client.AMQP.BasicProperties&nbsp;getProperties()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The properties</dd>
@@ -245,13 +256,31 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="getEnvelope--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getEnvelope</h4>
-<pre>public&nbsp;com.rabbitmq.client.Envelope&nbsp;getEnvelope()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public&nbsp;com.rabbitmq.client.Envelope&nbsp;getEnvelope()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The envelope</dd>
+</dl>
+</li>
+</ul>
+<a name="getChannel--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getChannel</h4>
+<pre>public&nbsp;com.rabbitmq.client.Channel&nbsp;getChannel()</pre>
+<div class="block">This channel is being used exclusively by the consumer that
+ consumed this message. Attempts to use this channel for any
+ purpose other than acknowledgement may result in errors because
+ channels are not thread safe.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The channel</dd>
 </dl>
 </li>
 </ul>
@@ -282,7 +311,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitHeaderBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitMessageCloseable.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitPropertyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

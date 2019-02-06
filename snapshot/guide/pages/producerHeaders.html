@@ -106,40 +106,97 @@ function addJsClass() {
 <div class="paragraph">
 <p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//Value static for every execution
-//Multiple headers can be supplied
-@Binding("products")
-@Header(name = "x-product-packaging", value = "canned")
-@Header(name = "x-product-size", value = "small")
-public void publishProduct(byte[] body)
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.messaging.annotation.Header;
 
-//Value set per execution
-public void publishProduct(@Header("x-product-type") String productType, byte[] body)</code></pre>
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+public interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data);
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data);
+}</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+
+@RabbitClient
+@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@Header(name = "productSize", value = "large")
+interface ProductClient {
+
+    @Binding("product")
+    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @Header(name = "productSize", value = "small")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@Header String productSize, <b class="conum">(3)</b>
+              @Header("x-product-count") Long count,
+              byte[] data)
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.Headers
+
+@RabbitClient
+@Headers(
+    Header(name = "x-product-sealed", value = "true"), <b class="conum">(1)</b>
+    Header(name = "productSize", value = "large")
+)
+interface ProductClient {
+
+    @Binding("product")
+    @Headers(
+        Header(name = "x-product-count", value = "10"), <b class="conum">(2)</b>
+        Header(name = "productSize", value = "small")
+    )
+    fun send(data: ByteArray)
+
+    @Binding("product")
+    fun send(@Header productSize: String?, <b class="conum">(3)</b>
+             @Header("x-product-count") count: Long,
+             data: ByteArray)
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-For method arguments, if the value is not supplied to the annotation, the argument name will be used as the header name. For example, <code>@Header String productType</code> would result in a header with the name <code>productType</code> being sent.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.</td>
 </tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Kotlin users must use the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Headers.html">@Headers</a> annotation to supply multiple headers.
-</td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple headers on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
 </tr>
 </table>
 </div>

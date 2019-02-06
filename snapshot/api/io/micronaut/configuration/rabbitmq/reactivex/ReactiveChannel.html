@@ -107,11 +107,16 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="typeNameLabel">ReactiveChannel</span>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
+public class <span class="typeNameLabel">ReactiveChannel</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">This class provides a wrapper around a <code>Channel</code> to provide
  reactive implementations of the common actions that can be performed
- on a channel.</div>
+ on a channel.
+
+ Because channels are not thread safe, neither is this class. The reactive
+ types returned from methods in this class must not be subscribed on a
+ thread pool.</div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.1.0</dd>

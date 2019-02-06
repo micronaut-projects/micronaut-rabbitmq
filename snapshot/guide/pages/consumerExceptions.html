@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.1.2 Acknowledging Messages 1.1.0.BUILD-SNAPSHOT</title>
+    <title>6.2 Handling Consumer Exceptions 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -85,7 +85,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>6.1.2 Acknowledging Messages</h1>
+                    <h1>6.2 Handling Consumer Exceptions</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,30 +94,39 @@ function addJsClass() {
 
                 
 
-<h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
+<h2 id="consumerExceptions">6.2 Handling Consumer Exceptions</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>There are three ways a message can be acknowledged, rejected, or not acknowledged.</p>
+<p>Exceptions can occur in a number of different ways. Possible problem areas include:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
+<p>Binding the message to the method arguments</p>
 </li>
 <li>
-<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value is <code>true</code>. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.</p>
+<p>Exceptions thrown from the consumer methods</p>
 </li>
 <li>
-<p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
+<p>Exceptions as a result of message acknowledgement</p>
 </li>
-</ol>
+<li>
+<p>Exceptions thrown attempting to add the consumer to the channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the consumer bean implements <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then exceptions will be sent to the method implementation.</p>
+</div>
+<div class="paragraph">
+<p>If the consumer bean does not implement <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the <a href="../api/io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html">DefaultRabbitListenerExceptionHandler</a> with your own implementation that is designated as <code>@Primary</code>.</p>
 </div>
 
 

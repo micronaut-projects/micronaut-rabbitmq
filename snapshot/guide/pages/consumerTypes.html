@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.1.2.3 RabbitMQ Types 1.1.0.BUILD-SNAPSHOT</title>
+    <title>6.1.1.4 RabbitMQ Types 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -85,7 +85,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>6.1.2.3 RabbitMQ Types</h1>
+                    <h1>6.1.1.4 RabbitMQ Types</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -94,17 +94,106 @@ function addJsClass() {
 
                 
 
-<h2 id="consumerTypes">6.1.2.3 RabbitMQ Types</h2>
+<h2 id="consumerTypes">6.1.1.4 RabbitMQ Types</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerBinding/consumerTypes.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>Arguments can also be bound based on their type. Several types are supported by default and each type has a corresponding <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html">RabbitTypeArgumentBinder</a>. The argument binders are covered in detail in the section on <a href="#consumerCustom">Custom Parameter Binding</a>.</p>
+</div>
+<div class="paragraph">
+<p>There are only two types that are supported for retrieving data about the message. They are the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a> and <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.BasicProperties;
+import com.rabbitmq.client.Envelope;
+import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;String&gt; messages = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product")
+    public void receive(byte[] data,
+                        Envelope envelope, <b class="conum">(1)</b>
+                        BasicProperties basicProperties) { <b class="conum">(2)</b>
+        messages.add(String.format("exchange: [%s], routingKey: [%s], contentType: [%s]",
+                envelope.getExchange(), envelope.getRoutingKey(), basicProperties.getContentType()));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Envelope
+import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messages = Collections.synchronizedList([])
+
+    @Queue("product")
+    void receive(byte[] data,
+                 Envelope envelope, <b class="conum">(1)</b>
+                 BasicProperties basicProperties) { <b class="conum">(2)</b>
+        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]".toString())
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Envelope
+import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.ArrayList
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messages: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    fun receive(data: ByteArray,
+                envelope: Envelope, <b class="conum">(1)</b>
+                basicProperties: BasicProperties) { <b class="conum">(2)</b>
+        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a></td>
+</tr>
+</table>
 </div>
 
 
