@@ -12,7 +12,7 @@ snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.ProductClient[tags=
 
 <1> The ann:configuration.rabbitmq.annotation.RabbitClient[] annotation is used to designate this interface as a client
 <2> The ann:configuration.rabbitmq.annotation.Binding[] annotation indicates which binding or routing key the message should be routed to.
-<3> The 'send' method accepts single parameter which is the body of the message.
+<3> The `send` method accepts single parameter which is the body of the message.
 
 
 At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of `ProductClient` either by looking up the bean from the link:{apimicronaut}context/ApplicationContext.html[ApplicationContext] or by injecting the bean with `@Inject`:
