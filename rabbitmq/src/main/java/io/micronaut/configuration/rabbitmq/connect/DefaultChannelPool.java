@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -43,7 +44,7 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultChannelPool.class);
 
-    private final LinkedList<Channel> channels = new LinkedList<>();
+    private final LinkedBlockingQueue<Channel> channels = new LinkedBlockingQueue<>();
     private final Connection connection;
     private final AtomicLong totalChannels = new AtomicLong(0);
 
@@ -59,40 +60,30 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     @Override
     public Channel getChannel() throws IOException {
         Channel channel = null;
-        synchronized (channels) {
-            while (!channels.isEmpty()) {
-                channel = channels.removeFirst();
-                if (channel.isOpen()) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Retrieved channel [{}] from the pool", channel.toString());
-                    }
-                    break;
-                } else {
-                    channel = null;
-                    totalChannels.decrementAndGet();
-                }
+        while (channel == null) {
+            channel = channels.poll();
+            if (channel == null) {
+                channel = createChannel();
+            } else if (!channel.isOpen()) {
+                channel = null;
+                totalChannels.decrementAndGet();
             }
         }
-        if (channel == null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("No channels are in the pool. Creating a new channel");
-            }
-            channel = createChannel();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Retrieved channel [{}] from the pool", channel.toString());
         }
-
         return channel;
     }
 
     @Override
     public void returnChannel(Channel channel) {
         if (channel.isOpen()) {
-            synchronized (channels) {
-                if (!channels.contains(channel)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Returning channel [{}] to the pool", channel.toString());
-                    }
-                    channels.addLast(channel);
+            if (channels.offer(channel)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Returned channel [{}] to the pool", channel.toString());
                 }
+            } else {
+                closeChannel(channel);
             }
         } else {
             if (LOG.isDebugEnabled()) {
@@ -117,26 +108,30 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     @PreDestroy
     @Override
     public void close() {
-        synchronized (channels) {
-            if (totalChannels.get() > channels.size()) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("Channel pool is being closed without all channels being returned! Any channels not returned are the responsibility of the owner to close. Total channels [{}] - Returned Channels [{}]", totalChannels.get(), channels.size());
-                }
+        if (totalChannels.get() > channels.size()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn("Channel pool is being closed without all channels being returned! Any channels not returned are the responsibility of the owner to close. Total channels [{}] - Returned Channels [{}]", totalChannels.get(), channels.size());
             }
-            while (!channels.isEmpty()) {
-                Channel channel = channels.removeFirst();
-                if (channel.isOpen()) {
-                    try {
-                        channel.close();
-                    } catch (AlreadyClosedException e) {
-                        //no-op
-                    } catch (IOException | TimeoutException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(String.format("Failed to close the channel [%s]", channel.toString()), e);
-                        }
-                    }
+        }
+        final Iterator<Channel> iterator = channels.iterator();
+        while (iterator.hasNext()) {
+            closeChannel(iterator.next());
+            iterator.remove();
+        }
+    }
+
+    private void closeChannel(Channel channel) {
+        if (channel.isOpen()) {
+            try {
+                channel.close();
+            } catch (AlreadyClosedException e) {
+                //no-op
+            } catch (IOException | TimeoutException e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(String.format("Failed to close the channel [%s]", channel.toString()), e);
                 }
             }
         }
+        totalChannels.decrementAndGet();
     }
 }

@@ -5,7 +5,7 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer
-import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel
+import io.micronaut.configuration.rabbitmq.reactive.RxJavaReactivePublisher
 import io.micronaut.context.ApplicationContext
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
@@ -44,8 +44,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 }
             }
         })
-        Channel publishChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(publishChannel)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
         List<Completable> completables = [
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes),
         reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes),
@@ -54,7 +53,6 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         then:
         Completable.merge(completables)
-                .doFinally({ -> channelPool.returnChannel(publishChannel) })
                 .blockingGet(10, TimeUnit.SECONDS) == null
 
         conditions.eventually {
@@ -82,8 +80,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 messageCount.incrementAndGet()
             }
         })
-        Channel produceChannel = channelPool.getChannel()
-        ReactiveChannel reactiveChannel = new ReactiveChannel(produceChannel)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
+
 
         when:
         reactiveChannel
@@ -107,7 +105,6 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         }
 
         cleanup:
-        channelPool.returnChannel(produceChannel)
         channelPool.returnChannel(consumeChannel)
         applicationContext.close()
     }
@@ -116,9 +113,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
-        Channel channel = channelPool.getChannel()
         AtomicInteger integer = new AtomicInteger(2)
-        ReactiveChannel reactiveChannel = new ReactiveChannel(channel)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel consumeChannel = channelPool.getChannel()
@@ -154,7 +150,6 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         }
 
         cleanup:
-        channelPool.returnChannel(channel)
         channelPool.returnChannel(consumeChannel)
         applicationContext.stop()
     }

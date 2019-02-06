@@ -21,4 +21,4 @@
  * @author James Kleeh
  * @since 1.1.0
  */
-package io.micronaut.configuration.rabbitmq.reactivex;
+package io.micronaut.configuration.rabbitmq.reactive;

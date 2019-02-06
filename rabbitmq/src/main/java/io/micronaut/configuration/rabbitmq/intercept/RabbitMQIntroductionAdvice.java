@@ -25,7 +25,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
-import io.micronaut.configuration.rabbitmq.reactivex.ReactiveChannel;
+import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.async.publisher.Publishers;
@@ -61,6 +61,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQIntroductionAdvice.class);
 
     private final ChannelPool channelPool;
+    private final ReactivePublisher<?> reactivePublisher;
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Map<String, BiConsumer<Object, Builder>> properties = new HashMap<>();
@@ -73,9 +74,11 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      * @param serDesRegistry The registry to find a serDes to serialize the body
      */
     public RabbitMQIntroductionAdvice(ChannelPool channelPool,
+                                      ReactivePublisher<?> reactivePublisher,
                                       ConversionService<?> conversionService,
                                       RabbitMessageSerDesRegistry serDesRegistry) {
         this.channelPool = channelPool;
+        this.reactivePublisher = reactivePublisher;
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
 
@@ -176,50 +179,40 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             ReturnType<Object> returnType = context.getReturnType();
-            Class javaReturnType = returnType.getType();
+            Class<?> javaReturnType = returnType.getType();
             boolean isReactiveReturnType = Publishers.isConvertibleToPublisher(javaReturnType);
-
-            Channel channel = getChannel();
 
             Object body = parameterValues.get(bodyArgument.getName());
             byte[] converted = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType())
                     .map(serDes -> serDes.serialize(body))
                     .orElseThrow(() -> new MessagingClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType())));
 
-            try {
-                if (isReactiveReturnType) {
+            if (isReactiveReturnType) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Sending the message with publisher confirms.", context);
+                }
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Determined the method [{}] returns a reactive type. Sending the message with confirms.", context);
-                    }
+                Object reactive = reactivePublisher.publish(exchange, routingKey, properties, converted);
 
-                    ReactiveChannel reactiveChannel = new ReactiveChannel(channel);
-                    Completable completable = reactiveChannel.publish(exchange, routingKey, properties, converted)
-                            .doFinally(() -> {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("The publish has terminated. Returning the channel to the pool");
-                                }
-                                channelPool.returnChannel(channel);
-                            });
-                    return conversionService.convert(completable, javaReturnType)
-                            .orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
-                } else {
+                return conversionService.convert(reactive, javaReturnType)
+                        .orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
+            } else {
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Determined the method [{}] does not return a reactive type. Sending the message without confirms and returning null.", context);
-                    }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Sending the message without publisher confirms.", context);
+                }
 
-                    try {
-                        channel.basicPublish(exchange, routingKey, properties, converted);
-                    } finally {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Returning the channel to the pool");
-                        }
+                Channel channel = null;
+                try {
+                    channel = channelPool.getChannel();
+                    channel.basicPublish(exchange, routingKey, properties, converted);
+                } catch (Throwable e) {
+                    throw new MessagingClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), e);
+                } finally {
+                    if (channel != null) {
                         channelPool.returnChannel(channel);
                     }
                 }
-            } catch (Throwable e) {
-                throw new MessagingClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), e);
             }
 
             return null;
@@ -282,17 +275,5 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                                 .findFirst()
                                 .orElse(null)
                 ));
-    }
-
-    private Channel getChannel() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Retrieving a channel from the pool");
-        }
-
-        try {
-            return channelPool.getChannel();
-        } catch (IOException e) {
-            throw new MessagingClientException("Could not retrieve a channel from the pool", e);
-        }
     }
 }
