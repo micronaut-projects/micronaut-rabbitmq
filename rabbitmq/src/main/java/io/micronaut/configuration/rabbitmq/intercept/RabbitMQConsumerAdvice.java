@@ -145,6 +145,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             try {
                 DefaultExecutableBinder<RabbitMessageState> binder = new DefaultExecutableBinder<>();
 
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
+                }
+
                 channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
 
                     @Override
@@ -202,7 +206,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     }
                 }
                 handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
                     consumerChannels.remove(channel);

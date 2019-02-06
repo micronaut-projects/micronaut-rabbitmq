@@ -8,7 +8,7 @@ class QuickstartSpec extends AbstractRabbitMQTest {
 
     void "test product client and listener"() {
         ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        PollingConditions conditions = new PollingConditions(timeout: 5)
 
         when:
 // tag::producer[]

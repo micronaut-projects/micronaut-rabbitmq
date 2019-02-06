@@ -72,10 +72,8 @@ public class ReactiveChannel {
 
             private void handleAckNack(long deliveryTag, boolean multiple, boolean ack) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
+                    LOG.debug(System.identityHashCode(Thread.currentThread()) + " Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
                 }
-                System.out.println(System.identityHashCode(Thread.currentThread()));
-
                 List<CompletableEmitter> completables = new ArrayList<>();
                 if (unconfirmed.containsKey(deliveryTag)) {
                     if (multiple) {
@@ -121,12 +119,12 @@ public class ReactiveChannel {
     private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
         return Completable.create((emitter) -> {
             long nextPublishSeqNo = channel.getNextPublishSeqNo();
+            unconfirmed.put(nextPublishSeqNo, emitter);
+
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Publishing message sequence number [{}] ...", nextPublishSeqNo);
+                LOG.debug(System.identityHashCode(Thread.currentThread()) + " Publishing message sequence number [{}] ...", nextPublishSeqNo);
             }
             try {
-                System.out.println(System.identityHashCode(Thread.currentThread()));
-                unconfirmed.put(nextPublishSeqNo, emitter);
                 channel.basicPublish(
                         exchange,
                         routingKey,
@@ -146,12 +144,11 @@ public class ReactiveChannel {
                 emitter.onComplete();
             } else {
                 try {
-                    System.out.println(System.identityHashCode(Thread.currentThread()));
                     channel.confirmSelect();
                     channel.addConfirmListener(listener);
                     initialized = true;
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Added publisher acknowledgement listener to the channel");
+                        LOG.debug(System.identityHashCode(Thread.currentThread()) + " Added publisher acknowledgement listener to the channel");
                     }
                     emitter.onComplete();
                 } catch (IOException e) {
@@ -164,11 +161,10 @@ public class ReactiveChannel {
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
             if (initialized && unconfirmed.isEmpty()) {
-                System.out.println(System.identityHashCode(Thread.currentThread()));
                 channel.removeConfirmListener(listener);
                 initialized = false;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Removed publisher acknowledgement listener from the channel");
+                    LOG.debug(System.identityHashCode(Thread.currentThread()) + " Removed publisher acknowledgement listener from the channel");
                 }
             }
             emitter.onComplete();
