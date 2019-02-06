@@ -6,5 +6,5 @@ io.micronaut.configuration.rabbitmq.executor
 io.micronaut.configuration.rabbitmq.health
 io.micronaut.configuration.rabbitmq.intercept
 io.micronaut.configuration.rabbitmq.metrics
-io.micronaut.configuration.rabbitmq.reactivex
+io.micronaut.configuration.rabbitmq.reactive
 io.micronaut.configuration.rabbitmq.serdes
