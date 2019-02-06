@@ -37,6 +37,11 @@ import java.util.UUID;
 @Singleton
 public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
+    /**
+     * The order of this serDes
+     */
+    public static final Integer ORDER = 100;
+
     protected final Map<Class, RabbitMessageSerDes> javaSerDes = new HashMap<>();
 
     /**
@@ -71,7 +76,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
     @Override
     public int getOrder() {
-        return 10;
+        return ORDER;
     }
 
     /**

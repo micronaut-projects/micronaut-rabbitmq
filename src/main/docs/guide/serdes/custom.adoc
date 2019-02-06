@@ -1,1 +1,14 @@
-TODO
+A custom serializer/deserializer would be necessary to support custom data formats. In the section on <<consumerCustom, Custom Consumer Binding>> an example was demonstrated that allowed binding a `ProductInfo` type from the headers of the message. If instead that object should represent the body of the message with a custom data format, you could register your own serializer/deserializer to do so.
+
+In this example a simple data format of the string representation of the fields are concatenated together with a pipe character.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.serdes.ProductInfoSerDes[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The class is declared as a singleton so it will be registered with the context
+<2> The generic specifies what type we want to accept and return
+<3> The conversion service is injected to convert the parts of the message to the required types
+<4> The deserialize method takes the bytes from the message and constructs a `ProductInfo`
+<5> The serialize method takes the `ProductInfo` and returns the bytes to publish
+<6> The supports method ensures only the correct body types are processed by this ser-des
+
+TIP: Because the `getOrder` method was not overridden, the default order of 0 is used. All default ser-des have a lower precedent than the default order which means this ser-des will be checked before the others.

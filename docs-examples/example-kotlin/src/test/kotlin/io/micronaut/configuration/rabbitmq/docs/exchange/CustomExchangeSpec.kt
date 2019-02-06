@@ -19,10 +19,10 @@ class CustomExchangeSpec: AbstractRabbitMQTest({
         val listener = ctx.getBean(AnimalListener::class.java)
 
         `when`("the messages are published") {
-            client.send("Cat", Cat("Whiskers", 9))
-            client.send("Cat", Cat("Mr. Bigglesworth", 8))
-            client.send("Snake", Snake("Buttercup", false))
-            client.send("Snake", Snake("Monty the Python", true))
+            client.send(Cat("Whiskers", 9))
+            client.send(Cat("Mr. Bigglesworth", 8))
+            client.send(Snake("Buttercup", false))
+            client.send(Snake("Monty the Python", true))
 
             then("the messages are received") {
                 val messages = listener.receivedAnimals

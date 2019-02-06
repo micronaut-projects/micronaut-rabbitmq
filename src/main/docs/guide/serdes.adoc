@@ -1,1 +1,6 @@
-TODO
+The serialization and deserialization of message bodies is handled through instances of api:configuration.rabbitmq.serdes.RabbitMessageSerDes[]. The ser-des (Serializer/Deserializer) is responsible for both serialization and deserialization of RabbitMQ message bodies into the message body types defined in your clients and consumers methods.
+
+The ser-des are managed by a api:configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry[]. All ser-des beans are injected in order into the registry and then searched for when serialization or deserialization is needed. The first ser-des that returns true for api:configuration.rabbitmq.serdes.RabbitMessageSerDes#supports-java.lang.Class-[RabbitMessageSerDes#supports(Class)] is returned and used.
+
+By default, standard Java lang types and JSON format (with Jackson) are supported. You can supply your own ser-des by simply registering a bean of type api:configuration.rabbitmq.serdes.RabbitMessageSerDes[]. All ser-des implement the link:{apimicronaut}core/order/Ordered.html[Ordered] interface, so custom implementations can come before, after, or in between the default implementations.
+

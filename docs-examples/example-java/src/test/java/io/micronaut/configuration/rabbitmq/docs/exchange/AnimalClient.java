@@ -12,5 +12,9 @@ import io.micronaut.messaging.annotation.Header;
 public interface AnimalClient {
 
     void send(@Header String animalType, Animal animal); // <3>
+
+    default void send(Animal animal) {
+        send(animal.getClass().getSimpleName(), animal);
+    }
 }
 // end::clazz[]

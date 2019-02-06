@@ -9,8 +9,12 @@ import io.micronaut.messaging.annotation.Header
 @Requires(property = "spec.name", value = "CustomExchangeSpec")
 // tag::clazz[]
 @RabbitClient("animals") // <1>
-interface AnimalClient {
+abstract class AnimalClient {
 
-    void send(@Header String animalType, Animal animal) // <3>
+    abstract void send(@Header String animalType, Animal animal) // <2>
+
+    void send(Animal animal) { // <3>
+        send(animal.class.simpleName, animal)
+    }
 }
 // end::clazz[]

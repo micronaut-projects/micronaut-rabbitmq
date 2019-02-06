@@ -33,6 +33,11 @@ import java.util.Arrays;
 @Singleton
 public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
+    /**
+     * The order of this serDes
+     */
+    public static final Integer ORDER = 200;
+
     private final JacksonObjectSerializer objectSerializer;
 
     /**
@@ -59,7 +64,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
     @Override
     public int getOrder() {
-        return 20;
+        return ORDER;
     }
 
     @Override

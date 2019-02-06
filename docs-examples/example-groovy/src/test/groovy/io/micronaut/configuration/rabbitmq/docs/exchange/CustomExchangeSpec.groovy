@@ -16,10 +16,10 @@ class CustomExchangeSpec extends AbstractRabbitMQTest {
 
         when:
 // tag::producer[]
-        client.send("Cat", new Cat("Whiskers", 9))
-        client.send("Cat", new Cat("Mr. Bigglesworth", 8))
-        client.send("Snake", new Snake("Buttercup", false))
-        client.send("Snake", new Snake("Monty the Python", true))
+        client.send(new Cat("Whiskers", 9))
+        client.send(new Cat("Mr. Bigglesworth", 8))
+        client.send(new Snake("Buttercup", false))
+        client.send(new Snake("Monty the Python", true))
 // end::producer[]
 
         then:

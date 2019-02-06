@@ -22,15 +22,10 @@ public class CustomExchangeSpec extends AbstractRabbitMQTest {
         AnimalClient client = applicationContext.getBean(AnimalClient.class);
         AnimalListener listener = applicationContext.getBean(AnimalListener.class);
 
-        client.send("Cat", new Cat("Whiskers", 9));
-        client.send("Cat", new Cat("Mr. Bigglesworth", 8));
-        client.send("Snake", new Snake("Buttercup", false));
-        client.send("Snake", new Snake("Monty the Python", true));
-        Set<String> names = new HashSet<>();
-        names.add("Whiskers");
-        names.add("Mr. Bigglesworth");
-        names.add("Buttercup");
-        names.add("Monty the Python");
+        client.send(new Cat("Whiskers", 9));
+        client.send(new Cat("Mr. Bigglesworth", 8));
+        client.send(new Snake("Buttercup", false));
+        client.send(new Snake("Monty the Python", true));
 
         try {
             await().atMost(10, SECONDS).until(() ->

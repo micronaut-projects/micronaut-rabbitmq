@@ -34,6 +34,10 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder<ProductIn
     public BindingResult<ProductInfo> bind(ArgumentConversionContext<ProductInfo> context, RabbitMessageState source) {
         Map<String, Object> rawHeaders = source.getProperties().getHeaders(); //<4>
 
+        if (rawHeaders == null) {
+            return BindingResult.EMPTY;
+        }
+
         RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
 
         String size = headers.get("productSize", String.class).orElse(null);  //<5>

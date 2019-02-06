@@ -8,4 +8,8 @@ The exchange to publish messages to can be provided through the ann:configuratio
 
 snippet::io.micronaut.configuration.rabbitmq.docs.exchange.AnimalClient[tags="imports,clazz", project-base="docs-examples/example]
 
+<1> The exchange name is provided through the `@RabbitClient` annotation.
+<2> The header value is used to route the message to a queue.
+<3> A helper method was created to provide the header value automatically.
+
 IMPORTANT: Exchanges must already exist before you can publish messages to them.

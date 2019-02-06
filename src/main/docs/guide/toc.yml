@@ -28,6 +28,7 @@ consumer:
     consumerAcknowledge: Acknowledging Messages
   consumerExceptions: Handling Consumer Exceptions
   consumerExecutor: Consumer Execution
+initialization: Creating Queues/Exchanges
 serdes:
   title: Message Serialization/Deserialization (SerDes)
   custom: Custom SerDes

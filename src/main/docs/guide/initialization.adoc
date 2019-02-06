@@ -1,0 +1,13 @@
+The purpose of this library is to consume and publish messages with RabbitMQ. Any setup of queues, exchanges, or the binding between them is *not* done automatically. If your requirements dictate that your application should be creating those entities, then a link:{apimicronaut}context/event/BeanCreatedEventListener.html[BeanCreatedEventListener] can be registered to intercept the api:configuration.rabbitmq.connect.ChannelPool[] to perform operations with the Java API directly.
+
+For all of the examples in this documentation, an event listener has been registered to create the required queues, exchanges, and bindings necessary for the code to be tested.
+
+snippet::io.micronaut.configuration.rabbitmq.ChannelPoolListener[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The class is declared as a singleton so it will be registered with the context
+<2> The generic specifies what bean type we want to intercept
+<3> Retrieve the bean from the event
+<4> Retrieve a channel from the pool
+<5> Declare a queue or perform any operations desired
+<6> Ensure that under all conditions the channel is returned to the pool
+<7> Return the pool object to be injected where it is needed
