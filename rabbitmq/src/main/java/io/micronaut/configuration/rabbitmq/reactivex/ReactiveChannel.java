@@ -19,7 +19,6 @@ package io.micronaut.configuration.rabbitmq.reactivex;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
-import io.micronaut.configuration.rabbitmq.connect.DefaultChannelPool;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -119,7 +118,11 @@ public class ReactiveChannel {
     private Completable publishInternal(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body) {
         return Completable.create((emitter) -> {
             long nextPublishSeqNo = channel.getNextPublishSeqNo();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Publishing message sequence number [{}] ...", nextPublishSeqNo);
+            }
             try {
+                System.out.println(Thread.currentThread().getName());
                 unconfirmed.put(nextPublishSeqNo, emitter);
                 channel.basicPublish(
                         exchange,
@@ -127,9 +130,6 @@ public class ReactiveChannel {
                         props,
                         body
                 );
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Published message sequence number [{}]", nextPublishSeqNo);
-                }
             } catch (IOException e) {
                 unconfirmed.remove(nextPublishSeqNo);
                 emitter.onError(e);
@@ -143,6 +143,7 @@ public class ReactiveChannel {
                 emitter.onComplete();
             } else {
                 try {
+                    System.out.println(Thread.currentThread().getName());
                     channel.confirmSelect();
                     channel.addConfirmListener(listener);
                     initialized = true;
@@ -160,6 +161,7 @@ public class ReactiveChannel {
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
             if (initialized && unconfirmed.isEmpty()) {
+                System.out.println(Thread.currentThread().getName());
                 channel.removeConfirmListener(listener);
                 initialized = false;
                 if (LOG.isDebugEnabled()) {

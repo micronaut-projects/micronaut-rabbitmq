@@ -6,7 +6,7 @@ import java.lang.annotation.Documented
 // end::imports[]
 
 // tag::clazz[]
-@Documented
+@MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Bindable // <1>

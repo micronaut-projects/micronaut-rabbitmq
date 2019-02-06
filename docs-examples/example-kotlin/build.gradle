@@ -21,6 +21,8 @@ dependencies {
     testCompile "io.projectreactor:reactor-core"
 }
 
+licenseTest.enabled = false
+
 test {
     useJUnitPlatform()
 

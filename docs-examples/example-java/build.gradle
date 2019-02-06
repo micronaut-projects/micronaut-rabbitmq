@@ -21,6 +21,8 @@ dependencies {
     testCompile "io.projectreactor:reactor-core"
 }
 
+licenseTest.enabled = false
+
 compileJava.options.compilerArgs += '-parameters'
 compileTestJava.options.compilerArgs += '-parameters'
 
