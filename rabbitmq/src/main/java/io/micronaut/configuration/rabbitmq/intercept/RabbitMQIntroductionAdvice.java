@@ -38,12 +38,10 @@ import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
 import io.micronaut.messaging.exceptions.MessagingClientException;
-import io.reactivex.Completable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -70,6 +68,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      * Default constructor.
      *
      * @param channelPool The pool to retrieve a channel from
+     * @param reactivePublisher The publisher to use when publisher acknowledgement is required
      * @param conversionService The conversion service
      * @param serDesRegistry The registry to find a serDes to serialize the body
      */

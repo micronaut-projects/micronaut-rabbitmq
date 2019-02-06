@@ -16,7 +16,7 @@
 
 /**
  * Contains classes specific to converting the RabbitMQ java client API to
- * an RxJava API.
+ * a reactive API.
  *
  * @author James Kleeh
  * @since 1.1.0
