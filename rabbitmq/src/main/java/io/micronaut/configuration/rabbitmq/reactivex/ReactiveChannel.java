@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class provides a wrapper around a {@link Channel} to provide
@@ -46,7 +47,7 @@ public class ReactiveChannel {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReactiveChannel.class);
 
-    private final HashMap<Long, CompletableEmitter> unconfirmed = new LinkedHashMap<>();
+    private final ConcurrentHashMap<Long, CompletableEmitter> unconfirmed = new ConcurrentHashMap<>();
     private final Channel channel;
     private final ConfirmListener listener;
     private Boolean initialized = false;
@@ -73,6 +74,8 @@ public class ReactiveChannel {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
                 }
+                System.out.println(System.identityHashCode(Thread.currentThread()));
+
                 List<CompletableEmitter> completables = new ArrayList<>();
                 if (unconfirmed.containsKey(deliveryTag)) {
                     if (multiple) {
@@ -122,7 +125,7 @@ public class ReactiveChannel {
                 LOG.debug("Publishing message sequence number [{}] ...", nextPublishSeqNo);
             }
             try {
-                System.out.println(Thread.currentThread().getName());
+                System.out.println(System.identityHashCode(Thread.currentThread()));
                 unconfirmed.put(nextPublishSeqNo, emitter);
                 channel.basicPublish(
                         exchange,
@@ -143,7 +146,7 @@ public class ReactiveChannel {
                 emitter.onComplete();
             } else {
                 try {
-                    System.out.println(Thread.currentThread().getName());
+                    System.out.println(System.identityHashCode(Thread.currentThread()));
                     channel.confirmSelect();
                     channel.addConfirmListener(listener);
                     initialized = true;
@@ -161,7 +164,7 @@ public class ReactiveChannel {
     private Completable cleanupChannel() {
         return Completable.create((emitter) -> {
             if (initialized && unconfirmed.isEmpty()) {
-                System.out.println(Thread.currentThread().getName());
+                System.out.println(System.identityHashCode(Thread.currentThread()));
                 channel.removeConfirmListener(listener);
                 initialized = false;
                 if (LOG.isDebugEnabled()) {
