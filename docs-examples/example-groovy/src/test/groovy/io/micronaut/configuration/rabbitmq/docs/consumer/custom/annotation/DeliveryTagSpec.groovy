@@ -8,7 +8,7 @@ class DeliveryTagSpec extends AbstractRabbitMQTest {
 
     void "test using a custom annotation binder"() {
         ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        PollingConditions conditions = new PollingConditions(timeout: 10)
 
         when:
 // tag::producer[]

@@ -19,9 +19,12 @@ package io.micronaut.configuration.rabbitmq.reactivex;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
+import io.micronaut.configuration.rabbitmq.connect.DefaultChannelPool;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
@@ -41,6 +44,8 @@ import java.util.*;
  */
 @NotThreadSafe
 public class ReactiveChannel {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ReactiveChannel.class);
 
     private final HashMap<Long, CompletableEmitter> unconfirmed = new LinkedHashMap<>();
     private final Channel channel;
@@ -66,6 +71,9 @@ public class ReactiveChannel {
             }
 
             private void handleAckNack(long deliveryTag, boolean multiple, boolean ack) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Received publisher acknowledgement on deliveryTag: [{}], multiple: [{}], ack: [{}]", deliveryTag, multiple, ack);
+                }
                 List<CompletableEmitter> completables = new ArrayList<>();
                 if (unconfirmed.containsKey(deliveryTag)) {
                     if (multiple) {
@@ -119,6 +127,9 @@ public class ReactiveChannel {
                         props,
                         body
                 );
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Published message sequence number [{}]", nextPublishSeqNo);
+                }
             } catch (IOException e) {
                 unconfirmed.remove(nextPublishSeqNo);
                 emitter.onError(e);
@@ -135,6 +146,9 @@ public class ReactiveChannel {
                     channel.confirmSelect();
                     channel.addConfirmListener(listener);
                     initialized = true;
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Added publisher acknowledgement listener to the channel");
+                    }
                     emitter.onComplete();
                 } catch (IOException e) {
                     emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
@@ -148,6 +162,9 @@ public class ReactiveChannel {
             if (initialized && unconfirmed.isEmpty()) {
                 channel.removeConfirmListener(listener);
                 initialized = false;
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Removed publisher acknowledgement listener from the channel");
+                }
             }
             emitter.onComplete();
         });

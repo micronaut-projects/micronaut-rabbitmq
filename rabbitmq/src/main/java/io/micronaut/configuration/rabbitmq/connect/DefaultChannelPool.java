@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Singleton
 public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChannelPool.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultChannelPool.class);
 
     private final LinkedList<Channel> channels = new LinkedList<>();
     private final Connection connection;
