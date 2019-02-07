@@ -38,7 +38,7 @@ import java.util.UUID;
 public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
     /**
-     * The order of this serDes
+     * The order of this serDes.
      */
     public static final Integer ORDER = 100;
 

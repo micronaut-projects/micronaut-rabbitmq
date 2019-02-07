@@ -27,6 +27,7 @@ import java.util.Optional;
 /**
  * Binds an argument of type {@link Acknowledgement} from the {@link RabbitMessageState}.
  *
+ * @param <T> Any type that extends {@link Acknowledgement}
  * @author James Kleeh
  * @since 1.1.0
  */

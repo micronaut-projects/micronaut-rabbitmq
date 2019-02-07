@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
     /**
-     * The order of this serDes
+     * The order of this serDes.
      */
     public static final Integer ORDER = 200;
 
