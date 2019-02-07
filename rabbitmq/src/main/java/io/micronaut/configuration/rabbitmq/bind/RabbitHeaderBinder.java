@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import java.util.Map;
 
 /**
- * Binds an argument of with the {@link Header} annotation from the {@link RabbitMessageState}.
+ * Binds an argument of with the {@link Header} annotation from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -49,7 +49,7 @@ public class RabbitHeaderBinder implements RabbitAnnotatedArgumentBinder<Header>
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
         String parameterName = context.getAnnotationMetadata()
                 .getValue(Header.class, String.class)
                 .orElse(context.getArgument().getName());

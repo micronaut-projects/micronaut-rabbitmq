@@ -11,9 +11,9 @@ import io.micronaut.messaging.annotation.Header
 @RabbitClient("animals") // <1>
 abstract class AnimalClient {
 
-    abstract fun send(@Header animalType: String, animal: Animal)  // <3>
+    abstract fun send(@Header animalType: String, animal: Animal)  // <2>
 
-    fun send(animal: Animal) {
+    fun send(animal: Animal) { //<3>
         send(animal.javaClass.simpleName, animal)
     }
 }

@@ -21,7 +21,7 @@ import io.micronaut.core.type.Argument;
 import javax.inject.Singleton;
 
 /**
- * Binds an argument of type {@link RabbitAcknowledgement} from the {@link RabbitMessageState}.
+ * Binds an argument of type {@link RabbitAcknowledgement} from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0

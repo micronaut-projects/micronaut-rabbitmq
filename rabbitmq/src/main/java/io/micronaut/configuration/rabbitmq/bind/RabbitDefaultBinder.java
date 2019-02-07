@@ -21,7 +21,7 @@ import io.micronaut.core.convert.ArgumentConversionContext;
 import javax.inject.Singleton;
 
 /**
- * The default binder for binding an argument from the {@link RabbitMessageState}
+ * The default binder for binding an argument from the {@link RabbitConsumerState}
  * that is used if no other binder supports the argument.
  *
  * @author James Kleeh
@@ -54,7 +54,7 @@ public class RabbitDefaultBinder implements RabbitArgumentBinder<Object> {
      * @return A binding result
      */
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
         if (propertyBinder.supports(context)) {
             return propertyBinder.bind(context, messageState);
         } else {

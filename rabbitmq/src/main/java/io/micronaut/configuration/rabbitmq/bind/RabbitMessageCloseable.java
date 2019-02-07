@@ -41,15 +41,15 @@ public class RabbitMessageCloseable implements AutoCloseable {
     /**
      * Default constructor.
      *
-     * @param messageState The message state
+     * @param consumerState The message state
      * @param multiple Whether multiple messages should be responded to
      * @param reQueue Whether rejections should cause the messages to be re-queued
      */
-    public RabbitMessageCloseable(RabbitMessageState messageState,
+    public RabbitMessageCloseable(RabbitConsumerState consumerState,
                            boolean multiple,
                            boolean reQueue) {
-        this.channel = messageState.getChannel();
-        this.deliveryTag = messageState.getEnvelope().getDeliveryTag();
+        this.channel = consumerState.getChannel();
+        this.deliveryTag = consumerState.getEnvelope().getDeliveryTag();
         this.multiple = multiple;
         this.reQueue = reQueue;
     }

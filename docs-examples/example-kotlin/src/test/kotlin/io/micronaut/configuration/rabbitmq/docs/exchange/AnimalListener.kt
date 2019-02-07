@@ -13,7 +13,7 @@ import java.util.*
 @RabbitListener // <1>
 class AnimalListener {
 
-    internal var receivedAnimals: MutableList<Animal> = Collections.synchronizedList(ArrayList())
+    val receivedAnimals: MutableList<Animal> = Collections.synchronizedList(ArrayList())
 
     @Queue("cats") // <2>
     fun receive(cat: Cat) { // <3>

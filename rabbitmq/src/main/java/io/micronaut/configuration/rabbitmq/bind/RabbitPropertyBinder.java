@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Binds an argument of with the {@link RabbitProperty} annotation from the {@link RabbitMessageState}.
+ * Binds an argument of with the {@link RabbitProperty} annotation from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -67,7 +67,7 @@ public class RabbitPropertyBinder implements RabbitAnnotatedArgumentBinder<Rabbi
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
         return () -> Optional.ofNullable(properties.get(getParameterName(context)))
                 .map(f -> f.apply(messageState.getProperties()))
                 .flatMap(prop -> conversionService.convert(prop, context));

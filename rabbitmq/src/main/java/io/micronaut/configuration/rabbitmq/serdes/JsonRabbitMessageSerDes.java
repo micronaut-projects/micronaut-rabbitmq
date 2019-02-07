@@ -16,7 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.serdes;
 
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 import io.micronaut.jackson.serialize.JacksonObjectSerializer;
@@ -50,7 +50,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     }
 
     @Override
-    public Object deserialize(RabbitMessageState messageState, Class<Object> type) {
+    public Object deserialize(RabbitConsumerState messageState, Class<Object> type) {
         byte[] body = messageState.getBody();
         return objectSerializer.deserialize(body, type)
                 .orElseThrow(() -> new SerializationException("Unable to deserialize data: " + Arrays.toString(body)));

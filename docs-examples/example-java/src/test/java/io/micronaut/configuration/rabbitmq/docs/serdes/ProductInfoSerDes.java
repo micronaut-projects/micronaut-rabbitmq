@@ -1,7 +1,7 @@
 package io.micronaut.configuration.rabbitmq.docs.serdes;
 
 // tag::imports[]
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
@@ -25,8 +25,8 @@ public class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // 
     }
 
     @Override
-    public ProductInfo deserialize(RabbitMessageState messageState, Class<ProductInfo> type) { // <4>
-        String body = new String(messageState.getBody(), CHARSET);
+    public ProductInfo deserialize(RabbitConsumerState consumerState, Class<ProductInfo> type) { // <4>
+        String body = new String(consumerState.getBody(), CHARSET);
         String[] parts = body.split("\\|");
         if (parts.length == 3) {
             String size = parts[0];

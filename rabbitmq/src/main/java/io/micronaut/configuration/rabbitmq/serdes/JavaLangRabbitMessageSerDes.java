@@ -16,7 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.serdes;
 
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 
 import javax.annotation.Nonnull;
@@ -65,7 +65,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     }
 
     @Override
-    public Object deserialize(RabbitMessageState messageState, Class<Object> type) {
+    public Object deserialize(RabbitConsumerState messageState, Class<Object> type) {
         return findSerDes(type).deserialize(messageState, type);
     }
 
@@ -170,7 +170,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         private static final Charset ENCODING = Charset.forName("UTF8");
 
         @Override
-        public String deserialize(RabbitMessageState messageState, Class<String> type) {
+        public String deserialize(RabbitConsumerState messageState, Class<String> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -200,7 +200,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ShortSerDes implements RabbitMessageSerDes<Short> {
 
         @Override
-        public Short deserialize(RabbitMessageState messageState, Class<Short> type) {
+        public Short deserialize(RabbitConsumerState messageState, Class<Short> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -240,7 +240,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class IntegerSerDes implements RabbitMessageSerDes<Integer> {
 
         @Override
-        public Integer deserialize(RabbitMessageState messageState, Class<Integer> type) {
+        public Integer deserialize(RabbitConsumerState messageState, Class<Integer> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -282,7 +282,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class LongSerDes implements RabbitMessageSerDes<Long> {
 
         @Override
-        public Long deserialize(RabbitMessageState messageState, Class<Long> type) {
+        public Long deserialize(RabbitConsumerState messageState, Class<Long> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -328,7 +328,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class FloatSerDes implements RabbitMessageSerDes<Float> {
 
         @Override
-        public Float deserialize(RabbitMessageState messageState, Class<Float> type) {
+        public Float deserialize(RabbitConsumerState messageState, Class<Float> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -371,7 +371,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class DoubleSerDes implements RabbitMessageSerDes<Double> {
 
         @Override
-        public Double deserialize(RabbitMessageState messageState, Class<Double> type) {
+        public Double deserialize(RabbitConsumerState messageState, Class<Double> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -418,7 +418,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ByteArraySerDes implements RabbitMessageSerDes<byte[]> {
 
         @Override
-        public byte[] deserialize(RabbitMessageState messageState, Class<byte[]> type) {
+        public byte[] deserialize(RabbitConsumerState messageState, Class<byte[]> type) {
             return messageState.getBody();
         }
 
@@ -439,7 +439,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ByteBufferSerDes implements RabbitMessageSerDes<ByteBuffer> {
 
         @Override
-        public ByteBuffer deserialize(RabbitMessageState messageState, Class<ByteBuffer> type) {
+        public ByteBuffer deserialize(RabbitConsumerState messageState, Class<ByteBuffer> type) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -483,7 +483,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         StringSerDes stringSerDes = new StringSerDes();
 
         @Override
-        public UUID deserialize(RabbitMessageState messageState, Class<UUID> type) {
+        public UUID deserialize(RabbitConsumerState messageState, Class<UUID> type) {
             String uuid = stringSerDes.deserialize(messageState, String.class);
             if (uuid == null) {
                 return null;

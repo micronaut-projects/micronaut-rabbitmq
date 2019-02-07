@@ -25,5 +25,5 @@ import io.micronaut.core.bind.ArgumentBinder;
  * @author James Kleeh
  * @since 1.1.0
  */
-public interface RabbitArgumentBinder<T> extends ArgumentBinder<T, RabbitMessageState> {
+public interface RabbitArgumentBinder<T> extends ArgumentBinder<T, RabbitConsumerState> {
 }

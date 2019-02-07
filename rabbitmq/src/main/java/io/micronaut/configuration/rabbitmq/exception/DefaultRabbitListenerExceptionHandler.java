@@ -16,7 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.exception;
 
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.context.annotation.Primary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class DefaultRabbitListenerExceptionHandler implements RabbitListenerExce
     @Override
     public void handle(RabbitListenerException exception) {
         if (LOG.isErrorEnabled()) {
-            Optional<RabbitMessageState> messageState = exception.getMessageState();
+            Optional<RabbitConsumerState> messageState = exception.getMessageState();
             if (messageState.isPresent()) {
                 LOG.error("Error processing a message for RabbitMQ consumer [" + exception.getListener() + "]", exception);
             } else {

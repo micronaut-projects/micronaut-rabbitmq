@@ -11,9 +11,9 @@ import io.micronaut.messaging.annotation.Header;
 @RabbitClient("animals") // <1>
 public interface AnimalClient {
 
-    void send(@Header String animalType, Animal animal); // <3>
+    void send(@Header String animalType, Animal animal); // <2>
 
-    default void send(Animal animal) {
+    default void send(Animal animal) { // <3>
         send(animal.getClass().getSimpleName(), animal);
     }
 }

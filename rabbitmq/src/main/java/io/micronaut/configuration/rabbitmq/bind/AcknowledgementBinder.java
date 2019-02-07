@@ -25,7 +25,7 @@ import javax.inject.Singleton;
 import java.util.Optional;
 
 /**
- * Binds an argument of type {@link Acknowledgement} from the {@link RabbitMessageState}.
+ * Binds an argument of type {@link Acknowledgement} from the {@link RabbitConsumerState}.
  *
  * @param <T> Any type that extends {@link Acknowledgement}
  * @author James Kleeh
@@ -40,7 +40,7 @@ public class AcknowledgementBinder<T extends Acknowledgement> implements RabbitT
     }
 
     @Override
-    public BindingResult<T> bind(ArgumentConversionContext<T> context, RabbitMessageState source) {
+    public BindingResult<T> bind(ArgumentConversionContext<T> context, RabbitConsumerState source) {
         Acknowledgement acknowledgement = new RabbitAcknowledgement() {
             @Override
             public void ack(boolean multiple) throws MessageAcknowledgementException {

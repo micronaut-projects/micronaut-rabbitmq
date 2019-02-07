@@ -2,7 +2,7 @@ package io.micronaut.configuration.rabbitmq.docs.consumer.custom.type;
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.bind.RabbitHeaderConvertibleValues;
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.bind.RabbitTypeArgumentBinder;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ArgumentConversionContext;
@@ -31,7 +31,7 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder<ProductIn
     }
 
     @Override
-    public BindingResult<ProductInfo> bind(ArgumentConversionContext<ProductInfo> context, RabbitMessageState source) {
+    public BindingResult<ProductInfo> bind(ArgumentConversionContext<ProductInfo> context, RabbitConsumerState source) {
         Map<String, Object> rawHeaders = source.getProperties().getHeaders(); //<4>
 
         if (rawHeaders == null) {

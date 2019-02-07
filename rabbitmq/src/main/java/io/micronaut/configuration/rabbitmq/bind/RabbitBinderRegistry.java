@@ -33,10 +33,10 @@ import java.util.*;
  * @since 1.1.0
  */
 @Singleton
-public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitMessageState> {
+public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitConsumerState> {
 
-    private final Map<Class<? extends Annotation>, ArgumentBinder<?, RabbitMessageState>> byAnnotation = new LinkedHashMap<>();
-    private final Map<Integer, ArgumentBinder<?, RabbitMessageState>> byType = new LinkedHashMap<>();
+    private final Map<Class<? extends Annotation>, ArgumentBinder<?, RabbitConsumerState>> byAnnotation = new LinkedHashMap<>();
+    private final Map<Integer, ArgumentBinder<?, RabbitConsumerState>> byType = new LinkedHashMap<>();
     private final RabbitDefaultBinder defaultBinder;
 
     /**
@@ -68,7 +68,7 @@ public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitMessag
     }
 
     @Override
-    public <T> Optional<ArgumentBinder<T, RabbitMessageState>> findArgumentBinder(Argument<T> argument, RabbitMessageState source) {
+    public <T> Optional<ArgumentBinder<T, RabbitConsumerState>> findArgumentBinder(Argument<T> argument, RabbitConsumerState source) {
 
         Optional<Class<? extends Annotation>> opt = argument.getAnnotationMetadata().getAnnotationTypeByStereotype(Bindable.class);
         if (opt.isPresent()) {
@@ -83,6 +83,6 @@ public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitMessag
                 return Optional.of(binder);
             }
         }
-        return Optional.of((ArgumentBinder<T, RabbitMessageState>) defaultBinder);
+        return Optional.of((ArgumentBinder<T, RabbitConsumerState>) defaultBinder);
     }
 }

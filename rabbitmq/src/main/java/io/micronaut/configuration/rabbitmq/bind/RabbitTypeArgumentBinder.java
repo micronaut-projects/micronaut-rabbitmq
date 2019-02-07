@@ -25,5 +25,5 @@ import io.micronaut.core.bind.TypeArgumentBinder;
  * @author James Kleeh
  * @since 1.1.0
  */
-public interface RabbitTypeArgumentBinder<T> extends TypeArgumentBinder<T, RabbitMessageState>, RabbitArgumentBinder<T> {
+public interface RabbitTypeArgumentBinder<T> extends TypeArgumentBinder<T, RabbitConsumerState>, RabbitArgumentBinder<T> {
 }

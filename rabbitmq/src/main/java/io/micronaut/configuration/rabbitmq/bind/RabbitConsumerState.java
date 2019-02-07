@@ -24,13 +24,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * Stores the state of a RabbitMQ message.
+ * Stores the state of a RabbitMQ message to be consumed.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
 @Immutable
-public class RabbitMessageState {
+public class RabbitConsumerState {
 
     private final Envelope envelope;
     private final AMQP.BasicProperties properties;
@@ -45,7 +45,7 @@ public class RabbitMessageState {
      * @param body The body
      * @param channel The channel that consumed the message
      */
-    public RabbitMessageState(Envelope envelope,
+    public RabbitConsumerState(Envelope envelope,
                               AMQP.BasicProperties properties,
                               byte[] body,
                               Channel channel) {

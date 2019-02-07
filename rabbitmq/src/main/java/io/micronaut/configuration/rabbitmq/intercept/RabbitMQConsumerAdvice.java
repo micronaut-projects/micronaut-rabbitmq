@@ -22,7 +22,7 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageCloseable;
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler;
@@ -140,10 +140,12 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
             Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
 
+            Class<?> returnType = method.getReturnType().getType();
+
             Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
 
             try {
-                DefaultExecutableBinder<RabbitMessageState> binder = new DefaultExecutableBinder<>();
+                DefaultExecutableBinder<RabbitConsumerState> binder = new DefaultExecutableBinder<>();
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
@@ -164,7 +166,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        RabbitMessageState state = new RabbitMessageState(envelope, properties, body, channel);
+                        RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
 
                         BoundExecutable boundExecutable = null;
                         try {
@@ -178,7 +180,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                 Object returnedValue = boundExecutable.invoke(bean);
 
                                 if (!hasAckArg) {
-                                    if (method.getReturnType().getType().equals(Boolean.class)) {
+                                    if (returnType.equals(Boolean.class) || returnType.equals(boolean.class)) {
                                         Boolean ack = (Boolean) returnedValue;
                                         closeable.withAcknowledge(ack == null ? false : ack);
                                     } else {

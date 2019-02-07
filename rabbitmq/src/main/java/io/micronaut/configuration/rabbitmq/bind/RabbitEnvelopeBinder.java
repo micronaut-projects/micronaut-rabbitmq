@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import java.util.Optional;
 
 /**
- * Binds an argument of type {@link Envelope} from the {@link RabbitMessageState}.
+ * Binds an argument of type {@link Envelope} from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -38,7 +38,7 @@ public class RabbitEnvelopeBinder implements RabbitTypeArgumentBinder<Envelope> 
     }
 
     @Override
-    public BindingResult<Envelope> bind(ArgumentConversionContext<Envelope> context, RabbitMessageState messageState) {
+    public BindingResult<Envelope> bind(ArgumentConversionContext<Envelope> context, RabbitConsumerState messageState) {
         return () -> Optional.of(messageState.getEnvelope());
     }
 }

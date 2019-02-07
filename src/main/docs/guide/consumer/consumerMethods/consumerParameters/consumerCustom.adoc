@@ -4,7 +4,7 @@ Consumer argument binding is achieved through an link:{apimicronaut}core/bind/Ar
 
 The registry supports argument binders that are used based on an annotation applied to the argument or the argument type. All argument binders must implement either api:configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder[] or api:configuration.rabbitmq.bind.RabbitTypeArgumentBinder[]. The exception to that rule is the api:configuration.rabbitmq.bind.RabbitDefaultBinder[] which is used when no other binders support a given argument.
 
-When an argument needs bound, the api:configuration.rabbitmq.bind.RabbitMessageState[] is used as the source of all of the available data. The binder registry follows a small sequence of steps to attempt to find a binder that supports the argument.
+When an argument needs bound, the api:configuration.rabbitmq.bind.RabbitConsumerState[] is used as the source of all of the available data. The binder registry follows a small sequence of steps to attempt to find a binder that supports the argument.
 
 . Search the annotation based binders for one that matches any annotation on the argument that is annotated with link:{apimicronaut}core/bind/annotation/Bindable.html[@Bindable].
 . Search the type based binders for one that matches or is a subclass of the argument type.
@@ -18,7 +18,7 @@ To inject your own argument binding behavior, it is as simple as registering a b
 
 ==== Annotation Binding
 
-A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the api:configuration.rabbitmq.bind.RabbitMessageState[] to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.
+A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the api:configuration.rabbitmq.bind.RabbitConsumerState[] to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.
 
 snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.DeliveryTag[tags="imports,clazz", project-base="docs-examples/example]
 

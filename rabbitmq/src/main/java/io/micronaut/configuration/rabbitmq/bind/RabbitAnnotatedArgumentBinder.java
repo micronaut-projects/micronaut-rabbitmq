@@ -27,5 +27,5 @@ import java.lang.annotation.Annotation;
  * @author James Kleeh
  * @since 1.1.0
  */
-public interface RabbitAnnotatedArgumentBinder<A extends Annotation> extends AnnotatedArgumentBinder<A, Object, RabbitMessageState>, RabbitArgumentBinder<Object>  {
+public interface RabbitAnnotatedArgumentBinder<A extends Annotation> extends AnnotatedArgumentBinder<A, Object, RabbitConsumerState>, RabbitArgumentBinder<Object>  {
 }

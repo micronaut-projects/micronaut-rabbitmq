@@ -16,7 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.exception;
 
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 
 import javax.annotation.Nullable;
@@ -31,7 +31,7 @@ import java.util.Optional;
 public class RabbitListenerException extends MessageListenerException {
 
     private final Object listener;
-    private final RabbitMessageState messageState;
+    private final RabbitConsumerState messageState;
 
     /**
      * Creates a new exception.
@@ -40,7 +40,7 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(String message, Object listener, @Nullable RabbitMessageState messageState) {
+    public RabbitListenerException(String message, Object listener, @Nullable RabbitConsumerState messageState) {
         super(message);
         this.listener = listener;
         this.messageState = messageState;
@@ -54,7 +54,7 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(String message, Throwable cause, Object listener, @Nullable RabbitMessageState messageState) {
+    public RabbitListenerException(String message, Throwable cause, Object listener, @Nullable RabbitConsumerState messageState) {
         super(message, cause);
         this.listener = listener;
         this.messageState = messageState;
@@ -67,7 +67,7 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(Throwable cause, Object listener, @Nullable RabbitMessageState messageState) {
+    public RabbitListenerException(Throwable cause, Object listener, @Nullable RabbitConsumerState messageState) {
         super(cause.getMessage(), cause);
         this.listener = listener;
         this.messageState = messageState;
@@ -83,7 +83,7 @@ public class RabbitListenerException extends MessageListenerException {
     /**
      * @return The consumer that produced the error
      */
-    public Optional<RabbitMessageState> getMessageState() {
+    public Optional<RabbitConsumerState> getMessageState() {
         return Optional.ofNullable(messageState);
     }
 }

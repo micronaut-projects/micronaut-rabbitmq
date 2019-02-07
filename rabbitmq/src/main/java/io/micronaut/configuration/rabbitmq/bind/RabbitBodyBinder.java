@@ -23,7 +23,7 @@ import io.micronaut.messaging.annotation.Body;
 import javax.inject.Singleton;
 
 /**
- * Binds an argument of with the {@link Body} annotation from the {@link RabbitMessageState}.
+ * Binds an argument of with the {@link Body} annotation from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -48,7 +48,7 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
     }
 
     @Override
-    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState messageState) {
+    public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
         Class<Object> bodyType = context.getArgument().getType();
 
         return () -> serDesRegistry.findSerdes(bodyType)

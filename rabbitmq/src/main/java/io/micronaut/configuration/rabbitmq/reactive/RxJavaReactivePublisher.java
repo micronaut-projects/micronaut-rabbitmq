@@ -24,6 +24,7 @@ import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -54,6 +55,11 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
         return getChannel()
             .flatMap(this::initializePublish)
             .flatMapCompletable(channel -> publishInternal(channel, exchange, routingKey, properties, body));
+    }
+
+    @Override
+    public Completable publish(Publisher<RabbitPublisherState> messagePublisher) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**

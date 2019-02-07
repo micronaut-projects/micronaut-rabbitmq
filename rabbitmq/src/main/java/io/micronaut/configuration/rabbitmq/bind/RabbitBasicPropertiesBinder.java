@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import java.util.Optional;
 
 /**
- * Binds an argument of type {@link BasicProperties} from the {@link RabbitMessageState}.
+ * Binds an argument of type {@link BasicProperties} from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
@@ -38,7 +38,7 @@ public class RabbitBasicPropertiesBinder implements RabbitTypeArgumentBinder<Bas
     }
 
     @Override
-    public BindingResult<BasicProperties> bind(ArgumentConversionContext<BasicProperties> context, RabbitMessageState messageState) {
+    public BindingResult<BasicProperties> bind(ArgumentConversionContext<BasicProperties> context, RabbitConsumerState messageState) {
         return () -> Optional.of(messageState.getProperties());
     }
 }

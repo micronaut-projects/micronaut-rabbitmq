@@ -15,7 +15,7 @@ import java.util.Collections
 @RabbitListener // <1>
 class ProductListener {
 
-    internal var messageLengths: MutableList<Int> = Collections.synchronizedList(ArrayList())
+    val messageLengths: MutableList<Int> = Collections.synchronizedList(ArrayList())
 
     @Queue("product") // <2>
     fun receive(data: ByteArray) { // <3>

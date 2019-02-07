@@ -1,8 +1,9 @@
 package io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation
 
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.bind.RabbitAnnotatedArgumentBinder
-import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ArgumentConversionContext
 import io.micronaut.core.convert.ConversionService
@@ -27,7 +28,7 @@ class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder<Deliv
     }
 
     @Override
-    BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitMessageState source) {
+    BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState source) {
         Long deliveryTag = source.envelope.deliveryTag // <4>
         return { -> conversionService.convert(deliveryTag, context) } // <5>
     }

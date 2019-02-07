@@ -6,7 +6,7 @@ import spock.util.concurrent.PollingConditions
 
 class TypeBindingSpec extends AbstractRabbitMQTest {
 
-    void "test publishing and receiving headers"() {
+    void "test publishing and receiving rabbitmq types"() {
         ApplicationContext applicationContext = startContext()
         PollingConditions conditions = new PollingConditions(timeout: 5)
 
