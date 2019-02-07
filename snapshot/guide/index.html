@@ -300,19 +300,19 @@ interface ProductClient {
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient.class);
-productClient.send("message body".getBytes());</code></pre>
+productClient.send("quickstart".getBytes());</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">def productClient = applicationContext.getBean(ProductClient)
-productClient.send("message body".getBytes())</code></pre>
+productClient.send("quickstart".getBytes())</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val productClient = ctx.getBean(ProductClient::class.java)
-productClient.send("message body".toByteArray())</code></pre>
+productClient.send("quickstart".toByteArray())</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -351,13 +351,12 @@ import java.util.List;
 @RabbitListener <b class="conum">(1)</b>
 public class ProductListener {
 
-    List&lt;Integer&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
+    List&lt;String&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
 
     @Queue("product") <b class="conum">(2)</b>
     public void receive(byte[] data) { <b class="conum">(3)</b>
-        Integer length = data.length;
-        messageLengths.add(length);
-        System.out.println("Java received " + length + " bytes from RabbitMQ");
+        messageLengths.add(new String(data));
+        System.out.println("Java received " + data.length + " bytes from RabbitMQ");
     }
 }</code></pre>
 </div>
@@ -371,13 +370,12 @@ import io.micronaut.context.annotation.Requires
 @RabbitListener <b class="conum">(1)</b>
 class ProductListener {
 
-    List&lt;Integer&gt; messageLengths = Collections.synchronizedList([])
+    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
 
     @Queue("product") <b class="conum">(2)</b>
     void receive(byte[] data) { <b class="conum">(3)</b>
-        Integer length = data.length
-        messageLengths.add(length)
-        println("Groovy received ${length} bytes from RabbitMQ")
+        messageLengths.add(new String(data))
+        println("Groovy received ${data.length} bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
@@ -393,13 +391,12 @@ import java.util.*
 @RabbitListener <b class="conum">(1)</b>
 class ProductListener {
 
-    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
+    val messageLengths: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
 
     @Queue("product") <b class="conum">(2)</b>
     fun receive(data: ByteArray) { <b class="conum">(3)</b>
-        val length = data.size
-        messageLengths.add(length)
-        println("Kotlin received $length bytes from RabbitMQ")
+        messageLengths.add(String(data))
+        println("Kotlin received ${data.size} bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
