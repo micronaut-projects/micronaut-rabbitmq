@@ -180,9 +180,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                 if (!hasAckArg) {
                                     if (method.getReturnType().getType().equals(Boolean.class)) {
                                         Boolean ack = (Boolean) returnedValue;
-                                        if (ack != null) {
-                                            closeable.withAcknowledge(ack);
-                                        }
+                                        closeable.withAcknowledge(ack == null ? false : ack);
                                     } else {
                                         closeable.withAcknowledge(true);
                                     }

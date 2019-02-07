@@ -1,4 +1,4 @@
-== Default Binding Functionality
+=== Default Binding Functionality
 
 Consumer argument binding is achieved through an link:{apimicronaut}core/bind/ArgumentBinderRegistry.html[ArgumentBinderRegistry]  that is specific for binding consumers from RabbitMQ messages. The class responsible for this is the api:configuration.rabbitmq.bind.RabbitBinderRegistry[].
 
@@ -12,11 +12,11 @@ When an argument needs bound, the api:configuration.rabbitmq.bind.RabbitMessageS
 
 The default binder checks if the argument name matches one of the link:{apirabbit}client/BasicProperties.html[BasicProperties]. If the name does not match, the body of the message is bound to the argument.
 
-== Custom Binding
+=== Custom Binding
 
 To inject your own argument binding behavior, it is as simple as registering a bean. The existing binder registry will inject it and include it in the normal processing.
 
-=== Annotation Binding
+==== Annotation Binding
 
 A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the api:configuration.rabbitmq.bind.RabbitMessageState[] to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.
 
@@ -36,7 +36,7 @@ The annotation can now be used on the argument in a consumer method.
 
 snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
-=== Type Binding
+==== Type Binding
 
 A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.
 

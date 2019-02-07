@@ -2,7 +2,7 @@ To add support for RabbitMQ to an existing project, you should first add the Mic
 
 dependency:micronaut-rabbitmq[groupId="io.micronaut.configuration"]
 
-=== Creating a RabbitMQ Producer with @RabbitClient
+== Creating a RabbitMQ Producer with @RabbitClient
 
 To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with ann:configuration.rabbitmq.annotation.RabbitClient[].
 
@@ -22,7 +22,7 @@ snippet::io.micronaut.configuration.rabbitmq.docs.quickstart.QuickstartSpec[tags
 NOTE: Because the `send` method returns `void` this means the method will publish the message and return immediately without any acknowledgement from the broker.
 
 
-=== Creating a RabbitMQ Consumer with @RabbitListener
+== Creating a RabbitMQ Consumer with @RabbitListener
 
 To listen to RabbitMQ messages you can use the ann:configuration.rabbitmq.annotation.RabbitListener[] annotation to define a message listener.
 

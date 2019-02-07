@@ -1,5 +1,22 @@
 There are three ways a message can be acknowledged, rejected, or not acknowledged.
 
 . For methods that accept an argument of type api:configuration.rabbitmq.bind.RabbitAcknowledgement[], the message will only be acknowledged when the respective methods on that class are executed.
-. For methods that return `Boolean`, the message will be acknowledged if the value is `true`. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.
+. For methods that return `Boolean`, the message will be acknowledged if the value returned from the method is `true`. Otherwise the message will be rejected.
 . For methods that return any other type, including `void`, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.
+
+=== Boolean Acknowledgement
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.bool.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The `reQueue` option on the `Queue` annotation is set to true causing messages to be redelivered if they are rejected by the consumer.
+<2> The method returns a `Boolean`.
+<3> The first message that gets delivered will be rejected. All future messages will be acknowledged.
+
+=== Acknowledgement Type
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.type.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The `reQueue` option is no longer considered when the method has a api:configuration.rabbitmq.bind.RabbitAcknowledgement[] argument.
+<2> The acknowledgement argument is injected into the method. That signifies that this library is no longer in control of acknowledgement in any way for this consumer.
+<3> The first message is rejected and re-queued.
+<4> The second and third messages are not acknowledged. The fourth message that is received is acknowledged along with the second and third messages because the `multiple` argument is `true`.

@@ -16,45 +16,22 @@
 
 package io.micronaut.configuration.rabbitmq.bind;
 
-import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.type.Argument;
-import io.micronaut.messaging.Acknowledgement;
-import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 
 import javax.inject.Singleton;
-import java.util.Optional;
 
 /**
- * Binds an argument of type {@link Acknowledgement} from the {@link RabbitMessageState}.
+ * Binds an argument of type {@link RabbitAcknowledgement} from the {@link RabbitMessageState}.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
 @Singleton
-public class RabbitAcknowledgementBinder implements RabbitTypeArgumentBinder<Acknowledgement> {
+public class RabbitAcknowledgementBinder extends AcknowledgementBinder<RabbitAcknowledgement> {
 
     @Override
-    public Argument<Acknowledgement> argumentType() {
-        return Argument.of(Acknowledgement.class);
+    public Argument<RabbitAcknowledgement> argumentType() {
+        return Argument.of(RabbitAcknowledgement.class);
     }
 
-    @Override
-    public BindingResult<Acknowledgement> bind(ArgumentConversionContext<Acknowledgement> context, RabbitMessageState source) {
-        Acknowledgement acknowledgement = new RabbitAcknowledgement() {
-            @Override
-            public void ack(boolean multiple) throws MessageAcknowledgementException {
-                ackNack(true, multiple, false);
-            }
-
-            @Override
-            public void nack(boolean multiple, boolean reQueue) throws MessageAcknowledgementException {
-                ackNack(false, multiple, reQueue);
-            }
-
-            private void ackNack(boolean ack, boolean multiple, boolean requeue)  throws MessageAcknowledgementException {
-                new RabbitMessageCloseable(source, multiple, requeue).withAcknowledge(ack).close();
-            }
-        };
-        return () -> Optional.of(acknowledgement);
-    }
 }

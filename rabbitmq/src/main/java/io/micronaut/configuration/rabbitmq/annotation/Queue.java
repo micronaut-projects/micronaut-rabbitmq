@@ -36,6 +36,9 @@ public @interface Queue {
     String value();
 
     /**
+     * Only applies to consumer methods that do not inject an
+     * {@link io.micronaut.messaging.Acknowledgement} instance.
+     *
      * @return Whether nacks should re-queue the message.
      */
     boolean reQueue() default false;
