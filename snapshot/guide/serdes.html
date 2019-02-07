@@ -142,7 +142,7 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
@@ -163,8 +163,8 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
     }
 
     @Override
-    public ProductInfo deserialize(RabbitMessageState messageState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
-        String body = new String(messageState.getBody(), CHARSET);
+    public ProductInfo deserialize(RabbitConsumerState consumerState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+        String body = new String(consumerState.getBody(), CHARSET);
         String[] parts = body.split("\\|");
         if (parts.length == 3) {
             String size = parts[0];

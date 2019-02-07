@@ -161,32 +161,25 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#cleanupChannel-com.rabbitmq.client.Channel-">cleanupChannel</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
-<div class="block">Removes confirm listeners from the channel and returns the
- channel to the pool.</div>
+<td class="colFirst"><code>protected io.reactivex.Completable</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-">createListener</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
+<div class="block">Listens for acks/nacks from the broker.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected com.rabbitmq.client.ConfirmListener</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-io.reactivex.CompletableEmitter-">createListener</a></span>(io.reactivex.CompletableEmitter&nbsp;emitter)</code>
-<div class="block">Returns the listener that will emit the appropriate event.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected io.reactivex.Single&lt;com.rabbitmq.client.Channel&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#getChannel--">getChannel</a></span>()</code>
 <div class="block">Creates a <code>Single</code> from a channel, emitting an error
  if the channel could not be retrieved.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected io.reactivex.Single&lt;com.rabbitmq.client.Channel&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#initializePublish-com.rabbitmq.client.Channel-">initializePublish</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
 <div class="block">Initializes the channel to allow publisher acknowledgements.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>io.reactivex.Completable</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#publish-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">publish</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;exchange,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;routingKey,
@@ -197,7 +190,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
  acknowledged the message.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected io.reactivex.Completable</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#publishInternal-com.rabbitmq.client.Channel-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">publishInternal</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;exchange,
@@ -205,6 +198,13 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
                com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
                byte[]&nbsp;body)</code>
 <div class="block">Publishes the message to the channel.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#returnChannel-com.rabbitmq.client.Channel-">returnChannel</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
+<div class="block">Removes confirm listeners from the channel and returns the
+ channel to the pool.</div>
 </td>
 </tr>
 </table>
@@ -339,13 +339,13 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 </dl>
 </li>
 </ul>
-<a name="cleanupChannel-com.rabbitmq.client.Channel-">
+<a name="returnChannel-com.rabbitmq.client.Channel-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>cleanupChannel</h4>
-<pre>protected&nbsp;void&nbsp;cleanupChannel(com.rabbitmq.client.Channel&nbsp;channel)</pre>
+<h4>returnChannel</h4>
+<pre>protected&nbsp;void&nbsp;returnChannel(com.rabbitmq.client.Channel&nbsp;channel)</pre>
 <div class="block">Removes confirm listeners from the channel and returns the
  channel to the pool.</div>
 <dl>
@@ -354,19 +354,19 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 </dl>
 </li>
 </ul>
-<a name="createListener-io.reactivex.CompletableEmitter-">
+<a name="createListener-com.rabbitmq.client.Channel-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>createListener</h4>
-<pre>protected&nbsp;com.rabbitmq.client.ConfirmListener&nbsp;createListener(io.reactivex.CompletableEmitter&nbsp;emitter)</pre>
-<div class="block">Returns the listener that will emit the appropriate event.</div>
+<pre>protected&nbsp;io.reactivex.Completable&nbsp;createListener(com.rabbitmq.client.Channel&nbsp;channel)</pre>
+<div class="block">Listens for acks/nacks from the broker.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>emitter</code> - The emitter to emit completion or error</dd>
+<dd><code>channel</code> - The channel to listen for confirms</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The listener to add to pass to <code>Channel.addConfirmListener(ConfirmListener)</code></dd>
+<dd>A completable that completes or errors based on the broker response</dd>
 </dl>
 </li>
 </ul>

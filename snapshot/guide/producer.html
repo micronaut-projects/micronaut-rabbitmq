@@ -153,9 +153,9 @@ import io.micronaut.messaging.annotation.Header;
 @RabbitClient("animals") <b class="conum">(1)</b>
 public interface AnimalClient {
 
-    void send(@Header String animalType, Animal animal); <b class="conum">(3)</b>
+    void send(@Header String animalType, Animal animal); <b class="conum">(2)</b>
 
-    default void send(Animal animal) {
+    default void send(Animal animal) { <b class="conum">(3)</b>
         send(animal.getClass().getSimpleName(), animal);
     }
 }</code></pre>
@@ -187,9 +187,9 @@ import io.micronaut.messaging.annotation.Header
 @RabbitClient("animals") <b class="conum">(1)</b>
 abstract class AnimalClient {
 
-    abstract fun send(@Header animalType: String, animal: Animal)  <b class="conum">(3)</b>
+    abstract fun send(@Header animalType: String, animal: Animal)  <b class="conum">(2)</b>
 
-    fun send(animal: Animal) {
+    fun send(animal: Animal) { <b class="conum">(3)</b>
         send(animal.javaClass.simpleName, animal)
     }
 }</code></pre>

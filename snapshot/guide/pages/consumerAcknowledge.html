@@ -147,6 +147,46 @@ public class ProductListener {
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.concurrent.atomic.AtomicInteger
+
+@RabbitListener
+class ProductListener {
+
+    AtomicInteger messageCount = new AtomicInteger()
+
+    @Queue(value = "product", reQueue = true) <b class="conum">(1)</b>
+    Boolean receive(byte[] data) { <b class="conum">(2)</b>
+        messageCount.getAndUpdate({ intValue -&gt; ++intValue }) &gt; 0 <b class="conum">(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.concurrent.atomic.AtomicInteger
+
+@RabbitListener
+class ProductListener {
+
+    val messageCount = AtomicInteger()
+
+    @Queue(value = "product", reQueue = true) <b class="conum">(1)</b>
+    fun receive(data: ByteArray): Boolean { <b class="conum">(2)</b>
+        return messageCount.getAndUpdate { intValue -&gt; intValue + 1 } &gt; 0 <b class="conum">(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -187,6 +227,59 @@ public class ProductListener {
             acknowledgement.nack(false, true); <b class="conum">(3)</b>
         } else if (count &gt; 3) {
             acknowledgement.ack(true); <b class="conum">(4)</b>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement
+import io.micronaut.context.annotation.Requires
+
+import java.util.concurrent.atomic.AtomicInteger
+
+@RabbitListener
+class ProductListener {
+
+    AtomicInteger messageCount = new AtomicInteger()
+
+    @Queue(value = "product") <b class="conum">(1)</b>
+    void receive(byte[] data, RabbitAcknowledgement acknowledgement) { <b class="conum">(2)</b>
+        int count = messageCount.getAndUpdate({ intValue -&gt; ++intValue })
+        println new String(data)
+        if (count  == 0) {
+            acknowledgement.nack(false, true) <b class="conum">(3)</b>
+        } else if (count &gt; 3) {
+            acknowledgement.ack(true) <b class="conum">(4)</b>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement
+import io.micronaut.context.annotation.Requires
+
+import java.util.concurrent.atomic.AtomicInteger
+
+@RabbitListener
+class ProductListener {
+
+    val messageCount = AtomicInteger()
+
+    @Queue(value = "product") <b class="conum">(1)</b>
+    fun receive(data: ByteArray, acknowledgement: RabbitAcknowledgement) { <b class="conum">(2)</b>
+        val count = messageCount.getAndUpdate { intValue -&gt; intValue + 1 }
+        if (count == 0) {
+            acknowledgement.nack(false, true) <b class="conum">(3)</b>
+        } else if (count &gt; 3) {
+            acknowledgement.ack(true) <b class="conum">(4)</b>
         }
     }
 }</code></pre>
