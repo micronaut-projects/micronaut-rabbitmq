@@ -1,4 +1,4 @@
-package io.micronaut.configuration.rabbitmq.docs.parameters;
+package io.micronaut.configuration.rabbitmq.docs.parameters
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.annotation.Binding

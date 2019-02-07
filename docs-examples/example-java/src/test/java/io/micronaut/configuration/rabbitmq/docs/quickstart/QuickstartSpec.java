@@ -15,7 +15,7 @@ public class QuickstartSpec extends AbstractRabbitMQTest {
 
 // tag::producer[]
 ProductClient productClient = applicationContext.getBean(ProductClient.class);
-productClient.send("message body".getBytes());
+productClient.send("quickstart".getBytes());
 // end::producer[]
 
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
@@ -23,7 +23,7 @@ productClient.send("message body".getBytes());
         try {
             await().atMost(5, SECONDS).until(() ->
                     productListener.messageLengths.size() == 1 &&
-                            productListener.messageLengths.get(0) == 12
+                            productListener.messageLengths.get(0).equals("quickstart")
             );
         } finally {
             applicationContext.close();

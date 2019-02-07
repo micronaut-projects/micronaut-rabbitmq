@@ -19,6 +19,7 @@ class ProductListener {
     @Queue(value = "product") // <1>
     void receive(byte[] data, RabbitAcknowledgement acknowledgement) { // <2>
         int count = messageCount.getAndUpdate({ intValue -> ++intValue })
+        println new String(data)
         if (count  == 0) {
             acknowledgement.nack(false, true) // <3>
         } else if (count > 3) {

@@ -17,13 +17,13 @@ class QuickstartSpec: AbstractRabbitMQTest({
 
 // tag::producer[]
 val productClient = ctx.getBean(ProductClient::class.java)
-productClient.send("message body".toByteArray())
+productClient.send("quickstart".toByteArray())
 // end::producer[]
 
             then("the message is consumed") {
                 eventually(10.seconds, AssertionFailedError::class.java) {
                     productListener.messageLengths.size shouldBe 1
-                    productListener.messageLengths[0] shouldBe 12
+                    productListener.messageLengths[0] shouldBe "quickstart"
                 }
             }
         }

@@ -15,13 +15,12 @@ import java.util.List;
 @RabbitListener // <1>
 public class ProductListener {
 
-    List<Integer> messageLengths = Collections.synchronizedList(new ArrayList<>());
+    List<String> messageLengths = Collections.synchronizedList(new ArrayList<>());
 
     @Queue("product") // <2>
     public void receive(byte[] data) { // <3>
-        Integer length = data.length;
-        messageLengths.add(length);
-        System.out.println("Java received " + length + " bytes from RabbitMQ");
+        messageLengths.add(new String(data));
+        System.out.println("Java received " + data.length + " bytes from RabbitMQ");
     }
 }
 // end::clazz[]

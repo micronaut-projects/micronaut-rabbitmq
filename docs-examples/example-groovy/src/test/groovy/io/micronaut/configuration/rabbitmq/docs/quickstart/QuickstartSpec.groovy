@@ -13,7 +13,7 @@ class QuickstartSpec extends AbstractRabbitMQTest {
         when:
 // tag::producer[]
 def productClient = applicationContext.getBean(ProductClient)
-productClient.send("message body".getBytes())
+productClient.send("quickstart".getBytes())
 // end::producer[]
 
         ProductListener productListener = applicationContext.getBean(ProductListener)
@@ -21,10 +21,12 @@ productClient.send("message body".getBytes())
         then:
         conditions.eventually {
             productListener.messageLengths.size() == 1
-            productListener.messageLengths[0] == 12
+            productListener.messageLengths[0] == "quickstart"
         }
 
         cleanup:
+        // Finding that the context is closing the channel before ack is sent
+        Thread.sleep(200)
         applicationContext.close()
     }
 }

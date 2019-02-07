@@ -11,13 +11,12 @@ import io.micronaut.context.annotation.Requires
 @RabbitListener // <1>
 class ProductListener {
 
-    List<Integer> messageLengths = Collections.synchronizedList([])
+    List<String> messageLengths = Collections.synchronizedList([])
 
     @Queue("product") // <2>
     void receive(byte[] data) { // <3>
-        Integer length = data.length
-        messageLengths.add(length)
-        println("Groovy received ${length} bytes from RabbitMQ")
+        messageLengths.add(new String(data))
+        println("Groovy received ${data.length} bytes from RabbitMQ")
     }
 }
 // end::clazz[]
