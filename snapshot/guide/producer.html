@@ -47,13 +47,16 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>8</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>9</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>9</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>10</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -151,6 +154,10 @@ import io.micronaut.messaging.annotation.Header;
 public interface AnimalClient {
 
     void send(@Header String animalType, Animal animal); <b class="conum">(3)</b>
+
+    default void send(Animal animal) {
+        send(animal.getClass().getSimpleName(), animal);
+    }
 }</code></pre>
 </div>
 </div>
@@ -161,9 +168,13 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
 @RabbitClient("animals") <b class="conum">(1)</b>
-interface AnimalClient {
+abstract class AnimalClient {
 
-    void send(@Header String animalType, Animal animal) <b class="conum">(3)</b>
+    abstract void send(@Header String animalType, Animal animal) <b class="conum">(2)</b>
+
+    void send(Animal animal) { <b class="conum">(3)</b>
+        send(animal.class.simpleName, animal)
+    }
 }</code></pre>
 </div>
 </div>
@@ -174,11 +185,31 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
 @RabbitClient("animals") <b class="conum">(1)</b>
-interface AnimalClient {
+abstract class AnimalClient {
 
-    fun send(@Header animalType: String, animal: Animal)  <b class="conum">(3)</b>
+    abstract fun send(@Header animalType: String, animal: Animal)  <b class="conum">(3)</b>
+
+    fun send(animal: Animal) {
+        send(animal.javaClass.simpleName, animal)
+    }
 }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The exchange name is provided through the <code>@RabbitClient</code> annotation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header value is used to route the message to a queue.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A helper method was created to provide the header value automatically.</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock important">
 <table>

@@ -47,13 +47,16 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>8</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>9</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>9</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>10</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -122,8 +125,9 @@ function addJsClass() {
 </div>
 </p>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h3>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
 </div>
@@ -222,8 +226,10 @@ Because the <code>send</code> method returns <code>void</code> this means the me
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h3>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
 </div>
@@ -311,6 +317,7 @@ class ProductListener {
 <td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 

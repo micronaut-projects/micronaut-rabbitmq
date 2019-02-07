@@ -78,6 +78,14 @@
 <dd>
 <div class="block">Acknowledges this message.</div>
 </dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">AcknowledgementBinder</span></a>&lt;<a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html" title="type parameter in AcknowledgementBinder">T</a> extends io.micronaut.messaging.Acknowledgement&gt; - Class in <a href="io/micronaut/configuration/rabbitmq/bind/package-summary.html">io.micronaut.configuration.rabbitmq.bind</a></dt>
+<dd>
+<div class="block">Binds an argument of type <code>Acknowledgement</code> from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html#AcknowledgementBinder--">AcknowledgementBinder()</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">AcknowledgementBinder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html#argumentType--">argumentType()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">AcknowledgementBinder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html#argumentType--">argumentType()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitAcknowledgementBinder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitBasicPropertiesBinder.html#argumentType--">argumentType()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitBasicPropertiesBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBasicPropertiesBinder</a></dt>
@@ -90,7 +98,7 @@
 </a>
 <h2 class="title">B</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html#bind-io.micronaut.core.convert.ArgumentConversionContext-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">bind(ArgumentConversionContext&lt;Acknowledgement&gt;, RabbitMessageState)</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitAcknowledgementBinder</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html#bind-io.micronaut.core.convert.ArgumentConversionContext-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">bind(ArgumentConversionContext&lt;T&gt;, RabbitMessageState)</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/AcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">AcknowledgementBinder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitBasicPropertiesBinder.html#bind-io.micronaut.core.convert.ArgumentConversionContext-io.micronaut.configuration.rabbitmq.bind.RabbitMessageState-">bind(ArgumentConversionContext&lt;BasicProperties&gt;, RabbitMessageState)</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitBasicPropertiesBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBasicPropertiesBinder</a></dt>
 <dd>&nbsp;</dd>
@@ -393,6 +401,14 @@
 <dl>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/metrics/RabbitMetricsInterceptor.html#onCreated-io.micronaut.context.event.BeanCreatedEvent-">onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.metrics.<a href="io/micronaut/configuration/rabbitmq/metrics/RabbitMetricsInterceptor.html" title="class in io.micronaut.configuration.rabbitmq.metrics">RabbitMetricsInterceptor</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#ORDER">ORDER</a></span> - Static variable in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
+<dd>
+<div class="block">The order of this serDes.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#ORDER">ORDER</a></span> - Static variable in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JsonRabbitMessageSerDes</a></dt>
+<dd>
+<div class="block">The order of this serDes.</div>
+</dd>
 </dl>
 <a name="I:P">
 <!--   -->
@@ -436,7 +452,7 @@
 </dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitAcknowledgementBinder</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/bind/package-summary.html">io.micronaut.configuration.rabbitmq.bind</a></dt>
 <dd>
-<div class="block">Binds an argument of type <code>Acknowledgement</code> from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
+<div class="block">Binds an argument of type <a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html" title="interface in io.micronaut.configuration.rabbitmq.bind"><code>RabbitAcknowledgement</code></a> from the <a href="io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><code>RabbitMessageState</code></a>.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html#RabbitAcknowledgementBinder--">RabbitAcknowledgementBinder()</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitAcknowledgementBinder</a></dt>
 <dd>&nbsp;</dd>

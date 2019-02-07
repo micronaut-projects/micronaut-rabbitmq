@@ -55,11 +55,13 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#initialization"><strong>7</strong><span>Creating Queues/Exchanges</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>8</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>9</strong><span>RabbitMQ Metrics</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>9</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>10</strong><span>RabbitMQ Metrics</span></a></div>
                                 
                             </div>
                         </div>
@@ -139,13 +141,15 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.3</strong><span>Consumer Execution</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>7</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-initialization"><a href="#initialization"><strong>7</strong><span>Creating Queues/Exchanges</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>7.1</strong><span>Custom SerDes</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>8</strong><span>RabbitMQ Health Indicator</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>8.1</strong><span>Custom SerDes</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>9</strong><span>RabbitMQ Metrics</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>9</strong><span>RabbitMQ Health Indicator</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>10</strong><span>RabbitMQ Metrics</span></a></div>
         
         </div>
     </div>
@@ -223,8 +227,9 @@
 </div>
 </p>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h3>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
 </div>
@@ -323,8 +328,10 @@ Because the <code>send</code> method returns <code>void</code> this means the me
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h3>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
 </div>
@@ -412,6 +419,7 @@ class ProductListener {
 <td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 
@@ -754,6 +762,10 @@ import io.micronaut.messaging.annotation.Header;
 public interface AnimalClient {
 
     void send(@Header String animalType, Animal animal); <b class="conum">(3)</b>
+
+    default void send(Animal animal) {
+        send(animal.getClass().getSimpleName(), animal);
+    }
 }</code></pre>
 </div>
 </div>
@@ -764,9 +776,13 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
 @RabbitClient("animals") <b class="conum">(1)</b>
-interface AnimalClient {
+abstract class AnimalClient {
 
-    void send(@Header String animalType, Animal animal) <b class="conum">(3)</b>
+    abstract void send(@Header String animalType, Animal animal) <b class="conum">(2)</b>
+
+    void send(Animal animal) { <b class="conum">(3)</b>
+        send(animal.class.simpleName, animal)
+    }
 }</code></pre>
 </div>
 </div>
@@ -777,11 +793,31 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
 @RabbitClient("animals") <b class="conum">(1)</b>
-interface AnimalClient {
+abstract class AnimalClient {
 
-    fun send(@Header animalType: String, animal: Animal)  <b class="conum">(3)</b>
+    abstract fun send(@Header animalType: String, animal: Animal)  <b class="conum">(3)</b>
+
+    fun send(animal: Animal) {
+        send(animal.javaClass.simpleName, animal)
+    }
 }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The exchange name is provided through the <code>@RabbitClient</code> annotation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header value is used to route the message to a queue.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A helper method was created to provide the header value automatically.</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1847,9 +1883,8 @@ class ProductListener {
 </div>
 
 
-<div class="sect1">
-<h2 id="_default_binding_functionality">Default Binding Functionality</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_default_binding_functionality">Default Binding Functionality</h3>
 <div class="paragraph">
 <p>Consumer argument binding is achieved through an <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/ArgumentBinderRegistry.html">ArgumentBinderRegistry</a>  that is specific for binding consumers from RabbitMQ messages. The class responsible for this is the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html">RabbitBinderRegistry</a>.</p>
 </div>
@@ -1876,15 +1911,13 @@ class ProductListener {
 <p>The default binder checks if the argument name matches one of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>. If the name does not match, the body of the message is bound to the argument.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_custom_binding">Custom Binding</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_custom_binding">Custom Binding</h3>
 <div class="paragraph">
 <p>To inject your own argument binding behavior, it is as simple as registering a bean. The existing binder registry will inject it and include it in the normal processing.</p>
 </div>
-<div class="sect2">
-<h3 id="_annotation_binding">Annotation Binding</h3>
+<div class="sect3">
+<h4 id="_annotation_binding">Annotation Binding</h4>
 <div class="paragraph">
 <p>A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitMessageState.html">RabbitMessageState</a> to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.</p>
 </div>
@@ -2113,8 +2146,8 @@ class ProductListener {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_type_binding">Type Binding</h3>
+<div class="sect3">
+<h4 id="_type_binding">Type Binding</h4>
 <div class="paragraph">
 <p>A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.</p>
 </div>
@@ -2204,6 +2237,10 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
     public BindingResult&lt;ProductInfo&gt; bind(ArgumentConversionContext&lt;ProductInfo&gt; context, RabbitMessageState source) {
         Map&lt;String, Object&gt; rawHeaders = source.getProperties().getHeaders(); <b class="conum">(4)</b>
 
+        if (rawHeaders == null) {
+            return BindingResult.EMPTY;
+        }
+
         RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
 
         String size = headers.get("productSize", String.class).orElse(null);  <b class="conum">(5)</b>
@@ -2271,7 +2308,6 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 </div>
 </div>
 </div>
-</div>
 
 
 <h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
@@ -2292,12 +2328,103 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 <p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
 </li>
 <li>
-<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value is <code>true</code>. If the returned value is false the message will be rejected. If the value is null the message will not be acknowledged.</p>
+<p>For methods that return <code>Boolean</code>, the message will be acknowledged if the value returned from the method is <code>true</code>. Otherwise the message will be rejected.</p>
 </li>
 <li>
 <p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
 </li>
 </ol>
+</div>
+<div class="sect2">
+<h3 id="_boolean_acknowledgement">Boolean Acknowledgement</h3>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@RabbitListener
+public class ProductListener {
+
+    AtomicInteger messageCount = new AtomicInteger();
+
+    @Queue(value = "product", reQueue = true) <b class="conum">(1)</b>
+    public Boolean receive(byte[] data) { <b class="conum">(2)</b>
+        return messageCount.getAndUpdate((intValue) -&gt; ++intValue) &gt; 0; <b class="conum">(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>reQueue</code> option on the <code>Queue</code> annotation is set to true causing messages to be redelivered if they are rejected by the consumer.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The method returns a <code>Boolean</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The first message that gets delivered will be rejected. All future messages will be acknowledged.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acknowledgement_type">Acknowledgement Type</h3>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+@RabbitListener
+public class ProductListener {
+
+    AtomicInteger messageCount = new AtomicInteger();
+
+    @Queue(value = "product") <b class="conum">(1)</b>
+    public void receive(byte[] data, RabbitAcknowledgement acknowledgement) { <b class="conum">(2)</b>
+        int count = messageCount.getAndUpdate((intValue) -&gt; ++intValue);
+        if (count  == 0) {
+            acknowledgement.nack(false, true); <b class="conum">(3)</b>
+        } else if (count &gt; 3) {
+            acknowledgement.ack(true); <b class="conum">(4)</b>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>reQueue</code> option is no longer considered when the method has a <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a> argument.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The acknowledgement argument is injected into the method. That signifies that this library is no longer in control of acknowledgement in any way for this consumer.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The first message is rejected and re-queued.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The second and third messages are not acknowledged. The fourth message that is received is acknowledged along with the second and third messages because the <code>multiple</code> argument is <code>true</code>.</td>
+</tr>
+</table>
+</div>
 </div>
 
 
@@ -2367,7 +2494,225 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 </div>
 
 
-<h1 id="serdes">7 Message Serialization/Deserialization (SerDes)</h1>
+<h1 id="initialization">7 Creating Queues/Exchanges</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/initialization.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The purpose of this library is to consume and publish messages with RabbitMQ. Any setup of queues, exchanges, or the binding between them is <strong>not</strong> done automatically. If your requirements dictate that your application should be creating those entities, then a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> can be registered to intercept the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPool.html">ChannelPool</a> to perform operations with the Java API directly.</p>
+</div>
+<div class="paragraph">
+<p>For all of the examples in this documentation, an event listener has been registered to create the required queues, exchanges, and bindings necessary for the code to be tested.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.Channel;
+import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
+
+import javax.inject.Singleton;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Singleton <b class="conum">(1)</b>
+public class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+
+    @Override
+    public ChannelPool onCreated(BeanCreatedEvent&lt;ChannelPool&gt; event) {
+        ChannelPool pool = event.getBean(); <b class="conum">(3)</b>
+
+        Channel channel = null;
+        try {
+            channel = pool.getChannel(); <b class="conum">(4)</b>
+        } catch (IOException e) {
+            // The channel couldn't be retrieved
+        }
+
+        if (channel != null) {
+            try {
+                //docs/quickstart
+                Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+                args.put("x-max-priority", 100);
+                channel.queueDeclare("product", false, false, false, args); <b class="conum">(5)</b>
+
+                //docs/exchange
+                channel.exchangeDeclare("animals", "headers", false);
+                channel.queueDeclare("snakes", false, false, false, null);
+                channel.queueDeclare("cats", false, false, false, null);
+                Map&lt;String, Object&gt; catArgs = new HashMap&lt;&gt;();
+                catArgs.put("x-match", "all");
+                catArgs.put("animalType", "Cat");
+                channel.queueBind("cats", "animals", "", catArgs);
+
+                Map&lt;String, Object&gt; snakeArgs = new HashMap&lt;&gt;();
+                snakeArgs.put("x-match", "all");
+                snakeArgs.put("animalType", "Snake");
+                channel.queueBind("snakes", "animals", "", snakeArgs);
+
+            } catch (IOException e) {
+                //no-op
+            } finally {
+                pool.returnChannel(channel); <b class="conum">(6)</b>
+            }
+        }
+
+        return pool; <b class="conum">(7)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.Channel
+import io.micronaut.configuration.rabbitmq.connect.ChannelPool
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+
+import javax.inject.Singleton
+
+@Singleton <b class="conum">(1)</b>
+class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+
+    @Override
+    ChannelPool onCreated(BeanCreatedEvent&lt;ChannelPool&gt; event) {
+        ChannelPool pool = event.bean <b class="conum">(3)</b>
+        Channel channel = null
+        try {
+            channel = pool.channel <b class="conum">(4)</b>
+        } catch (IOException e) {
+            // The channel couldn't be retrieved
+        }
+
+        if (channel != null) {
+            try {
+                channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) <b class="conum">(5)</b>
+
+                //docs/exchange
+                channel.exchangeDeclare("animals", "headers", false)
+                channel.queueDeclare("snakes", false, false, false, null)
+                channel.queueDeclare("cats", false, false, false, null)
+                Map&lt;String, Object&gt; catArgs = [:]
+                catArgs.put("x-match", "all")
+                catArgs.put("animalType", "Cat")
+                channel.queueBind("cats", "animals", "", catArgs)
+
+                Map&lt;String, Object&gt; snakeArgs = [:]
+                snakeArgs.put("x-match", "all")
+                snakeArgs.put("animalType", "Snake")
+                channel.queueBind("snakes", "animals", "", snakeArgs)
+
+            } catch (IOException e) {
+                //no-op
+            } finally {
+                pool.returnChannel(channel) <b class="conum">(6)</b>
+            }
+        }
+
+        pool <b class="conum">(7)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.Channel
+import io.micronaut.configuration.rabbitmq.connect.ChannelPool
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+
+import javax.inject.Singleton
+import java.io.IOException
+import java.util.HashMap
+
+@Singleton <b class="conum">(1)</b>
+class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+
+    override fun onCreated(event: BeanCreatedEvent&lt;ChannelPool&gt;): ChannelPool {
+        val pool = event.bean <b class="conum">(3)</b>
+
+        var channel: Channel? = null
+
+        try {
+            channel = pool.channel <b class="conum">(4)</b>
+        } catch (e: IOException) {
+            // The channel couldn't be retrieved
+        }
+
+        if (channel != null) {
+            try {
+                //docs/quickstart
+                channel.queueDeclare("product", false, false, false, mapOf("x-max-priority" to 100)) <b class="conum">(5)</b>
+
+                //docs/exchange
+                channel.exchangeDeclare("animals", "headers", false)
+                channel.queueDeclare("snakes", false, false, false, null)
+                channel.queueDeclare("cats", false, false, false, null)
+                val catArgs = HashMap&lt;String, Any&gt;()
+                catArgs["x-match"] = "all"
+                catArgs["animalType"] = "Cat"
+                channel.queueBind("cats", "animals", "", catArgs)
+
+                val snakeArgs = HashMap&lt;String, Any&gt;()
+                snakeArgs["x-match"] = "all"
+                snakeArgs["animalType"] = "Snake"
+                channel.queueBind("snakes", "animals", "", snakeArgs)
+
+            } catch (e: IOException) {
+                // An error occurred performing the operations
+            } finally {
+                pool.returnChannel(channel) <b class="conum">(6)</b>
+            }
+        }
+
+        return pool <b class="conum">(7)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is declared as a singleton so it will be registered with the context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The generic specifies what bean type we want to intercept</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Retrieve the bean from the event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Retrieve a channel from the pool</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Declare a queue or perform any operations desired</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Ensure that under all conditions the channel is returned to the pool</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Return the pool object to be injected where it is needed</td>
+</tr>
+</table>
+</div>
+
+
+<h1 id="serdes">8 Message Serialization/Deserialization (SerDes)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
@@ -2377,11 +2722,17 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>The serialization and deserialization of message bodies is handled through instances of <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. The ser-des (Serializer/Deserializer) is responsible for both serialization and deserialization of RabbitMQ message bodies into the message body types defined in your clients and consumers methods.</p>
+</div>
+<div class="paragraph">
+<p>The ser-des are managed by a <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html">RabbitMessageSerDesRegistry</a>. All ser-des beans are injected in order into the registry and then searched for when serialization or deserialization is needed. The first ser-des that returns true for <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">RabbitMessageSerDes#supports(Class)</a> is returned and used.</p>
+</div>
+<div class="paragraph">
+<p>By default, standard Java lang types and JSON format (with Jackson) are supported. You can supply your own ser-des by simply registering a bean of type <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. All ser-des implement the <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/order/Ordered.html">Ordered</a> interface, so custom implementations can come before, after, or in between the default implementations.</p>
 </div>
 
 
-<h2 id="custom">7.1 Custom SerDes</h2>
+<h2 id="custom">8.1 Custom SerDes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
@@ -2391,11 +2742,108 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>A custom serializer/deserializer would be necessary to support custom data formats. In the section on <a href="#consumerCustom">Custom Consumer Binding</a> an example was demonstrated that allowed binding a <code>ProductInfo</code> type from the headers of the message. If instead that object should represent the body of the message with a custom data format, you could register your own serializer/deserializer to do so.</p>
+</div>
+<div class="paragraph">
+<p>In this example a simple data format of the string representation of the fields are concatenated together with a pipe character.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitMessageState;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.convert.ConversionService;
+
+import javax.inject.Singleton;
+import java.nio.charset.Charset;
+import java.util.Optional;
+
+@Singleton <b class="conum">(1)</b>
+public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private static final Charset CHARSET = Charset.forName("UTF-8");
+
+    private final ConversionService&lt;?&gt; conversionService;
+
+    public ProductInfoSerDes(ConversionService&lt;?&gt; conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService;
+    }
+
+    @Override
+    public ProductInfo deserialize(RabbitMessageState messageState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+        String body = new String(messageState.getBody(), CHARSET);
+        String[] parts = body.split("\\|");
+        if (parts.length == 3) {
+            String size = parts[0];
+            if (size.equals("null")) {
+                size = null;
+            }
+
+            Optional&lt;Long&gt; count = conversionService.convert(parts[1], Long.class);
+            Optional&lt;Boolean&gt; sealed = conversionService.convert(parts[2], Boolean.class);
+
+            if (count.isPresent() &amp;&amp; sealed.isPresent()) {
+                return new ProductInfo(size, count.get(), sealed.get());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] serialize(ProductInfo data) { <b class="conum">(5)</b>
+        return (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET);
+    }
+
+    @Override
+    public boolean supports(Class&lt;ProductInfo&gt; type) { <b class="conum">(6)</b>
+        return type.isAssignableFrom(ProductInfo.class);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is declared as a singleton so it will be registered with the context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The generic specifies what type we want to accept and return</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected to convert the parts of the message to the required types</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The deserialize method takes the bytes from the message and constructs a <code>ProductInfo</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The serialize method takes the <code>ProductInfo</code> and returns the bytes to publish</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The supports method ensures only the correct body types are processed by this ser-des</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Because the <code>getOrder</code> method was not overridden, the default order of 0 is used. All default ser-des have a lower precedent than the default order which means this ser-des will be checked before the others.
+</td>
+</tr>
+</table>
 </div>
 
 
-<h1 id="health">8 RabbitMQ Health Indicator</h1>
+<h1 id="health">9 RabbitMQ Health Indicator</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
@@ -2409,7 +2857,7 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 </div>
 
 
-<h1 id="metrics">9 RabbitMQ Metrics</h1>
+<h1 id="metrics">10 RabbitMQ Metrics</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/metrics.adoc"'>

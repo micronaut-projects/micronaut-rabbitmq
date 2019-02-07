@@ -146,7 +146,10 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>
+<div class="block">Only applies to consumer methods that do not inject an
+ <code>Acknowledgement</code> instance.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -187,6 +190,8 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <li class="blockList">
 <h4>reQueue</h4>
 <pre>public abstract&nbsp;boolean&nbsp;reQueue</pre>
+<div class="block">Only applies to consumer methods that do not inject an
+ <code>Acknowledgement</code> instance.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether nacks should re-queue the message.</dd>
