@@ -21,13 +21,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.messaging.exceptions.MessagingClientException;
-import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.Single;
-import org.reactivestreams.Publisher;
+import io.reactivex.*;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A reactive publisher implementation that uses a single channel per publish
@@ -55,11 +55,6 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
         return getChannel()
             .flatMap(this::initializePublish)
             .flatMapCompletable(channel -> publishInternal(channel, exchange, routingKey, properties, body));
-    }
-
-    @Override
-    public Completable publish(Publisher<RabbitPublisherState> messagePublisher) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -97,7 +92,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
      */
     protected Completable publishInternal(Channel channel, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         return Completable.create((emitter) -> {
-            channel.addConfirmListener(createListener(emitter));
+            Disposable listener = createListener(channel)
+                    .subscribe(emitter::onComplete, emitter::onError);
             try {
                 channel.basicPublish(
                         exchange,
@@ -106,9 +102,10 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
                         body
                 );
             } catch (IOException e) {
+                listener.dispose();
                 emitter.onError(e);
             }
-        }).doFinally(() -> cleanupChannel(channel));
+        }).doFinally(() -> returnChannel(channel));
     }
 
     /**
@@ -135,28 +132,42 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
      *
      * @param channel The channel to clean and return
      */
-    protected void cleanupChannel(Channel channel) {
-        channel.clearConfirmListeners();
+    protected void returnChannel(Channel channel) {
         channelPool.returnChannel(channel);
     }
 
     /**
-     * Returns the listener that will emit the appropriate event.
+     * Listens for acks/nacks from the broker.
      *
-     * @param emitter The emitter to emit completion or error
-     * @return The listener to add to pass to {@link Channel#addConfirmListener(ConfirmListener)}
+     * @param channel The channel to listen for confirms
+     * @return A completable that completes or errors based on the broker response
      */
-    protected ConfirmListener createListener(CompletableEmitter emitter) {
-        return new ConfirmListener() {
-            @Override
-            public void handleAck(long deliveryTag, boolean multiple) {
-                emitter.onComplete();
-            }
-
-            @Override
-            public void handleNack(long deliveryTag, boolean multiple) {
-                emitter.onError(new MessagingClientException("Message could not be delivered to the broker"));
+    protected Completable createListener(Channel channel) {
+        final AtomicReference<ConfirmListener> listener = new AtomicReference<>();
+        Action cleanUp = () -> {
+            ConfirmListener confirmListener = listener.getAndSet(null);
+            if (confirmListener != null) {
+                channel.removeConfirmListener(confirmListener);
             }
         };
+        return Completable.create(emitter -> {
+            ConfirmListener confirmListener = new ConfirmListener() {
+                @Override
+                public void handleAck(long deliveryTag, boolean multiple) {
+                    emitter.onComplete();
+                }
+
+                @Override
+                public void handleNack(long deliveryTag, boolean multiple) {
+                    emitter.onError(new MessagingClientException("Message could not be delivered to the broker"));
+                }
+            };
+
+            if (listener.compareAndSet(null, confirmListener)) {
+                channel.addConfirmListener(confirmListener);
+            }
+
+        }).doOnTerminate(cleanUp).doOnDispose(cleanUp);
     }
+
 }

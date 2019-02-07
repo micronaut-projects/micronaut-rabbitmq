@@ -17,7 +17,6 @@
 package io.micronaut.configuration.rabbitmq.reactive;
 
 import com.rabbitmq.client.AMQP;
-import org.reactivestreams.Publisher;
 
 /**
  * A generic contract for publishing RabbitMQ messages reactively.
@@ -42,14 +41,4 @@ public interface ReactivePublisher<T> {
      */
     T publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body);
 
-
-    /**
-     * Publishes all of the messages emitted by the provided publisher
-     * and returns a reactive type that completes successfully when
-     * the broker acknowledges all of the messages.
-     *
-     * @param messagePublisher The publisher of messages
-     * @return The reactive type to subscribe to
-     */
-    T publish(Publisher<RabbitPublisherState> messagePublisher);
 }
