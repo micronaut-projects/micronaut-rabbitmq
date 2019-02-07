@@ -1,1 +1,14 @@
-TODO
+The Java RabbitMQ client has built in support for Micrometer. If Micrometer is enabled in your application, metrics for RabbitMQ will be collected by default. For more details on how to integrate Micronaut with Micrometer, see the link:https://micronaut-projects.github.io/micronaut-micrometer/latest/guide[documentation].
+
+The RabbitMQ metrics binder is configurable. For example:
+
+[source, yaml]
+----
+micronaut:
+    metrics:
+        binders:
+            rabbitmq:
+                enabled: Boolean
+                tags: String[]
+                prefix: String
+----

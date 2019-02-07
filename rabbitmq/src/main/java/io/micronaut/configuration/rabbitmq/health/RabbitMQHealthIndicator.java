@@ -18,7 +18,9 @@ package io.micronaut.configuration.rabbitmq.health;
 
 import com.rabbitmq.client.Connection;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.health.HealthStatus;
+import io.micronaut.management.endpoint.health.HealthEndpoint;
 import io.micronaut.management.health.indicator.AbstractHealthIndicator;
 import io.micronaut.management.health.indicator.HealthIndicator;
 
@@ -32,7 +34,8 @@ import java.util.stream.Collectors;
  * @author James Kleeh
  * @since 1.1.0
  */
-@Requires(classes = HealthIndicator.class)
+@Requires(property = HealthEndpoint.PREFIX + ".rabbitmq.enabled", notEquals = StringUtils.FALSE)
+@Requires(beans = HealthEndpoint.class)
 @Singleton
 public class RabbitMQHealthIndicator extends AbstractHealthIndicator<Map<String, Object>> {
 

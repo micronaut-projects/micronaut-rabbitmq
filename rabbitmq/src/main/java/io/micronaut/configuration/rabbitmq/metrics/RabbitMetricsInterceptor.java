@@ -48,7 +48,7 @@ import static io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory
  */
 @Singleton
 @RequiresMetrics
-@Requires(property = MICRONAUT_METRICS_BINDERS + ".rabbitmq.enabled", value = StringUtils.TRUE, defaultValue = StringUtils.TRUE)
+@Requires(property = MICRONAUT_METRICS_BINDERS + ".rabbitmq.enabled", notEquals = StringUtils.FALSE)
 public class RabbitMetricsInterceptor implements BeanCreatedEventListener<ConnectionFactory> {
 
     private final Provider<MeterRegistry> meterRegistryProvider;

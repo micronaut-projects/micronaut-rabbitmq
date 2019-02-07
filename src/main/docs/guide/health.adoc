@@ -1,1 +1,31 @@
-TODO
+This library comes with a health indicator for applications that are using the `management` module in Micronaut. See the link:https://docs.micronaut.io/latest/guide/index.html#healthEndpoint[Health Endpoint] documentation for more information about the endpoint itself.
+
+The information reported from the health indicator is under the `rabbitmq` key. The details will include everything that is reported from link:{apirabbit}client/Connection.html#getServerProperties()[Connection#getServerProperties]. For example:
+
+[source,yaml]
+----
+"rabbitmq": {
+  "status": "UP",
+  "details": {
+    "cluster_name": "rabbit@a0378bc51148",
+    "product": "RabbitMQ",
+    "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
+    "capabilities": {
+      "consumer_priorities": true,
+      "exchange_exchange_bindings": true,
+      "connection.blocked": true,
+      "authentication_failure_close": true,
+      "per_consumer_qos": true,
+      "basic.nack": true,
+      "direct_reply_to": true,
+      "publisher_confirms": true,
+      "consumer_cancel_notify": true
+    },
+    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "version": "3.7.8",
+    "platform": "Erlang\/OTP 20.3.8.5"
+  }
+}
+----
+
+TIP: To disable the RabbitMQ health indicator entirely, add `endpoints.health.rabbitmq.enabled: false`.
