@@ -107,7 +107,48 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>This library comes with a health indicator for applications that are using the <code>management</code> module in Micronaut. See the <a href="https://docs.micronaut.io/latest/guide/index.html#healthEndpoint">Health Endpoint</a> documentation for more information about the endpoint itself.</p>
+</div>
+<div class="paragraph">
+<p>The information reported from the health indicator is under the <code>rabbitmq</code> key. The details will include everything that is reported from <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Connection.html#getServerProperties()">Connection#getServerProperties</a>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">"rabbitmq": {
+  "status": "UP",
+  "details": {
+    "cluster_name": "rabbit@a0378bc51148",
+    "product": "RabbitMQ",
+    "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
+    "capabilities": {
+      "consumer_priorities": true,
+      "exchange_exchange_bindings": true,
+      "connection.blocked": true,
+      "authentication_failure_close": true,
+      "per_consumer_qos": true,
+      "basic.nack": true,
+      "direct_reply_to": true,
+      "publisher_confirms": true,
+      "consumer_cancel_notify": true
+    },
+    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "version": "3.7.8",
+    "platform": "Erlang\/OTP 20.3.8.5"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.rabbitmq.enabled: false</code>.
+</td>
+</tr>
+</table>
 </div>
 
 

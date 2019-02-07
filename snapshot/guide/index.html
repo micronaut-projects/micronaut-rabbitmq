@@ -3045,6 +3045,106 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private static final Charset CHARSET = Charset.forName("UTF-8")
+
+    private final ConversionService conversionService
+
+    ProductInfoSerDes(ConversionService conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService
+    }
+
+    @Override
+    ProductInfo deserialize(RabbitConsumerState consumerState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+        String body = new String(consumerState.getBody(), CHARSET)
+        String[] parts = body.split("\\|")
+        if (parts.length == 3) {
+            String size = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            Optional&lt;Long&gt; count = conversionService.convert(parts[1], Long)
+            Optional&lt;Boolean&gt; sealed = conversionService.convert(parts[2], Boolean)
+
+            if (count.isPresent() &amp;&amp; sealed.isPresent()) {
+                return new ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        null
+    }
+
+    @Override
+    byte[] serialize(ProductInfo data) { <b class="conum">(5)</b>
+        (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
+    }
+
+    @Override
+    boolean supports(Class&lt;ProductInfo&gt; type) { <b class="conum">(6)</b>
+        type.isAssignableFrom(ProductInfo)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
+    : RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    override fun deserialize(consumerState: RabbitConsumerState, type: Class&lt;ProductInfo&gt;): ProductInfo? { <b class="conum">(4)</b>
+        val body = String(consumerState.body, CHARSET)
+        val parts = body.split("\\|".toRegex())
+        if (parts.size == 3) {
+            var size: String? = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            val count = conversionService.convert(parts[1], Long::class.java)
+            val sealed = conversionService.convert(parts[2], Boolean::class.java)
+
+            if (count.isPresent &amp;&amp; sealed.isPresent) {
+                return ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        return null
+    }
+
+    override fun serialize(data: ProductInfo): ByteArray { <b class="conum">(5)</b>
+        return (data.size + "|" + data.count + "|" + data.sealed).toByteArray(CHARSET)
+    }
+
+    override fun supports(type: Class&lt;ProductInfo&gt;): Boolean { <b class="conum">(6)</b>
+        return type.isAssignableFrom(ProductInfo::class.java)
+    }
+
+    companion object {
+        private val CHARSET = Charset.forName("UTF-8")
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -3097,7 +3197,48 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>This library comes with a health indicator for applications that are using the <code>management</code> module in Micronaut. See the <a href="https://docs.micronaut.io/latest/guide/index.html#healthEndpoint">Health Endpoint</a> documentation for more information about the endpoint itself.</p>
+</div>
+<div class="paragraph">
+<p>The information reported from the health indicator is under the <code>rabbitmq</code> key. The details will include everything that is reported from <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Connection.html#getServerProperties()">Connection#getServerProperties</a>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">"rabbitmq": {
+  "status": "UP",
+  "details": {
+    "cluster_name": "rabbit@a0378bc51148",
+    "product": "RabbitMQ",
+    "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
+    "capabilities": {
+      "consumer_priorities": true,
+      "exchange_exchange_bindings": true,
+      "connection.blocked": true,
+      "authentication_failure_close": true,
+      "per_consumer_qos": true,
+      "basic.nack": true,
+      "direct_reply_to": true,
+      "publisher_confirms": true,
+      "consumer_cancel_notify": true
+    },
+    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "version": "3.7.8",
+    "platform": "Erlang\/OTP 20.3.8.5"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.rabbitmq.enabled: false</code>.
+</td>
+</tr>
+</table>
 </div>
 
 
@@ -3111,7 +3252,21 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>The Java RabbitMQ client has built in support for Micrometer. If Micrometer is enabled in your application, metrics for RabbitMQ will be collected by default. For more details on how to integrate Micronaut with Micrometer, see the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide">documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The RabbitMQ metrics binder is configurable. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    metrics:
+        binders:
+            rabbitmq:
+                enabled: Boolean
+                tags: String[]
+                prefix: String</code></pre>
+</div>
 </div>
 
     </div>

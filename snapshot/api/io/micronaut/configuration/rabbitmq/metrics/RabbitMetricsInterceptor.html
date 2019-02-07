@@ -114,8 +114,7 @@ var activeTableTab = "activeTableTab";
 <pre><a href="https://docs.oracle.com/javaee/6/api/javax/inject/Singleton.html?is-external=true" title="class or interface in javax.inject">@Singleton</a>
  @RequiresMetrics
  @Requires(property="micronaut.metrics.binders.rabbitmq.enabled",
-          value="true",
-          defaultValue="true")
+          notEquals="false")
 public class <span class="typeNameLabel">RabbitMetricsInterceptor</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements io.micronaut.context.event.BeanCreatedEventListener&lt;com.rabbitmq.client.ConnectionFactory&gt;</pre>

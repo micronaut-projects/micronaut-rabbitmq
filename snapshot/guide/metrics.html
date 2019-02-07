@@ -105,7 +105,21 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>TODO</p>
+<p>The Java RabbitMQ client has built in support for Micrometer. If Micrometer is enabled in your application, metrics for RabbitMQ will be collected by default. For more details on how to integrate Micronaut with Micrometer, see the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide">documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The RabbitMQ metrics binder is configurable. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    metrics:
+        binders:
+            rabbitmq:
+                enabled: Boolean
+                tags: String[]
+                prefix: String</code></pre>
+</div>
 </div>
 
 

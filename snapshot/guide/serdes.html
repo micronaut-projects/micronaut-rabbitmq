@@ -194,6 +194,106 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private static final Charset CHARSET = Charset.forName("UTF-8")
+
+    private final ConversionService conversionService
+
+    ProductInfoSerDes(ConversionService conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService
+    }
+
+    @Override
+    ProductInfo deserialize(RabbitConsumerState consumerState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+        String body = new String(consumerState.getBody(), CHARSET)
+        String[] parts = body.split("\\|")
+        if (parts.length == 3) {
+            String size = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            Optional&lt;Long&gt; count = conversionService.convert(parts[1], Long)
+            Optional&lt;Boolean&gt; sealed = conversionService.convert(parts[2], Boolean)
+
+            if (count.isPresent() &amp;&amp; sealed.isPresent()) {
+                return new ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        null
+    }
+
+    @Override
+    byte[] serialize(ProductInfo data) { <b class="conum">(5)</b>
+        (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
+    }
+
+    @Override
+    boolean supports(Class&lt;ProductInfo&gt; type) { <b class="conum">(6)</b>
+        type.isAssignableFrom(ProductInfo)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
+    : RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    override fun deserialize(consumerState: RabbitConsumerState, type: Class&lt;ProductInfo&gt;): ProductInfo? { <b class="conum">(4)</b>
+        val body = String(consumerState.body, CHARSET)
+        val parts = body.split("\\|".toRegex())
+        if (parts.size == 3) {
+            var size: String? = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            val count = conversionService.convert(parts[1], Long::class.java)
+            val sealed = conversionService.convert(parts[2], Boolean::class.java)
+
+            if (count.isPresent &amp;&amp; sealed.isPresent) {
+                return ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        return null
+    }
+
+    override fun serialize(data: ProductInfo): ByteArray { <b class="conum">(5)</b>
+        return (data.size + "|" + data.count + "|" + data.sealed).toByteArray(CHARSET)
+    }
+
+    override fun supports(type: Class&lt;ProductInfo&gt;): Boolean { <b class="conum">(6)</b>
+        return type.isAssignableFrom(ProductInfo::class.java)
+    }
+
+    companion object {
+        private val CHARSET = Charset.forName("UTF-8")
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>

@@ -116,7 +116,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>@Requires(classes=io.micronaut.management.health.indicator.HealthIndicator.class)
+<pre>@Requires(property="endpoints.health.rabbitmq.enabled",notEquals="false") @Requires(beans=io.micronaut.management.endpoint.health.HealthEndpoint.class)
  <a href="https://docs.oracle.com/javaee/6/api/javax/inject/Singleton.html?is-external=true" title="class or interface in javax.inject">@Singleton</a>
 public class <span class="typeNameLabel">RabbitMQHealthIndicator</span>
 extends io.micronaut.management.health.indicator.AbstractHealthIndicator&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&gt;</pre>
