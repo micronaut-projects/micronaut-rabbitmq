@@ -27,7 +27,9 @@ import io.reactivex.functions.Action;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * A reactive publisher implementation that uses a single channel per publish
@@ -92,8 +94,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
      */
     protected Completable publishInternal(Channel channel, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         return Completable.create((emitter) -> {
-            Disposable listener = createListener(channel)
-                    .subscribe(emitter::onComplete, emitter::onError);
+            AtomicReference<Boolean> acknowledgement = new AtomicReference<>(null);
+            Disposable listener = createListener(channel, acknowledgement);
             try {
                 channel.basicPublish(
                         exchange,
@@ -101,6 +103,18 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
                         properties,
                         body
                 );
+
+                synchronized (acknowledgement) {
+                    while (acknowledgement.get() == null) {
+                        acknowledgement.wait();
+                    }
+                    if (acknowledgement.get()) {
+                        emitter.onComplete();
+                    } else {
+                        emitter.onError(new MessagingClientException("Message could not be delivered to the broker"));
+                    }
+                }
+
             } catch (IOException e) {
                 listener.dispose();
                 emitter.onError(e);
@@ -142,32 +156,46 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
      * @param channel The channel to listen for confirms
      * @return A completable that completes or errors based on the broker response
      */
-    protected Completable createListener(Channel channel) {
-        final AtomicReference<ConfirmListener> listener = new AtomicReference<>();
-        Action cleanUp = () -> {
-            ConfirmListener confirmListener = listener.getAndSet(null);
-            if (confirmListener != null) {
-                channel.removeConfirmListener(confirmListener);
+    protected Disposable createListener(Channel channel, AtomicReference<Boolean> acknowledgement) {
+        AtomicBoolean disposed = new AtomicBoolean();
+        Consumer<ConfirmListener> dispose = (listener) -> {
+            channel.removeConfirmListener(listener);
+            disposed.set(true);
+        };
+
+        ConfirmListener confirmListener = new ConfirmListener() {
+            @Override
+            public void handleAck(long deliveryTag, boolean multiple) {
+                synchronized(acknowledgement) {
+                    acknowledgement.set(true);
+                    dispose.accept(this);
+                    acknowledgement.notify();
+                }
+            }
+
+            @Override
+            public void handleNack(long deliveryTag, boolean multiple) {
+                synchronized(acknowledgement) {
+                    acknowledgement.set(false);
+                    dispose.accept(this);
+                    acknowledgement.notify();
+                }
             }
         };
-        return Completable.create(emitter -> {
-            ConfirmListener confirmListener = new ConfirmListener() {
-                @Override
-                public void handleAck(long deliveryTag, boolean multiple) {
-                    emitter.onComplete();
-                }
 
-                @Override
-                public void handleNack(long deliveryTag, boolean multiple) {
-                    emitter.onError(new MessagingClientException("Message could not be delivered to the broker"));
-                }
-            };
+        channel.addConfirmListener(confirmListener);
 
-            if (listener.compareAndSet(null, confirmListener)) {
-                channel.addConfirmListener(confirmListener);
+        return new Disposable() {
+            @Override
+            public void dispose() {
+                dispose.accept(confirmListener);
             }
 
-        }).doOnTerminate(cleanUp).doOnDispose(cleanUp);
+            @Override
+            public boolean isDisposed() {
+                return disposed.get();
+            }
+        };
     }
 
 }
