@@ -23,7 +23,6 @@ import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -114,8 +113,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
                         emitter.onError(new MessagingClientException("Message could not be delivered to the broker"));
                     }
                 }
-
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 listener.dispose();
                 emitter.onError(e);
             }
@@ -154,6 +152,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
      * Listens for acks/nacks from the broker.
      *
      * @param channel The channel to listen for confirms
+     * @param acknowledgement The acknowledgement object to update on response
      * @return A completable that completes or errors based on the broker response
      */
     protected Disposable createListener(Channel channel, AtomicReference<Boolean> acknowledgement) {
@@ -166,7 +165,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
         ConfirmListener confirmListener = new ConfirmListener() {
             @Override
             public void handleAck(long deliveryTag, boolean multiple) {
-                synchronized(acknowledgement) {
+                synchronized (acknowledgement) {
                     acknowledgement.set(true);
                     dispose.accept(this);
                     acknowledgement.notify();
@@ -175,7 +174,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
 
             @Override
             public void handleNack(long deliveryTag, boolean multiple) {
-                synchronized(acknowledgement) {
+                synchronized (acknowledgement) {
                     acknowledgement.set(false);
                     dispose.accept(this);
                     acknowledgement.notify();

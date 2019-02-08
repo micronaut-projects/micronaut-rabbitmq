@@ -22,7 +22,6 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.health.HealthStatus;
 import io.micronaut.management.endpoint.health.HealthEndpoint;
 import io.micronaut.management.health.indicator.AbstractHealthIndicator;
-import io.micronaut.management.health.indicator.HealthIndicator;
 
 import javax.inject.Singleton;
 import java.util.Map;
