@@ -161,8 +161,9 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected io.reactivex.Completable</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-">createListener</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
+<td class="colFirst"><code>protected io.reactivex.disposables.Disposable</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">createListener</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
+              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;acknowledgement)</code>
 <div class="block">Listens for acks/nacks from the broker.</div>
 </td>
 </tr>
@@ -354,17 +355,19 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 </dl>
 </li>
 </ul>
-<a name="createListener-com.rabbitmq.client.Channel-">
+<a name="createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>createListener</h4>
-<pre>protected&nbsp;io.reactivex.Completable&nbsp;createListener(com.rabbitmq.client.Channel&nbsp;channel)</pre>
+<pre>protected&nbsp;io.reactivex.disposables.Disposable&nbsp;createListener(com.rabbitmq.client.Channel&nbsp;channel,
+                                                             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;acknowledgement)</pre>
 <div class="block">Listens for acks/nacks from the broker.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>channel</code> - The channel to listen for confirms</dd>
+<dd><code>acknowledgement</code> - The acknowledgement object to update on response</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A completable that completes or errors based on the broker response</dd>
 </dl>
