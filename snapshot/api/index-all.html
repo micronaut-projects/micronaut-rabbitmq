@@ -119,6 +119,11 @@
 <div class="block">Used to specify which binding (routing key) messages should be
  sent to.</div>
 </dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html" title="enum in io.micronaut.configuration.rabbitmq.reactive"><span class="typeNameLink">BrokerResponse</span></a> - Enum in <a href="io/micronaut/configuration/rabbitmq/reactive/package-summary.html">io.micronaut.configuration.rabbitmq.reactive</a></dt>
+<dd>
+<div class="block">An enumeration to represent the three possible
+ states of response from a broker.</div>
+</dd>
 </dl>
 <a name="I:C">
 <!--   -->
@@ -140,9 +145,9 @@
 <dd>
 <div class="block">Creates a channel.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">createListener(Channel, AtomicReference&lt;Boolean&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RxJavaReactivePublisher</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">createListener(Channel, AtomicReference&lt;BrokerResponse&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RxJavaReactivePublisher</a></dt>
 <dd>
-<div class="block">Listens for acks/nacks from the broker.</div>
+<div class="block">Listens for ack/nack from the broker.</div>
 </dd>
 </dl>
 <a name="I:D">
@@ -154,7 +159,7 @@
 <dd>
 <div class="block">Default implementation of <a href="io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect"><code>ChannelPool</code></a>.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#DefaultChannelPool-com.rabbitmq.client.Connection-">DefaultChannelPool(Connection)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.configuration.rabbitmq.connect">DefaultChannelPool</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#DefaultChannelPool-com.rabbitmq.client.Connection-java.lang.Integer-">DefaultChannelPool(Connection, Integer)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.configuration.rabbitmq.connect">DefaultChannelPool</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -220,7 +225,9 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html#getBody--">getBody()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html#getBody--">getBody()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublisherState</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html#getBody--">getBody()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getBodyArgument--">getBodyArgument()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getByteArraySerDes--">getByteArraySerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
@@ -250,9 +257,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html#getEnvelope--">getEnvelope()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html#getExchange--">getExchange()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublisherState</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getExchange--">getExchange()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html#getExchange--">getExchange()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html#getFailures--">getFailures()</a></span> - Method in exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitClientException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getFloatSerDes--">getFloatSerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getHeaders--">getHeaders()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/health/RabbitMQHealthIndicator.html#getHealthInformation--">getHealthInformation()</a></span> - Method in class io.micronaut.configuration.rabbitmq.health.<a href="io/micronaut/configuration/rabbitmq/health/RabbitMQHealthIndicator.html" title="class in io.micronaut.configuration.rabbitmq.health">RabbitMQHealthIndicator</a></dt>
 <dd>&nbsp;</dd>
@@ -272,9 +285,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html#getProperties--">getProperties()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html#getProperties--">getProperties()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublisherState</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getProperties--">getProperties()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html#getRoutingKey--">getRoutingKey()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublisherState</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html#getProperties--">getProperties()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getRoutingKey--">getRoutingKey()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html#getRoutingKey--">getRoutingKey()</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#getSerDes--">getSerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getShortSerDes--">getShortSerDes()</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
@@ -358,6 +377,8 @@
 <dd>
 <div class="block">Classes for serializing and deserializing RabbitMQ message bodies.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#isReactive--">isReactive()</a></span> - Method in class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a name="I:J">
 <!--   -->
@@ -428,7 +449,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#publish-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">publish(String, String, AMQP.BasicProperties, byte[])</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RxJavaReactivePublisher</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#publishInternal-com.rabbitmq.client.Channel-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">publishInternal(Channel, String, String, AMQP.BasicProperties, byte[])</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RxJavaReactivePublisher</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#publishInternal-com.rabbitmq.client.Channel-io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState-">publishInternal(Channel, RabbitPublishState)</a></span> - Method in class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RxJavaReactivePublisher</a></dt>
 <dd>
 <div class="block">Publishes the message to the channel.</div>
 </dd>
@@ -492,6 +513,26 @@
 <dt><a href="io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitClient</span></a> - Annotation Type in <a href="io/micronaut/configuration/rabbitmq/annotation/package-summary.html">io.micronaut.configuration.rabbitmq.annotation</a></dt>
 <dd>
 <div class="block">An introduction advice that automatically implements interfaces and abstract classes and publishes RabbitMQ messages.</div>
+</dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception"><span class="typeNameLink">RabbitClientException</span></a> - Exception in <a href="io/micronaut/configuration/rabbitmq/exception/package-summary.html">io.micronaut.configuration.rabbitmq.exception</a></dt>
+<dd>
+<div class="block">Exception thrown when an error occurs publishing a RabbitMQ message.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html#RabbitClientException-java.lang.String-">RabbitClientException(String)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitClientException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html#RabbitClientException-java.lang.String-java.util.List-">RabbitClientException(String, List&lt;RabbitPublishState&gt;)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitClientException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html#RabbitClientException-java.lang.String-java.lang.Throwable-">RabbitClientException(String, Throwable)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitClientException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html#RabbitClientException-java.lang.String-java.lang.Throwable-java.util.List-">RabbitClientException(String, Throwable, List&lt;RabbitPublishState&gt;)</a></span> - Constructor for exception io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitClientException.html" title="class in io.micronaut.configuration.rabbitmq.exception">RabbitClientException</a></dt>
+<dd>
+<div class="block">Creates a new exception.</div>
 </dd>
 <dt><a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactory.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactory</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/connect/package-summary.html">io.micronaut.configuration.rabbitmq.connect</a></dt>
 <dd>
@@ -641,11 +682,11 @@
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
-<dt><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive"><span class="typeNameLink">RabbitPublisherState</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/reactive/package-summary.html">io.micronaut.configuration.rabbitmq.reactive</a></dt>
+<dt><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive"><span class="typeNameLink">RabbitPublishState</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/reactive/package-summary.html">io.micronaut.configuration.rabbitmq.reactive</a></dt>
 <dd>
 <div class="block">Stores the state of a RabbitMQ message to be published.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html#RabbitPublisherState-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">RabbitPublisherState(String, String, AMQP.BasicProperties, byte[])</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublisherState</a></dt>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html#RabbitPublishState-java.lang.String-java.lang.String-com.rabbitmq.client.AMQP.BasicProperties-byte:A-">RabbitPublishState(String, String, AMQP.BasicProperties, byte[])</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -692,6 +733,14 @@
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 </dd>
+<dt><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept"><span class="typeNameLink">StaticPublisherState</span></a> - Class in <a href="io/micronaut/configuration/rabbitmq/intercept/package-summary.html">io.micronaut.configuration.rabbitmq.intercept</a></dt>
+<dd>
+<div class="block">Stores the static state for publishing messages with <a href="io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><code>RabbitClient</code></a>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html#StaticPublisherState-java.lang.String-java.lang.String-io.micronaut.core.type.Argument-java.util.Map-java.util.Map-boolean-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes-">StaticPublisherState(String, String, Argument, Map&lt;String, Object&gt;, Map&lt;String, String&gt;, boolean, RabbitMessageSerDes&lt;Object&gt;)</a></span> - Constructor for class io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/StaticPublisherState.html" title="class in io.micronaut.configuration.rabbitmq.intercept">StaticPublisherState</a></dt>
+<dd>
+<div class="block">Default constructor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitPropertyBinder.html#supports-io.micronaut.core.convert.ArgumentConversionContext-">supports(ArgumentConversionContext&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitPropertyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitPropertyBinder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#supports-java.lang.Class-">supports(Class&lt;Object&gt;)</a></span> - Method in class io.micronaut.configuration.rabbitmq.serdes.<a href="io/micronaut/configuration/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.configuration.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
@@ -708,8 +757,17 @@
 </a>
 <h2 class="title">V</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html" title="enum in io.micronaut.configuration.rabbitmq.reactive">BrokerResponse</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/bind/RabbitHeaderConvertibleValues.html#values--">values()</a></span> - Method in class io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitHeaderConvertibleValues.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitHeaderConvertibleValues</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html#values--">values()</a></span> - Static method in enum io.micronaut.configuration.rabbitmq.reactive.<a href="io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html" title="enum in io.micronaut.configuration.rabbitmq.reactive">BrokerResponse</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
 </dl>
 <a name="I:W">
 <!--   -->
