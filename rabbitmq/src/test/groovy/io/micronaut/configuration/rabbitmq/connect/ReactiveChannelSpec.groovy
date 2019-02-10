@@ -111,7 +111,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
     void "test publishing many messages"() {
         ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672)])
+                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
+                 "rabbitmq.channelPool.maxIdleChannels": 10])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
         AtomicInteger integer = new AtomicInteger(2)
         RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)

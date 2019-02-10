@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
  * @since 1.1.0
  */
 @Immutable
-public class RabbitPublisherState {
+public class RabbitPublishState {
 
     private final String exchange;
     private final String routingKey;
@@ -42,7 +42,7 @@ public class RabbitPublisherState {
      * @param properties The properties
      * @param body The body
      */
-    public RabbitPublisherState(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
+    public RabbitPublishState(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.properties = properties;

@@ -21,11 +21,16 @@ import com.rabbitmq.client.AMQP.BasicProperties.Builder;
 import com.rabbitmq.client.Channel;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
+import io.micronaut.caffeine.cache.Cache;
+import io.micronaut.caffeine.cache.Caffeine;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
+import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState;
 import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.async.publisher.Publishers;
@@ -63,6 +68,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Map<String, BiConsumer<Object, Builder>> properties = new HashMap<>();
+    private final Cache<ExecutableMethod, StaticPublisherState> publisherCache = Caffeine.newBuilder().build();
 
     /**
      * Default constructor.
@@ -114,38 +120,75 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     public Object intercept(MethodInvocationContext<Object, Object> context) {
 
         if (context.hasAnnotation(RabbitClient.class)) {
-            AnnotationValue<RabbitClient> client = context.findAnnotation(RabbitClient.class).orElseThrow(() -> new IllegalStateException("No @RabbitClient annotation present on method: " + context));
 
-            String exchange = client.getValue(String.class).orElse("");
+            StaticPublisherState publisherState = publisherCache.get(context.getExecutableMethod(), (method) -> {
+                AnnotationValue<RabbitClient> client = method.findAnnotation(RabbitClient.class).orElseThrow(() -> new IllegalStateException("No @RabbitClient annotation present on method: " + method));
 
-            String routingKey = findRoutingKey(context).orElse("");
 
-            Argument bodyArgument = findBodyArgument(context).orElseThrow(() -> new MessagingClientException("No valid message body argument found for method: " + context));
+                String exchange = client.getValue(String.class).orElse("");
+                Optional<String> routingKey = Optional.empty();
+                if (method.hasAnnotation(Binding.class)) {
+                    routingKey = method.getAnnotation(Binding.class).getValue(String.class);
+                }
+
+                Argument bodyArgument = findBodyArgument(method).orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
+
+                Map<String, Object> methodHeaders = new HashMap<>();
+
+                List<AnnotationValue<Header>> headerAnnotations = method.getAnnotationValuesByType(Header.class);
+                Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
+                headerAnnotations.forEach((header) -> {
+                    String name = header.get("name", String.class).orElse(null);
+                    String value = header.getValue(String.class).orElse(null);
+
+                    if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                        methodHeaders.put(name, value);
+                    }
+                });
+
+                Map<String, String> methodProperties = new HashMap<>();
+
+                List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
+                Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
+                propertyAnnotations.forEach((prop) -> {
+                    String name = prop.get("name", String.class).orElse(null);
+                    String value = prop.getValue(String.class).orElse(null);
+
+                    if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                        if (this.properties.containsKey(name)) {
+                            methodProperties.put(name, value);
+                        } else {
+                            throw new RabbitClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
+                        }
+                    }
+                });
+
+                ReturnType<Object> returnType = method.getReturnType();
+                Class<?> javaReturnType = returnType.getType();
+                boolean isReactiveReturnType = Publishers.isConvertibleToPublisher(javaReturnType);
+
+                RabbitMessageSerDes<Object> serDes = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType()).orElseThrow(() -> new RabbitClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType().getName())));
+
+                return new StaticPublisherState(exchange,
+                        routingKey.orElse(null),
+                        bodyArgument,
+                        methodHeaders,
+                        methodProperties,
+                        isReactiveReturnType,
+                        serDes);
+
+            });
+
+            String exchange = publisherState.getExchange();
+            String routingKey = publisherState.getRoutingKey().orElse(findRoutingKey(context).orElse(""));
+            Argument bodyArgument = publisherState.getBodyArgument();
 
             Builder builder = new Builder();
 
-            Map<String, Object> headers = new HashMap<>();
+            Map<String, Object> headers = publisherState.getHeaders();
 
-            List<AnnotationValue<Header>> headerAnnotations = context.getAnnotationValuesByType(Header.class);
-            Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
-            headerAnnotations.forEach((header) -> {
-                String name = header.get("name", String.class).orElse(null);
-                String value = header.getValue(String.class).orElse(null);
-
-                if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                    headers.put(name, value);
-                }
-            });
-
-            List<AnnotationValue<RabbitProperty>> propertyAnnotations = context.getAnnotationValuesByType(RabbitProperty.class);
-            Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
-            propertyAnnotations.forEach((prop) -> {
-                String name = prop.get("name", String.class).orElse(null);
-                String value = prop.getValue(String.class).orElse(null);
-
-                if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                    setBasicProperty(builder, name, value);
-                }
+            publisherState.getProperties().forEach((name, value) -> {
+                setBasicProperty(builder, name, value);
             });
 
             Argument[] arguments = context.getArguments();
@@ -179,14 +222,13 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             ReturnType<Object> returnType = context.getReturnType();
             Class<?> javaReturnType = returnType.getType();
-            boolean isReactiveReturnType = Publishers.isConvertibleToPublisher(javaReturnType);
 
             Object body = parameterValues.get(bodyArgument.getName());
-            byte[] converted = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType())
-                    .map(serDes -> serDes.serialize(body))
-                    .orElseThrow(() -> new MessagingClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType())));
+            byte[] converted = publisherState.getSerDes().serialize(body);
 
-            if (isReactiveReturnType) {
+            RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
+
+            if (publisherState.isReactive()) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Sending the message with publisher confirms.", context);
                 }
@@ -194,7 +236,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 Object reactive = reactivePublisher.publish(exchange, routingKey, properties, converted);
 
                 return conversionService.convert(reactive, javaReturnType)
-                        .orElseThrow(() -> new MessagingClientException("Could not convert the publisher acknowledgement response to the return type of the method"));
+                        .orElseThrow(() -> new RabbitClientException("Could not convert the publisher acknowledgement response to the return type of the method", Collections.singletonList(publishState)));
             } else {
 
                 if (LOG.isDebugEnabled()) {
@@ -206,7 +248,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     channel = channelPool.getChannel();
                     channel.basicPublish(exchange, routingKey, properties, converted);
                 } catch (Throwable e) {
-                    throw new MessagingClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), e);
+                    throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), e, Collections.singletonList(publishState));
                 } finally {
                     if (channel != null) {
                         channelPool.returnChannel(channel);
@@ -234,7 +276,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         if (consumer != null) {
             consumer.accept(value, builder);
         } else {
-            throw new MessagingClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
+            throw new RabbitClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
         }
     }
 
@@ -243,24 +285,20 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             consumer.accept(null);
         } else {
             consumer.accept(conversionService.convert(value, type)
-                    .orElseThrow(() -> new MessagingClientException(String.format("Attempted to set property [%s], but could not convert the value to the required type [%s]", name, type.getName()))));
+                    .orElseThrow(() -> new RabbitClientException(String.format("Attempted to set property [%s], but could not convert the value to the required type [%s]", name, type.getName()))));
         }
 
     }
 
     private Optional<String> findRoutingKey(MethodInvocationContext<Object, Object> method) {
-        if (method.hasAnnotation(Binding.class)) {
-            return method.getAnnotation(Binding.class).getValue(String.class);
-        } else {
-            Map<String, Object> argumentValues = method.getParameterValueMap();
-            return Arrays.stream(method.getArguments())
-                    .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Binding.class))
-                    .map(Argument::getName)
-                    .map(argumentValues::get)
-                    .filter(Objects::nonNull)
-                    .map(Object::toString)
-                    .findFirst();
-        }
+        Map<String, Object> argumentValues = method.getParameterValueMap();
+        return Arrays.stream(method.getArguments())
+                .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Binding.class))
+                .map(Argument::getName)
+                .map(argumentValues::get)
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .findFirst();
     }
 
     private Optional<Argument> findBodyArgument(ExecutableMethod<?, ?> method) {

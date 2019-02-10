@@ -19,9 +19,11 @@ package io.micronaut.configuration.rabbitmq.connect;
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import io.micronaut.context.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -44,7 +46,7 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultChannelPool.class);
 
-    private final LinkedBlockingQueue<Channel> channels = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<Channel> channels;
     private final Connection connection;
     private final AtomicLong totalChannels = new AtomicLong(0);
 
@@ -52,9 +54,13 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
      * Default constructor.
      *
      * @param connection The connection to create channels with
+     * @param maxIdleChannels How many idle channels should be kept open
      */
-    public DefaultChannelPool(Connection connection) {
+    public DefaultChannelPool(
+            Connection connection,
+            @Nullable @Value("${rabbitmq.channel-pool.max-idle-channels}") Integer maxIdleChannels) {
         this.connection = connection;
+        this.channels = new LinkedBlockingQueue<>(maxIdleChannels == null ? Integer.MAX_VALUE : maxIdleChannels);
     }
 
     @Override
