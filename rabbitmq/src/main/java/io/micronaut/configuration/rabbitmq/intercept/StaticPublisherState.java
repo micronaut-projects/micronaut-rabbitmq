@@ -31,7 +31,7 @@ import java.util.Optional;
  * @since 1.1.0
  */
 @Internal
-public class StaticPublisherState {
+class StaticPublisherState {
 
     private final String exchange;
     private final String routingKey;
@@ -52,7 +52,7 @@ public class StaticPublisherState {
      * @param reactive Whether the method return is reactive
      * @param serDes The body serializer
      */
-    public StaticPublisherState(String exchange,
+    StaticPublisherState(String exchange,
                                 @Nullable String routingKey,
                                 Argument bodyArgument,
                                 Map<String, Object> headers,
@@ -71,49 +71,49 @@ public class StaticPublisherState {
     /**
      * @return The exchange
      */
-    public String getExchange() {
+    String getExchange() {
         return exchange;
     }
 
     /**
      * @return The optional routing key
      */
-    public Optional<String> getRoutingKey() {
+    Optional<String> getRoutingKey() {
         return Optional.ofNullable(routingKey);
     }
 
     /**
      * @return The body argument
      */
-    public Argument getBodyArgument() {
+    Argument getBodyArgument() {
         return bodyArgument;
     }
 
     /**
      * @return The headers
      */
-    public Map<String, Object> getHeaders() {
+    Map<String, Object> getHeaders() {
         return headers;
     }
 
     /**
      * @return The properties
      */
-    public Map<String, String> getProperties() {
+    Map<String, String> getProperties() {
         return properties;
     }
 
     /**
      * @return True if the method returns a reactive type
      */
-    public boolean isReactive() {
+    boolean isReactive() {
         return reactive;
     }
 
     /**
      * @return The serializer
      */
-    public RabbitMessageSerDes<Object> getSerDes() {
+    RabbitMessageSerDes<Object> getSerDes() {
         return serDes;
     }
 }
