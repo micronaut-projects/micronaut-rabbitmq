@@ -45,7 +45,6 @@ subprojects { Project subproject ->
         isConfiguration = subproject.projectDir.parentFile.name == 'configurations'
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
-
     
     repositories {
         mavenLocal()
@@ -53,7 +52,7 @@ subprojects { Project subproject ->
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
-    if (subproject.parent.name == "docs-examples") {
+    if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
         return
     }
     
