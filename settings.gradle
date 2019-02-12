@@ -1,4 +1,4 @@
-rootProject.name = 'rabbitmq'
+rootProject.name = 'rabbitmq-root'
 
 include 'rabbitmq'
 include 'docs-examples:example-groovy'
