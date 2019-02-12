@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>6.1.1.1 Queue 1.1.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut RabbitMQ
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/cli.html"><strong>2</strong><span>Using the Micronaut CLI</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/quickStart.html"><strong>3</strong><span>RabbitMQ Quick Start</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/health.html"><strong>9</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/metrics.html"><strong>10</strong><span>RabbitMQ Metrics</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>6.1.1.1 Queue</h1>
+
+                    <p><strong>Version:</strong> 1.1.0.M1</p>
+                </div>
+
+                
+
+                
+
+<h2 id="consumerQueue">6.1.1.1 Queue</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>A <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is required for a method to be a consumer of messages from RabbitMQ. Simply apply the annotation to the method and supply the name of the queue you would like to listen to.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Queues must already exist before you can listen to messages from them.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener
+public class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product") <b class="conum">(1)</b>
+    public void receive(byte[] data) {
+        messageLengths.add(data.length);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;Integer&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue("product") <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths.add(data.length)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import java.util.*
+
+@RabbitListener
+class ProductListener {
+
+    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product") <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(data.size)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.
+</td>
+</tr>
+</table>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/producer.html">&lt;&lt; <strong>5</strong><span>RabbitMQ Producers</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
