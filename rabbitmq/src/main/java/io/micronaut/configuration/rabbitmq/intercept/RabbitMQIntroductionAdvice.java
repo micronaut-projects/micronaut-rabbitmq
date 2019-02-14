@@ -42,7 +42,6 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
-import io.micronaut.messaging.exceptions.MessagingClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     private final ReactivePublisher<?> reactivePublisher;
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
-    private final Map<String, BiConsumer<Object, Builder>> properties = new HashMap<>();
+    private final Map<String, BiConsumer<Object, MutableBasicProperties>> properties = new HashMap<>();
     private final Cache<ExecutableMethod, StaticPublisherState> publisherCache = Caffeine.newBuilder().build();
 
     /**
@@ -89,31 +88,31 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
 
         properties.put("contentType", (prop, builder) ->
-                convert("contentType", prop, String.class, builder::contentType));
+                convert("contentType", prop, String.class, builder::setContentType));
         properties.put("contentEncoding", (prop, builder) ->
-                convert("contentEncoding", prop, String.class, builder::contentEncoding));
+                convert("contentEncoding", prop, String.class, builder::setContentEncoding));
         properties.put("deliveryMode", (prop, builder) ->
-                convert("deliveryMode", prop, Integer.class, builder::deliveryMode));
+                convert("deliveryMode", prop, Integer.class, builder::setDeliveryMode));
         properties.put("priority", (prop, builder) ->
-                convert("priority", prop, Integer.class, builder::priority));
+                convert("priority", prop, Integer.class, builder::setPriority));
         properties.put("correlationId", (prop, builder) ->
-                convert("correlationId", prop, String.class, builder::correlationId));
+                convert("correlationId", prop, String.class, builder::setCorrelationId));
         properties.put("replyTo", (prop, builder) ->
-                convert("replyTo", prop, String.class, builder::replyTo));
+                convert("replyTo", prop, String.class, builder::setReplyTo));
         properties.put("expiration", (prop, builder) ->
-                convert("expiration", prop, String.class, builder::expiration));
+                convert("expiration", prop, String.class, builder::setExpiration));
         properties.put("messageId", (prop, builder) ->
-                convert("messageId", prop, String.class, builder::messageId));
+                convert("messageId", prop, String.class, builder::setMessageId));
         properties.put("timestamp", (prop, builder) ->
-                convert("timestamp", prop, Date.class, builder::timestamp));
+                convert("timestamp", prop, Date.class, builder::setTimestamp));
         properties.put("type", (prop, builder) ->
-                convert("type", prop, String.class, builder::type));
+                convert("type", prop, String.class, builder::setType));
         properties.put("userId", (prop, builder) ->
-                convert("userId", prop, String.class, builder::userId));
+                convert("userId", prop, String.class, builder::setUserId));
         properties.put("appId", (prop, builder) ->
-                convert("appId", prop, String.class, builder::appId));
+                convert("appId", prop, String.class, builder::setAppId));
         properties.put("clusterId", (prop, builder) ->
-                convert("clusterId", prop, String.class, builder::clusterId));
+                convert("clusterId", prop, String.class, builder::setClusterId));
     }
 
     @Override
@@ -183,12 +182,12 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             String routingKey = publisherState.getRoutingKey().orElse(findRoutingKey(context).orElse(""));
             Argument bodyArgument = publisherState.getBodyArgument();
 
-            Builder builder = new Builder();
+            MutableBasicProperties mutableProperties = new MutableBasicProperties();
 
             Map<String, Object> headers = publisherState.getHeaders();
 
             publisherState.getProperties().forEach((name, value) -> {
-                setBasicProperty(builder, name, value);
+                setBasicProperty(mutableProperties, name, value);
             });
 
             Argument[] arguments = context.getArguments();
@@ -201,30 +200,30 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     headers.put(entry.getKey(), entry.getValue());
                 } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
-                    setBasicProperty(builder, entry.getKey(), entry.getValue());
+                    setBasicProperty(mutableProperties, entry.getKey(), entry.getValue());
                 } else if (argument != bodyArgument) {
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
-                        properties.get(argumentName).accept(parameterValues.get(argumentName), builder);
+                        properties.get(argumentName).accept(parameterValues.get(argumentName), mutableProperties);
                     }
                 }
             }
 
             if (!headers.isEmpty()) {
-                builder.headers(headers);
-            }
-
-            AMQP.BasicProperties properties = builder.build();
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Sending a message to exchange [{}] with binding [{}] and properties [{}]", exchange, routingKey, properties);
+                mutableProperties.setHeaders(headers);
             }
 
             ReturnType<Object> returnType = context.getReturnType();
             Class<?> javaReturnType = returnType.getType();
 
             Object body = parameterValues.get(bodyArgument.getName());
-            byte[] converted = publisherState.getSerDes().serialize(body);
+            byte[] converted = publisherState.getSerDes().serialize(body, mutableProperties);
+
+            AMQP.BasicProperties properties = mutableProperties.toBasicProperties();
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Sending a message to exchange [{}] with binding [{}] and properties [{}]", exchange, routingKey, properties);
+            }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
 
@@ -271,10 +270,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         return new AbstractMap.SimpleEntry<>(name, value);
     }
 
-    private void setBasicProperty(Builder builder, String name, Object value) {
-        BiConsumer<Object, Builder> consumer = properties.get(name);
+    private void setBasicProperty(MutableBasicProperties mutableProperties, String name, Object value) {
+        BiConsumer<Object, MutableBasicProperties> consumer = properties.get(name);
         if (consumer != null) {
-            consumer.accept(value, builder);
+            consumer.accept(value, mutableProperties);
         } else {
             throw new RabbitClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
         }

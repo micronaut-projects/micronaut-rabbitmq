@@ -2,6 +2,7 @@ package io.micronaut.configuration.rabbitmq.docs.serdes
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
@@ -44,7 +45,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
     }
 
     @Override
-    byte[] serialize(ProductInfo data) { // <5>
+    byte[] serialize(ProductInfo data, MutableBasicProperties properties) { // <5>
         (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
     }
 

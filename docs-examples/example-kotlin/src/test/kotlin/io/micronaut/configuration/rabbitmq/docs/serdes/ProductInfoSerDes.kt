@@ -2,6 +2,7 @@ package io.micronaut.configuration.rabbitmq.docs.serdes
 
 // tag::imports[]
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
@@ -35,7 +36,7 @@ class ProductInfoSerDes(private val conversionService: ConversionService<*>)// <
         return null
     }
 
-    override fun serialize(data: ProductInfo): ByteArray { // <5>
+    override fun serialize(data: ProductInfo, properties: MutableBasicProperties): ByteArray { // <5>
         return (data.size + "|" + data.count + "|" + data.sealed).toByteArray(CHARSET)
     }
 

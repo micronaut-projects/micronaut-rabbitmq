@@ -17,6 +17,7 @@
 package io.micronaut.configuration.rabbitmq.serdes;
 
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.order.Ordered;
 
 /**
@@ -42,9 +43,10 @@ public interface RabbitMessageSerDes<T> extends Ordered {
      * to RabbitMQ.
      *
      * @param data The data to serialize
+     * @param properties The properties of the message
      * @return The message body
      */
-    byte[] serialize(T data);
+    byte[] serialize(T data, MutableBasicProperties properties);
 
     /**
      * Determines if this serdes supports the given type.

@@ -17,6 +17,7 @@
 package io.micronaut.configuration.rabbitmq.serdes;
 
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 
 import javax.annotation.Nonnull;
@@ -60,8 +61,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     }
 
     @Override
-    public byte[] serialize(Object data) {
-        return findSerDes(data.getClass()).serialize(data);
+    public byte[] serialize(Object data, MutableBasicProperties properties) {
+        return findSerDes(data.getClass()).serialize(data, properties);
     }
 
     @Override
@@ -180,7 +181,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(String data) {
+        public byte[] serialize(String data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -217,7 +218,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Short data) {
+        public byte[] serialize(Short data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -257,7 +258,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Integer data) {
+        public byte[] serialize(Integer data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -299,7 +300,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Long data) {
+        public byte[] serialize(Long data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -345,7 +346,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Float data) {
+        public byte[] serialize(Float data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -388,7 +389,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Double data) {
+        public byte[] serialize(Double data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -423,7 +424,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(byte[] data) {
+        public byte[] serialize(byte[] data, MutableBasicProperties properties) {
             return data;
         }
 
@@ -449,7 +450,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(ByteBuffer data) {
+        public byte[] serialize(ByteBuffer data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -493,11 +494,11 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(UUID data) {
+        public byte[] serialize(UUID data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
-                return stringSerDes.serialize(data.toString());
+                return stringSerDes.serialize(data.toString(), properties);
             }
         }
 

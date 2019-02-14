@@ -17,12 +17,15 @@
 package io.micronaut.configuration.rabbitmq.serdes;
 
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.serialize.exceptions.SerializationException;
+import io.micronaut.http.MediaType;
 import io.micronaut.jackson.serialize.JacksonObjectSerializer;
 
 import javax.inject.Singleton;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Serializes and deserializes objects as JSON using Jackson.
@@ -57,9 +60,12 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     }
 
     @Override
-    public byte[] serialize(Object data) {
-        return objectSerializer.serialize(data)
-                .orElseThrow(() -> new SerializationException("Unable to serialize data: " + data.getClass()));
+    public byte[] serialize(Object data, MutableBasicProperties basicProperties) {
+        Optional<byte[]> body = objectSerializer.serialize(data);
+        if (body.isPresent() && basicProperties.getContentType() == null) {
+            basicProperties.setContentType(MediaType.APPLICATION_JSON);
+        }
+        return body.orElseThrow(() -> new SerializationException("Unable to serialize data: " + data.getClass()));
     }
 
     @Override
