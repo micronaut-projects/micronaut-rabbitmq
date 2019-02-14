@@ -45,23 +45,25 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#cli"><strong>2</strong><span>Using the Micronaut CLI</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#whatsNew"><strong>2</strong><span>What's New</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#quickStart"><strong>3</strong><span>RabbitMQ Quick Start</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cli"><strong>3</strong><span>Using the Micronaut CLI</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#quickStart"><strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#config"><strong>5</strong><span>Configuring The Connection</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>6</strong><span>RabbitMQ Producers</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#initialization"><strong>7</strong><span>Creating Queues/Exchanges</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>7</strong><span>RabbitMQ Consumers</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#initialization"><strong>8</strong><span>Creating Queues/Exchanges</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>9</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>10</strong><span>RabbitMQ Metrics</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>10</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>11</strong><span>RabbitMQ Metrics</span></a></div>
                                 
                             </div>
                         </div>
@@ -95,61 +97,63 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-introduction"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-cli"><a href="#cli"><strong>2</strong><span>Using the Micronaut CLI</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-whatsNew"><a href="#whatsNew"><strong>2</strong><span>What's New</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-quickStart"><a href="#quickStart"><strong>3</strong><span>RabbitMQ Quick Start</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cli"><a href="#cli"><strong>3</strong><span>Using the Micronaut CLI</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>4</strong><span>Configuring The Connection</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-quickStart"><a href="#quickStart"><strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>5</strong><span>RabbitMQ Producers</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>5</strong><span>Configuring The Connection</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-producerMethods"><a href="#producerMethods"><strong>5.1</strong><span>Defining @RabbitClient Methods</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>6</strong><span>RabbitMQ Producers</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-producerParameters"><a href="#producerParameters"><strong>5.1.1</strong><span>Publishing Parameters</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-producerMethods"><a href="#producerMethods"><strong>6.1</strong><span>Defining @RabbitClient Methods</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>5.1.1.1</strong><span>Binding (Routing Key)</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerParameters"><a href="#producerParameters"><strong>6.1.1</strong><span>Publishing Parameters</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>5.1.1.2</strong><span>RabbitMQ Properties</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>6.1.1.1</strong><span>Binding (Routing Key)</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>5.1.1.3</strong><span>Headers</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>6.1.1.2</strong><span>RabbitMQ Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBody"><a href="#producerBody"><strong>5.1.1.4</strong><span>Message Body</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>6.1.1.3</strong><span>Headers</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>5.1.2</strong><span>Broker Acknowledgement</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBody"><a href="#producerBody"><strong>6.1.1.4</strong><span>Message Body</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>6</strong><span>RabbitMQ Consumers</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>6.1.2</strong><span>Broker Acknowledgement</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>6.1</strong><span>Defining @RabbitListener Methods</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>7</strong><span>RabbitMQ Consumers</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerParameters"><a href="#consumerParameters"><strong>6.1.1</strong><span>Consumer Parameters</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>7.1</strong><span>Defining @RabbitListener Methods</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerQueue"><a href="#consumerQueue"><strong>6.1.1.1</strong><span>Queue</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerParameters"><a href="#consumerParameters"><strong>7.1.1</strong><span>Consumer Parameters</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>6.1.1.2</strong><span>Properties</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerQueue"><a href="#consumerQueue"><strong>7.1.1.1</strong><span>Queue</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>6.1.1.3</strong><span>Headers</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>7.1.1.2</strong><span>Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>6.1.1.4</strong><span>RabbitMQ Types</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>7.1.1.3</strong><span>Headers</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>6.1.1.5</strong><span>Message Body</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>7.1.1.4</strong><span>RabbitMQ Types</span></a></div>
         
-        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>6.1.1.6</strong><span>Custom Parameter Binding</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>7.1.1.5</strong><span>Message Body</span></a></div>
         
-        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>6.1.2</strong><span>Acknowledging Messages</span></a></div>
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>7.1.1.6</strong><span>Custom Parameter Binding</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExceptions"><a href="#consumerExceptions"><strong>6.2</strong><span>Handling Consumer Exceptions</span></a></div>
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>7.1.2</strong><span>Acknowledging Messages</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>6.3</strong><span>Consumer Execution</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExceptions"><a href="#consumerExceptions"><strong>7.2</strong><span>Handling Consumer Exceptions</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-initialization"><a href="#initialization"><strong>7</strong><span>Creating Queues/Exchanges</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>7.3</strong><span>Consumer Execution</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-initialization"><a href="#initialization"><strong>8</strong><span>Creating Queues/Exchanges</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>8.1</strong><span>Custom SerDes</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>9</strong><span>RabbitMQ Health Indicator</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>9.1</strong><span>Custom SerDes</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>10</strong><span>RabbitMQ Metrics</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>10</strong><span>RabbitMQ Health Indicator</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>11</strong><span>RabbitMQ Metrics</span></a></div>
         
         </div>
     </div>
@@ -177,7 +181,36 @@
 </div>
 
 
-<h1 id="cli">2 Using the Micronaut CLI</h1>
+<h1 id="whatsNew">2 What's New</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/whatsNew.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This section will outline any breaking changes between major or milestone releases as well as detail any new features that have been added.</p>
+</div>
+<div class="sect1">
+<h2 id="_1_1_0_m2">1.1.0.M2</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a> api has been changed to allow access to the properties of the message during serialization. This will for example allow setting the content type.</p>
+</li>
+<li>
+<p>Messages published using the default JSON serialization will now have their content type set to "application/json" if it was not set already.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<h1 id="cli">3 Using the Micronaut CLI</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/cli.adoc"'>
@@ -199,7 +232,7 @@
 </div>
 
 
-<h1 id="quickStart">3 RabbitMQ Quick Start</h1>
+<h1 id="quickStart">4 RabbitMQ Quick Start</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
@@ -421,7 +454,7 @@ class ProductListener {
 </div>
 
 
-<h1 id="config">4 Configuring The Connection</h1>
+<h1 id="config">5 Configuring The Connection</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/config.adoc"'>
@@ -728,7 +761,7 @@ class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactor
 </div>
 
 
-<h1 id="producer">5 RabbitMQ Producers</h1>
+<h1 id="producer">6 RabbitMQ Producers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
@@ -832,7 +865,7 @@ Exchanges must already exist before you can publish messages to them.
 </div>
 
 
-<h2 id="producerMethods">5.1 Defining @RabbitClient Methods</h2>
+<h2 id="producerMethods">6.1 Defining @RabbitClient Methods</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
@@ -880,7 +913,7 @@ In order for all of the functionality to work as designed in this guide your cla
 </div>
 
 
-<h2 id="producerParameters">5.1.1 Publishing Parameters</h2>
+<h2 id="producerParameters">6.1.1 Publishing Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
@@ -894,7 +927,7 @@ In order for all of the functionality to work as designed in this guide your cla
 </div>
 
 
-<h2 id="producerBinding">5.1.1.1 Binding (Routing Key)</h2>
+<h2 id="producerBinding">6.1.1.1 Binding (Routing Key)</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
@@ -968,7 +1001,7 @@ interface ProductClient {
 </div>
 
 
-<h2 id="producerProperties">5.1.1.2 RabbitMQ Properties</h2>
+<h2 id="producerProperties">6.1.1.2 RabbitMQ Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
@@ -1080,7 +1113,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </div>
 
 
-<h2 id="producerHeaders">5.1.1.3 Headers</h2>
+<h2 id="producerHeaders">6.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
@@ -1188,7 +1221,7 @@ interface ProductClient {
 </div>
 
 
-<h2 id="producerBody">5.1.1.4 Message Body</h2>
+<h2 id="producerBody">6.1.1.4 Message Body</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
@@ -1202,7 +1235,7 @@ interface ProductClient {
 </div>
 
 
-<h2 id="producerAcknowledge">5.1.2 Broker Acknowledgement</h2>
+<h2 id="producerAcknowledge">6.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
@@ -1338,7 +1371,7 @@ RxJava 1 is not supported.
 </div>
 
 
-<h1 id="consumer">6 RabbitMQ Consumers</h1>
+<h1 id="consumer">7 RabbitMQ Consumers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
@@ -1355,7 +1388,7 @@ RxJava 1 is not supported.
 </div>
 
 
-<h2 id="consumerMethods">6.1 Defining @RabbitListener Methods</h2>
+<h2 id="consumerMethods">7.1 Defining @RabbitListener Methods</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods.adoc"'>
@@ -1391,7 +1424,7 @@ In order for all of the functionality to work as designed in this guide your cla
 </div>
 
 
-<h2 id="consumerParameters">6.1.1 Consumer Parameters</h2>
+<h2 id="consumerParameters">7.1.1 Consumer Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
@@ -1417,7 +1450,7 @@ In order for the consumer method to be invoked, all arguments must be satisfied.
 </div>
 
 
-<h2 id="consumerQueue">6.1.1.1 Queue</h2>
+<h2 id="consumerQueue">7.1.1.1 Queue</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
@@ -1522,7 +1555,7 @@ The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@
 </div>
 
 
-<h2 id="consumerProperties">6.1.1.2 Properties</h2>
+<h2 id="consumerProperties">7.1.1.2 Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
@@ -1648,7 +1681,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </div>
 
 
-<h2 id="consumerHeaders">6.1.1.3 Headers</h2>
+<h2 id="consumerHeaders">7.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
@@ -1754,7 +1787,7 @@ class ProductListener {
 </div>
 
 
-<h2 id="consumerTypes">6.1.1.4 RabbitMQ Types</h2>
+<h2 id="consumerTypes">7.1.1.4 RabbitMQ Types</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
@@ -1857,7 +1890,7 @@ class ProductListener {
 </div>
 
 
-<h2 id="consumerBody">6.1.1.5 Message Body</h2>
+<h2 id="consumerBody">7.1.1.5 Message Body</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
@@ -1871,7 +1904,7 @@ class ProductListener {
 </div>
 
 
-<h2 id="consumerCustom">6.1.1.6 Custom Parameter Binding</h2>
+<h2 id="consumerCustom">7.1.1.6 Custom Parameter Binding</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
@@ -2461,7 +2494,7 @@ class ProductInfoTypeBinder constructor(private val conversionService: Conversio
 </div>
 
 
-<h2 id="consumerAcknowledge">6.1.2 Acknowledging Messages</h2>
+<h2 id="consumerAcknowledge">7.1.2 Acknowledging Messages</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
@@ -2672,7 +2705,7 @@ class ProductListener {
 </div>
 
 
-<h2 id="consumerExceptions">6.2 Handling Consumer Exceptions</h2>
+<h2 id="consumerExceptions">7.2 Handling Consumer Exceptions</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
@@ -2708,7 +2741,7 @@ class ProductListener {
 </div>
 
 
-<h2 id="consumerExecutor">6.3 Consumer Execution</h2>
+<h2 id="consumerExecutor">7.3 Consumer Execution</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
@@ -2738,7 +2771,7 @@ class ProductListener {
 </div>
 
 
-<h1 id="initialization">7 Creating Queues/Exchanges</h1>
+<h1 id="initialization">8 Creating Queues/Exchanges</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/initialization.adoc"'>
@@ -2956,7 +2989,7 @@ class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b cla
 </div>
 
 
-<h1 id="serdes">8 Message Serialization/Deserialization (SerDes)</h1>
+<h1 id="serdes">9 Message Serialization/Deserialization (SerDes)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
@@ -2976,7 +3009,7 @@ class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b cla
 </div>
 
 
-<h2 id="custom">8.1 Custom SerDes</h2>
+<h2 id="custom">9.1 Custom SerDes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
@@ -2994,6 +3027,7 @@ class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b cla
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
@@ -3034,7 +3068,7 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
     }
 
     @Override
-    public byte[] serialize(ProductInfo data) { <b class="conum">(5)</b>
+    public byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
         return (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET);
     }
 
@@ -3048,6 +3082,7 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
@@ -3087,7 +3122,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
     }
 
     @Override
-    byte[] serialize(ProductInfo data) { <b class="conum">(5)</b>
+    byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
         (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
     }
 
@@ -3101,6 +3136,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
@@ -3131,7 +3167,7 @@ class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt
         return null
     }
 
-    override fun serialize(data: ProductInfo): ByteArray { <b class="conum">(5)</b>
+    override fun serialize(data: ProductInfo, properties: MutableBasicProperties): ByteArray { <b class="conum">(5)</b>
         return (data.size + "|" + data.count + "|" + data.sealed).toByteArray(CHARSET)
     }
 
@@ -3165,7 +3201,7 @@ class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The serialize method takes the <code>ProductInfo</code> and returns the bytes to publish</td>
+<td>The serialize method takes the <code>ProductInfo</code> and returns the bytes to publish. A mutable version of the properties is also provided so properties such as the content type can be set before publishing.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
@@ -3187,7 +3223,7 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 </div>
 
 
-<h1 id="health">9 RabbitMQ Health Indicator</h1>
+<h1 id="health">10 RabbitMQ Health Indicator</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
@@ -3242,7 +3278,7 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 </div>
 
 
-<h1 id="metrics">10 RabbitMQ Metrics</h1>
+<h1 id="metrics">11 RabbitMQ Metrics</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/metrics.adoc"'>

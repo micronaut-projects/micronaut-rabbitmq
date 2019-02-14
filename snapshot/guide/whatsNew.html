@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>10 RabbitMQ Health Indicator 1.1.0.BUILD-SNAPSHOT</title>
+    <title>2 What's New 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -80,18 +80,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/serdes.html">&lt;&lt; <strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/metrics.html"><strong>11</strong><span>RabbitMQ Metrics</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>10 RabbitMQ Health Indicator</h1>
+                    <h1>2 What's New</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -100,66 +100,40 @@ function addJsClass() {
 
                 
 
-<h1 id="health">10 RabbitMQ Health Indicator</h1>
+<h1 id="whatsNew">2 What's New</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/whatsNew.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>This library comes with a health indicator for applications that are using the <code>management</code> module in Micronaut. See the <a href="https://docs.micronaut.io/latest/guide/index.html#healthEndpoint">Health Endpoint</a> documentation for more information about the endpoint itself.</p>
+<p>This section will outline any breaking changes between major or milestone releases as well as detail any new features that have been added.</p>
 </div>
-<div class="paragraph">
-<p>The information reported from the health indicator is under the <code>rabbitmq</code> key. The details will include everything that is reported from <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Connection.html#getServerProperties()">Connection#getServerProperties</a>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">"rabbitmq": {
-  "status": "UP",
-  "details": {
-    "cluster_name": "rabbit@a0378bc51148",
-    "product": "RabbitMQ",
-    "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
-    "capabilities": {
-      "consumer_priorities": true,
-      "exchange_exchange_bindings": true,
-      "connection.blocked": true,
-      "authentication_failure_close": true,
-      "per_consumer_qos": true,
-      "basic.nack": true,
-      "direct_reply_to": true,
-      "publisher_confirms": true,
-      "consumer_cancel_notify": true
-    },
-    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
-    "version": "3.7.8",
-    "platform": "Erlang\/OTP 20.3.8.5"
-  }
-}</code></pre>
+<div class="sect1">
+<h2 id="_1_1_0_m2">1.1.0.M2</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a> api has been changed to allow access to the properties of the message during serialization. This will for example allow setting the content type.</p>
+</li>
+<li>
+<p>Messages published using the default JSON serialization will now have their content type set to "application/json" if it was not set already.</p>
+</li>
+</ul>
 </div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.rabbitmq.enabled: false</code>.
-</td>
-</tr>
-</table>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/serdes.html">&lt;&lt; <strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/metrics.html"><strong>11</strong><span>RabbitMQ Metrics</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

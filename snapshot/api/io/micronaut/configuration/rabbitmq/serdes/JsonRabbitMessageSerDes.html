@@ -200,7 +200,8 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>byte[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#serialize-java.lang.Object-">serialize</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;data)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#serialize-java.lang.Object-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">serialize</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;data,
+         <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;basicProperties)</code>
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 </td>
@@ -294,21 +295,23 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 </dl>
 </li>
 </ul>
-<a name="serialize-java.lang.Object-">
+<a name="serialize-java.lang.Object-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>serialize</h4>
-<pre>public&nbsp;byte[]&nbsp;serialize(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;data)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-">RabbitMessageSerDes</a></code></span></div>
+<pre>public&nbsp;byte[]&nbsp;serialize(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;data,
+                        <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;basicProperties)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">RabbitMessageSerDes</a></code></span></div>
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-">serialize</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
+<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">serialize</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>data</code> - The data to serialize</dd>
+<dd><code>basicProperties</code> - The properties of the message</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The message body</dd>
 </dl>

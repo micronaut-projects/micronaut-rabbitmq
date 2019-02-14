@@ -162,7 +162,8 @@ extends io.micronaut.core.order.Ordered</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>byte[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-">serialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#serialize-T-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">serialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data,
+         <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;properties)</code>
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 </td>
@@ -213,20 +214,22 @@ extends io.micronaut.core.order.Ordered</pre>
 </dl>
 </li>
 </ul>
-<a name="serialize-java.lang.Object-">
+<a name="serialize-java.lang.Object-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">
 <!--   -->
-</a><a name="serialize-T-">
+</a><a name="serialize-T-io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>serialize</h4>
-<pre>byte[]&nbsp;serialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data)</pre>
+<pre>byte[]&nbsp;serialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data,
+                 <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;properties)</pre>
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>data</code> - The data to serialize</dd>
+<dd><code>properties</code> - The properties of the message</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The message body</dd>
 </dl>
