@@ -51,7 +51,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the content type
+     * Sets the content type.
      *
      * @param contentType The content type
      */
@@ -65,7 +65,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the content encoding
+     * Sets the content encoding.
      *
      * @param contentEncoding The content encoding
      */
@@ -79,7 +79,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the headers
+     * Sets the headers.
      *
      * @param headers The headers
      */
@@ -93,7 +93,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the delivery mode
+     * Sets the delivery mode.
      *
      * @param deliveryMode The delivery mode
      */
@@ -107,7 +107,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the priority
+     * Sets the priority.
      *
      * @param priority The priority
      */
@@ -121,7 +121,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the correlation id
+     * Sets the correlation id.
      *
      * @param correlationId The correlation id
      */
@@ -135,7 +135,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the reply to
+     * Sets the reply to.
      *
      * @param replyTo The reply to
      */
@@ -149,7 +149,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the expiration
+     * Sets the expiration.
      *
      * @param expiration The expiration
      */
@@ -163,7 +163,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the message id
+     * Sets the message id.
      *
      * @param messageId The message id
      */
@@ -177,7 +177,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the timestamp
+     * Sets the timestamp.
      *
      * @param timestamp The timestamp
      */
@@ -191,7 +191,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the type
+     * Sets the type.
      *
      * @param type The type
      */
@@ -205,7 +205,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the user id
+     * Sets the user id.
      *
      * @param userId The user id
      */
@@ -219,7 +219,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the app id
+     * Sets the app id.
      *
      * @param appId The app id
      */
@@ -235,7 +235,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Sets the cluster id
+     * Sets the cluster id.
      *
      * @param clusterId The cluster id
      */
@@ -244,7 +244,7 @@ public class MutableBasicProperties implements BasicProperties {
     }
 
     /**
-     * Converts the mutable properties to the RabbitMQ properties
+     * Converts the mutable properties to the RabbitMQ properties.
      */
     public AMQP.BasicProperties toBasicProperties() {
         return new AMQP.BasicProperties.Builder()
