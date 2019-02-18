@@ -28,6 +28,7 @@ productClient.send("quickstart".toByteArray())
             }
         }
 
+        Thread.sleep(200)
         ctx.stop()
     }
 
