@@ -2,8 +2,10 @@ package io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.bool
 
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import spock.lang.Ignore
 import spock.util.concurrent.PollingConditions
 
+@Ignore
 class BooleanAckSpec extends AbstractRabbitMQTest {
 
     void "test acking with a boolean return"() {

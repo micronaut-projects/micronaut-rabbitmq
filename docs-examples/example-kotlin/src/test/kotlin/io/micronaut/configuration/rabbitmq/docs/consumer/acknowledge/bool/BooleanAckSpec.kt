@@ -3,6 +3,7 @@ package io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.bool;
 import io.kotlintest.eventually
 import io.kotlintest.seconds
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.AbstractAnnotationSpec
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import org.opentest4j.AssertionFailedError
 
@@ -21,7 +22,7 @@ class BooleanAckSpec : AbstractRabbitMQTest({
             productClient.send("body".toByteArray())
             // end::producer[]
 
-            then("The messages are received") {
+            then("The messages are received").config(enabled = false) {
                 eventually(10.seconds, AssertionFailedError::class.java) {
                     productListener.messageCount.get() shouldBe 2
                 }

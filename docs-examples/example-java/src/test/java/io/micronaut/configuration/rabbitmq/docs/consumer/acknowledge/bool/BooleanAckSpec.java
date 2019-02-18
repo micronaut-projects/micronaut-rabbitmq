@@ -2,11 +2,13 @@ package io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.bool;
 
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest;
 import io.micronaut.context.ApplicationContext;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
+@Disabled
 public class BooleanAckSpec extends AbstractRabbitMQTest {
 
     @Test

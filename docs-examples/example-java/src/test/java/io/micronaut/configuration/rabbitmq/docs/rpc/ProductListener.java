@@ -17,11 +17,8 @@ import java.io.IOException;
 public class ProductListener {
 
     @Queue("product")
-    public void toUpperCase(String data,
-                            @RabbitProperty String replyTo, // <1>
-                            Channel channel) throws IOException { // <2>
-        AMQP.BasicProperties replyProps = new AMQP.BasicProperties.Builder().build();
-        channel.basicPublish("", replyTo, replyProps, data.toUpperCase().getBytes()); // <3>
+    public String toUpperCase(String data) { // <1>
+        return data.toUpperCase(); // <2>
     }
 }
 // end::clazz[]

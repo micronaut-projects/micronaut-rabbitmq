@@ -24,8 +24,11 @@ import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -65,6 +68,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final ChannelPool channelPool;
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
+    private final RabbitMessageSerDesRegistry serDesRegistry;
     private final ConversionService conversionService;
     private final List<Channel> consumerChannels = new ArrayList<>();
 
@@ -81,11 +85,13 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                   ChannelPool channelPool,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
+                                  RabbitMessageSerDesRegistry serDesRegistry,
                                   ConversionService conversionService) {
         this.beanContext = beanContext;
         this.channelPool = channelPool;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
+        this.serDesRegistry = serDesRegistry;
         this.conversionService = conversionService;
     }
 
@@ -141,6 +147,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
 
             Class<?> returnType = method.getReturnType().getType();
+            boolean isVoid = returnType == Void.class || returnType == void.class;
 
             Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
 
@@ -179,18 +186,29 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                             try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue)) {
                                 Object returnedValue = boundExecutable.invoke(bean);
 
+                                String replyTo = properties.getReplyTo();
+                                if (returnedValue != null && !isVoid && StringUtils.isNotEmpty(replyTo)) {
+                                    MutableBasicProperties replyProps = new MutableBasicProperties();
+                                    replyProps.setCorrelationId(properties.getCorrelationId());
+
+                                    byte[] converted = serDesRegistry.findSerdes((Class<Object>) returnedValue.getClass())
+                                            .map(serDes -> serDes.serialize(returnedValue, replyProps))
+                                            .orElseThrow(() -> new RabbitListenerException(String.format("Could not serialize the body argument of type [%s] to a byte[] for reply", returnedValue.getClass().getName()), bean, state));
+
+                                    channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
+                                }
+
                                 if (!hasAckArg) {
-                                    if (returnType.equals(Boolean.class) || returnType.equals(boolean.class)) {
-                                        Boolean ack = (Boolean) returnedValue;
-                                        closeable.withAcknowledge(ack == null ? false : ack);
-                                    } else {
-                                        closeable.withAcknowledge(true);
-                                    }
+                                    closeable.withAcknowledge(true);
                                 }
                             } catch (MessageAcknowledgementException e) {
                                 throw e;
                             } catch (Throwable e) {
-                                handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
+                                if (e instanceof RabbitListenerException) {
+                                    handleException((RabbitListenerException) e);
+                                } else {
+                                    handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
+                                }
                             }
                         } else {
                             new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();

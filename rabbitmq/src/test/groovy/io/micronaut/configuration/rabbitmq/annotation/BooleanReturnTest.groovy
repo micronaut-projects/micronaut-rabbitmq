@@ -6,11 +6,13 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.messaging.exceptions.MessagingClientException
 import io.reactivex.Completable
+import spock.lang.Ignore
 import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
+@Ignore
 class BooleanReturnTest extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming with the ack/nack"() {
