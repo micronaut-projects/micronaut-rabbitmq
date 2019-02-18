@@ -16,11 +16,11 @@
 
 package io.micronaut.configuration.rabbitmq.reactive;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConfirmListener;
+import com.rabbitmq.client.*;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
+import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.*;
@@ -44,7 +44,7 @@ import java.util.function.Consumer;
  */
 @Singleton
 @Internal
-public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
+public class RxJavaReactivePublisher implements ReactivePublisher {
 
     private final ChannelPool channelPool;
 
@@ -58,13 +58,25 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
     }
 
     @Override
-    public Completable publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
+    public Flowable<Void> publish(RabbitPublishState publishState) {
         return getChannel()
             .flatMap(this::initializePublish)
-            .flatMapCompletable(channel -> {
-                RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, body);
-                return publishInternal(channel, publishState);
-            });
+            .flatMapCompletable(channel -> publishInternal(channel, publishState))
+            .toFlowable();
+    }
+
+    @Override
+    public Flowable<Void> publishNoConfirm(RabbitPublishState publishState) {
+        return getChannel()
+                .flatMapCompletable(channel -> publishInternalNoConfirm(channel, publishState))
+                .toFlowable();
+    }
+
+    @Override
+    public Flowable<RabbitConsumerState> publishAndReply(RabbitPublishState publishState) {
+        return getChannel()
+                .flatMap(channel -> publishRpcInternal(channel, publishState))
+                .toFlowable();
     }
 
     /**
@@ -126,6 +138,89 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
             } catch (IOException | InterruptedException e) {
                 listener.dispose();
                 subscriber.onError(e);
+            }
+        }).doFinally(() -> returnChannel(channel));
+    }
+
+    /**
+     * Publishes the message to the channel. The {@link Completable} returned from this
+     * method should ensure the {@link ConfirmListener} is added to the channel prior
+     * to publishing and the {@link ConfirmListener} is removed from the channel after
+     * the publish has been acknowledged.
+     *
+     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
+     *
+     * @param channel The channel to publish the message to
+     * @param publishState The publishing state
+     *
+     * @return A completable that terminates when the publish has been acknowledged
+     */
+    protected Single<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
+        return Single.<RabbitConsumerState>create(subscriber -> {
+            Object noResponse = new Object();
+            AtomicReference<Object> acknowledgement = new AtomicReference<>(noResponse);
+            Disposable listener = null;
+            try {
+                String correlationId = UUID.randomUUID().toString();
+                AMQP.BasicProperties properties = publishState.getProperties().builder().correlationId(correlationId).build();
+                listener = createConsumer(channel, publishState.getProperties().getReplyTo(), correlationId, acknowledgement);
+
+                channel.basicPublish(
+                        publishState.getExchange(),
+                        publishState.getRoutingKey(),
+                        properties,
+                        publishState.getBody()
+                );
+
+                synchronized (acknowledgement) {
+                    if (subscriber.isDisposed()) {
+                        listener.dispose();
+                    } else {
+                        while (acknowledgement.get() == noResponse) {
+                            acknowledgement.wait();
+                        }
+                        if (acknowledgement.get() == null) {
+                            subscriber.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
+                        } else {
+                            subscriber.onSuccess((RabbitConsumerState) acknowledgement.get());
+                        }
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                if (listener != null) {
+                    listener.dispose();
+                }
+                subscriber.onError(new MessagingClientException("Failed to publish the message", e));
+            }
+        }).doFinally(() -> returnChannel(channel));
+    }
+
+    /**
+     * Publishes the message to the channel. The {@link Completable} returned from this
+     * method should ensure the {@link ConfirmListener} is added to the channel prior
+     * to publishing and the {@link ConfirmListener} is removed from the channel after
+     * the publish has been acknowledged.
+     *
+     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
+     *
+     * @param channel The channel to publish the message to
+     * @param publishState The publishing state
+     *
+     * @return A completable that terminates when the publish has been acknowledged
+     */
+    protected Completable publishInternalNoConfirm(Channel channel, RabbitPublishState publishState) {
+        return Completable.create(subscriber -> {
+            try {
+                channel.basicPublish(
+                        publishState.getExchange(),
+                        publishState.getRoutingKey(),
+                        publishState.getProperties(),
+                        publishState.getBody()
+                );
+
+                subscriber.onComplete();
+            } catch (IOException e) {
+                subscriber.onError(new MessagingClientException("Failed to publish the message", e));
             }
         }).doFinally(() -> returnChannel(channel));
     }
@@ -201,6 +296,76 @@ public class RxJavaReactivePublisher implements ReactivePublisher<Completable> {
             @Override
             public void dispose() {
                 dispose.accept(confirmListener);
+            }
+
+            @Override
+            public boolean isDisposed() {
+                return disposed.get();
+            }
+        };
+    }
+
+    /**
+     * Listens for ack/nack from the broker. The listener auto disposes
+     * itself after receiving a response from the broker. If no response is
+     * received, the caller is responsible for disposing the listener.
+     *
+     * @param channel The channel to listen for confirms
+     * @param replyTo The queue to consume from
+     * @param acknowledgement The acknowledgement object to update on response
+     * @throws IOException If an error occurred subscribing
+     * @return A disposable to allow cleanup of the listener
+     */
+    protected Disposable createConsumer(Channel channel, String replyTo, String correlationId, AtomicReference<Object> acknowledgement) throws IOException {
+        AtomicBoolean disposed = new AtomicBoolean();
+
+        Consumer<String> dispose = (consumerTag) -> {
+            if (disposed.compareAndSet(false, true)) {
+                try {
+                    channel.basicCancel(consumerTag);
+                } catch (IOException e) {
+                    //no-op
+                }
+            }
+        };
+
+        DefaultConsumer consumer = new DefaultConsumer() {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                if (replyTo.equals("amq.rabbitmq.reply-to") || properties.getCorrelationId().equals(correlationId)) {
+                    synchronized (acknowledgement) {
+                        acknowledgement.set(new RabbitConsumerState(envelope, properties, body, channel));
+                        dispose.accept(consumerTag);
+                        acknowledgement.notify();
+                    }
+                }
+            }
+
+            @Override
+            public void handleCancel(String consumerTag) throws IOException {
+                handleError(consumerTag);
+            }
+
+            @Override
+            public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
+                handleError(consumerTag);
+            }
+
+            private void handleError(String consumerTag) {
+                synchronized (acknowledgement) {
+                    acknowledgement.set(null);
+                    dispose.accept(consumerTag);
+                    acknowledgement.notify();
+                }
+            }
+        };
+
+        final String consumerTag = channel.basicConsume(replyTo, true, consumer);
+
+        return new Disposable() {
+            @Override
+            public void dispose() {
+                dispose.accept(consumerTag);
             }
 
             @Override

@@ -12,9 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class TypeBindingSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming with rabbitmq properties"() {
-        ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                 "spec.name": getClass().simpleName], "test")
+        ApplicationContext applicationContext = startContext()
         PollingConditions conditions = new PollingConditions(timeout: 3)
         MyProducer producer = applicationContext.getBean(MyProducer)
         MyConsumer consumer = applicationContext.getBean(MyConsumer)

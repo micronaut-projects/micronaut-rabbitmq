@@ -25,6 +25,7 @@ import io.micronaut.caffeine.cache.Caffeine;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState;
@@ -41,6 +42,10 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +67,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQIntroductionAdvice.class);
 
     private final ChannelPool channelPool;
-    private final ReactivePublisher<?> reactivePublisher;
+    private final ReactivePublisher reactivePublisher;
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Map<String, BiConsumer<Object, MutableBasicProperties>> properties = new HashMap<>();
@@ -77,7 +82,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      * @param serDesRegistry The registry to find a serDes to serialize the body
      */
     public RabbitMQIntroductionAdvice(ChannelPool channelPool,
-                                      ReactivePublisher<?> reactivePublisher,
+                                      ReactivePublisher reactivePublisher,
                                       ConversionService<?> conversionService,
                                       RabbitMessageSerDesRegistry serDesRegistry) {
         this.channelPool = channelPool;
@@ -161,10 +166,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
                 });
 
-                ReturnType<Object> returnType = method.getReturnType();
-                Class<?> javaReturnType = returnType.getType();
-                boolean isReactiveReturnType = Publishers.isConvertibleToPublisher(javaReturnType);
-
                 RabbitMessageSerDes<Object> serDes = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType()).orElseThrow(() -> new RabbitClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType().getName())));
 
                 return new StaticPublisherState(exchange,
@@ -172,7 +173,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         bodyArgument,
                         methodHeaders,
                         methodProperties,
-                        isReactiveReturnType,
+                        method.getReturnType(),
                         serDes);
 
             });
@@ -225,39 +226,62 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
+            Class dataType = publisherState.getDataType();
+            boolean isVoid = dataType == void.class || dataType == Void.class;
+            boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
+            boolean rpc = replyToSet && !isVoid;
 
             if (publisherState.isReactive()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Sending the message with publisher confirms.", context);
-                }
 
-                Object reactive = reactivePublisher.publish(exchange, routingKey, properties, converted);
+                Publisher reactive;
+                if (rpc) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
+                    }
+                    reactive = Flowable.fromPublisher(reactivePublisher.publishAndReply(publishState))
+                            .map(consumerState -> deserialize(consumerState, dataType));
+                } else {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Sending the message with publisher confirms.", context);
+                    }
+                    reactive = reactivePublisher.publish(publishState);
+                }
 
                 return conversionService.convert(reactive, javaReturnType)
                         .orElseThrow(() -> new RabbitClientException("Could not convert the publisher acknowledgement response to the return type of the method", Collections.singletonList(publishState)));
             } else {
 
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Sending the message without publisher confirms.", context);
-                }
-
-                Channel channel = null;
-                try {
-                    channel = channelPool.getChannel();
-                    channel.basicPublish(exchange, routingKey, properties, converted);
-                } catch (Throwable e) {
-                    throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), e, Collections.singletonList(publishState));
-                } finally {
-                    if (channel != null) {
-                        channelPool.returnChannel(channel);
+                if (rpc) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Publish is an RPC call. Blocking until a response is received.", context);
                     }
+
+                    RabbitConsumerState response = Single.fromPublisher(reactivePublisher.publishAndReply(publishState)).blockingGet();
+                    return deserialize(response, dataType);
+                } else {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Sending the message without publisher confirms.", context);
+                    }
+
+                    Throwable throwable = Completable.fromPublisher(reactivePublisher.publishNoConfirm(publishState)).blockingGet();
+                    if (throwable != null) {
+                        throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
+                    }
+                    return null;
                 }
             }
-
-            return null;
         } else {
             // can't be implemented so proceed
             return context.proceed();
+        }
+    }
+
+    private Object deserialize(RabbitConsumerState consumerState, Class dataType) {
+        Optional<RabbitMessageSerDes<Object>> serDes = serDesRegistry.findSerdes(dataType);
+        if (serDes.isPresent()) {
+            return serDes.get().deserialize(consumerState, dataType);
+        } else {
+            throw new RabbitClientException(String.format("Could not find a deserializer for [%s]", dataType.getName()));
         }
     }
 

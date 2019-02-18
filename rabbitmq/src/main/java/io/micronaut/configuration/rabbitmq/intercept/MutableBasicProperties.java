@@ -245,6 +245,8 @@ public class MutableBasicProperties implements BasicProperties {
 
     /**
      * Converts the mutable properties to the RabbitMQ properties.
+     *
+     * @return The RabbitMQ properties
      */
     public AMQP.BasicProperties toBasicProperties() {
         return new AMQP.BasicProperties.Builder()

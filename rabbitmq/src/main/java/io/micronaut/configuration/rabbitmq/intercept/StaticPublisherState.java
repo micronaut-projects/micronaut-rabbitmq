@@ -18,7 +18,9 @@ package io.micronaut.configuration.rabbitmq.intercept;
 
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.type.Argument;
+import io.micronaut.core.type.ReturnType;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -39,6 +41,7 @@ class StaticPublisherState {
     private final Map<String, Object> headers;
     private final Map<String, String> properties;
     private final boolean reactive;
+    private final Class<?> dataType;
     private final RabbitMessageSerDes<Object> serDes;
 
     /**
@@ -49,22 +52,31 @@ class StaticPublisherState {
      * @param bodyArgument The argument representing the body
      * @param headers The static headers
      * @param properties The static properties
-     * @param reactive Whether the method return is reactive
+     * @param returnType The return type of the method
      * @param serDes The body serializer
      */
     StaticPublisherState(String exchange,
-                                @Nullable String routingKey,
-                                Argument bodyArgument,
-                                Map<String, Object> headers,
-                                Map<String, String> properties,
-                                boolean reactive,
-                                RabbitMessageSerDes<Object> serDes) {
+                         @Nullable String routingKey,
+                         Argument bodyArgument,
+                         Map<String, Object> headers,
+                         Map<String, String> properties,
+                         ReturnType<?> returnType,
+                         RabbitMessageSerDes<Object> serDes) {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.bodyArgument = bodyArgument;
         this.headers = headers;
         this.properties = properties;
-        this.reactive = reactive;
+        Class<?> javaReturnType = returnType.getType();
+        this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);
+        if (this.reactive) {
+            this.dataType = returnType.getFirstTypeVariable()
+                    .map(Argument::getType)
+                    .map(Class.class::cast)
+                    .orElse(void.class);
+        } else {
+            this.dataType = returnType.getType();
+        }
         this.serDes = serDes;
     }
 
@@ -115,5 +127,12 @@ class StaticPublisherState {
      */
     RabbitMessageSerDes<Object> getSerDes() {
         return serDes;
+    }
+
+    /**
+     * @return The type of data being requested
+     */
+    Class getDataType() {
+        return dataType;
     }
 }

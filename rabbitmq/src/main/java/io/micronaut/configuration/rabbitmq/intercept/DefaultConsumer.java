@@ -31,9 +31,7 @@ import java.io.IOException;
 public interface DefaultConsumer extends Consumer {
 
     @Override
-    default void handleConsumeOk(String consumerTag) {
-
-    }
+    default void handleConsumeOk(String consumerTag) { }
 
     @Override
     default void handleCancelOk(String consumerTag) {
@@ -51,14 +49,12 @@ public interface DefaultConsumer extends Consumer {
     }
 
     @Override
-    default void handleRecoverOk(String consumerTag) {
-
-    }
+    default void handleRecoverOk(String consumerTag) { }
 
     /**
      * Called when a consumer is cancelled or shut down.
      *
      * @param consumerTag The consumer tag
      */
-    void handleTerminate(String consumerTag);
+    default void handleTerminate(String consumerTag) { }
 }

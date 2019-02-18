@@ -1,4 +1,4 @@
-Client methods support two return types, `void` and a reactive type. If the method returns `void`, the message will be published and the method will return immediately without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.
+Client methods support two return types, `void` and a reactive type. If the method returns `void`, the message will be published and the method will return without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.
 
 Since the publisher is cold, the message will not actually be published until the stream is subscribed to.
 
@@ -10,8 +10,8 @@ snippet::io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge.ProductC
 
 <1> The recommended approach of using a `Completable` as the return type for those using link:https://github.com/ReactiveX/RxJava[RxJava 2].
 <2> A `Maybe` also closely matches the use case of publisher acknowledgement.
-<3> For those that prefer link:https://projectreactor.io/[Project Reactor], a `Mono` can be used.
-<4> For those who prefer not to use any reactive library in their code, a `Publisher` can be returned. Note that Micronaut does not ship with this library.
+<3> For those that prefer link:https://projectreactor.io/[Project Reactor], a `Mono` can be used. Note that Micronaut does not ship with Reactor.
+<4> For those who prefer not to use any reactive library in their code, a `Publisher` can be returned.
 
 NOTE: RxJava 1 is not supported.
 

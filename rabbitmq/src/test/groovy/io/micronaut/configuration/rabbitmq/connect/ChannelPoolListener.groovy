@@ -22,6 +22,7 @@ class ChannelPoolListener implements BeanCreatedEventListener<ChannelPool> {
             channel.queueDeclare("type", false, false, false, new HashMap<>())
             channel.queueDeclare("boolean", false, false, false, new HashMap<>())
             channel.queueDeclare("product", false, false, false, new HashMap<>())
+            channel.queueDeclare("rpc", false, false, false, new HashMap<>())
 
             channel.exchangeDeclare("animals", "headers", false);
             channel.queueDeclare("dogs", false, false, false, null);

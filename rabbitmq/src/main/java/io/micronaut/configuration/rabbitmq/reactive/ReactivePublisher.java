@@ -16,29 +16,49 @@
 
 package io.micronaut.configuration.rabbitmq.reactive;
 
-import com.rabbitmq.client.AMQP;
+import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.core.annotation.Internal;
+import org.reactivestreams.Publisher;
 
 /**
  * A generic contract for publishing RabbitMQ messages reactively.
  *
- * @param <T> The reactive type
  * @author James Kleeh
  * @since 1.1.0
  */
-public interface ReactivePublisher<T> {
+@Internal
+public interface ReactivePublisher {
 
     /**
      * Publish the message with the provided arguments and return
      * a reactive type that completes successfully when the broker
      * acknowledged the message.
      *
-     * @param exchange The exchange
-     * @param routingKey The routing key
-     * @param properties The properties
-     * @param body The body
+     * @param publishState The RabbitMQ publishing data
      *
-     * @return The reactive type to subscribe to
+     * @return The publisher
      */
-    T publish(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body);
+    Publisher<Void> publish(RabbitPublishState publishState);
 
+    /**
+     * Publish the message with the provided arguments and return
+     * a reactive type that completes successfully when the message
+     * is published.
+     *
+     * @param publishState The RabbitMQ publishing data
+     *
+     * @return The publisher
+     */
+    Publisher<Void> publishNoConfirm(RabbitPublishState publishState);
+
+    /**
+     * Publish the message with the provided arguments and return
+     * a reactive type that completes successfully when the reply
+     * is received from the reply to queue.
+     *
+     * @param publishState The RabbitMQ publishing data
+     *
+     * @return The publisher of the received reply
+     */
+    Publisher<RabbitConsumerState> publishAndReply(RabbitPublishState publishState);
 }

@@ -5,10 +5,12 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
 import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer
+import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState
 import io.micronaut.configuration.rabbitmq.reactive.RxJavaReactivePublisher
 import io.micronaut.context.ApplicationContext
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
+import org.reactivestreams.Publisher
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
@@ -45,11 +47,9 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             }
         })
         RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
-        List<Completable> completables = [
-        reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes),
-        reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes),
-        reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "ghi".bytes),
-        reactiveChannel.publish("", "abc", new AMQP.BasicProperties.Builder().build(), "jkl".bytes)]
+        List<Completable> completables = ["abc", "def", "ghi", "jkl"].collect {
+            Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), it.bytes)))
+        }
 
         then:
         Completable.merge(completables)
@@ -85,7 +85,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes)
+                .publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes))
                 .subscribe()
 
         then:
@@ -95,7 +95,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes)
+                .publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes))
                 .subscribe()
 
 
@@ -132,12 +132,12 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Completable> publishes = []
         50.times {
-            publishes.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
+            publishes.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes)).subscribeOn(Schedulers.io())))
         }
 
         List<Completable> publishes2 = []
         25.times {
-            publishes2.add(reactiveChannel.publish("", "abc", null, "abc".bytes).subscribeOn(Schedulers.io()))
+            publishes2.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes)).subscribeOn(Schedulers.io())))
         }
 
         Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})
