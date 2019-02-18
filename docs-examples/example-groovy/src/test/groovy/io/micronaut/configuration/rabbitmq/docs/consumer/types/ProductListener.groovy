@@ -2,6 +2,7 @@ package io.micronaut.configuration.rabbitmq.docs.consumer.types
 
 // tag::imports[]
 import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
 import io.micronaut.configuration.rabbitmq.annotation.Queue
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
@@ -18,7 +19,8 @@ class ProductListener {
     @Queue("product")
     void receive(byte[] data,
                  Envelope envelope, // <1>
-                 BasicProperties basicProperties) { // <2>
+                 BasicProperties basicProperties, // <2>
+                 Channel channel) { // <3>
         messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]".toString())
     }
 }

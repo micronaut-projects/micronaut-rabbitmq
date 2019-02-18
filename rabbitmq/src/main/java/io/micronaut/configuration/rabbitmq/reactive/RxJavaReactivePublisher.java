@@ -332,7 +332,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
         DefaultConsumer consumer = new DefaultConsumer() {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                if (replyTo.equals("amq.rabbitmq.reply-to") || properties.getCorrelationId().equals(correlationId)) {
+                if (replyTo.equals("amq.rabbitmq.reply-to") || correlationId.equals(properties.getCorrelationId())) {
                     synchronized (acknowledgement) {
                         acknowledgement.set(new RabbitConsumerState(envelope, properties, body, channel));
                         dispose.accept(consumerTag);

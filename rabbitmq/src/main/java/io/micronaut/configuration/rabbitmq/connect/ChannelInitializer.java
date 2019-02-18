@@ -54,5 +54,5 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
      * @param channel The channel to use
      * @throws IOException If any error occurs
      */
-    abstract void initialize(Channel channel) throws IOException;
+    abstract public void initialize(Channel channel) throws IOException;
 }
