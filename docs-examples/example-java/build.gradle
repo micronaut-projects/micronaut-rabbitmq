@@ -12,7 +12,6 @@ dependencyManagement {
 dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testCompile "io.micronaut:micronaut-inject"
-    testCompile "io.micronaut:micronaut-http-server-netty"
     testCompile project(":rabbitmq")
     testCompile "org.testcontainers:testcontainers:1.10.5"
     testCompile 'org.awaitility:awaitility:3.1.6'
