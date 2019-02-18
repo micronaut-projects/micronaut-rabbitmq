@@ -58,7 +58,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
     }
 
     @Override
-    public Flowable<Void> publish(RabbitPublishState publishState) {
+    public Flowable<Void> publishAndConfirm(RabbitPublishState publishState) {
         return getChannel()
             .flatMap(this::initializePublish)
             .flatMapCompletable(channel -> publishInternal(channel, publishState))
@@ -66,7 +66,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
     }
 
     @Override
-    public Flowable<Void> publishNoConfirm(RabbitPublishState publishState) {
+    public Flowable<Void> publish(RabbitPublishState publishState) {
         return getChannel()
                 .flatMapCompletable(channel -> publishInternalNoConfirm(channel, publishState))
                 .toFlowable();
@@ -312,6 +312,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      *
      * @param channel The channel to listen for confirms
      * @param replyTo The queue to consume from
+     * @param correlationId The correlation id
      * @param acknowledgement The acknowledgement object to update on response
      * @throws IOException If an error occurred subscribing
      * @return A disposable to allow cleanup of the listener

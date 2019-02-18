@@ -17,7 +17,6 @@
 package io.micronaut.configuration.rabbitmq.intercept;
 
 import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.caffeine.cache.Cache;
@@ -33,7 +32,6 @@ import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.annotation.AnnotationValue;
-import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
@@ -263,7 +261,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Sending the message without publisher confirms.", context);
                     }
 
-                    Throwable throwable = Completable.fromPublisher(reactivePublisher.publishNoConfirm(publishState)).blockingGet();
+                    Throwable throwable = Completable.fromPublisher(reactivePublisher.publish(publishState)).blockingGet();
                     if (throwable != null) {
                         throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
                     }

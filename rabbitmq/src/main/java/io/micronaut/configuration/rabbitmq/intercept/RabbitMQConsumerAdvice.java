@@ -24,10 +24,8 @@ import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.configuration.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
-import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler;
-import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
@@ -79,6 +77,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
      * @param channelPool       The pool to retrieve channels from
      * @param binderRegistry    The registry to bind arguments to the method
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
+     * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,

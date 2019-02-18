@@ -31,6 +31,14 @@ import java.io.IOException;
  */
 public abstract class ChannelInitializer implements BeanCreatedEventListener<ChannelPool> {
 
+    /**
+     * Do any work with a channel.
+     *
+     * @param channel The channel to use
+     * @throws IOException If any error occurs
+     */
+    abstract public void initialize(Channel channel) throws IOException;
+
     @Override
     public ChannelPool onCreated(BeanCreatedEvent<ChannelPool> event) {
         ChannelPool pool = event.getBean();
@@ -47,12 +55,4 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
         }
         return pool;
     }
-
-    /**
-     * Do any work with a channel.
-     *
-     * @param channel The channel to use
-     * @throws IOException If any error occurs
-     */
-    abstract public void initialize(Channel channel) throws IOException;
 }

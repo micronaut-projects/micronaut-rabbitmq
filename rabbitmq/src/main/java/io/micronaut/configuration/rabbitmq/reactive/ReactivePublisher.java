@@ -38,7 +38,7 @@ public interface ReactivePublisher {
      *
      * @return The publisher
      */
-    Publisher<Void> publish(RabbitPublishState publishState);
+    Publisher<Void> publishAndConfirm(RabbitPublishState publishState);
 
     /**
      * Publish the message with the provided arguments and return
@@ -49,7 +49,7 @@ public interface ReactivePublisher {
      *
      * @return The publisher
      */
-    Publisher<Void> publishNoConfirm(RabbitPublishState publishState);
+    Publisher<Void> publish(RabbitPublishState publishState);
 
     /**
      * Publish the message with the provided arguments and return
