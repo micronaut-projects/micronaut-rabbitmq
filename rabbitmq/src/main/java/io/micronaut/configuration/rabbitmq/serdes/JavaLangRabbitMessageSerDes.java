@@ -61,8 +61,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     }
 
     @Override
-    public byte[] serialize(Object data, MutableBasicProperties properties) {
-        return findSerDes(data.getClass()).serialize(data, properties);
+    public byte[] serialize(@Nullable Object data, Class<Object> type, MutableBasicProperties properties) {
+        return findSerDes(type).serialize(data, type, properties);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(String data, MutableBasicProperties properties) {
+        public byte[] serialize(String data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -218,7 +218,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Short data, MutableBasicProperties properties) {
+        public byte[] serialize(Short data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -258,7 +258,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Integer data, MutableBasicProperties properties) {
+        public byte[] serialize(Integer data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -300,7 +300,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Long data, MutableBasicProperties properties) {
+        public byte[] serialize(Long data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -346,7 +346,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Float data, MutableBasicProperties properties) {
+        public byte[] serialize(Float data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -389,7 +389,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Double data, MutableBasicProperties properties) {
+        public byte[] serialize(Double data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -424,7 +424,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(byte[] data, MutableBasicProperties properties) {
+        public byte[] serialize(byte[] data, Class<Object> type, MutableBasicProperties properties) {
             return data;
         }
 
@@ -450,7 +450,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(ByteBuffer data, MutableBasicProperties properties) {
+        public byte[] serialize(ByteBuffer data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -494,11 +494,11 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(UUID data, MutableBasicProperties properties) {
+        public byte[] serialize(UUID data, Class<Object> type, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
-                return stringSerDes.serialize(data.toString(), properties);
+                return stringSerDes.serialize(data.toString(), type, properties);
             }
         }
 

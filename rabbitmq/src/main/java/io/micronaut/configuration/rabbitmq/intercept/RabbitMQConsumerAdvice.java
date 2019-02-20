@@ -190,8 +190,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                     MutableBasicProperties replyProps = new MutableBasicProperties();
                                     replyProps.setCorrelationId(properties.getCorrelationId());
 
-                                    byte[] converted = serDesRegistry.findSerdes((Class<Object>) returnedValue.getClass())
-                                            .map(serDes -> serDes.serialize(returnedValue, replyProps))
+                                    Class<Object> type = (Class<Object>) returnedValue.getClass();
+                                    byte[] converted = serDesRegistry.findSerdes(type)
+                                            .map(serDes -> serDes.serialize(returnedValue, type, replyProps))
                                             .orElseThrow(() -> new RabbitListenerException(String.format("Could not serialize the body argument of type [%s] to a byte[] for reply", returnedValue.getClass().getName()), bean, state));
 
                                     channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);

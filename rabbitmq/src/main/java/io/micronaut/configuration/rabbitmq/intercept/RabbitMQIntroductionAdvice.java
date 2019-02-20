@@ -215,7 +215,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Class<?> javaReturnType = returnType.getType();
 
             Object body = parameterValues.get(bodyArgument.getName());
-            byte[] converted = publisherState.getSerDes().serialize(body, mutableProperties);
+            byte[] converted = publisherState.getSerDes().serialize(body, bodyArgument.getType(), mutableProperties);
 
             AMQP.BasicProperties properties = mutableProperties.toBasicProperties();
 

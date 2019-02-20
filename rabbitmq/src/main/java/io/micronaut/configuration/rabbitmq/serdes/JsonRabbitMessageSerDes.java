@@ -60,7 +60,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     }
 
     @Override
-    public byte[] serialize(Object data, MutableBasicProperties basicProperties) {
+    public byte[] serialize(Object data, Class<Object> type, MutableBasicProperties basicProperties) {
         Optional<byte[]> body = objectSerializer.serialize(data);
         if (body.isPresent() && basicProperties.getContentType() == null) {
             basicProperties.setContentType(MediaType.APPLICATION_JSON);
