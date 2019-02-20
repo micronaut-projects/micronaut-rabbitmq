@@ -26,10 +26,7 @@ import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Serializes and deserializes standard Java types.
@@ -45,22 +42,22 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
      */
     public static final Integer ORDER = 100;
 
-    protected final Map<Class, RabbitMessageSerDes> javaSerDes = new HashMap<>();
+    protected final List<RabbitMessageSerDes> javaSerDes = new ArrayList<>(10);
 
     /**
      * Default constructor.
      */
     public JavaLangRabbitMessageSerDes() {
-        javaSerDes.put(String.class, getStringSerDes());
-        javaSerDes.put(Boolean.class, getBooleanSerDes());
-        javaSerDes.put(Short.class, getShortSerDes());
-        javaSerDes.put(Integer.class, getIntegerSerDes());
-        javaSerDes.put(Long.class, getLongSerDes());
-        javaSerDes.put(Float.class, getFloatSerDes());
-        javaSerDes.put(Double.class, getDoubleSerDes());
-        javaSerDes.put(byte[].class, getByteArraySerDes());
-        javaSerDes.put(ByteBuffer.class, getByteBufferSerDes());
-        javaSerDes.put(UUID.class, getUUIDSerDes());
+        javaSerDes.add(getStringSerDes());
+        javaSerDes.add(getBooleanSerDes());
+        javaSerDes.add(getShortSerDes());
+        javaSerDes.add(getIntegerSerDes());
+        javaSerDes.add(getLongSerDes());
+        javaSerDes.add(getFloatSerDes());
+        javaSerDes.add(getDoubleSerDes());
+        javaSerDes.add(getByteArraySerDes());
+        javaSerDes.add(getByteBufferSerDes());
+        javaSerDes.add(getUUIDSerDes());
     }
 
     @Override
@@ -68,23 +65,23 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         if (data == null) {
             return null;
         }
-        return findSerDes(data.getClass()).serialize(data, properties);
+        return findSerDes(Argument.of(data.getClass())).serialize(data, properties);
     }
 
     @Override
     public Object deserialize(RabbitConsumerState messageState, Argument<Object> argument) {
-        Class<?> dataType;
+        Argument<?> dataType;
         if (Collection.class.isAssignableFrom(argument.getType())) {
-            dataType = argument.getFirstTypeVariable().orElse(argument).getType();
+            dataType = argument.getFirstTypeVariable().orElse(argument);
         } else {
-            dataType = argument.getType();
+            dataType = argument;
         }
         return findSerDes(dataType).deserialize(messageState, argument);
     }
 
     @Override
     public boolean supports(Argument<Object> argument) {
-        return findSerDes(argument.getType()) != null;
+        return findSerDes(argument) != null;
     }
 
     @Override
@@ -99,8 +96,12 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
      * @return The serdes, or null if none can be found
      */
     @Nullable
-    protected RabbitMessageSerDes findSerDes(Class type) {
-        return javaSerDes.get(type);
+    protected RabbitMessageSerDes findSerDes(Argument<?> type) {
+        return javaSerDes
+                .stream()
+                .filter(serDes -> serDes.supports(type))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -193,7 +194,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public String deserialize(RabbitConsumerState messageState, Argument<String> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else {
                 return new String(data, ENCODING);
@@ -223,7 +224,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Short deserialize(RabbitConsumerState messageState, Argument<Short> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 2) {
                 throw new SerializationException("Incorrect message body size to deserialize to a Short");
@@ -251,7 +252,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
         @Override
         public boolean supports(Argument<Short> argument) {
-            return argument.getType() == Short.class;
+            return argument.getType() == Short.class || argument.getType() == short.class;
         }
     }
 
@@ -263,7 +264,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Integer deserialize(RabbitConsumerState messageState, Argument<Integer> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 4) {
                 throw new SerializationException("Incorrect message body size to deserialize to an Integer");
@@ -293,7 +294,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
         @Override
         public boolean supports(Argument<Integer> argument) {
-            return argument.getType() == Integer.class;
+            return argument.getType() == Integer.class || argument.getType() == int.class;
         }
     }
 
@@ -305,7 +306,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Long deserialize(RabbitConsumerState messageState, Argument<Long> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 8) {
                 throw new SerializationException("Incorrect message body size to deserialize to a Long");
@@ -339,7 +340,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
         @Override
         public boolean supports(Argument<Long> argument) {
-            return argument.getType() == Long.class;
+            return argument.getType() == Long.class || argument.getType() == long.class;
         }
     }
 
@@ -351,7 +352,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Float deserialize(RabbitConsumerState messageState, Argument<Float> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 4) {
                 throw new SerializationException("Incorrect message body size to deserialize to a Float");
@@ -382,7 +383,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
         @Override
         public boolean supports(Argument<Float> argument) {
-            return argument.getType() == Float.class;
+            return argument.getType() == Float.class || argument.getType() == float.class;
         }
     }
 
@@ -394,7 +395,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Double deserialize(RabbitConsumerState messageState, Argument<Double> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 8) {
                 throw new SerializationException("Incorrect message body size to deserialize to a Double");
@@ -429,7 +430,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
 
         @Override
         public boolean supports(Argument<Double> argument) {
-            return argument.getType() == Double.class;
+            return argument.getType() == Double.class || argument.getType() == double.class;
         }
     }
 
@@ -462,7 +463,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public ByteBuffer deserialize(RabbitConsumerState messageState, Argument<ByteBuffer> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else {
                 return ByteBuffer.wrap(data);
@@ -536,7 +537,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public Boolean deserialize(RabbitConsumerState messageState, Argument<Boolean> argument) {
             byte[] data = messageState.getBody();
-            if (data == null) {
+            if (data == null || data.length == 0) {
                 return null;
             } else if (data.length != 1) {
                 throw new SerializationException("Incorrect message body size to deserialize to a Boolean");
