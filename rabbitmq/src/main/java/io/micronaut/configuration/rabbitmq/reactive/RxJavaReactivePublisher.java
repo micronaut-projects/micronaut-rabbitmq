@@ -19,6 +19,7 @@ package io.micronaut.configuration.rabbitmq.reactive;
 import com.rabbitmq.client.*;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
+import io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer;
 import io.micronaut.core.annotation.Internal;
@@ -28,7 +29,9 @@ import io.reactivex.disposables.Disposable;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -47,14 +50,18 @@ import java.util.function.Consumer;
 public class RxJavaReactivePublisher implements ReactivePublisher {
 
     private final ChannelPool channelPool;
+    private final RabbitConnectionFactoryConfig config;
 
     /**
      * Default constructor.
      *
      * @param channelPool The channel pool to retrieve channels
+     * @param config Any configuration used in building the publishers
      */
-    public RxJavaReactivePublisher(ChannelPool channelPool) {
+    public RxJavaReactivePublisher(ChannelPool channelPool,
+                                   RabbitConnectionFactoryConfig config) {
         this.channelPool = channelPool;
+        this.config = config;
     }
 
     @Override
@@ -74,9 +81,17 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
 
     @Override
     public Flowable<RabbitConsumerState> publishAndReply(RabbitPublishState publishState) {
-        return getChannel()
+        Flowable<RabbitConsumerState> flowable = getChannel()
                 .flatMap(channel -> publishRpcInternal(channel, publishState))
                 .toFlowable();
+
+        Optional<Duration> optionalDuration = config.getRpc().getTimeout();
+        if (optionalDuration.isPresent()) {
+            long nanos = optionalDuration.get().toNanos();
+            flowable = flowable.timeout(nanos, TimeUnit.NANOSECONDS);
+        }
+
+        return flowable;
     }
 
     /**

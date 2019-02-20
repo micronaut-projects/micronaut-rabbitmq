@@ -8,12 +8,15 @@ import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer
 import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState
 import io.micronaut.configuration.rabbitmq.reactive.RxJavaReactivePublisher
 import io.micronaut.context.ApplicationContext
+import io.micronaut.scheduling.executor.ExecutorType
+import io.micronaut.scheduling.executor.UserExecutorConfiguration
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import org.reactivestreams.Publisher
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -46,7 +49,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 }
             }
         })
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new RabbitConnectionFactoryConfig())
         List<Completable> completables = ["abc", "def", "ghi", "jkl"].collect {
             Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), it.bytes)))
         }
@@ -80,7 +83,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 messageCount.incrementAndGet()
             }
         })
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new RabbitConnectionFactoryConfig())
 
 
         when:
@@ -115,7 +118,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                  "rabbitmq.channelPool.maxIdleChannels": 10])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
         AtomicInteger integer = new AtomicInteger(2)
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool)
+        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new RabbitConnectionFactoryConfig())
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel consumeChannel = channelPool.getChannel()
@@ -132,12 +135,12 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Completable> publishes = []
         50.times {
-            publishes.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes)).subscribeOn(Schedulers.io())))
+            publishes.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
         }
 
         List<Completable> publishes2 = []
         25.times {
-            publishes2.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes)).subscribeOn(Schedulers.io())))
+            publishes2.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
         }
 
         Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})

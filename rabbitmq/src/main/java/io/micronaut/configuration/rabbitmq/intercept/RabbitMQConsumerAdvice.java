@@ -26,6 +26,7 @@ import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler;
+import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
@@ -145,8 +146,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
             Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
 
-            Class<?> returnType = method.getReturnType().getType();
-            boolean isVoid = returnType == Void.class || returnType == void.class;
+            Class<?> returnTypeClass = method.getReturnType().getType();
+            boolean isVoid = returnTypeClass == Void.class || returnTypeClass == void.class;
 
             Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
 
@@ -190,9 +191,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                     MutableBasicProperties replyProps = new MutableBasicProperties();
                                     replyProps.setCorrelationId(properties.getCorrelationId());
 
-                                    Class<Object> type = (Class<Object>) returnedValue.getClass();
-                                    byte[] converted = serDesRegistry.findSerdes(type)
-                                            .map(serDes -> serDes.serialize(returnedValue, type, replyProps))
+                                    byte[] converted = serDesRegistry.findSerdes(method.getReturnType().asArgument())
+                                            .map(RabbitMessageSerDes.class::cast)
+                                            .map(serDes -> serDes.serialize(returnedValue, replyProps))
                                             .orElseThrow(() -> new RabbitListenerException(String.format("Could not serialize the body argument of type [%s] to a byte[] for reply", returnedValue.getClass().getName()), bean, state));
 
                                     channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);

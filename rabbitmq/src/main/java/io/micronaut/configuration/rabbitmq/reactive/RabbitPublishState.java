@@ -18,6 +18,7 @@ package io.micronaut.configuration.rabbitmq.reactive;
 
 import com.rabbitmq.client.AMQP;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -42,7 +43,7 @@ public class RabbitPublishState {
      * @param properties The properties
      * @param body The body
      */
-    public RabbitPublishState(String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) {
+    public RabbitPublishState(String exchange, String routingKey, AMQP.BasicProperties properties, @Nullable byte[] body) {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.properties = properties;
@@ -73,6 +74,7 @@ public class RabbitPublishState {
     /**
      * @return The message body
      */
+    @Nullable
     public byte[] getBody() {
         return body;
     }

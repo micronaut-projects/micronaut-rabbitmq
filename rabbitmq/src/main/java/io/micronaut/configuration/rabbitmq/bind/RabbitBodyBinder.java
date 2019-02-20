@@ -18,6 +18,7 @@ package io.micronaut.configuration.rabbitmq.bind;
 
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
+import io.micronaut.core.type.Argument;
 import io.micronaut.messaging.annotation.Body;
 
 import javax.inject.Singleton;
@@ -49,7 +50,7 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
-        Class<Object> bodyType = context.getArgument().getType();
+        Argument<Object> bodyType = context.getArgument();
 
         return () -> serDesRegistry.findSerdes(bodyType)
                 .map(serDes -> serDes.deserialize(messageState, bodyType));

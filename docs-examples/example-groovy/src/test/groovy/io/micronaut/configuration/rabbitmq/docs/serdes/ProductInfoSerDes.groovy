@@ -6,6 +6,7 @@ import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
 
 import javax.inject.Singleton
 import java.nio.charset.Charset
@@ -25,7 +26,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
     }
 
     @Override
-    ProductInfo deserialize(RabbitConsumerState consumerState, Class<ProductInfo> type) { // <4>
+    ProductInfo deserialize(RabbitConsumerState consumerState, Argument<ProductInfo> argument) { // <4>
         String body = new String(consumerState.getBody(), CHARSET)
         String[] parts = body.split("\\|")
         if (parts.length == 3) {
@@ -45,13 +46,16 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
     }
 
     @Override
-    byte[] serialize(ProductInfo data, Class<Object> type, MutableBasicProperties properties) { // <5>
+    byte[] serialize(ProductInfo data, MutableBasicProperties properties) { // <5>
+        if (data == null) {
+            return null
+        }
         (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
     }
 
     @Override
-    boolean supports(Class<ProductInfo> type) { // <6>
-        type.isAssignableFrom(ProductInfo)
+    boolean supports(Argument<ProductInfo> argument) { // <6>
+        argument.getType().isAssignableFrom(ProductInfo)
     }
 }
 // end::clazz[]

@@ -41,8 +41,9 @@ class StaticPublisherState {
     private final Map<String, Object> headers;
     private final Map<String, String> properties;
     private final boolean reactive;
-    private final Class<?> dataType;
-    private final RabbitMessageSerDes<Object> serDes;
+    private final ReturnType<?> returnType;
+    private final Argument<?> dataType;
+    private final RabbitMessageSerDes<?> serDes;
 
     /**
      * Default constructor.
@@ -61,7 +62,7 @@ class StaticPublisherState {
                          Map<String, Object> headers,
                          Map<String, String> properties,
                          ReturnType<?> returnType,
-                         RabbitMessageSerDes<Object> serDes) {
+                         RabbitMessageSerDes<?> serDes) {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.bodyArgument = bodyArgument;
@@ -71,12 +72,11 @@ class StaticPublisherState {
         this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);
         if (this.reactive) {
             this.dataType = returnType.getFirstTypeVariable()
-                    .map(Argument::getType)
-                    .map(Class.class::cast)
-                    .orElse(void.class);
+                    .orElse(Argument.VOID);
         } else {
-            this.dataType = returnType.getType();
+            this.dataType = returnType.asArgument();
         }
+        this.returnType = returnType;
         this.serDes = serDes;
     }
 
@@ -126,13 +126,20 @@ class StaticPublisherState {
      * @return The serializer
      */
     RabbitMessageSerDes<Object> getSerDes() {
-        return serDes;
+        return (RabbitMessageSerDes) serDes;
     }
 
     /**
      * @return The type of data being requested
      */
-    Class getDataType() {
+    Argument<?> getDataType() {
         return dataType;
+    }
+
+    /**
+     * @return The return type
+     */
+    ReturnType<?> getReturnType() {
+        return returnType;
     }
 }

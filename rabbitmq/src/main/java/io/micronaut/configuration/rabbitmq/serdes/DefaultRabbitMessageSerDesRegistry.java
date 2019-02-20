@@ -16,6 +16,8 @@
 
 package io.micronaut.configuration.rabbitmq.serdes;
 
+import io.micronaut.core.type.Argument;
+
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.Optional;
@@ -41,9 +43,9 @@ public class DefaultRabbitMessageSerDesRegistry implements RabbitMessageSerDesRe
     }
 
     @Override
-    public <T> Optional<RabbitMessageSerDes<T>> findSerdes(Class<T> type) {
+    public <T> Optional<RabbitMessageSerDes<T>> findSerdes(Argument<T> type) {
         return Arrays.stream(serDes)
-                .filter(serDes -> serDes.supports((Class) type))
+                .filter(serDes -> serDes.supports((Argument) type))
                 .map(serDes -> (RabbitMessageSerDes<T>) serDes)
                 .findFirst();
     }

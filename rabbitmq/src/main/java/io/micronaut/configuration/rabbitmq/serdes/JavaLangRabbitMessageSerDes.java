@@ -19,12 +19,14 @@ package io.micronaut.configuration.rabbitmq.serdes;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.serialize.exceptions.SerializationException;
+import io.micronaut.core.type.Argument;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,18 +63,27 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     }
 
     @Override
-    public byte[] serialize(@Nullable Object data, Class<Object> type, MutableBasicProperties properties) {
-        return findSerDes(type).serialize(data, type, properties);
+    public byte[] serialize(@Nullable Object data, MutableBasicProperties properties) {
+        if (data == null) {
+            return null;
+        }
+        return findSerDes(data.getClass()).serialize(data, properties);
     }
 
     @Override
-    public Object deserialize(RabbitConsumerState messageState, Class<Object> type) {
-        return findSerDes(type).deserialize(messageState, type);
+    public Object deserialize(RabbitConsumerState messageState, Argument<Object> argument) {
+        Class<?> dataType;
+        if (Collection.class.isAssignableFrom(argument.getType())) {
+            dataType = argument.getFirstTypeVariable().orElse(argument).getType();
+        } else {
+            dataType = argument.getType();
+        }
+        return findSerDes(dataType).deserialize(messageState, argument);
     }
 
     @Override
-    public boolean supports(Class<Object> type) {
-        return findSerDes(type) != null;
+    public boolean supports(Argument<Object> argument) {
+        return findSerDes(argument.getType()) != null;
     }
 
     @Override
@@ -171,7 +182,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         private static final Charset ENCODING = Charset.forName("UTF8");
 
         @Override
-        public String deserialize(RabbitConsumerState messageState, Class<String> type) {
+        public String deserialize(RabbitConsumerState messageState, Argument<String> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -181,7 +192,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(String data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(String data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -190,8 +201,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<String> type) {
-            return type == String.class;
+        public boolean supports(Argument<String> argument) {
+            return argument.getType() == String.class;
         }
     }
 
@@ -201,7 +212,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ShortSerDes implements RabbitMessageSerDes<Short> {
 
         @Override
-        public Short deserialize(RabbitConsumerState messageState, Class<Short> type) {
+        public Short deserialize(RabbitConsumerState messageState, Argument<Short> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -218,7 +229,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Short data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(Short data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -230,8 +241,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<Short> type) {
-            return type == Short.class;
+        public boolean supports(Argument<Short> argument) {
+            return argument.getType() == Short.class;
         }
     }
 
@@ -241,7 +252,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class IntegerSerDes implements RabbitMessageSerDes<Integer> {
 
         @Override
-        public Integer deserialize(RabbitConsumerState messageState, Class<Integer> type) {
+        public Integer deserialize(RabbitConsumerState messageState, Argument<Integer> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -258,7 +269,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Integer data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(Integer data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -272,8 +283,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<Integer> type) {
-            return type == Integer.class;
+        public boolean supports(Argument<Integer> argument) {
+            return argument.getType() == Integer.class;
         }
     }
 
@@ -283,7 +294,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class LongSerDes implements RabbitMessageSerDes<Long> {
 
         @Override
-        public Long deserialize(RabbitConsumerState messageState, Class<Long> type) {
+        public Long deserialize(RabbitConsumerState messageState, Argument<Long> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -300,7 +311,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Long data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(Long data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -318,8 +329,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<Long> type) {
-            return type == Long.class;
+        public boolean supports(Argument<Long> argument) {
+            return argument.getType() == Long.class;
         }
     }
 
@@ -329,7 +340,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class FloatSerDes implements RabbitMessageSerDes<Float> {
 
         @Override
-        public Float deserialize(RabbitConsumerState messageState, Class<Float> type) {
+        public Float deserialize(RabbitConsumerState messageState, Argument<Float> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -346,7 +357,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Float data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(Float data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -361,8 +372,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<Float> type) {
-            return type == Float.class;
+        public boolean supports(Argument<Float> argument) {
+            return argument.getType() == Float.class;
         }
     }
 
@@ -372,7 +383,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class DoubleSerDes implements RabbitMessageSerDes<Double> {
 
         @Override
-        public Double deserialize(RabbitConsumerState messageState, Class<Double> type) {
+        public Double deserialize(RabbitConsumerState messageState, Argument<Double> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -389,7 +400,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(Double data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(Double data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -408,8 +419,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<Double> type) {
-            return type == Double.class;
+        public boolean supports(Argument<Double> argument) {
+            return argument.getType() == Double.class;
         }
     }
 
@@ -419,18 +430,18 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ByteArraySerDes implements RabbitMessageSerDes<byte[]> {
 
         @Override
-        public byte[] deserialize(RabbitConsumerState messageState, Class<byte[]> type) {
+        public byte[] deserialize(RabbitConsumerState messageState, Argument<byte[]> argument) {
             return messageState.getBody();
         }
 
         @Override
-        public byte[] serialize(byte[] data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(byte[] data, MutableBasicProperties properties) {
             return data;
         }
 
         @Override
-        public boolean supports(Class<byte[]> type) {
-            return type == byte[].class;
+        public boolean supports(Argument<byte[]> argument) {
+            return argument.getType() == byte[].class;
         }
     }
 
@@ -440,7 +451,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     static class ByteBufferSerDes implements RabbitMessageSerDes<ByteBuffer> {
 
         @Override
-        public ByteBuffer deserialize(RabbitConsumerState messageState, Class<ByteBuffer> type) {
+        public ByteBuffer deserialize(RabbitConsumerState messageState, Argument<ByteBuffer> argument) {
             byte[] data = messageState.getBody();
             if (data == null) {
                 return null;
@@ -450,7 +461,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(ByteBuffer data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(ByteBuffer data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
@@ -471,8 +482,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public boolean supports(Class<ByteBuffer> type) {
-            return type == ByteBuffer.class;
+        public boolean supports(Argument<ByteBuffer> argument) {
+            return argument.getType() == ByteBuffer.class;
         }
     }
 
@@ -484,8 +495,8 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         StringSerDes stringSerDes = new StringSerDes();
 
         @Override
-        public UUID deserialize(RabbitConsumerState messageState, Class<UUID> type) {
-            String uuid = stringSerDes.deserialize(messageState, String.class);
+        public UUID deserialize(RabbitConsumerState messageState, Argument<UUID> argument) {
+            String uuid = stringSerDes.deserialize(messageState, Argument.of(String.class));
             if (uuid == null) {
                 return null;
             } else {
@@ -494,17 +505,17 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         }
 
         @Override
-        public byte[] serialize(UUID data, Class<Object> type, MutableBasicProperties properties) {
+        public byte[] serialize(UUID data, MutableBasicProperties properties) {
             if (data == null) {
                 return null;
             } else {
-                return stringSerDes.serialize(data.toString(), type, properties);
+                return stringSerDes.serialize(data.toString(), properties);
             }
         }
 
         @Override
-        public boolean supports(Class<UUID> type) {
-            return type == UUID.class;
+        public boolean supports(Argument<UUID> argument) {
+            return argument.getType() == UUID.class;
         }
     }
 }

@@ -25,7 +25,6 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState;
 import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
@@ -40,15 +39,20 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
+import io.micronaut.scheduling.TaskExecutors;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -64,29 +68,29 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQIntroductionAdvice.class);
 
-    private final ChannelPool channelPool;
     private final ReactivePublisher reactivePublisher;
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
+    private final Scheduler scheduler;
     private final Map<String, BiConsumer<Object, MutableBasicProperties>> properties = new HashMap<>();
     private final Cache<ExecutableMethod, StaticPublisherState> publisherCache = Caffeine.newBuilder().build();
 
     /**
      * Default constructor.
      *
-     * @param channelPool The pool to retrieve a channel from
      * @param reactivePublisher The publisher to use when publisher acknowledgement is required
      * @param conversionService The conversion service
      * @param serDesRegistry The registry to find a serDes to serialize the body
+     * @param executorService The executor to execute reactive operations on
      */
-    public RabbitMQIntroductionAdvice(ChannelPool channelPool,
-                                      ReactivePublisher reactivePublisher,
+    public RabbitMQIntroductionAdvice(ReactivePublisher reactivePublisher,
                                       ConversionService<?> conversionService,
-                                      RabbitMessageSerDesRegistry serDesRegistry) {
-        this.channelPool = channelPool;
+                                      RabbitMessageSerDesRegistry serDesRegistry,
+                                      @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.reactivePublisher = reactivePublisher;
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
+        this.scheduler = Schedulers.from(executorService);
 
 
         properties.put("contentType", (prop, builder) ->
@@ -132,7 +136,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     routingKey = method.getAnnotation(Binding.class).getValue(String.class);
                 }
 
-                Argument bodyArgument = findBodyArgument(method).orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
+                Argument<?> bodyArgument = findBodyArgument(method).orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
 
                 Map<String, Object> methodHeaders = new HashMap<>();
 
@@ -164,7 +168,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
                 });
 
-                RabbitMessageSerDes<Object> serDes = serDesRegistry.findSerdes((Class<Object>) bodyArgument.getType()).orElseThrow(() -> new RabbitClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType().getName())));
+                RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType().getName())));
 
                 return new StaticPublisherState(exchange,
                         routingKey.orElse(null),
@@ -215,7 +219,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Class<?> javaReturnType = returnType.getType();
 
             Object body = parameterValues.get(bodyArgument.getName());
-            byte[] converted = publisherState.getSerDes().serialize(body, bodyArgument.getType(), mutableProperties);
+            byte[] converted = publisherState.getSerDes().serialize(body, mutableProperties);
 
             AMQP.BasicProperties properties = mutableProperties.toBasicProperties();
 
@@ -224,8 +228,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
-            Class dataType = publisherState.getDataType();
-            boolean isVoid = dataType == void.class || dataType == Void.class;
+            Class dataTypeClass = publisherState.getDataType().getType();
+            boolean isVoid = dataTypeClass == void.class || dataTypeClass == Void.class;
             boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
             boolean rpc = replyToSet && !isVoid;
 
@@ -237,12 +241,14 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
                     }
                     reactive = Flowable.fromPublisher(reactivePublisher.publishAndReply(publishState))
-                            .map(consumerState -> deserialize(consumerState, dataType));
+                            .subscribeOn(scheduler)
+                            .map(consumerState -> deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType()));
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message with publisher confirms.", context);
                     }
-                    reactive = reactivePublisher.publish(publishState);
+                    reactive = Flowable.fromPublisher(reactivePublisher.publish(publishState))
+                            .subscribeOn(scheduler);
                 }
 
                 return conversionService.convert(reactive, javaReturnType)
@@ -254,8 +260,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Publish is an RPC call. Blocking until a response is received.", context);
                     }
 
-                    RabbitConsumerState response = Single.fromPublisher(reactivePublisher.publishAndReply(publishState)).blockingGet();
-                    return deserialize(response, dataType);
+                    return Single.fromPublisher(reactivePublisher.publishAndReply(publishState))
+                            .map(consumerState ->
+                                    deserialize(consumerState, publisherState.getDataType(), publisherState.getReturnType().asArgument()))
+                            .blockingGet();
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message without publisher confirms.", context);
@@ -274,10 +282,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         }
     }
 
-    private Object deserialize(RabbitConsumerState consumerState, Class dataType) {
+    private Object deserialize(RabbitConsumerState consumerState, Argument dataType, Argument returnType) {
         Optional<RabbitMessageSerDes<Object>> serDes = serDesRegistry.findSerdes(dataType);
         if (serDes.isPresent()) {
-            return serDes.get().deserialize(consumerState, dataType);
+            return serDes.get().deserialize(consumerState, returnType);
         } else {
             throw new RabbitClientException(String.format("Could not find a deserializer for [%s]", dataType.getName()));
         }
@@ -321,7 +329,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .findFirst();
     }
 
-    private Optional<Argument> findBodyArgument(ExecutableMethod<?, ?> method) {
+    private Optional<Argument<?>> findBodyArgument(ExecutableMethod<?, ?> method) {
         return Optional.ofNullable(Arrays.stream(method.getArguments())
                 .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Body.class))
                 .findFirst()

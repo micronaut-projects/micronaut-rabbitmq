@@ -11,6 +11,7 @@ class ChannelPoolListener extends ChannelInitializer {
     void initialize(Channel channel) throws IOException {
         channel.queueDeclare("abc", false, false, false, new HashMap<>())
         channel.queueDeclare("pojo", false, false, false, new HashMap<>())
+        channel.queueDeclare("pojo-list", false, false, false, new HashMap<>())
         channel.queueDeclare("header", false, false, false, new HashMap<>())
         channel.queueDeclare("property", false, false, false, new HashMap<>())
         channel.queueDeclare("type", false, false, false, new HashMap<>())

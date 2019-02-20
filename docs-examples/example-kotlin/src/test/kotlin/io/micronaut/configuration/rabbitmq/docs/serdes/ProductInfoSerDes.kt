@@ -6,6 +6,7 @@ import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
 
 import javax.inject.Singleton
 import java.nio.charset.Charset
@@ -17,7 +18,7 @@ import java.nio.charset.Charset
 class ProductInfoSerDes(private val conversionService: ConversionService<*>)// <3>
     : RabbitMessageSerDes<ProductInfo> { // <2>
 
-    override fun deserialize(consumerState: RabbitConsumerState, type: Class<ProductInfo>): ProductInfo? { // <4>
+    override fun deserialize(consumerState: RabbitConsumerState, argument: Argument<ProductInfo>): ProductInfo? { // <4>
         val body = String(consumerState.body, CHARSET)
         val parts = body.split("\\|".toRegex())
         if (parts.size == 3) {
@@ -36,12 +37,12 @@ class ProductInfoSerDes(private val conversionService: ConversionService<*>)// <
         return null
     }
 
-    override fun serialize(data: ProductInfo?, type: Class<Any>, properties: MutableBasicProperties): ByteArray { // <5>
+    override fun serialize(data: ProductInfo?, properties: MutableBasicProperties): ByteArray { // <5>
         return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
     }
 
-    override fun supports(type: Class<ProductInfo>): Boolean { // <6>
-        return type.isAssignableFrom(ProductInfo::class.java)
+    override fun supports(argument: Argument<ProductInfo>): Boolean { // <6>
+        return argument.type.isAssignableFrom(ProductInfo::class.java)
     }
 
     companion object {
