@@ -45,7 +45,7 @@ public class RabbitConnectionFactoryConfig extends ConnectionFactory {
     }
 
     /**
-     * Sets the RPC configuration
+     * Sets the RPC configuration.
      *
      * @param rpc The RPC configuration
      */
