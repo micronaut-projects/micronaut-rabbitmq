@@ -52,6 +52,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
      */
     public JavaLangRabbitMessageSerDes() {
         javaSerDes.put(String.class, getStringSerDes());
+        javaSerDes.put(Boolean.class, getBooleanSerDes());
         javaSerDes.put(Short.class, getShortSerDes());
         javaSerDes.put(Integer.class, getIntegerSerDes());
         javaSerDes.put(Long.class, getLongSerDes());
@@ -172,6 +173,14 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     @Nonnull
     protected RabbitMessageSerDes<UUID> getUUIDSerDes() {
         return new UUIDSerDes();
+    }
+
+    /**
+     * @return The serDes that handles {@link UUID}
+     */
+    @Nonnull
+    protected RabbitMessageSerDes<Boolean> getBooleanSerDes() {
+        return new BooleanSerDes();
     }
 
     /**
@@ -516,6 +525,40 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
         @Override
         public boolean supports(Argument<UUID> argument) {
             return argument.getType() == UUID.class;
+        }
+    }
+
+    /**
+     * Serializes/deserializes a {@link Boolean}.
+     */
+    static class BooleanSerDes implements RabbitMessageSerDes<Boolean> {
+
+        @Override
+        public Boolean deserialize(RabbitConsumerState messageState, Argument<Boolean> argument) {
+            byte[] data = messageState.getBody();
+            if (data == null) {
+                return null;
+            } else if (data.length != 1) {
+                throw new SerializationException("Incorrect message body size to deserialize to a Boolean");
+            } else {
+                return data[0] != 0;
+            }
+        }
+
+        @Override
+        public byte[] serialize(Boolean data, MutableBasicProperties properties) {
+            if (data == null) {
+                return null;
+            } else {
+                byte[] bytes = new byte[1];
+                bytes[0] = data ? (byte) 1 : (byte) 0;
+                return bytes;
+            }
+        }
+
+        @Override
+        public boolean supports(Argument<Boolean> argument) {
+            return argument.getType() == Boolean.class || argument.getType() == boolean.class;
         }
     }
 }

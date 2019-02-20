@@ -187,14 +187,18 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                                 Object returnedValue = boundExecutable.invoke(bean);
 
                                 String replyTo = properties.getReplyTo();
-                                if (returnedValue != null && !isVoid && StringUtils.isNotEmpty(replyTo)) {
+                                if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
                                     MutableBasicProperties replyProps = new MutableBasicProperties();
                                     replyProps.setCorrelationId(properties.getCorrelationId());
 
-                                    byte[] converted = serDesRegistry.findSerdes(method.getReturnType().asArgument())
-                                            .map(RabbitMessageSerDes.class::cast)
-                                            .map(serDes -> serDes.serialize(returnedValue, replyProps))
-                                            .orElseThrow(() -> new RabbitListenerException(String.format("Could not serialize the body argument of type [%s] to a byte[] for reply", returnedValue.getClass().getName()), bean, state));
+                                    byte[] converted = null;
+                                    if (returnedValue != null) {
+                                        RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType().asArgument())
+                                                .map(RabbitMessageSerDes.class::cast)
+                                                .orElseThrow(() -> new RabbitListenerException(String.format("Could not find a serializer for the body argument of type [%s]", returnedValue.getClass().getName()), bean, state));
+
+                                        converted = serDes.serialize(returnedValue, replyProps);
+                                    }
 
                                     channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
                                 }

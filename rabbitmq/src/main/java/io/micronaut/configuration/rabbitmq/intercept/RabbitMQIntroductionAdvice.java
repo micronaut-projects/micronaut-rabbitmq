@@ -168,7 +168,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
                 });
 
-                RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not serialize the body argument of type [%s] to a byte[] for publishing", bodyArgument.getType().getName())));
+                RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not find a serializer for the body argument of type [%s]", bodyArgument.getType().getName())));
 
                 return new StaticPublisherState(exchange,
                         routingKey.orElse(null),
