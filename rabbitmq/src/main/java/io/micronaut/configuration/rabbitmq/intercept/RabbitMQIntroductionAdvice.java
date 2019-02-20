@@ -238,7 +238,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
                     }
                     reactive = Flowable.fromPublisher(reactivePublisher.publishAndReply(publishState))
-                            .switchMap(consumerState -> {
+                            .flatMap(consumerState -> {
                                 Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
                                 if (deserialized == null) {
                                     return Flowable.empty();
