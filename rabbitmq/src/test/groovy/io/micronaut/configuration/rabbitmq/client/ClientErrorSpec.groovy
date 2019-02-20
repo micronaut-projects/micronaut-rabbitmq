@@ -35,7 +35,7 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
 
         then:
         ex = thrown(RabbitClientException)
-        ex.message == "Could not serialize the body argument of type [java.util.TimeZone] to a byte[] for publishing"
+        ex.message == "Could not find a serializer for the body argument of type [java.util.TimeZone]"
 
     }
 
