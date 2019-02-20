@@ -26,6 +26,8 @@ snippet::io.micronaut.configuration.rabbitmq.docs.rpc.ProductListener[tags="impo
 
 NOTE: If the reply publish fails for any reason, the original message will be rejected.
 
+IMPORTANT: RPC consumer methods must never return a reactive type. Because the resulting publish needs to occur on the same thread and only a single item can be emitted, there is no value in doing so.
+
 == Configuration
 
 By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:

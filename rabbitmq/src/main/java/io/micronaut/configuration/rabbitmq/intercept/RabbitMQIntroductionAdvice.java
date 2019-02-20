@@ -40,10 +40,7 @@ import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
 import io.micronaut.scheduling.TaskExecutors;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
+import io.reactivex.*;
 import io.reactivex.schedulers.Schedulers;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -241,8 +238,14 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
                     }
                     reactive = Flowable.fromPublisher(reactivePublisher.publishAndReply(publishState))
-                            .subscribeOn(scheduler)
-                            .map(consumerState -> deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType()));
+                            .switchMap(consumerState -> {
+                                Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
+                                if (deserialized == null) {
+                                    return Flowable.empty();
+                                } else {
+                                    return Flowable.just(deserialized);
+                                }
+                            }).subscribeOn(scheduler);
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message with publisher confirms.", context);
@@ -261,8 +264,14 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
 
                     return Single.fromPublisher(reactivePublisher.publishAndReply(publishState))
-                            .map(consumerState ->
-                                    deserialize(consumerState, publisherState.getDataType(), publisherState.getReturnType().asArgument()))
+                            .flatMapMaybe(consumerState -> {
+                                Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
+                                if (deserialized == null) {
+                                    return Maybe.empty();
+                                } else {
+                                    return Maybe.just(deserialized);
+                                }
+                            })
                             .blockingGet();
                 } else {
                     if (LOG.isDebugEnabled()) {
