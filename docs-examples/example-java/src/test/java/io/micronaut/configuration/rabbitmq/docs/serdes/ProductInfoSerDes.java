@@ -46,7 +46,7 @@ public class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // 
     }
 
     @Override
-    public byte[] serialize(ProductInfo data, MutableBasicProperties properties) { // <5>
+    public byte[] serialize(ProductInfo data, Class<Object> type, MutableBasicProperties properties) { // <5>
         return (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET);
     }
 

@@ -20,6 +20,8 @@ import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.order.Ordered;
 
+import javax.annotation.Nullable;
+
 /**
  * Responsible for serializing and deserializing RabbitMQ message bodies.
  *
@@ -43,10 +45,11 @@ public interface RabbitMessageSerDes<T> extends Ordered {
      * to RabbitMQ.
      *
      * @param data The data to serialize
+     * @param type The type to serialize
      * @param properties The properties of the message
      * @return The message body
      */
-    byte[] serialize(T data, MutableBasicProperties properties);
+    byte[] serialize(@Nullable T data, Class<Object> type, MutableBasicProperties properties);
 
     /**
      * Determines if this serdes supports the given type.
