@@ -59,6 +59,9 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     @Override
     public Object deserialize(RabbitConsumerState messageState, Argument<Object> type) {
         byte[] body = messageState.getBody();
+        if (body == null || body.length == 0) {
+            return null;
+        }
         try {
             if (type.hasTypeVariables()) {
                 JavaType javaType = constructJavaType(type);
