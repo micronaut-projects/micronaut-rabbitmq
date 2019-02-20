@@ -36,7 +36,7 @@ class ProductInfoSerDes(private val conversionService: ConversionService<*>)// <
         return null
     }
 
-    override fun serialize(data: ProductInfo?, type: Class<Any>, properties: MutableBasicProperties?): ByteArray { // <5>
+    override fun serialize(data: ProductInfo?, type: Class<Any>, properties: MutableBasicProperties): ByteArray { // <5>
         return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
     }
 
