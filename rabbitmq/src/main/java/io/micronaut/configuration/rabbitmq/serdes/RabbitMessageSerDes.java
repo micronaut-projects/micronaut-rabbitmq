@@ -39,6 +39,7 @@ public interface RabbitMessageSerDes<T> extends Ordered {
      * @param argument The type to be returned
      * @return The deserialized body
      */
+    @Nullable
     T deserialize(RabbitConsumerState consumerState, Argument<T> argument);
 
     /**
