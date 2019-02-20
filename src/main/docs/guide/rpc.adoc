@@ -10,9 +10,9 @@ snippet::io.micronaut.configuration.rabbitmq.docs.rpc.ProductClient[tags="import
 
 <1> The reply to property is set. This could be placed on individual methods.
 <2> The send method is blocking and will return when the response is received.
-<3> The sendReactive method returns a reactive type that will complete when the response is received.
+<3> The sendReactive method returns a reactive type that will complete when the response is received. Reactive methods will be executed on the IO thread pool.
 
-IMPORTANT: In order for the publisher to assume RPC should be used instead of just completing when the publish is confirmed, the data type must *not* be `Void`. In both cases above, the data type is `String`. In addition, the `replyTo` property must be set. Queues will not be auto created by specifying a value with `replyTo`.
+IMPORTANT: In order for the publisher to assume RPC should be used instead of just completing when the publish is confirmed, the data type must *not* be `Void`. In both cases above, the data type is `String`. In addition, the `replyTo` property must be set. Queues will not be auto created by specifying a value with `replyTo`. The "amq.rabbitmq.reply-to" queue is special and does not need creating.
 
 == Server Side
 
@@ -24,6 +24,12 @@ snippet::io.micronaut.configuration.rabbitmq.docs.rpc.ProductListener[tags="impo
 <2> The channel is injected so it can be used. This could be replaced with a method call of another `@RabbitClient`.
 <3> The converted message is published to the `replyTo` binding.
 
+NOTE: If the reply publish fails for any reason, the original message will be rejected.
 
+== Configuration
+
+By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:
+
+include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]
 
 

@@ -74,7 +74,7 @@ public class RabbitConnectionFactoryConfig extends ConnectionFactory {
         }
 
         /**
-         * Sets the timeout duration before cancelling an RPC call.
+         * Sets the timeout duration before cancelling an RPC call. Default {@value #DEFAULT_TIMEOUT_SECONDS} seconds.
          *
          * @param timeout The timeout
          */

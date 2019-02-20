@@ -17,7 +17,6 @@
 package io.micronaut.configuration.rabbitmq.reactive;
 
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.core.annotation.Internal;
 import org.reactivestreams.Publisher;
 
 /**
@@ -26,7 +25,6 @@ import org.reactivestreams.Publisher;
  * @author James Kleeh
  * @since 1.1.0
  */
-@Internal
 public interface ReactivePublisher {
 
     /**

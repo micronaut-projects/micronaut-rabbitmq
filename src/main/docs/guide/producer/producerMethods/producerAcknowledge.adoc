@@ -13,5 +13,5 @@ snippet::io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge.ProductC
 <3> For those that prefer link:https://projectreactor.io/[Project Reactor], a `Mono` can be used. Note that Micronaut does not ship with Reactor.
 <4> For those who prefer not to use any reactive library in their code, a `Publisher` can be returned.
 
-NOTE: RxJava 1 is not supported.
+NOTE: RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO thread pool.
 

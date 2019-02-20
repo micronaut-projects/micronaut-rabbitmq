@@ -2,5 +2,11 @@ This section will outline any breaking changes between major or milestone releas
 
 == 1.1.0.M2
 
-* The api:configuration.rabbitmq.serdes.RabbitMessageSerDes[] api has been changed to allow access to the properties of the message during serialization. This will for example allow setting the content type.
+* The api:configuration.rabbitmq.serdes.RabbitMessageSerDes[] api has been changed significantly to support setting properties before publishing and deserializing complex types.
 * Messages published using the default JSON serialization will now have their content type set to "application/json" if it was not set already.
+* A consumer can now bind to the Channel used to consume messages
+* Support for Direct Reply-To (RPC) has been added. See <<rpc, the documentation>> for more information.
+* A new base class for doing channel initialization has been added to make the process easier. See <<initialization, the documentation>> for more information.
+* Support for acknowledging messages with a Boolean return type has been removed.
+* Publisher acknowledgements will now be executed on the IO thread pool.
+
