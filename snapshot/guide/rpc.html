@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 RabbitMQ Quick Start 1.1.0.BUILD-SNAPSHOT</title>
+    <title>8 Direct Reply-To (RPC) 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -83,18 +83,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/cli.html">&lt;&lt; <strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/consumer.html">&lt;&lt; <strong>7</strong><span>RabbitMQ Consumers</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>4 RabbitMQ Quick Start</h1>
+                    <h1>8 Direct Reply-To (RPC)</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -103,54 +103,44 @@ function addJsClass() {
 
                 
 
-<h1 id="quickStart">4 RabbitMQ Quick Start</h1>
+<h1 id="rpc">8 Direct Reply-To (RPC)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>To add support for RabbitMQ to an existing project, you should first add the Micronaut RabbitMQ configuration to your build configuration. For example:</p>
+<p>This library supports RPC through the usage of <a href="https://www.rabbitmq.com/direct-reply-to.html">direct reply-to</a>. Both blocking and non blocking variations are supported. To get started using this feature, publishing methods must have the <code>replyTo</code> property set to "amq.rabbitmq.reply-to". The "amq.rabbitmq.reply-to" queue always exists and does not need to be created.</p>
 </div>
 <div class="paragraph">
-<p>        <div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.configuration:micronaut-rabbitmq'</span></code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;io.micronaut.configuration&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</p>
+<p>The following is an example direct reply to where the consumer is converting the body to upper case and replying with the converted string.</p>
 </div>
 <div class="sect1">
-<h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
+<h2 id="_client_side">Client Side</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
-</div>
-<div class="paragraph">
-<p>For example the following is a trivial <code>@RabbitClient</code> interface:</p>
+<p>The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.context.annotation.Requires;
+import io.reactivex.Single;
 
-@RabbitClient <b class="conum">(1)</b>
+@RabbitClient
+@RabbitProperty(name = "replyTo", value = "amq.rabbitmq.reply-to") <b class="conum">(1)</b>
 public interface ProductClient {
 
-    @Binding("product") <b class="conum">(2)</b>
-    void send(byte[] data); <b class="conum">(3)</b>
+    @Binding("product")
+    String send(String data); <b class="conum">(2)</b>
+
+    @Binding("product")
+    Single&lt;String&gt; sendReactive(String data); <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -158,13 +148,19 @@ public interface ProductClient {
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
+import io.reactivex.Single
 
-@RabbitClient <b class="conum">(1)</b>
+@RabbitClient
+@RabbitProperty(name = "replyTo", value = "amq.rabbitmq.reply-to") <b class="conum">(1)</b>
 interface ProductClient {
 
-    @Binding("product") <b class="conum">(2)</b>
-    void send(byte[] data) <b class="conum">(3)</b>
+    @Binding("product")
+    String send(String data) <b class="conum">(2)</b>
+
+    @Binding("product")
+    Single&lt;String&gt; sendReactive(String data) <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -172,13 +168,19 @@ interface ProductClient {
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
+import io.reactivex.Single
 
-@RabbitClient <b class="conum">(1)</b>
+@RabbitClient
+@RabbitProperty(name = "replyTo", value = "amq.rabbitmq.reply-to") <b class="conum">(1)</b>
 interface ProductClient {
 
-    @Binding("product") <b class="conum">(2)</b>
-    fun send(data: ByteArray)  <b class="conum">(3)</b>
+    @Binding("product")
+    fun send(data: String): String  <b class="conum">(2)</b>
+
+    @Binding("product")
+    fun sendReactive(data: String): Single&lt;String&gt;  <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -186,47 +188,26 @@ interface ProductClient {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation is used to designate this interface as a client</td>
+<td>The reply to property is set. This could be placed on individual methods.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation indicates which binding or routing key the message should be routed to.</td>
+<td>The send method is blocking and will return when the response is received.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>send</code> method accepts single parameter which is the body of the message.</td>
+<td>The sendReactive method returns a reactive type that will complete when the response is received. Reactive methods will be executed on the IO thread pool.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of <code>ProductClient</code> either by looking up the bean from the <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a> or by injecting the bean with <code>@Inject</code>:</p>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient.class);
-productClient.send("quickstart".getBytes());</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">def productClient = applicationContext.getBean(ProductClient)
-productClient.send("quickstart".getBytes())</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val productClient = ctx.getBean(ProductClient::class.java)
-productClient.send("quickstart".toByteArray())</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Because the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.
+In order for the publisher to assume RPC should be used instead of just completing when the publish is confirmed, the data type must <strong>not</strong> be <code>Void</code>. In both cases above, the data type is <code>String</code>. In addition, the <code>replyTo</code> property must be set. Queues will not be auto created by specifying a value with <code>replyTo</code>. The "amq.rabbitmq.reply-to" queue is special and does not need creating.
 </td>
 </tr>
 </table>
@@ -234,33 +215,28 @@ Because the <code>send</code> method returns <code>void</code> this means the me
 </div>
 </div>
 <div class="sect1">
-<h2 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h2>
+<h2 id="_server_side">Server Side</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
-</div>
-<div class="paragraph">
-<p>The following example will listen for messages published by the <code>ProductClient</code> in the previous section:</p>
+<p>The "server side" in this case starts with the consumption of a message, and then a new message is published to the reply to queue.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
+<pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import io.micronaut.configuration.rabbitmq.annotation.Queue;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.context.annotation.Requires;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
 
-@RabbitListener <b class="conum">(1)</b>
+@RabbitListener
 public class ProductListener {
 
-    List&lt;String&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
-
-    @Queue("product") <b class="conum">(2)</b>
-    public void receive(byte[] data) { <b class="conum">(3)</b>
-        messageLengths.add(new String(data));
-        System.out.println("Java received " + data.length + " bytes from RabbitMQ");
+    @Queue("product")
+    public String toUpperCase(String data) { <b class="conum">(1)</b>
+        return data.toUpperCase(); <b class="conum">(2)</b>
     }
 }</code></pre>
 </div>
@@ -271,15 +247,12 @@ public class ProductListener {
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
-@RabbitListener <b class="conum">(1)</b>
+@RabbitListener
 class ProductListener {
 
-    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
-
-    @Queue("product") <b class="conum">(2)</b>
-    void receive(byte[] data) { <b class="conum">(3)</b>
-        messageLengths.add(new String(data))
-        println("Groovy received ${data.length} bytes from RabbitMQ")
+    @Queue("product")
+    String toUpperCase(String data) throws IOException { <b class="conum">(1)</b>
+        data.toUpperCase() <b class="conum">(2)</b>
     }
 }</code></pre>
 </div>
@@ -289,18 +262,16 @@ class ProductListener {
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
-import java.util.*
 
+import java.io.IOException
 
-@RabbitListener <b class="conum">(1)</b>
+@RabbitListener
 class ProductListener {
 
-    val messageLengths: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
-
-    @Queue("product") <b class="conum">(2)</b>
-    fun receive(data: ByteArray) { <b class="conum">(3)</b>
-        messageLengths.add(String(data))
-        println("Kotlin received ${data.size} bytes from RabbitMQ")
+    @Queue("product")
+    @Throws(IOException::class)
+    fun toUpperCase(data: String): String { <b class="conum">(1)</b>
+        return data.toUpperCase() <b class="conum">(2)</b>
     }
 }</code></pre>
 </div>
@@ -309,27 +280,70 @@ class ProductListener {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> is used to designate the bean as a message listener.</td>
+<td>The reply to property is injected. If the consumer will not always be participating in RPC this could be annotated with <code>@Nullable</code> to allow both use cases.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is used to indicate which queue to subscribe to.</td>
+<td>The channel is injected so it can be used. This could be replaced with a method call of another <code>@RabbitClient</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
+<td>The converted message is published to the <code>replyTo</code> binding.</td>
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the reply publish fails for any reason, the original message will be rejected.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:</p>
+</div>
+<a id="io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration" href="#io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html">RabbitConnectionFactoryConfig$RpcConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.rpc.timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout duration before cancelling an RPC call. Default 10 seconds.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/cli.html">&lt;&lt; <strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/consumer.html">&lt;&lt; <strong>7</strong><span>RabbitMQ Consumers</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

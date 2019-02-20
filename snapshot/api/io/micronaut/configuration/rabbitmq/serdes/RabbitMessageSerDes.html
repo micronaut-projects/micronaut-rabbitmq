@@ -155,8 +155,8 @@ extends io.micronaut.core.order.Ordered</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">deserialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;consumerState,
-           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">deserialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;consumerState,
+           io.micronaut.core.type.Argument&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;argument)</code>
 <div class="block">Deserializes the message into the requested type.</div>
 </td>
 </tr>
@@ -170,7 +170,7 @@ extends io.micronaut.core.order.Ordered</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">supports</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-io.micronaut.core.type.Argument-">supports</a></span>(io.micronaut.core.type.Argument&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</code>
 <div class="block">Determines if this serdes supports the given type.</div>
 </td>
 </tr>
@@ -196,19 +196,19 @@ extends io.micronaut.core.order.Ordered</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">
+<a name="deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>deserialize</h4>
 <pre><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;deserialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;consumerState,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</pre>
+              io.micronaut.core.type.Argument&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;argument)</pre>
 <div class="block">Deserializes the message into the requested type.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>consumerState</code> - The message to deserialize</dd>
-<dd><code>type</code> - The type to be returned</dd>
+<dd><code>argument</code> - The type to be returned</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The deserialized body</dd>
 </dl>
@@ -222,8 +222,10 @@ extends io.micronaut.core.order.Ordered</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>serialize</h4>
-<pre>byte[]&nbsp;serialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data,
-                 <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;properties)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+byte[]&nbsp;serialize(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+                           <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&nbsp;data,
+                           <a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.configuration.rabbitmq.intercept">MutableBasicProperties</a>&nbsp;properties)</pre>
 <div class="block">Serializes the data into a byte[] to be published
  to RabbitMQ.</div>
 <dl>
@@ -235,13 +237,13 @@ extends io.micronaut.core.order.Ordered</pre>
 </dl>
 </li>
 </ul>
-<a name="supports-java.lang.Class-">
+<a name="supports-io.micronaut.core.type.Argument-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>supports</h4>
-<pre>boolean&nbsp;supports(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</pre>
+<pre>boolean&nbsp;supports(io.micronaut.core.type.Argument&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="type parameter in RabbitMessageSerDes">T</a>&gt;&nbsp;type)</pre>
 <div class="block">Determines if this serdes supports the given type.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

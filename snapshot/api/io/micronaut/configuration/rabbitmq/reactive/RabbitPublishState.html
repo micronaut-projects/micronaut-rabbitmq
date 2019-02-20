@@ -204,6 +204,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <pre>public&nbsp;RabbitPublishState(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;exchange,
                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;routingKey,
                           com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
+                          <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
                           byte[]&nbsp;body)</pre>
 <div class="block">Default constructor.</div>
 <dl>
@@ -268,7 +269,8 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getBody</h4>
-<pre>public&nbsp;byte[]&nbsp;getBody()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+public&nbsp;byte[]&nbsp;getBody()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The message body</dd>

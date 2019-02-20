@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>9 Message Serialization/Deserialization (SerDes) 1.1.0.BUILD-SNAPSHOT</title>
+    <title>10 Message Serialization/Deserialization (SerDes) 1.1.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -50,16 +50,19 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>8</strong><span>Creating Queues/Exchanges</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>10</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>11</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -80,18 +83,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>8</strong><span>Creating Queues/Exchanges</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>10</strong><span>RabbitMQ Health Indicator</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>9 Message Serialization/Deserialization (SerDes)</h1>
+                    <h1>10 Message Serialization/Deserialization (SerDes)</h1>
 
                     <p><strong>Version:</strong> 1.1.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -100,7 +103,7 @@ function addJsClass() {
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#custom"><strong>9.1</strong><span>Custom SerDes</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#custom"><strong>10.1</strong><span>Custom SerDes</span></a>
                     </div>
                     
                 </div>
@@ -108,7 +111,7 @@ function addJsClass() {
 
                 
 
-<h1 id="serdes">9 Message Serialization/Deserialization (SerDes)</h1>
+<h1 id="serdes">10 Message Serialization/Deserialization (SerDes)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
@@ -128,7 +131,7 @@ function addJsClass() {
 </div>
 
 
-<h2 id="custom">9.1 Custom SerDes</h2>
+<h2 id="custom">10.1 Custom SerDes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
@@ -150,6 +153,7 @@ import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.type.Argument;
 
 import javax.inject.Singleton;
 import java.nio.charset.Charset;
@@ -167,7 +171,7 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
     }
 
     @Override
-    public ProductInfo deserialize(RabbitConsumerState consumerState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+    public ProductInfo deserialize(RabbitConsumerState consumerState, Argument&lt;ProductInfo&gt; argument) { <b class="conum">(4)</b>
         String body = new String(consumerState.getBody(), CHARSET);
         String[] parts = body.split("\\|");
         if (parts.length == 3) {
@@ -188,12 +192,15 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 
     @Override
     public byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
+        if (data == null) {
+            return null;
+        }
         return (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET);
     }
 
     @Override
-    public boolean supports(Class&lt;ProductInfo&gt; type) { <b class="conum">(6)</b>
-        return type.isAssignableFrom(ProductInfo.class);
+    public boolean supports(Argument&lt;ProductInfo&gt; argument) { <b class="conum">(6)</b>
+        return argument.getType().isAssignableFrom(ProductInfo.class);
     }
 }</code></pre>
 </div>
@@ -205,6 +212,7 @@ import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
 
 import javax.inject.Singleton
 import java.nio.charset.Charset
@@ -221,7 +229,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
     }
 
     @Override
-    ProductInfo deserialize(RabbitConsumerState consumerState, Class&lt;ProductInfo&gt; type) { <b class="conum">(4)</b>
+    ProductInfo deserialize(RabbitConsumerState consumerState, Argument&lt;ProductInfo&gt; argument) { <b class="conum">(4)</b>
         String body = new String(consumerState.getBody(), CHARSET)
         String[] parts = body.split("\\|")
         if (parts.length == 3) {
@@ -242,12 +250,15 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
 
     @Override
     byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
+        if (data == null) {
+            return null
+        }
         (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
     }
 
     @Override
-    boolean supports(Class&lt;ProductInfo&gt; type) { <b class="conum">(6)</b>
-        type.isAssignableFrom(ProductInfo)
+    boolean supports(Argument&lt;ProductInfo&gt; argument) { <b class="conum">(6)</b>
+        argument.getType().isAssignableFrom(ProductInfo)
     }
 }</code></pre>
 </div>
@@ -259,6 +270,7 @@ import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
 
 import javax.inject.Singleton
 import java.nio.charset.Charset
@@ -267,7 +279,7 @@ import java.nio.charset.Charset
 class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
     : RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
 
-    override fun deserialize(consumerState: RabbitConsumerState, type: Class&lt;ProductInfo&gt;): ProductInfo? { <b class="conum">(4)</b>
+    override fun deserialize(consumerState: RabbitConsumerState, argument: Argument&lt;ProductInfo&gt;): ProductInfo? { <b class="conum">(4)</b>
         val body = String(consumerState.body, CHARSET)
         val parts = body.split("\\|".toRegex())
         if (parts.size == 3) {
@@ -286,12 +298,12 @@ class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt
         return null
     }
 
-    override fun serialize(data: ProductInfo, properties: MutableBasicProperties): ByteArray { <b class="conum">(5)</b>
-        return (data.size + "|" + data.count + "|" + data.sealed).toByteArray(CHARSET)
+    override fun serialize(data: ProductInfo?, properties: MutableBasicProperties): ByteArray { <b class="conum">(5)</b>
+        return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
     }
 
-    override fun supports(type: Class&lt;ProductInfo&gt;): Boolean { <b class="conum">(6)</b>
-        return type.isAssignableFrom(ProductInfo::class.java)
+    override fun supports(argument: Argument&lt;ProductInfo&gt;): Boolean { <b class="conum">(6)</b>
+        return argument.type.isAssignableFrom(ProductInfo::class.java)
     }
 
     companion object {
@@ -344,9 +356,9 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>8</strong><span>Creating Queues/Exchanges</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>10</strong><span>RabbitMQ Health Indicator</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

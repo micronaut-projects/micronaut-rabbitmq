@@ -50,16 +50,19 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>8</strong><span>Creating Queues/Exchanges</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>9</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>10</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>11</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -118,10 +121,25 @@ function addJsClass() {
 <div class="ulist">
 <ul>
 <li>
-<p>The <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a> api has been changed to allow access to the properties of the message during serialization. This will for example allow setting the content type.</p>
+<p>The <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a> api has been changed significantly to support setting properties before publishing and deserializing complex types.</p>
 </li>
 <li>
 <p>Messages published using the default JSON serialization will now have their content type set to "application/json" if it was not set already.</p>
+</li>
+<li>
+<p>A consumer can now bind to the Channel used to consume messages</p>
+</li>
+<li>
+<p>Support for Direct Reply-To (RPC) has been added. See <a href="#rpc">the documentation</a> for more information.</p>
+</li>
+<li>
+<p>A new base class for doing channel initialization has been added to make the process easier. See <a href="#initialization">the documentation</a> for more information.</p>
+</li>
+<li>
+<p>Support for acknowledging messages with a Boolean return type has been removed.</p>
+</li>
+<li>
+<p>Publisher acknowledgements will now be executed on the IO thread pool.</p>
 </li>
 </ul>
 </div>

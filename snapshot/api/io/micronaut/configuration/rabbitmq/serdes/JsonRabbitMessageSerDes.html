@@ -168,7 +168,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#JsonRabbitMessageSerDes-io.micronaut.jackson.serialize.JacksonObjectSerializer-">JsonRabbitMessageSerDes</a></span>(io.micronaut.jackson.serialize.JacksonObjectSerializer&nbsp;objectSerializer)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#JsonRabbitMessageSerDes-com.fasterxml.jackson.databind.ObjectMapper-">JsonRabbitMessageSerDes</a></span>(com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -189,8 +189,8 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">deserialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;messageState,
-           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">deserialize</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;messageState,
+           io.micronaut.core.type.Argument&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</code>
 <div class="block">Deserializes the message into the requested type.</div>
 </td>
 </tr>
@@ -208,7 +208,7 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#supports-java.lang.Class-">supports</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/JsonRabbitMessageSerDes.html#supports-io.micronaut.core.type.Argument-">supports</a></span>(io.micronaut.core.type.Argument&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;argument)</code>
 <div class="block">Determines if this serdes supports the given type.</div>
 </td>
 </tr>
@@ -252,17 +252,17 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="JsonRabbitMessageSerDes-io.micronaut.jackson.serialize.JacksonObjectSerializer-">
+<a name="JsonRabbitMessageSerDes-com.fasterxml.jackson.databind.ObjectMapper-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>JsonRabbitMessageSerDes</h4>
-<pre>public&nbsp;JsonRabbitMessageSerDes(io.micronaut.jackson.serialize.JacksonObjectSerializer&nbsp;objectSerializer)</pre>
+<pre>public&nbsp;JsonRabbitMessageSerDes(com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>objectSerializer</code> - The jackson serializer/deserializer</dd>
+<dd><code>objectMapper</code> - The jackson object mapper</dd>
 </dl>
 </li>
 </ul>
@@ -274,19 +274,19 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">
+<a name="deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>deserialize</h4>
 <pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;deserialize(<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&nbsp;messageState,
-                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">RabbitMessageSerDes</a></code></span></div>
+                          io.micronaut.core.type.Argument&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">RabbitMessageSerDes</a></code></span></div>
 <div class="block">Deserializes the message into the requested type.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-java.lang.Class-">deserialize</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
+<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#deserialize-io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState-io.micronaut.core.type.Argument-">deserialize</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>messageState</code> - The message to deserialize</dd>
 <dd><code>type</code> - The type to be returned</dd>
@@ -330,20 +330,20 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/Ra
 </dl>
 </li>
 </ul>
-<a name="supports-java.lang.Class-">
+<a name="supports-io.micronaut.core.type.Argument-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>supports</h4>
-<pre>public&nbsp;boolean&nbsp;supports(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;type)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">RabbitMessageSerDes</a></code></span></div>
+<pre>public&nbsp;boolean&nbsp;supports(io.micronaut.core.type.Argument&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;argument)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-io.micronaut.core.type.Argument-">RabbitMessageSerDes</a></code></span></div>
 <div class="block">Determines if this serdes supports the given type.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">supports</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
+<dd><code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-io.micronaut.core.type.Argument-">supports</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>type</code> - The type</dd>
+<dd><code>argument</code> - The type</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if the type is supported</dd>
 </dl>
