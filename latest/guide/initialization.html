@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>7 Creating Queues/Exchanges 1.1.0.M1</title>
+    <title>9 Creating Queues/Exchanges 1.1.0.M2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -32,31 +32,37 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>2</strong><span>Using the Micronaut CLI</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/whatsNew.html"><strong>2</strong><span>What's New</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>3</strong><span>RabbitMQ Quick Start</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>4</strong><span>RabbitMQ Quick Start</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>9</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>10</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -77,27 +83,27 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/consumer.html">&lt;&lt; <strong>6</strong><span>RabbitMQ Consumers</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/rpc.html">&lt;&lt; <strong>8</strong><span>Direct Reply-To (RPC)</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>7 Creating Queues/Exchanges</h1>
+                    <h1>9 Creating Queues/Exchanges</h1>
 
-                    <p><strong>Version:</strong> 1.1.0.M1</p>
+                    <p><strong>Version:</strong> 1.1.0.M2</p>
                 </div>
 
                 
 
                 
 
-<h1 id="initialization">7 Creating Queues/Exchanges</h1>
+<h1 id="initialization">9 Creating Queues/Exchanges</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/initialization.adoc"'>
@@ -107,7 +113,7 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>The purpose of this library is to consume and publish messages with RabbitMQ. Any setup of queues, exchanges, or the binding between them is <strong>not</strong> done automatically. If your requirements dictate that your application should be creating those entities, then a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> can be registered to intercept the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPool.html">ChannelPool</a> to perform operations with the Java API directly.</p>
+<p>The purpose of this library is to consume and publish messages with RabbitMQ. Any setup of queues, exchanges, or the binding between them is <strong>not</strong> done automatically. If your requirements dictate that your application should be creating those entities, then a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> can be registered to intercept the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPool.html">ChannelPool</a> to perform operations with the Java API directly. A class has been provided that you can simply extend to receive a channel to do this work.</p>
 </div>
 <div class="paragraph">
 <p>For all of the examples in this documentation, an event listener has been registered to create the required queues, exchanges, and bindings necessary for the code to be tested.</p>
@@ -115,9 +121,7 @@ function addJsClass() {
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.Channel;
-import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
-import io.micronaut.context.event.BeanCreatedEvent;
-import io.micronaut.context.event.BeanCreatedEventListener;
+import io.micronaut.configuration.rabbitmq.connect.ChannelInitializer;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -125,48 +129,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton <b class="conum">(1)</b>
-public class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+public class ChannelPoolListener extends ChannelInitializer { <b class="conum">(2)</b>
 
     @Override
-    public ChannelPool onCreated(BeanCreatedEvent&lt;ChannelPool&gt; event) {
-        ChannelPool pool = event.getBean(); <b class="conum">(3)</b>
+    public void initialize(Channel channel) throws IOException { <b class="conum">(3)</b>
+        //docs/quickstart
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+        args.put("x-max-priority", 100);
+        channel.queueDeclare("product", false, false, false, args); <b class="conum">(4)</b>
 
-        Channel channel = null;
-        try {
-            channel = pool.getChannel(); <b class="conum">(4)</b>
-        } catch (IOException e) {
-            // The channel couldn't be retrieved
-        }
+        //docs/exchange
+        channel.exchangeDeclare("animals", "headers", false);
+        channel.queueDeclare("snakes", false, false, false, null);
+        channel.queueDeclare("cats", false, false, false, null);
+        Map&lt;String, Object&gt; catArgs = new HashMap&lt;&gt;();
+        catArgs.put("x-match", "all");
+        catArgs.put("animalType", "Cat");
+        channel.queueBind("cats", "animals", "", catArgs);
 
-        if (channel != null) {
-            try {
-                //docs/quickstart
-                Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
-                args.put("x-max-priority", 100);
-                channel.queueDeclare("product", false, false, false, args); <b class="conum">(5)</b>
-
-                //docs/exchange
-                channel.exchangeDeclare("animals", "headers", false);
-                channel.queueDeclare("snakes", false, false, false, null);
-                channel.queueDeclare("cats", false, false, false, null);
-                Map&lt;String, Object&gt; catArgs = new HashMap&lt;&gt;();
-                catArgs.put("x-match", "all");
-                catArgs.put("animalType", "Cat");
-                channel.queueBind("cats", "animals", "", catArgs);
-
-                Map&lt;String, Object&gt; snakeArgs = new HashMap&lt;&gt;();
-                snakeArgs.put("x-match", "all");
-                snakeArgs.put("animalType", "Snake");
-                channel.queueBind("snakes", "animals", "", snakeArgs);
-
-            } catch (IOException e) {
-                //no-op
-            } finally {
-                pool.returnChannel(channel); <b class="conum">(6)</b>
-            }
-        }
-
-        return pool; <b class="conum">(7)</b>
+        Map&lt;String, Object&gt; snakeArgs = new HashMap&lt;&gt;();
+        snakeArgs.put("x-match", "all");
+        snakeArgs.put("animalType", "Snake");
+        channel.queueBind("snakes", "animals", "", snakeArgs);
     }
 
 }</code></pre>
@@ -175,51 +159,30 @@ public class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelP
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.Channel
-import io.micronaut.configuration.rabbitmq.connect.ChannelPool
-import io.micronaut.context.event.BeanCreatedEvent
-import io.micronaut.context.event.BeanCreatedEventListener
+import io.micronaut.configuration.rabbitmq.connect.ChannelInitializer
 
 import javax.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
-class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+class ChannelPoolListener extends ChannelInitializer { <b class="conum">(2)</b>
 
     @Override
-    ChannelPool onCreated(BeanCreatedEvent&lt;ChannelPool&gt; event) {
-        ChannelPool pool = event.bean <b class="conum">(3)</b>
-        Channel channel = null
-        try {
-            channel = pool.channel <b class="conum">(4)</b>
-        } catch (IOException e) {
-            // The channel couldn't be retrieved
-        }
+    void initialize(Channel channel) throws IOException { <b class="conum">(3)</b>
+        channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) <b class="conum">(4)</b>
 
-        if (channel != null) {
-            try {
-                channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) <b class="conum">(5)</b>
+        //docs/exchange
+        channel.exchangeDeclare("animals", "headers", false)
+        channel.queueDeclare("snakes", false, false, false, null)
+        channel.queueDeclare("cats", false, false, false, null)
+        Map&lt;String, Object&gt; catArgs = [:]
+        catArgs.put("x-match", "all")
+        catArgs.put("animalType", "Cat")
+        channel.queueBind("cats", "animals", "", catArgs)
 
-                //docs/exchange
-                channel.exchangeDeclare("animals", "headers", false)
-                channel.queueDeclare("snakes", false, false, false, null)
-                channel.queueDeclare("cats", false, false, false, null)
-                Map&lt;String, Object&gt; catArgs = [:]
-                catArgs.put("x-match", "all")
-                catArgs.put("animalType", "Cat")
-                channel.queueBind("cats", "animals", "", catArgs)
-
-                Map&lt;String, Object&gt; snakeArgs = [:]
-                snakeArgs.put("x-match", "all")
-                snakeArgs.put("animalType", "Snake")
-                channel.queueBind("snakes", "animals", "", snakeArgs)
-
-            } catch (IOException e) {
-                //no-op
-            } finally {
-                pool.returnChannel(channel) <b class="conum">(6)</b>
-            }
-        }
-
-        pool <b class="conum">(7)</b>
+        Map&lt;String, Object&gt; snakeArgs = [:]
+        snakeArgs.put("x-match", "all")
+        snakeArgs.put("animalType", "Snake")
+        channel.queueBind("snakes", "animals", "", snakeArgs)
     }
 }</code></pre>
 </div>
@@ -227,55 +190,32 @@ class ChannelPoolListener implements BeanCreatedEventListener&lt;ChannelPool&gt;
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.Channel
-import io.micronaut.configuration.rabbitmq.connect.ChannelPool
-import io.micronaut.context.event.BeanCreatedEvent
-import io.micronaut.context.event.BeanCreatedEventListener
+import io.micronaut.configuration.rabbitmq.connect.ChannelInitializer
+import java.io.IOException
 
 import javax.inject.Singleton
-import java.io.IOException
 import java.util.HashMap
 
 @Singleton <b class="conum">(1)</b>
-class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b class="conum">(2)</b>
+class ChannelPoolListener : ChannelInitializer() { <b class="conum">(2)</b>
 
-    override fun onCreated(event: BeanCreatedEvent&lt;ChannelPool&gt;): ChannelPool {
-        val pool = event.bean <b class="conum">(3)</b>
+    @Throws(IOException::class)
+    override fun initialize(channel: Channel) { <b class="conum">(3)</b>
+        channel.queueDeclare("product", false, false, false, mapOf("x-max-priority" to 100)) <b class="conum">(4)</b>
 
-        var channel: Channel? = null
+        //docs/exchange
+        channel.exchangeDeclare("animals", "headers", false)
+        channel.queueDeclare("snakes", false, false, false, null)
+        channel.queueDeclare("cats", false, false, false, null)
+        val catArgs = HashMap&lt;String, Any&gt;()
+        catArgs["x-match"] = "all"
+        catArgs["animalType"] = "Cat"
+        channel.queueBind("cats", "animals", "", catArgs)
 
-        try {
-            channel = pool.channel <b class="conum">(4)</b>
-        } catch (e: IOException) {
-            // The channel couldn't be retrieved
-        }
-
-        if (channel != null) {
-            try {
-                //docs/quickstart
-                channel.queueDeclare("product", false, false, false, mapOf("x-max-priority" to 100)) <b class="conum">(5)</b>
-
-                //docs/exchange
-                channel.exchangeDeclare("animals", "headers", false)
-                channel.queueDeclare("snakes", false, false, false, null)
-                channel.queueDeclare("cats", false, false, false, null)
-                val catArgs = HashMap&lt;String, Any&gt;()
-                catArgs["x-match"] = "all"
-                catArgs["animalType"] = "Cat"
-                channel.queueBind("cats", "animals", "", catArgs)
-
-                val snakeArgs = HashMap&lt;String, Any&gt;()
-                snakeArgs["x-match"] = "all"
-                snakeArgs["animalType"] = "Snake"
-                channel.queueBind("snakes", "animals", "", snakeArgs)
-
-            } catch (e: IOException) {
-                // An error occurred performing the operations
-            } finally {
-                pool.returnChannel(channel) <b class="conum">(6)</b>
-            }
-        }
-
-        return pool <b class="conum">(7)</b>
+        val snakeArgs = HashMap&lt;String, Any&gt;()
+        snakeArgs["x-match"] = "all"
+        snakeArgs["animalType"] = "Snake"
+        channel.queueBind("snakes", "animals", "", snakeArgs)
     }
 
 }</code></pre>
@@ -289,27 +229,15 @@ class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b cla
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The generic specifies what bean type we want to intercept</td>
+<td>The class extends an abstract class provided by this library</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Retrieve the bean from the event</td>
+<td>The method is implemented that receives a channel to do the initialization</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Retrieve a channel from the pool</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Declare a queue or perform any operations desired</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Ensure that under all conditions the channel is returned to the pool</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Return the pool object to be injected where it is needed</td>
 </tr>
 </table>
 </div>
@@ -317,9 +245,9 @@ class ChannelPoolListener : BeanCreatedEventListener&lt;ChannelPool&gt; { <b cla
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/consumer.html">&lt;&lt; <strong>6</strong><span>RabbitMQ Consumers</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/rpc.html">&lt;&lt; <strong>8</strong><span>Direct Reply-To (RPC)</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

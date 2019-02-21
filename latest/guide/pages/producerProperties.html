@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1.1.2 RabbitMQ Properties 1.1.0.M1</title>
+    <title>6.1.1.2 RabbitMQ Properties 1.1.0.M2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -32,31 +32,37 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/cli.html"><strong>2</strong><span>Using the Micronaut CLI</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/whatsNew.html"><strong>2</strong><span>What's New</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/quickStart.html"><strong>3</strong><span>RabbitMQ Quick Start</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>4</strong><span>Configuring The Connection</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/quickStart.html"><strong>4</strong><span>RabbitMQ Quick Start</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>5</strong><span>RabbitMQ Producers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/config.html"><strong>5</strong><span>Configuring The Connection</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/initialization.html"><strong>7</strong><span>Creating Queues/Exchanges</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>8</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/health.html"><strong>9</strong><span>RabbitMQ Health Indicator</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/metrics.html"><strong>10</strong><span>RabbitMQ Metrics</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
                         </div>
                         
                     </div>
@@ -77,27 +83,27 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>4</strong><span>Configuring The Connection</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>5</strong><span>Configuring The Connection</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>5.1.1.2 RabbitMQ Properties</h1>
+                    <h1>6.1.1.2 RabbitMQ Properties</h1>
 
-                    <p><strong>Version:</strong> 1.1.0.M1</p>
+                    <p><strong>Version:</strong> 1.1.0.M2</p>
                 </div>
 
                 
 
                 
 
-<h2 id="producerProperties">5.1.1.2 RabbitMQ Properties</h2>
+<h2 id="producerProperties">6.1.1.2 RabbitMQ Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
@@ -211,9 +217,9 @@ If the annotation or argument name cannot be matched to a property name, an exce
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>4</strong><span>Configuring The Connection</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/config.html">&lt;&lt; <strong>5</strong><span>Configuring The Connection</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>6</strong><span>RabbitMQ Consumers</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
