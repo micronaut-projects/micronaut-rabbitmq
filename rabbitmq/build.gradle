@@ -5,7 +5,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
     compile "io.micronaut:micronaut-messaging"
     compile "io.micronaut:micronaut-inject"
-    compile 'com.rabbitmq:amqp-client:5.6.0'
+    compile "com.rabbitmq:amqp-client:$rabbitVersion"
     compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
     compileOnly "io.micronaut:micronaut-management"
     
