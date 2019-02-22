@@ -183,7 +183,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         }
 
                         if (boundExecutable != null) {
-                            try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue)) {
+                            try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(hasAckArg ? null : false)) {
                                 Object returnedValue = boundExecutable.invoke(bean);
 
                                 String replyTo = properties.getReplyTo();

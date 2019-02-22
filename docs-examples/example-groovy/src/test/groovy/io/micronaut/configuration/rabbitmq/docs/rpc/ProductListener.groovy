@@ -12,7 +12,7 @@ import io.micronaut.context.annotation.Requires
 class ProductListener {
 
     @Queue("product")
-    String toUpperCase(String data) throws IOException { // <1>
+    String toUpperCase(String data) { // <1>
         data.toUpperCase() // <2>
     }
 }

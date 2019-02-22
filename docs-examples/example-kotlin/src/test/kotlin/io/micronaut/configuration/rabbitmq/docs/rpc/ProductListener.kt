@@ -14,7 +14,6 @@ import java.io.IOException
 class ProductListener {
 
     @Queue("product")
-    @Throws(IOException::class)
     fun toUpperCase(data: String): String { // <1>
         return data.toUpperCase() // <2>
     }
