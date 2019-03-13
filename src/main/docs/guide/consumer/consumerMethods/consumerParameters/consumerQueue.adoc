@@ -6,4 +6,4 @@ snippet::io.micronaut.configuration.rabbitmq.docs.parameters.ProductListener[tag
 
 <1> The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.
 
-TIP: The ann:configuration.rabbitmq.annotation.Queue[] annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.
+TIP: The ann:configuration.rabbitmq.annotation.Queue[] annotation supports additional options for consuming messages including declaring the consumer as exclusive, whether to re-queue rejected messages, or set an unacknowledged message limit.

@@ -48,4 +48,8 @@ public @interface Queue {
      */
     boolean exclusive() default false;
 
+    /**
+     * @return The unacknowledged message limit
+     */
+    int prefetch() default 0;
 }

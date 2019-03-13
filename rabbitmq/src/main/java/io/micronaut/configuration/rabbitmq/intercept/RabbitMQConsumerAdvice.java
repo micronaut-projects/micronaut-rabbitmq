@@ -113,6 +113,15 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
             Channel channel = getChannel();
 
+            Integer prefetch = queueAnn.getRequiredValue("prefetch", Integer.class);
+            try {
+                if (prefetch > 0) {
+                    channel.basicQos(prefetch);
+                }
+            } catch (IOException e) {
+                throw new MessageListenerException(String.format("Failed to set a prefetch count of [%s] on the channel", prefetch), e);
+            }
+
             consumerChannels.add(channel);
 
             Map<String, Object> arguments = new HashMap<>();
