@@ -1579,7 +1579,7 @@ class ProductListener {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive and whether to re-queue rejected messages.
+The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive, whether to re-queue rejected messages, or set an unacknowledged message limit.
 </td>
 </tr>
 </table>
@@ -2871,7 +2871,7 @@ import io.micronaut.context.annotation.Requires
 class ProductListener {
 
     @Queue("product")
-    String toUpperCase(String data) throws IOException { <b class="conum">(1)</b>
+    String toUpperCase(String data) { <b class="conum">(1)</b>
         data.toUpperCase() <b class="conum">(2)</b>
     }
 }</code></pre>
@@ -2889,7 +2889,6 @@ import java.io.IOException
 class ProductListener {
 
     @Queue("product")
-    @Throws(IOException::class)
     fun toUpperCase(data: String): String { <b class="conum">(1)</b>
         return data.toUpperCase() <b class="conum">(2)</b>
     }

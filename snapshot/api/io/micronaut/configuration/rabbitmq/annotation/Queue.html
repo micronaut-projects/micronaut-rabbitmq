@@ -145,6 +145,10 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#exclusive--">exclusive</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#prefetch--">prefetch</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>
 <div class="block">Only applies to consumer methods that do not inject an
@@ -208,7 +212,7 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <li class="blockList"><a name="exclusive--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>exclusive</h4>
 <pre>public abstract&nbsp;boolean&nbsp;exclusive</pre>
@@ -219,6 +223,26 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <dl>
 <dt>Default:</dt>
 <dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="prefetch--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>prefetch</h4>
+<pre>public abstract&nbsp;int&nbsp;prefetch</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The unacknowledged message limit</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>0</dd>
 </dl>
 </li>
 </ul>

@@ -251,7 +251,7 @@ import io.micronaut.context.annotation.Requires
 class ProductListener {
 
     @Queue("product")
-    String toUpperCase(String data) throws IOException { <b class="conum">(1)</b>
+    String toUpperCase(String data) { <b class="conum">(1)</b>
         data.toUpperCase() <b class="conum">(2)</b>
     }
 }</code></pre>
@@ -269,7 +269,6 @@ import java.io.IOException
 class ProductListener {
 
     @Queue("product")
-    @Throws(IOException::class)
     fun toUpperCase(data: String): String { <b class="conum">(1)</b>
         return data.toUpperCase() <b class="conum">(2)</b>
     }
