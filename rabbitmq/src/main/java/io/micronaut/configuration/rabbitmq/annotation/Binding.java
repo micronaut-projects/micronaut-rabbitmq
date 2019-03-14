@@ -43,4 +43,11 @@ public @interface Binding {
      */
     @AliasFor(annotation = MessageMapping.class, member = "value")
     String value() default "";
+
+    /**
+     * @see RabbitConnection#connection()
+     * @return The connection to use
+     */
+    @AliasFor(annotation = RabbitConnection.class, member = "connection")
+    String connection() default "";
 }

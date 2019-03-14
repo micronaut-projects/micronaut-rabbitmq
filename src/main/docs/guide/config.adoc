@@ -4,9 +4,47 @@ The properties that can be converted from the string values in a configuration f
 
 include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig.adoc[]
 
-
 NOTE: Without any configuration the defaults in the link:{apirabbit}client/ConnectionFactory.html[ConnectionFactory] will be used.
 
 To configure things like the link:{apirabbit}client/impl/CredentialsProvider.html[CredentialsProvider] a bean created event listener can be registered to intercept the creation of the connection factory.
 
 snippet::io.micronaut.configuration.rabbitmq.docs.config.ConnectionFactoryInterceptor[] project-base="docs-examples/example]
+
+== Connections
+
+It is possible to configure multiple connections to the same server, different servers, or a single connection to one of a list of servers.
+
+One may want to configure multiple connections to the same server in order to have one or more sets of consumers to be executed on a different thread pool. Additionally, the below config could be used to connect to different servers with the same consumer executor by simply omitting the `consumer-executor` configuration option or supplying the same value.
+
+For example:
+[source,yaml]
+----
+rabbitmq:
+    servers:
+        server-a:
+            host: localhost
+            port: 5672
+            consumer-executor: "a-pool"
+        server-b:
+            host: localhost
+            port: 5672
+            consumer-executor: "b-pool"
+----
+
+When the connection is specified in the ann:configuration.rabbitmq.annotation.Queue[] annotation to be "server-b" for example, the "b-pool" executor service will be used to execute the consumers.
+
+IMPORTANT: When the configuration option `rabbitmq.servers` is used, no other options underneath `rabbitmq` are read; for example `rabbitmq.uri`.
+
+RabbitMQ also supports a fail over connection strategy where the first server that connects successfully will be used among a list of servers. To use this option in Micronaut, simply supply a list of `host:port` addresses.
+
+[source,yaml]
+----
+rabbitmq:
+    addresses:
+      - localhost:12345
+      - localhost:12346
+    username: guest
+    password: guest
+----
+
+NOTE: The `addresses` option can also be used with the multiple server configuration.

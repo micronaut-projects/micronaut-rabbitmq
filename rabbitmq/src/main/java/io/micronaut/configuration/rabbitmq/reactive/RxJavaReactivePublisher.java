@@ -18,16 +18,17 @@ package io.micronaut.configuration.rabbitmq.reactive;
 
 import com.rabbitmq.client.*;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig;
+import io.micronaut.configuration.rabbitmq.connect.ChannelPool;
 import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.configuration.rabbitmq.intercept.DefaultConsumer;
+import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.messaging.exceptions.MessagingClientException;
 import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
 
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
@@ -45,8 +46,8 @@ import java.util.function.Consumer;
  * @author James Kleeh
  * @since 1.1.0
  */
-@Singleton
 @Internal
+@EachBean(ChannelPool.class)
 public class RxJavaReactivePublisher implements ReactivePublisher {
 
     private final ChannelPool channelPool;
@@ -58,8 +59,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * @param channelPool The channel pool to retrieve channels
      * @param config Any configuration used in building the publishers
      */
-    public RxJavaReactivePublisher(ChannelPool channelPool,
-                                   RabbitConnectionFactoryConfig config) {
+    public RxJavaReactivePublisher(@Parameter ChannelPool channelPool,
+                                   @Parameter RabbitConnectionFactoryConfig config) {
         this.channelPool = channelPool;
         this.config = config;
     }

@@ -16,16 +16,19 @@
 
 package io.micronaut.configuration.rabbitmq.connect;
 
+import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.inject.qualifiers.Qualifiers;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 
@@ -40,15 +43,22 @@ public class RabbitConnectionFactory {
 
     /**
      * @param connectionFactory The factory to create the connection
-     * @param executorService The executor service consumers will be executed on
+     * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection
      */
     @Bean(preDestroy = "close")
     @Singleton
-    Connection connection(ConnectionFactory connectionFactory,
-                          @Named(TaskExecutors.MESSAGE_CONSUMER) ExecutorService executorService) {
+    @EachBean(RabbitConnectionFactoryConfig.class)
+    Connection connection(RabbitConnectionFactoryConfig connectionFactory,
+                          BeanContext beanContext) {
         try {
-            return connectionFactory.newConnection(executorService);
+            ExecutorService executorService = beanContext.getBean(ExecutorService.class, Qualifiers.byName(connectionFactory.getConsumerExecutor()));
+            Optional<List<Address>> addresses = connectionFactory.getAddresses();
+            if (addresses.isPresent()) {
+                return connectionFactory.newConnection(executorService, addresses.get());
+            } else {
+                return connectionFactory.newConnection(executorService);
+            }
         } catch (IOException | TimeoutException e) {
             throw new BeanInstantiationException("Error creating connection to RabbitMQ", e);
         }

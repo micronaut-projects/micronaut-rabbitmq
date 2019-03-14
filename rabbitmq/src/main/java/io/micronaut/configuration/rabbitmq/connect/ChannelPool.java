@@ -17,6 +17,7 @@
 package io.micronaut.configuration.rabbitmq.connect;
 
 import com.rabbitmq.client.Channel;
+import io.micronaut.core.naming.Named;
 
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ import java.io.IOException;
  * @author James Kleeh
  * @since 1.1.0
  */
-public interface ChannelPool {
+public interface ChannelPool extends Named {
 
     /**
      * Retrieves a channel from the pool. The channel must be returned to the

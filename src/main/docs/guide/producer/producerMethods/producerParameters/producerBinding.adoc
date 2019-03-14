@@ -4,3 +4,13 @@ snippet::io.micronaut.configuration.rabbitmq.docs.parameters.ProductClient[tags=
 
 <1> The binding is static
 <2> The binding must be set per execution
+
+=== Producer Connection
+
+If multiple RabbitMQ servers have been configured, the name of the server can be set in the ann:configuration.rabbitmq.annotation.Binding[] annotation to designate which connection should be used to publish messages.
+
+snippet::io.micronaut.configuration.rabbitmq.docs.consumer.connection.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The connection is set on the binding annotation.
+
+NOTE: The `connection` option is also available to be set on the ann:configuration.rabbitmq.annotation.RabbitClient[] annotation.

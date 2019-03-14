@@ -18,9 +18,13 @@ public abstract class AbstractRabbitMQTest {
     }
 
     protected ApplicationContext startContext() {
+        return ApplicationContext.run(getConfiguration(), "test");
+    }
+
+    protected Map<String, Object> getConfiguration() {
         Map<String, Object> config = new HashMap<>();
         config.put("rabbitmq.port", rabbitContainer.getMappedPort(5672));
         config.put("spec.name", this.getClass().getSimpleName());
-        return ApplicationContext.run(config, "test");
+        return config;
     }
 }

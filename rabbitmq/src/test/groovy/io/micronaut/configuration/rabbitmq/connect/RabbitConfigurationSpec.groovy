@@ -16,7 +16,6 @@
 package io.micronaut.configuration.rabbitmq.connect
 
 import com.rabbitmq.client.ConnectionFactory
-import io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.DefaultApplicationContext
 import spock.lang.Specification

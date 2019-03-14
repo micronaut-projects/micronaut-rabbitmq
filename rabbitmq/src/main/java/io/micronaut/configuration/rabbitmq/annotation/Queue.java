@@ -16,6 +16,8 @@
 
 package io.micronaut.configuration.rabbitmq.annotation;
 
+import io.micronaut.context.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -52,4 +54,18 @@ public @interface Queue {
      * @return The unacknowledged message limit
      */
     int prefetch() default 0;
+
+    /**
+     * @see RabbitConnection#connection()
+     * @return The connection to use
+     */
+    @AliasFor(annotation = RabbitConnection.class, member = "connection")
+    String connection() default "";
+
+    /**
+     * @see RabbitConnection#executor()
+     * @return The executor to use
+     */
+    @AliasFor(annotation = RabbitConnection.class, member = "executor")
+    String executor() default "";
 }

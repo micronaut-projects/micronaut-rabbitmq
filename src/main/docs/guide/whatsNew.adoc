@@ -1,5 +1,12 @@
 This section will outline any breaking changes between major or milestone releases as well as detail any new features that have been added.
 
+== 1.1.0.RC1
+
+* Configuration surrounding defining connections has been expanded to support a list of addresses for fail over and multiple connections.
+* Consumers can now define which connection and executor to use.
+* Publishers can now define which connection to use.
+* Support for specifying the prefetch limit has been added.
+
 == 1.1.0.M2
 
 * The api:configuration.rabbitmq.serdes.RabbitMessageSerDes[] api has been changed significantly to support setting properties before publishing and deserializing complex types.

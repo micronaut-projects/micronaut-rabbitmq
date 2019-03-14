@@ -22,6 +22,7 @@ import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.caffeine.cache.Cache;
 import io.micronaut.caffeine.cache.Caffeine;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitConnection;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.annotation.Binding;
 import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
@@ -30,6 +31,7 @@ import io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState;
 import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.core.convert.ConversionService;
@@ -37,6 +39,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
 import io.micronaut.scheduling.TaskExecutors;
@@ -65,7 +68,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQIntroductionAdvice.class);
 
-    private final ReactivePublisher reactivePublisher;
+    private final BeanContext beanContext;
     private final ConversionService<?> conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Scheduler scheduler;
@@ -75,16 +78,16 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     /**
      * Default constructor.
      *
-     * @param reactivePublisher The publisher to use when publisher acknowledgement is required
+     * @param beanContext The bean context
      * @param conversionService The conversion service
      * @param serDesRegistry The registry to find a serDes to serialize the body
      * @param executorService The executor to execute reactive operations on
      */
-    public RabbitMQIntroductionAdvice(ReactivePublisher reactivePublisher,
+    public RabbitMQIntroductionAdvice(BeanContext beanContext,
                                       ConversionService<?> conversionService,
                                       RabbitMessageSerDesRegistry serDesRegistry,
                                       @Named(TaskExecutors.IO) ExecutorService executorService) {
-        this.reactivePublisher = reactivePublisher;
+        this.beanContext = beanContext;
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
         this.scheduler = Schedulers.from(executorService);
@@ -128,12 +131,16 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
 
                 String exchange = client.getValue(String.class).orElse("");
-                Optional<String> routingKey = Optional.empty();
-                if (method.hasAnnotation(Binding.class)) {
-                    routingKey = method.getAnnotation(Binding.class).getValue(String.class);
-                }
+                Optional<AnnotationValue<Binding>> bindingAnn = method.findAnnotation(Binding.class);
 
-                Argument<?> bodyArgument = findBodyArgument(method).orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
+                Optional<String> routingKey = bindingAnn.flatMap(b -> b.getValue(String.class));
+
+                String connection = method.findAnnotation(RabbitConnection.class)
+                        .flatMap(conn -> conn.get("connection", String.class))
+                        .orElse(RabbitConnection.DEFAULT_CONNECTION);
+
+                Argument<?> bodyArgument = findBodyArgument(method)
+                        .orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
 
                 Map<String, Object> methodHeaders = new HashMap<>();
 
@@ -167,13 +174,21 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
                 RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not find a serializer for the body argument of type [%s]", bodyArgument.getType().getName())));
 
+                ReactivePublisher reactivePublisher;
+                try {
+                    reactivePublisher = beanContext.getBean(ReactivePublisher.class, Qualifiers.byName(connection));
+                } catch (Throwable e) {
+                    throw new RabbitClientException(String.format("Failed to retrieve a publisher named [%s] to publish messages", connection), e);
+                }
+
                 return new StaticPublisherState(exchange,
                         routingKey.orElse(null),
                         bodyArgument,
                         methodHeaders,
                         methodProperties,
                         method.getReturnType(),
-                        serDes);
+                        serDes,
+                        reactivePublisher);
 
             });
 
@@ -229,6 +244,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             boolean isVoid = dataTypeClass == void.class || dataTypeClass == Void.class;
             boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
             boolean rpc = replyToSet && !isVoid;
+
+            ReactivePublisher reactivePublisher = publisherState.getReactivePublisher();
 
             if (publisherState.isReactive()) {
 

@@ -19,13 +19,12 @@ package io.micronaut.configuration.rabbitmq.connect;
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import io.micronaut.context.annotation.Value;
+import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.annotation.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author James Kleeh
  * @since 1.1.0
  */
-@Singleton
+@EachBean(Connection.class)
 public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultChannelPool.class);
@@ -49,18 +48,27 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     private final LinkedBlockingQueue<Channel> channels;
     private final Connection connection;
     private final AtomicLong totalChannels = new AtomicLong(0);
+    private final String name;
 
     /**
      * Default constructor.
      *
-     * @param connection The connection to create channels with
-     * @param maxIdleChannels How many idle channels should be kept open
+     * @param name The pool name
+     * @param connection The connection
+     * @param config The connection factory config
      */
-    public DefaultChannelPool(
-            Connection connection,
-            @Nullable @Value("${rabbitmq.channel-pool.max-idle-channels}") Integer maxIdleChannels) {
+    public DefaultChannelPool(@Parameter String name,
+                              @Parameter Connection connection,
+                              @Parameter RabbitConnectionFactoryConfig config) {
+        this.name = name;
         this.connection = connection;
+        Integer maxIdleChannels = config.getChannelPool().getMaxIdleChannels().orElse(null);
         this.channels = new LinkedBlockingQueue<>(maxIdleChannels == null ? Integer.MAX_VALUE : maxIdleChannels);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

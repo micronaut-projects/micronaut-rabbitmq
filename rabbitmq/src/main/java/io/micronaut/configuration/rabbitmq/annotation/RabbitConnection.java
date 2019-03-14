@@ -16,40 +16,30 @@
 
 package io.micronaut.configuration.rabbitmq.annotation;
 
-import io.micronaut.context.annotation.AliasFor;
-import io.micronaut.messaging.annotation.MessageListener;
+import io.micronaut.configuration.rabbitmq.connect.SingleRabbitConnectionFactoryConfig;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
- * Class level annotation to indicate that a bean will be consumers of messages
- * from RabbitMQ.
+ * Stores options surrounding a RabbitMQ connection.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
-@Documented
-@Retention(RUNTIME)
-@Target({ElementType.TYPE})
-@MessageListener
-public @interface RabbitListener {
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface RabbitConnection {
+
+    String DEFAULT_CONNECTION = SingleRabbitConnectionFactoryConfig.DEFAULT_NAME;
 
     /**
-     * @see RabbitConnection#connection()
      * @return The connection to use
      */
-    @AliasFor(annotation = RabbitConnection.class, member = "connection")
-    String connection() default "";
+    String connection() default DEFAULT_CONNECTION;
 
     /**
-     * @see RabbitConnection#executor()
-     * @return The executor to use
+     * @return The executor service bean name qualifier to handle
+     * the consumer method execution.
      */
-    @AliasFor(annotation = RabbitConnection.class, member = "executor")
     String executor() default "";
 }

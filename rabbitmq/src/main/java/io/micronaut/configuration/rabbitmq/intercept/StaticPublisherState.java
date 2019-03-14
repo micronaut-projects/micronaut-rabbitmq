@@ -16,6 +16,7 @@
 
 package io.micronaut.configuration.rabbitmq.intercept;
 
+import io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.async.publisher.Publishers;
@@ -40,6 +41,7 @@ class StaticPublisherState {
     private final Argument bodyArgument;
     private final Map<String, Object> headers;
     private final Map<String, String> properties;
+    private final ReactivePublisher reactivePublisher;
     private final boolean reactive;
     private final ReturnType<?> returnType;
     private final Argument<?> dataType;
@@ -55,6 +57,7 @@ class StaticPublisherState {
      * @param properties The static properties
      * @param returnType The return type of the method
      * @param serDes The body serializer
+     * @param reactivePublisher The reactive publisher
      */
     StaticPublisherState(String exchange,
                          @Nullable String routingKey,
@@ -62,12 +65,14 @@ class StaticPublisherState {
                          Map<String, Object> headers,
                          Map<String, String> properties,
                          ReturnType<?> returnType,
-                         RabbitMessageSerDes<?> serDes) {
+                         RabbitMessageSerDes<?> serDes,
+                         ReactivePublisher reactivePublisher) {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.bodyArgument = bodyArgument;
         this.headers = headers;
         this.properties = properties;
+        this.reactivePublisher = reactivePublisher;
         Class<?> javaReturnType = returnType.getType();
         this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);
         if (this.reactive) {
@@ -141,5 +146,12 @@ class StaticPublisherState {
      */
     ReturnType<?> getReturnType() {
         return returnType;
+    }
+
+    /**
+     * @return The reactive publisher
+     */
+    ReactivePublisher getReactivePublisher() {
+        return reactivePublisher;
     }
 }

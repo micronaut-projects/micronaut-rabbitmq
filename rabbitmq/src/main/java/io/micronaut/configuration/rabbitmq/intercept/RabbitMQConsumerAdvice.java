@@ -18,6 +18,7 @@ package io.micronaut.configuration.rabbitmq.intercept;
 
 import com.rabbitmq.client.*;
 import io.micronaut.configuration.rabbitmq.annotation.Queue;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitConnection;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
 import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry;
@@ -49,6 +50,8 @@ import javax.inject.Qualifier;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  * An {@link ExecutableMethodProcessor} that will process all beans annotated
@@ -64,31 +67,27 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQConsumerAdvice.class);
 
     private final BeanContext beanContext;
-    private final ChannelPool channelPool;
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final ConversionService conversionService;
-    private final List<Channel> consumerChannels = new ArrayList<>();
+    private final Map<Channel, ChannelPool> consumerChannels = new ConcurrentHashMap<>();
 
     /**
      * Default constructor.
      *
      * @param beanContext       The bean context
-     * @param channelPool       The pool to retrieve channels from
      * @param binderRegistry    The registry to bind arguments to the method
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
-                                  ChannelPool channelPool,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
                                   ConversionService conversionService) {
         this.beanContext = beanContext;
-        this.channelPool = channelPool;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
         this.serDesRegistry = serDesRegistry;
@@ -111,18 +110,29 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             boolean hasAckArg = Arrays.stream(method.getArguments())
                     .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
 
-            Channel channel = getChannel();
+            String connection = method.findAnnotation(RabbitConnection.class)
+                    .flatMap(conn -> conn.get("connection", String.class))
+                    .orElse(RabbitConnection.DEFAULT_CONNECTION);
 
-            Integer prefetch = queueAnn.getRequiredValue("prefetch", Integer.class);
+            ChannelPool channelPool;
             try {
-                if (prefetch > 0) {
+                channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(connection));
+            } catch (Throwable e) {
+                throw new MessageListenerException(String.format("Failed to retrieve a channel pool named [%s] to register a listener", connection), e);
+            }
+
+            Channel channel = getChannel(channelPool);
+
+            Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
+            try {
+                if (prefetch != null) {
                     channel.basicQos(prefetch);
                 }
             } catch (IOException e) {
                 throw new MessageListenerException(String.format("Failed to set a prefetch count of [%s] on the channel", prefetch), e);
             }
 
-            consumerChannels.add(channel);
+            consumerChannels.put(channel, channelPool);
 
             Map<String, Object> arguments = new HashMap<>();
 
@@ -144,7 +154,6 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     } else {
                         arguments.put(name, value);
                     }
-
                 }
             });
 
@@ -167,22 +176,32 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
                 }
 
+                Optional<String> executor = method.findAnnotation(RabbitConnection.class)
+                        .flatMap(conn -> conn.get("executor", String.class));
+
+                ExecutorService executorService = executor
+                        .flatMap(exec -> beanContext.findBean(ExecutorService.class, Qualifiers.byName(exec)))
+                        .orElse(null);
+
+                if (executor.isPresent() && executorService == null) {
+                    throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
+                }
+
                 channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
 
                     @Override
                     public void handleTerminate(String consumerTag) {
-                        if (consumerChannels.contains(channel)) {
-                            channelPool.returnChannel(channel);
-                            consumerChannels.remove(channel);
+                        ChannelPool pool = consumerChannels.remove(channel);
+                        if (pool != null) {
+                            pool.returnChannel(channel);
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
                             }
                         }
                     }
 
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
+                    public void doHandleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+                        final RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
 
                         BoundExecutable boundExecutable = null;
                         try {
@@ -191,53 +210,66 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                             handleException(new RabbitListenerException("An error occurred binding the message to the method", e, bean, state));
                         }
 
-                        if (boundExecutable != null) {
-                            try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(hasAckArg ? null : false)) {
-                                Object returnedValue = boundExecutable.invoke(bean);
+                        try {
+                            if (boundExecutable != null) {
+                                try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(hasAckArg ? null : false)) {
+                                    Object returnedValue = boundExecutable.invoke(bean);
 
-                                String replyTo = properties.getReplyTo();
-                                if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
-                                    MutableBasicProperties replyProps = new MutableBasicProperties();
-                                    replyProps.setCorrelationId(properties.getCorrelationId());
+                                    String replyTo = properties.getReplyTo();
+                                    if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
+                                        MutableBasicProperties replyProps = new MutableBasicProperties();
+                                        replyProps.setCorrelationId(properties.getCorrelationId());
 
-                                    byte[] converted = null;
-                                    if (returnedValue != null) {
-                                        RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType().asArgument())
-                                                .map(RabbitMessageSerDes.class::cast)
-                                                .orElseThrow(() -> new RabbitListenerException(String.format("Could not find a serializer for the body argument of type [%s]", returnedValue.getClass().getName()), bean, state));
+                                        byte[] converted = null;
+                                        if (returnedValue != null) {
+                                            RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType().asArgument())
+                                                    .map(RabbitMessageSerDes.class::cast)
+                                                    .orElseThrow(() -> new RabbitListenerException(String.format("Could not find a serializer for the body argument of type [%s]", returnedValue.getClass().getName()), bean, state));
 
-                                        converted = serDes.serialize(returnedValue, replyProps);
+                                            converted = serDes.serialize(returnedValue, replyProps);
+                                        }
+
+                                        channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
                                     }
 
-                                    channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
+                                    if (!hasAckArg) {
+                                        closeable.withAcknowledge(true);
+                                    }
+                                } catch (MessageAcknowledgementException e) {
+                                    throw e;
+                                } catch (Throwable e) {
+                                    if (e instanceof RabbitListenerException) {
+                                        handleException((RabbitListenerException) e);
+                                    } else {
+                                        handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
+                                    }
                                 }
-
-                                if (!hasAckArg) {
-                                    closeable.withAcknowledge(true);
+                            } else {
+                                new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                            }
+                        } catch (MessageAcknowledgementException e) {
+                            if (!channel.isOpen()) {
+                                ChannelPool pool = consumerChannels.remove(channel);
+                                if (pool != null) {
+                                    pool.returnChannel(channel);
                                 }
-                            } catch (MessageAcknowledgementException e) {
-                                throw e;
-                            } catch (Throwable e) {
-                                if (e instanceof RabbitListenerException) {
-                                    handleException((RabbitListenerException) e);
-                                } else {
-                                    handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
+                                if (LOG.isErrorEnabled()) {
+                                    LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
                                 }
                             }
+                            handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
+                        }
+                    }
+
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        if (executorService != null) {
+                            executorService.submit(() -> doHandleDelivery(consumerTag, envelope, properties, body));
                         } else {
-                            new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                            doHandleDelivery(consumerTag, envelope, properties, body);
                         }
                     }
                 });
-            } catch (MessageAcknowledgementException e) {
-                if (!channel.isOpen()) {
-                    channelPool.returnChannel(channel);
-                    consumerChannels.remove(channel);
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
-                    }
-                }
-                handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
             } catch (Throwable e) {
                 if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
@@ -255,16 +287,19 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     @PreDestroy
     @Override
     public void close() throws Exception {
-        for (Channel channel : consumerChannels) {
-            channelPool.returnChannel(channel);
+        for (Map.Entry<Channel, ChannelPool> entry : consumerChannels.entrySet()) {
+            entry.getValue().returnChannel(entry.getKey());
         }
         consumerChannels.clear();
     }
 
     /**
+     * Retrieves a channel to use for consuming messages.
+     *
+     * @param channelPool The channel pool to retrieve the channel from
      * @return A channel to publish with
      */
-    protected Channel getChannel() {
+    protected Channel getChannel(ChannelPool channelPool) {
         try {
             return channelPool.getChannel();
         } catch (IOException e) {

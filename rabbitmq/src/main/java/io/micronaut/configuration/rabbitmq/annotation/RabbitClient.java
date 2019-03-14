@@ -18,13 +18,16 @@ package io.micronaut.configuration.rabbitmq.annotation;
 
 import io.micronaut.aop.Introduction;
 import io.micronaut.configuration.rabbitmq.intercept.RabbitMQIntroductionAdvice;
+import io.micronaut.context.annotation.AliasFor;
 import io.micronaut.context.annotation.Type;
 import io.micronaut.retry.annotation.Recoverable;
 
 import javax.inject.Scope;
 import javax.inject.Singleton;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -37,6 +40,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Documented
 @Retention(RUNTIME)
+@Target({ElementType.TYPE})
 @Scope
 @Introduction
 @Type(RabbitMQIntroductionAdvice.class)
@@ -48,5 +52,12 @@ public @interface RabbitClient {
      * @return The exchange to publish messages to.
      */
     String value() default "";
+
+    /**
+     * @see RabbitConnection#connection()
+     * @return The connection to use
+     */
+    @AliasFor(annotation = RabbitConnection.class, member = "connection")
+    String connection() default "";
 
 }
