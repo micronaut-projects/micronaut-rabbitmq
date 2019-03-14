@@ -291,6 +291,35 @@ public interface ProductClient {
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding(value = "product", connection = "product-cluster") <b class="conum">(2)</b>
+    void send(byte[] data) <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding(value = "product", connection = "product-cluster") <b class="conum">(2)</b>
+    fun send(data: ByteArray)  <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>

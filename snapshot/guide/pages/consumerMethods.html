@@ -313,6 +313,48 @@ public class ProductListener {
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue(value = "product", connection = "product-cluster") <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths.add(new String(data))
+        System.out.println("Groovy received " + data.length + " bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.ArrayList
+import java.util.Collections
+
+
+@RabbitListener
+class ProductListener {
+
+    internal var messageLengths: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue(value = "product", connection = "product-cluster") <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(String(data))
+        println("Java received " + data.size + " bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -355,6 +397,47 @@ public class ProductListener {
     public void receive(byte[] data) {
         messageLengths.add(new String(data));
         System.out.println("Java received " + data.length + " bytes from RabbitMQ");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue(value = "product", executor = "product-listener") <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths.add(new String(data))
+        System.out.println("Groovy received " + data.length + " bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+import java.util.ArrayList
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    internal var messageLengths: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue(value = "product", executor = "product-listener") <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(String(data))
+        println("Kotlin received " + data.size + " bytes from RabbitMQ")
     }
 }</code></pre>
 </div>
