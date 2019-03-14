@@ -18,10 +18,19 @@ abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}):
         }
 
         fun startContext(specName: String): ApplicationContext {
-            return ApplicationContext.run(
-                    mapOf("rabbitmq.port" to rabbitContainer.getMappedPort(5672),
-                            "spec.name" to specName))
+            return ApplicationContext.run(getDefaultConfig(specName))
         }
+
+        fun startContext(configuration: Map<String, Any>): ApplicationContext {
+            return ApplicationContext.run(configuration)
+        }
+
+        fun getDefaultConfig(specName: String): MutableMap<String, Any> {
+            return mutableMapOf(
+                    "rabbitmq.port" to rabbitContainer.getMappedPort(5672),
+                    "spec.name" to specName)
+        }
+
     }
 
 }

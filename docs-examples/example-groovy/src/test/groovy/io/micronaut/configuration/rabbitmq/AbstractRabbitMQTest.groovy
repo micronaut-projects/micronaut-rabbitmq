@@ -17,8 +17,13 @@ abstract class AbstractRabbitMQTest extends Specification {
     }
 
     protected ApplicationContext startContext() {
-        ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                 "spec.name": getClass().simpleName], "test")
+        return ApplicationContext.run(getConfiguration(), "test")
+    }
+
+    protected Map<String, Object> getConfiguration() {
+        Map<String, Object> config = new HashMap<>()
+        config.put("rabbitmq.port", rabbitContainer.getMappedPort(5672))
+        config.put("spec.name", this.getClass().getSimpleName())
+        return config
     }
 }
