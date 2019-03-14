@@ -206,6 +206,46 @@ interface ProductClient {
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_producer_connection">Producer Connection</h3>
+<div class="paragraph">
+<p>If multiple RabbitMQ servers have been configured, the name of the server can be set in the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to designate which connection should be used to publish messages.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+
+@RabbitClient <b class="conum">(1)</b>
+public interface ProductClient {
+
+    @Binding(value = "product", connection = "product-cluster") <b class="conum">(2)</b>
+    void send(byte[] data); <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The connection is set on the binding annotation.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>connection</code> option is also available to be set on the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.
+</td>
+</tr>
+</table>
+</div>
+</div>
 
 
 <h2 id="producerProperties">6.1.1.2 RabbitMQ Properties</h2>

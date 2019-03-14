@@ -141,8 +141,16 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <th class="colLast" scope="col">Optional Element and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#connection--">connection</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#exclusive--">exclusive</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/Queue.html#executor--">executor</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
@@ -232,7 +240,7 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <li class="blockList"><a name="prefetch--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>prefetch</h4>
 <pre>public abstract&nbsp;int&nbsp;prefetch</pre>
@@ -243,6 +251,54 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <dl>
 <dt>Default:</dt>
 <dd>0</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="connection--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>connection</h4>
+<pre>@AliasFor(annotation=<a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/RabbitConnection.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation">RabbitConnection.class</a>,
+          member="connection")
+public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;connection</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The connection to use</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/RabbitConnection.html#connection--"><code>RabbitConnection.connection()</code></a></dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>""</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="executor--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>executor</h4>
+<pre>@AliasFor(annotation=<a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/RabbitConnection.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation">RabbitConnection.class</a>,
+          member="executor")
+public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;executor</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The executor to use</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../io/micronaut/configuration/rabbitmq/annotation/RabbitConnection.html#executor--"><code>RabbitConnection.executor()</code></a></dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>""</dd>
 </dl>
 </li>
 </ul>

@@ -164,7 +164,7 @@ implements io.micronaut.aop.MethodInterceptor&lt;<a href="https://docs.oracle.co
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html#RabbitMQIntroductionAdvice-io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-java.util.concurrent.ExecutorService-">RabbitMQIntroductionAdvice</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/ReactivePublisher.html" title="interface in io.micronaut.configuration.rabbitmq.reactive">ReactivePublisher</a>&nbsp;reactivePublisher,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html#RabbitMQIntroductionAdvice-io.micronaut.context.BeanContext-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-java.util.concurrent.ExecutorService-">RabbitMQIntroductionAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
                           io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
                           <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
                           <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html?is-external=true" title="class or interface in java.util.concurrent">ExecutorService</a>&nbsp;executorService)</code>
@@ -226,13 +226,13 @@ implements io.micronaut.aop.MethodInterceptor&lt;<a href="https://docs.oracle.co
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMQIntroductionAdvice-io.micronaut.configuration.rabbitmq.reactive.ReactivePublisher-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-java.util.concurrent.ExecutorService-">
+<a name="RabbitMQIntroductionAdvice-io.micronaut.context.BeanContext-io.micronaut.core.convert.ConversionService-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-java.util.concurrent.ExecutorService-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RabbitMQIntroductionAdvice</h4>
-<pre>public&nbsp;RabbitMQIntroductionAdvice(<a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/ReactivePublisher.html" title="interface in io.micronaut.configuration.rabbitmq.reactive">ReactivePublisher</a>&nbsp;reactivePublisher,
+<pre>public&nbsp;RabbitMQIntroductionAdvice(io.micronaut.context.BeanContext&nbsp;beanContext,
                                   io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
                                   <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
                                   <a href="https://docs.oracle.com/javaee/6/api/javax/inject/Named.html?is-external=true" title="class or interface in javax.inject">@Named</a>(<a href="https://docs.oracle.com/javaee/6/api/javax/inject/Named.html?is-external=true#value--" title="class or interface in javax.inject">value</a>="io")
@@ -240,7 +240,7 @@ implements io.micronaut.aop.MethodInterceptor&lt;<a href="https://docs.oracle.co
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>reactivePublisher</code> - The publisher to use when publisher acknowledgement is required</dd>
+<dd><code>beanContext</code> - The bean context</dd>
 <dd><code>conversionService</code> - The conversion service</dd>
 <dd><code>serDesRegistry</code> - The registry to find a serDes to serialize the body</dd>
 <dd><code>executorService</code> - The executor to execute reactive operations on</dd>

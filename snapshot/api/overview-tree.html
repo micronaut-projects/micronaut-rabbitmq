@@ -98,10 +98,16 @@
 <li type="circle">io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgementBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitAcknowledgementBinder</span></a></li>
 </ul>
 </li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/AddressTypeConverter.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">AddressTypeConverter</span></a> (implements io.micronaut.core.convert.TypeConverter&lt;S,T&gt;)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ChannelInitializer.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ChannelInitializer</span></a> (implements io.micronaut.context.event.BeanCreatedEventListener&lt;T&gt;)</li>
 <li type="circle">com.rabbitmq.client.ConnectionFactory (implements java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Cloneable.html?is-external=true" title="class or interface in java.lang">Cloneable</a>)
 <ul>
-<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactoryConfig</span></a></li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactoryConfig</span></a>
+<ul>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ClusterRabbitConnectionFactoryConfig</span></a></li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">SingleRabbitConnectionFactoryConfig</span></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">DefaultChannelPool</span></a> (implements java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang">AutoCloseable</a>, io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>)</li>
@@ -115,7 +121,18 @@
 <li type="circle">io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitBodyBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitBodyBinder</span></a> (implements io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitAnnotatedArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitAnnotatedArgumentBinder</a>&lt;A&gt;)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitChannelBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitChannelBinder</span></a> (implements io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitTypeArgumentBinder</a>&lt;T&gt;)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactory.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactory</span></a></li>
-<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactoryConfig.RpcConfiguration</span></a></li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</span></a>
+<ul>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ClusterRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration</span></a></li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">SingleRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration</span></a></li>
+</ul>
+</li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">RabbitConnectionFactoryConfig.RpcConfiguration</span></a>
+<ul>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration</span></a></li>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">SingleRabbitConnectionFactoryConfig.DefaultRpcConfiguration</span></a></li>
+</ul>
+</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.executor.<a href="io/micronaut/configuration/rabbitmq/executor/RabbitConsumerExecutorFactory.html" title="class in io.micronaut.configuration.rabbitmq.executor"><span class="typeNameLink">RabbitConsumerExecutorFactory</span></a></li>
 <li type="circle">io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitConsumerState</span></a></li>
 <li type="circle">io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html" title="class in io.micronaut.configuration.rabbitmq.bind"><span class="typeNameLink">RabbitDefaultBinder</span></a> (implements io.micronaut.configuration.rabbitmq.bind.<a href="io/micronaut/configuration/rabbitmq/bind/RabbitArgumentBinder.html" title="interface in io.micronaut.configuration.rabbitmq.bind">RabbitArgumentBinder</a>&lt;T&gt;)</li>
@@ -185,7 +202,6 @@
 </li>
 </ul>
 </li>
-<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ChannelPool</span></a></li>
 <li type="circle">com.rabbitmq.client.Consumer
 <ul>
 <li type="circle">io.micronaut.configuration.rabbitmq.intercept.<a href="io/micronaut/configuration/rabbitmq/intercept/DefaultConsumer.html" title="interface in io.micronaut.configuration.rabbitmq.intercept"><span class="typeNameLink">DefaultConsumer</span></a></li>
@@ -194,6 +210,11 @@
 <li type="circle">io.micronaut.core.exceptions.ExceptionHandler&lt;T&gt;
 <ul>
 <li type="circle">io.micronaut.configuration.rabbitmq.exception.<a href="io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception"><span class="typeNameLink">RabbitListenerExceptionHandler</span></a></li>
+</ul>
+</li>
+<li type="circle">io.micronaut.core.naming.Named
+<ul>
+<li type="circle">io.micronaut.configuration.rabbitmq.connect.<a href="io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">ChannelPool</span></a></li>
 </ul>
 </li>
 <li type="circle">io.micronaut.core.order.Ordered
@@ -209,6 +230,7 @@
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/Binding.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">Binding</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/Queue.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">Queue</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitClient</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
+<li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/RabbitConnection.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitConnection</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitListener</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/RabbitProperties.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitProperties</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>
 <li type="circle">io.micronaut.configuration.rabbitmq.annotation.<a href="io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html" title="annotation in io.micronaut.configuration.rabbitmq.annotation"><span class="typeNameLink">RabbitProperty</span></a> (implements java.lang.annotation.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Annotation.html?is-external=true" title="class or interface in java.lang.annotation">Annotation</a>)</li>

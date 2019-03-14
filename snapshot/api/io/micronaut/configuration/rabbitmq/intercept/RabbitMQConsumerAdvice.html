@@ -142,8 +142,7 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
-                      <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
                       <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
                       <a href="../../../../../io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
                       <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
@@ -172,7 +171,9 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected com.rabbitmq.client.Channel</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#getChannel--">getChannel</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html#getChannel-io.micronaut.configuration.rabbitmq.connect.ChannelPool-">getChannel</a></span>(<a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool)</code>
+<div class="block">Retrieves a channel to use for consuming messages.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -201,14 +202,13 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.connect.ChannelPool-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">
+<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.configuration.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RabbitMQConsumerAdvice</h4>
 <pre>public&nbsp;RabbitMQConsumerAdvice(io.micronaut.context.BeanContext&nbsp;beanContext,
-                              <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
                               <a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
                               <a href="../../../../../io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.configuration.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
                               <a href="../../../../../io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.configuration.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
@@ -217,7 +217,6 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>beanContext</code> - The bean context</dd>
-<dd><code>channelPool</code> - The pool to retrieve channels from</dd>
 <dd><code>binderRegistry</code> - The registry to bind arguments to the method</dd>
 <dd><code>exceptionHandler</code> - The exception handler to use if the consumer isn't a handler</dd>
 <dd><code>serDesRegistry</code> - The serialization/deserialization registry</dd>
@@ -266,14 +265,17 @@ public&nbsp;void&nbsp;close()
 </dl>
 </li>
 </ul>
-<a name="getChannel--">
+<a name="getChannel-io.micronaut.configuration.rabbitmq.connect.ChannelPool-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getChannel</h4>
-<pre>protected&nbsp;com.rabbitmq.client.Channel&nbsp;getChannel()</pre>
+<pre>protected&nbsp;com.rabbitmq.client.Channel&nbsp;getChannel(<a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool)</pre>
+<div class="block">Retrieves a channel to use for consuming messages.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channelPool</code> - The channel pool to retrieve the channel from</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A channel to publish with</dd>
 </dl>

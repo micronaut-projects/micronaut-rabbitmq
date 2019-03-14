@@ -111,8 +111,8 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre><a href="https://docs.oracle.com/javaee/6/api/javax/inject/Singleton.html?is-external=true" title="class or interface in javax.inject">@Singleton</a>
- @Internal
+<pre>@Internal
+ @EachBean(value=<a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool.class</a>)
 public class <span class="typeNameLabel">RxJavaReactivePublisher</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/ReactivePublisher.html" title="interface in io.micronaut.configuration.rabbitmq.reactive">ReactivePublisher</a></pre>
@@ -273,7 +273,9 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RxJavaReactivePublisher</h4>
-<pre>public&nbsp;RxJavaReactivePublisher(<a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
+<pre>public&nbsp;RxJavaReactivePublisher(@Parameter
+                               <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool,
+                               @Parameter
                                <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect">RabbitConnectionFactoryConfig</a>&nbsp;config)</pre>
 <div class="block">Default constructor.</div>
 <dl>

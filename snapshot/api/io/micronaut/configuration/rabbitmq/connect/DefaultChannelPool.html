@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactory.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -107,11 +107,11 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang">AutoCloseable</a></dd>
+<dd><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a>, io.micronaut.core.naming.Named, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang">AutoCloseable</a></dd>
 </dl>
 <hr>
 <br>
-<pre><a href="https://docs.oracle.com/javaee/6/api/javax/inject/Singleton.html?is-external=true" title="class or interface in javax.inject">@Singleton</a>
+<pre>@EachBean(value=com.rabbitmq.client.Connection.class)
 public class <span class="typeNameLabel">DefaultChannelPool</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang">AutoCloseable</a>, <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect">ChannelPool</a></pre>
@@ -143,8 +143,9 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoClos
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#DefaultChannelPool-com.rabbitmq.client.Connection-java.lang.Integer-">DefaultChannelPool</a></span>(com.rabbitmq.client.Connection&nbsp;connection,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;maxIdleChannels)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#DefaultChannelPool-java.lang.String-com.rabbitmq.client.Connection-io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig-">DefaultChannelPool</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+                  com.rabbitmq.client.Connection&nbsp;connection,
+                  <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect">RabbitConnectionFactoryConfig</a>&nbsp;config)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -180,6 +181,10 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoClos
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#getName--">getName</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/DefaultChannelPool.html#returnChannel-com.rabbitmq.client.Channel-">returnChannel</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
 <div class="block">Returns a channel to the pool.</div>
@@ -207,20 +212,24 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoClos
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DefaultChannelPool-com.rabbitmq.client.Connection-java.lang.Integer-">
+<a name="DefaultChannelPool-java.lang.String-com.rabbitmq.client.Connection-io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>DefaultChannelPool</h4>
-<pre>public&nbsp;DefaultChannelPool(com.rabbitmq.client.Connection&nbsp;connection,
-                          <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a> @Value(value="${rabbitmq.channel-pool.max-idle-channels}")
-                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;maxIdleChannels)</pre>
+<pre>public&nbsp;DefaultChannelPool(@Parameter
+                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+                          @Parameter
+                          com.rabbitmq.client.Connection&nbsp;connection,
+                          @Parameter
+                          <a href="../../../../../io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.configuration.rabbitmq.connect">RabbitConnectionFactoryConfig</a>&nbsp;config)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>connection</code> - The connection to create channels with</dd>
-<dd><code>maxIdleChannels</code> - How many idle channels should be kept open</dd>
+<dd><code>name</code> - The pool name</dd>
+<dd><code>connection</code> - The connection</dd>
+<dd><code>config</code> - The connection factory config</dd>
 </dl>
 </li>
 </ul>
@@ -232,6 +241,19 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoClos
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getName--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getName</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getName()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>getName</code>&nbsp;in interface&nbsp;<code>io.micronaut.core.naming.Named</code></dd>
+</dl>
+</li>
+</ul>
 <a name="getChannel--">
 <!--   -->
 </a>
@@ -329,7 +351,7 @@ public&nbsp;void&nbsp;close()</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../io/micronaut/configuration/rabbitmq/connect/RabbitConnectionFactory.html" title="class in io.micronaut.configuration.rabbitmq.connect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
