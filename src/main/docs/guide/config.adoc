@@ -2,7 +2,10 @@ All properties on the link:{apirabbit}client/ConnectionFactory.html[ConnectionFa
 
 The properties that can be converted from the string values in a configuration file can be configured directly.
 
-include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig.adoc[]
+
+include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.SingleRabbitConnectionFactoryConfig.adoc[]
+
+include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig.adoc[]
 
 NOTE: Without any configuration the defaults in the link:{apirabbit}client/ConnectionFactory.html[ConnectionFactory] will be used.
 
