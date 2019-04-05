@@ -5,3 +5,25 @@ $ mn create-app my-rabbitmq-app --features rabbitmq
 ----
 
 This will create a project with the minimum necessary configuration for RabbitMQ.
+
+=== RabbitMQ Profile
+
+The Micronaut CLI includes a specialized profile for RabbitMQ based messaging applications. This profile will create a Micronaut app with RabbitMQ support, and _without_ an HTTP server (although you can add one if you desire). The profile also provides a couple commands for generating RabbitMQ consumers and producers.
+
+To create a project using the RabbitMQ profile, use the `profile` flag:
+
+----
+$ mn create-app my-rabbit-service --profile rabbitmq
+----
+
+As you'd expect, you can start the application with `./gradlew run` (for Gradle) or `./mvnw compile exec:exec` (Maven). The application will (with the default config) attempt to connect to RabbitMQ at `http://localhost:5672`, and will continue to run without starting up an HTTP server. All communication to/from the service will take place via RabbitMQ producers and/or consumers.
+
+Within the new project, you can now run the RabbitMQ specific code generation commands:
+
+----
+$ mn create-rabbitmq-producer Message
+| Rendered template Producer.java to destination src/main/java/my/rabbitmq/app/MessageProducer.java
+
+$ mn create-rabbitmq-listener Message
+| Rendered template Listener.java to destination src/main/java/my/rabbitmq/app/MessageListener.java
+----
