@@ -71,7 +71,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final ConversionService conversionService;
-    private final Map<Channel, ChannelPool> consumerChannels = new ConcurrentHashMap<>();
+    private final Map<Channel, ConsumerState> consumerChannels = new ConcurrentHashMap<>();
 
     /**
      * Default constructor.
@@ -132,7 +132,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 throw new MessageListenerException(String.format("Failed to set a prefetch count of [%s] on the channel", prefetch), e);
             }
 
-            consumerChannels.put(channel, channelPool);
+            ConsumerState state = new ConsumerState();
+            state.channelPool = channelPool;
+            state.consumerTag = clientTag;
+            consumerChannels.put(channel, state);
 
             Map<String, Object> arguments = new HashMap<>();
 
@@ -191,9 +194,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                     @Override
                     public void handleTerminate(String consumerTag) {
-                        ChannelPool pool = consumerChannels.remove(channel);
-                        if (pool != null) {
-                            pool.returnChannel(channel);
+                        ConsumerState state = consumerChannels.remove(channel);
+                        if (state != null) {
+                            state.channelPool.returnChannel(channel);
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
                             }
@@ -249,20 +252,24 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                             }
                         } catch (MessageAcknowledgementException e) {
                             if (!channel.isOpen()) {
-                                ChannelPool pool = consumerChannels.remove(channel);
-                                if (pool != null) {
-                                    pool.returnChannel(channel);
+                                ConsumerState consumerState = consumerChannels.remove(channel);
+                                if (consumerState != null) {
+                                    consumerState.channelPool.returnChannel(channel);
                                 }
                                 if (LOG.isErrorEnabled()) {
                                     LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
                                 }
                             }
                             handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
+                        } finally {
+                            consumerChannels.get(channel).inProgress = false;
                         }
                     }
 
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        consumerChannels.get(channel).inProgress = true;
+
                         if (executorService != null) {
                             executorService.submit(() -> doHandleDelivery(consumerTag, envelope, properties, body));
                         } else {
@@ -287,10 +294,23 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     @PreDestroy
     @Override
     public void close() throws Exception {
-        for (Map.Entry<Channel, ChannelPool> entry : consumerChannels.entrySet()) {
-            entry.getValue().returnChannel(entry.getKey());
+        while (!consumerChannels.entrySet().isEmpty()) {
+            Iterator<Map.Entry<Channel, ConsumerState>> it = consumerChannels.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Channel, ConsumerState> entry = it.next();
+                Channel channel = entry.getKey();
+                ConsumerState state = entry.getValue();
+                try {
+                    channel.basicCancel(state.consumerTag);
+                } catch (IOException e) {
+                    //ignore
+                }
+                if (!state.inProgress) {
+                    state.channelPool.returnChannel(channel);
+                    it.remove();
+                }
+            }
         }
-        consumerChannels.clear();
     }
 
     /**
@@ -314,5 +334,11 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         } else {
             exceptionHandler.handle(exception);
         }
+    }
+
+    private static class ConsumerState {
+        private String consumerTag;
+        private ChannelPool channelPool;
+        private volatile boolean inProgress;
     }
 }
