@@ -25,7 +25,6 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
         applicationContext.close()
     }
 
-    @Ignore
     void "test rabbitmq health indicator shows down"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(["rabbitmq.port": rabbitContainer.getMappedPort(5672)], "test")

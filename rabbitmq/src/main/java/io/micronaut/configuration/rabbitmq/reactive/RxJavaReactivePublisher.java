@@ -319,8 +319,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 if (replyTo.equals("amq.rabbitmq.reply-to") || correlationId.equals(properties.getCorrelationId())) {
-                    emitter.onSuccess(new RabbitConsumerState(envelope, properties, body, channel));
                     dispose.accept(consumerTag);
+                    emitter.onSuccess(new RabbitConsumerState(envelope, properties, body, channel));
                 }
             }
 
@@ -335,8 +335,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
             }
 
             private void handleError(String consumerTag) {
-                emitter.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
                 dispose.accept(consumerTag);
+                emitter.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
             }
         };
 
