@@ -336,6 +336,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         }
     }
 
+    /**
+     * Consumer state.
+     */
     private static class ConsumerState {
         private String consumerTag;
         private ChannelPool channelPool;

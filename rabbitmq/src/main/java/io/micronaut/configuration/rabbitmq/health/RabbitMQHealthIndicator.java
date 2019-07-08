@@ -17,7 +17,6 @@
 package io.micronaut.configuration.rabbitmq.health;
 
 import com.rabbitmq.client.Connection;
-import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.health.HealthStatus;

@@ -34,7 +34,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -243,6 +242,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      *
      * @param channel The channel to listen for confirms
      * @param emitter The emitter to send the event
+     * @param publishState The publishing state
      * @return A disposable to allow cleanup of the listener
      */
     protected Disposable createListener(Channel channel, CompletableEmitter emitter, RabbitPublishState publishState) {
