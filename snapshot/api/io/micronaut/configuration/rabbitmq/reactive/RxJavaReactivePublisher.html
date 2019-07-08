@@ -166,17 +166,18 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>protected io.reactivex.disposables.Disposable</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createConsumer-com.rabbitmq.client.Channel-java.lang.String-java.lang.String-java.util.concurrent.atomic.AtomicReference-">createConsumer</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;replyTo,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createConsumer-com.rabbitmq.client.Channel-io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState-java.lang.String-io.reactivex.SingleEmitter-">createConsumer</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
+              <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a>&nbsp;publishState,
               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;correlationId,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;acknowledgement)</code>
+              io.reactivex.SingleEmitter&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&gt;&nbsp;emitter)</code>
 <div class="block">Listens for ack/nack from the broker.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected io.reactivex.disposables.Disposable</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">createListener</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html" title="enum in io.micronaut.configuration.rabbitmq.reactive">BrokerResponse</a>&gt;&nbsp;acknowledgement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RxJavaReactivePublisher.html#createListener-com.rabbitmq.client.Channel-io.reactivex.CompletableEmitter-io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState-">createListener</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
+              io.reactivex.CompletableEmitter&nbsp;emitter,
+              <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a>&nbsp;publishState)</code>
 <div class="block">Listens for ack/nack from the broker.</div>
 </td>
 </tr>
@@ -472,36 +473,38 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 </dl>
 </li>
 </ul>
-<a name="createListener-com.rabbitmq.client.Channel-java.util.concurrent.atomic.AtomicReference-">
+<a name="createListener-com.rabbitmq.client.Channel-io.reactivex.CompletableEmitter-io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createListener</h4>
 <pre>protected&nbsp;io.reactivex.disposables.Disposable&nbsp;createListener(com.rabbitmq.client.Channel&nbsp;channel,
-                                                             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/BrokerResponse.html" title="enum in io.micronaut.configuration.rabbitmq.reactive">BrokerResponse</a>&gt;&nbsp;acknowledgement)</pre>
+                                                             io.reactivex.CompletableEmitter&nbsp;emitter,
+                                                             <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a>&nbsp;publishState)</pre>
 <div class="block">Listens for ack/nack from the broker. The listener auto disposes
  itself after receiving a response from the broker. If no response is
  received, the caller is responsible for disposing the listener.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>channel</code> - The channel to listen for confirms</dd>
-<dd><code>acknowledgement</code> - The acknowledgement object to update on response</dd>
+<dd><code>emitter</code> - The emitter to send the event</dd>
+<dd><code>publishState</code> - The publishing state</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A disposable to allow cleanup of the listener</dd>
 </dl>
 </li>
 </ul>
-<a name="createConsumer-com.rabbitmq.client.Channel-java.lang.String-java.lang.String-java.util.concurrent.atomic.AtomicReference-">
+<a name="createConsumer-com.rabbitmq.client.Channel-io.micronaut.configuration.rabbitmq.reactive.RabbitPublishState-java.lang.String-io.reactivex.SingleEmitter-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>createConsumer</h4>
 <pre>protected&nbsp;io.reactivex.disposables.Disposable&nbsp;createConsumer(com.rabbitmq.client.Channel&nbsp;channel,
-                                                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;replyTo,
+                                                             <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.configuration.rabbitmq.reactive">RabbitPublishState</a>&nbsp;publishState,
                                                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;correlationId,
-                                                             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicReference.html?is-external=true" title="class or interface in java.util.concurrent.atomic">AtomicReference</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;acknowledgement)
+                                                             io.reactivex.SingleEmitter&lt;<a href="../../../../../io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.configuration.rabbitmq.bind">RabbitConsumerState</a>&gt;&nbsp;emitter)
                                                       throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Listens for ack/nack from the broker. The listener auto disposes
  itself after receiving a response from the broker. If no response is
@@ -509,9 +512,9 @@ implements <a href="../../../../../io/micronaut/configuration/rabbitmq/reactive/
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>channel</code> - The channel to listen for confirms</dd>
-<dd><code>replyTo</code> - The queue to consume from</dd>
+<dd><code>publishState</code> - The publish state</dd>
 <dd><code>correlationId</code> - The correlation id</dd>
-<dd><code>acknowledgement</code> - The acknowledgement object to update on response</dd>
+<dd><code>emitter</code> - The emitter to send the response</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A disposable to allow cleanup of the listener</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
