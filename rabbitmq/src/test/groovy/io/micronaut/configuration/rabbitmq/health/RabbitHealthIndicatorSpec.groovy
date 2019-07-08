@@ -5,6 +5,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthResult
 import io.reactivex.Single
+import spock.lang.Ignore
 
 class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
@@ -24,6 +25,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
         applicationContext.close()
     }
 
+    @Ignore
     void "test rabbitmq health indicator shows down"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run(["rabbitmq.port": rabbitContainer.getMappedPort(5672)], "test")
