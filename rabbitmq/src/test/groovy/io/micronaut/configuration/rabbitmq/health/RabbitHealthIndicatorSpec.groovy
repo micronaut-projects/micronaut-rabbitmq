@@ -23,4 +23,22 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
         cleanup:
         applicationContext.close()
     }
+
+    void "test rabbitmq health indicator shows down"() {
+        given:
+        ApplicationContext applicationContext = ApplicationContext.run(["rabbitmq.port": rabbitContainer.getMappedPort(5672)], "test")
+
+        when:
+        RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
+        rabbitContainer.stop()
+        HealthResult result = Single.fromPublisher(healthIndicator.result).blockingGet()
+
+        then:
+        result.status == HealthStatus.DOWN
+        ((Map) result.details).get("error").toString().contains("RabbitMQ connection is not open")
+
+        cleanup:
+        rabbitContainer.start()
+        applicationContext.close()
+    }
 }

@@ -127,8 +127,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      */
     protected Completable publishInternal(Channel channel, RabbitPublishState publishState) {
         return Completable.create(subscriber -> {
-            AtomicReference<BrokerResponse> acknowledgement = new AtomicReference<>(BrokerResponse.NONE);
-            Disposable listener = createListener(channel, acknowledgement);
+            Disposable listener = createListener(channel, subscriber, publishState);
             try {
                 channel.basicPublish(
                         publishState.getExchange(),
@@ -136,22 +135,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
                         publishState.getProperties(),
                         publishState.getBody()
                 );
-
-                synchronized (acknowledgement) {
-                    if (subscriber.isDisposed()) {
-                        listener.dispose();
-                    } else {
-                        while (acknowledgement.get() == BrokerResponse.NONE) {
-                            acknowledgement.wait();
-                        }
-                        if (acknowledgement.get() == BrokerResponse.ACK) {
-                            subscriber.onComplete();
-                        } else {
-                            subscriber.onError(new RabbitClientException("Message could not be delivered to the broker", Collections.singletonList(publishState)));
-                        }
-                    }
-                }
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 listener.dispose();
                 subscriber.onError(e);
             }
@@ -173,13 +157,11 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      */
     protected Single<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
         return Single.<RabbitConsumerState>create(subscriber -> {
-            Object noResponse = new Object();
-            AtomicReference<Object> acknowledgement = new AtomicReference<>(noResponse);
             Disposable listener = null;
             try {
                 String correlationId = UUID.randomUUID().toString();
                 AMQP.BasicProperties properties = publishState.getProperties().builder().correlationId(correlationId).build();
-                listener = createConsumer(channel, publishState.getProperties().getReplyTo(), correlationId, acknowledgement);
+                listener = createConsumer(channel, publishState, correlationId, subscriber);
 
                 channel.basicPublish(
                         publishState.getExchange(),
@@ -187,22 +169,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
                         properties,
                         publishState.getBody()
                 );
-
-                synchronized (acknowledgement) {
-                    if (subscriber.isDisposed()) {
-                        listener.dispose();
-                    } else {
-                        while (acknowledgement.get() == noResponse) {
-                            acknowledgement.wait();
-                        }
-                        if (acknowledgement.get() == null) {
-                            subscriber.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
-                        } else {
-                            subscriber.onSuccess((RabbitConsumerState) acknowledgement.get());
-                        }
-                    }
-                }
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 if (listener != null) {
                     listener.dispose();
                 }
@@ -275,10 +242,10 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * received, the caller is responsible for disposing the listener.
      *
      * @param channel The channel to listen for confirms
-     * @param acknowledgement The acknowledgement object to update on response
+     * @param emitter The emitter to send the event
      * @return A disposable to allow cleanup of the listener
      */
-    protected Disposable createListener(Channel channel, AtomicReference<BrokerResponse> acknowledgement) {
+    protected Disposable createListener(Channel channel, CompletableEmitter emitter, RabbitPublishState publishState) {
         AtomicBoolean disposed = new AtomicBoolean();
         Consumer<ConfirmListener> dispose = (listener) -> {
             if (disposed.compareAndSet(false, true)) {
@@ -289,20 +256,21 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
         ConfirmListener confirmListener = new ConfirmListener() {
             @Override
             public void handleAck(long deliveryTag, boolean multiple) {
-                ackNack(deliveryTag, multiple, BrokerResponse.ACK);
+                ackNack(deliveryTag, multiple, true);
             }
 
             @Override
             public void handleNack(long deliveryTag, boolean multiple) {
-                ackNack(deliveryTag, multiple, BrokerResponse.NACK);
+                ackNack(deliveryTag, multiple, false);
             }
 
-            private void ackNack(long deliveryTag, boolean multiple, BrokerResponse response) {
-                synchronized (acknowledgement) {
-                    acknowledgement.set(response);
-                    dispose.accept(this);
-                    acknowledgement.notify();
+            private void ackNack(long deliveryTag, boolean multiple, boolean ack) {
+                if (ack) {
+                    emitter.onComplete();
+                } else {
+                    emitter.onError(new RabbitClientException("Message could not be delivered to the broker", Collections.singletonList(publishState)));
                 }
+                dispose.accept(this);
             }
         };
 
@@ -327,13 +295,14 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * received, the caller is responsible for disposing the listener.
      *
      * @param channel The channel to listen for confirms
-     * @param replyTo The queue to consume from
+     * @param publishState The publish state
      * @param correlationId The correlation id
-     * @param acknowledgement The acknowledgement object to update on response
+     * @param emitter The emitter to send the response
      * @throws IOException If an error occurred subscribing
      * @return A disposable to allow cleanup of the listener
      */
-    protected Disposable createConsumer(Channel channel, String replyTo, String correlationId, AtomicReference<Object> acknowledgement) throws IOException {
+    protected Disposable createConsumer(Channel channel, RabbitPublishState publishState, String correlationId, SingleEmitter<RabbitConsumerState> emitter) throws IOException {
+        String replyTo = publishState.getProperties().getReplyTo();
         AtomicBoolean disposed = new AtomicBoolean();
 
         Consumer<String> dispose = (consumerTag) -> {
@@ -350,11 +319,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 if (replyTo.equals("amq.rabbitmq.reply-to") || correlationId.equals(properties.getCorrelationId())) {
-                    synchronized (acknowledgement) {
-                        acknowledgement.set(new RabbitConsumerState(envelope, properties, body, channel));
-                        dispose.accept(consumerTag);
-                        acknowledgement.notify();
-                    }
+                    emitter.onSuccess(new RabbitConsumerState(envelope, properties, body, channel));
+                    dispose.accept(consumerTag);
                 }
             }
 
@@ -369,11 +335,8 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
             }
 
             private void handleError(String consumerTag) {
-                synchronized (acknowledgement) {
-                    acknowledgement.set(null);
-                    dispose.accept(consumerTag);
-                    acknowledgement.notify();
-                }
+                emitter.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
+                dispose.accept(consumerTag);
             }
         };
 

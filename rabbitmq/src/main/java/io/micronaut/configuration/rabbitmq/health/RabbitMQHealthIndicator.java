@@ -17,6 +17,7 @@
 package io.micronaut.configuration.rabbitmq.health;
 
 import com.rabbitmq.client.Connection;
+import io.micronaut.configuration.rabbitmq.exception.RabbitClientException;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.health.HealthStatus;
@@ -51,18 +52,22 @@ public class RabbitMQHealthIndicator extends AbstractHealthIndicator<Map<String,
 
     @Override
     protected Map<String, Object> getHealthInformation() {
-        healthStatus = HealthStatus.UP;
-        return connection.getServerProperties()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, (entry) -> {
-                    Object value = entry.getValue();
-                    if (value instanceof Map) {
-                        return value;
-                    } else {
-                        return value.toString();
-                    }
-                }));
+        if (connection.isOpen()) {
+            healthStatus = HealthStatus.UP;
+            return connection.getServerProperties()
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, (entry) -> {
+                        Object value = entry.getValue();
+                        if (value instanceof Map) {
+                            return value;
+                        } else {
+                            return value.toString();
+                        }
+                    }));
+        } else {
+            throw new RuntimeException("RabbitMQ connection is not open");
+        }
     }
 
     @Override
