@@ -13,6 +13,8 @@ To configure things like the link:{apirabbit}client/impl/CredentialsProvider.htm
 
 snippet::io.micronaut.configuration.rabbitmq.docs.config.ConnectionFactoryInterceptor[] project-base="docs-examples/example]
 
+TIP: It is also possible to disable the integration entirely with `rabbitmq.enabled: false`
+
 == Connections
 
 It is possible to configure multiple connections to the same server, different servers, or a single connection to one of a list of servers.
