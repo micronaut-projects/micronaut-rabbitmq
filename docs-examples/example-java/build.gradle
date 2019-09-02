@@ -14,7 +14,7 @@ dependencies {
     testCompile "io.micronaut:micronaut-inject"
     testCompile project(":rabbitmq")
     testCompile "org.testcontainers:testcontainers:1.10.5"
-    testCompile 'org.awaitility:awaitility:3.1.6'
+    testCompile 'org.awaitility:awaitility:4.0.0'
     testCompile "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     testRuntime "ch.qos.logback:logback-classic:1.2.3"
