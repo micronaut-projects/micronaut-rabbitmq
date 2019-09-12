@@ -24,7 +24,7 @@ interface ProductClient {
 
     @Binding("product")
     void send(@Header String productSize, // <3>
-              @Nullable @Header("x-product-count") Long count,
+              @Header("x-product-count") Long count,
               byte[] data)
 }
 // end::clazz[]
