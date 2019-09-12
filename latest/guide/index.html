@@ -167,7 +167,7 @@
         <h1>Micronaut RabbitMQ</h1>
         <p></p>
         <p>Integration between Micronaut and RabbitMQ</p>
-        <p><strong>Version:</strong> 1.1.1</p>
+        <p><strong>Version:</strong> 1.1.2</p>
     </div>
     
 
@@ -1056,6 +1056,18 @@ class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactor
 }</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is also possible to disable the integration entirely with <code>rabbitmq.enabled: false</code>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect1">
 <h2 id="_connections">Connections</h2>
 <div class="sectionbody">
@@ -1602,6 +1614,9 @@ public interface ProductClient {
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+
+import javax.annotation.Nullable
+
 
 @RabbitClient
 @Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>

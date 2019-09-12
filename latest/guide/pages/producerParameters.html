@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.1.1 Publishing Parameters 1.1.1</title>
+    <title>6.1.1 Publishing Parameters 1.1.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -96,7 +96,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>6.1.1 Publishing Parameters</h1>
 
-                    <p><strong>Version:</strong> 1.1.1</p>
+                    <p><strong>Version:</strong> 1.1.2</p>
                 </div>
 
                 
@@ -432,6 +432,9 @@ public interface ProductClient {
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+
+import javax.annotation.Nullable
+
 
 @RabbitClient
 @Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
