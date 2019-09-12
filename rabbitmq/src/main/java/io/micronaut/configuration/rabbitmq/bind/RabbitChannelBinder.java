@@ -39,6 +39,7 @@ public class RabbitChannelBinder implements RabbitTypeArgumentBinder<Channel> {
 
     @Override
     public BindingResult<Channel> bind(ArgumentConversionContext<Channel> context, RabbitConsumerState messageState) {
-        return () -> Optional.of(messageState.getChannel());
+        Optional<Channel> channel = Optional.of(messageState.getChannel());
+        return () -> channel;
     }
 }
