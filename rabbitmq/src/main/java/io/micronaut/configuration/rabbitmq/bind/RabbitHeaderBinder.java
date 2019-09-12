@@ -22,6 +22,7 @@ import io.micronaut.messaging.annotation.Header;
 
 import javax.inject.Singleton;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Binds an argument of with the {@link Header} annotation from the {@link RabbitConsumerState}.
@@ -57,7 +58,7 @@ public class RabbitHeaderBinder implements RabbitAnnotatedArgumentBinder<Header>
         Map<String, Object> rawHeaders = messageState.getProperties().getHeaders();
 
         RabbitHeaderConvertibleValues headers = new RabbitHeaderConvertibleValues(rawHeaders, conversionService);
-
-        return () -> headers.get(parameterName, context);
+        Optional<Object> header = headers.get(parameterName, context);
+        return () -> header;
     }
 }
