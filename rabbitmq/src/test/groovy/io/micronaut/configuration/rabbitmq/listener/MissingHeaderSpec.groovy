@@ -21,7 +21,7 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
         ApplicationContext ctx = startContext()
         PollingConditions conditions = new PollingConditions(timeout: 3)
         MyProducer producer = ctx.getBean(MyProducer)
-        producer.go(null, "abc")
+        producer.go("abc")
 
         when:
         MyConsumer consumer = ctx.getBean(MyConsumer)
@@ -42,7 +42,7 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("simple")
-        void go(@Header("X-Header") String header, String data)
+        void go(String data)
 
     }
 

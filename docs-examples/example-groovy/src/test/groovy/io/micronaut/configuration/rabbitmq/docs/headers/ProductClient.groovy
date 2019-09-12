@@ -5,6 +5,9 @@ import io.micronaut.configuration.rabbitmq.annotation.Binding
 import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+
+import javax.annotation.Nullable
+
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
@@ -21,7 +24,7 @@ interface ProductClient {
 
     @Binding("product")
     void send(@Header String productSize, // <3>
-              @Header("x-product-count") Long count,
+              @Nullable @Header("x-product-count") Long count,
               byte[] data)
 }
 // end::clazz[]
