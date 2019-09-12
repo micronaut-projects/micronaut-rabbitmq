@@ -68,9 +68,10 @@ public class RabbitPropertyBinder implements RabbitAnnotatedArgumentBinder<Rabbi
 
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
-        return () -> Optional.ofNullable(properties.get(getParameterName(context)))
+        Optional<Object> property = Optional.ofNullable(properties.get(getParameterName(context)))
                 .map(f -> f.apply(messageState.getProperties()))
                 .flatMap(prop -> conversionService.convert(prop, context));
+        return () -> property;
     }
 
     /**

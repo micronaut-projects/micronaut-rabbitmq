@@ -42,7 +42,7 @@ public class RabbitHeaderConvertibleValues implements ConvertibleValues<Object> 
      * @param conversionService The conversion service
      */
     public RabbitHeaderConvertibleValues(Map<String, Object> headers, ConversionService<?> conversionService) {
-        this.headers = headers;
+        this.headers = headers == null ? Collections.emptyMap() : headers;
         this.conversionService = conversionService;
     }
 

@@ -211,10 +211,20 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
                 if (headerAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, headerAnn, parameterValues);
-                    headers.put(entry.getKey(), entry.getValue());
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    //if (StringUtils.isNotEmpty(name) && value != null) {
+                        headers.put(name, value);
+                    //}
                 } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
-                    setBasicProperty(mutableProperties, entry.getKey(), entry.getValue());
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    //if (StringUtils.isNotEmpty(name) && value != null) {
+                        setBasicProperty(mutableProperties, name, value);
+                    //}
                 } else if (argument != bodyArgument) {
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
