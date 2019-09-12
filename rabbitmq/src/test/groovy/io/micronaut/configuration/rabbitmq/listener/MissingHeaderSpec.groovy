@@ -1,0 +1,69 @@
+package io.micronaut.configuration.rabbitmq.listener
+
+import io.micronaut.configuration.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.configuration.rabbitmq.annotation.Binding
+import io.micronaut.configuration.rabbitmq.annotation.Queue
+import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.configuration.rabbitmq.exception.RabbitListenerException
+import io.micronaut.configuration.rabbitmq.exception.RabbitListenerExceptionHandler
+import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Header
+import spock.util.concurrent.PollingConditions
+
+import javax.annotation.Nullable
+import java.util.concurrent.CopyOnWriteArrayList
+
+class MissingHeaderSpec extends AbstractRabbitMQTest {
+
+    void "test a null header value"() {
+        ApplicationContext ctx = startContext()
+        PollingConditions conditions = new PollingConditions(timeout: 3)
+        MyProducer producer = ctx.getBean(MyProducer)
+        producer.go(null, "abc")
+
+        when:
+        MyConsumer consumer = ctx.getBean(MyConsumer)
+
+        then:
+        conditions.eventually {
+            consumer.headers.size() == 0
+            consumer.errors.size() == 0
+            consumer.bodies.size() == 1
+        }
+
+        cleanup:
+        ctx.close()
+    }
+
+    @Requires(property = "spec.name", value = "MissingHeaderSpec")
+    @RabbitClient
+    static interface MyProducer {
+
+        @Binding("simple")
+        void go(@Header("X-Header") String header, String data)
+
+    }
+
+    @Requires(property = "spec.name", value = "MissingHeaderSpec")
+    @RabbitListener
+    static class MyConsumer implements RabbitListenerExceptionHandler {
+
+        public static CopyOnWriteArrayList<String> headers = []
+        public static CopyOnWriteArrayList<RabbitListenerException> errors = []
+        public static CopyOnWriteArrayList<String> bodies = []
+
+        @Queue("simple")
+        void listen(@Nullable @Header("X-Header") String header, String data) {
+            if (header != null) headers.add(header)
+            bodies.add(data)
+        }
+
+        @Override
+        void handle(RabbitListenerException exception) {
+            errors.add(exception)
+            exception.printStackTrace()
+        }
+    }
+}
