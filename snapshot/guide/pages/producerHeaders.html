@@ -147,6 +147,9 @@ import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 
+import javax.annotation.Nullable
+
+
 @RabbitClient
 @Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
 @Header(name = "productSize", value = "large")
