@@ -19,6 +19,8 @@ package io.micronaut.configuration.rabbitmq.connect;
 import com.rabbitmq.client.Channel;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -30,6 +32,7 @@ import java.io.IOException;
  * @since 1.1.0
  */
 public abstract class ChannelInitializer implements BeanCreatedEventListener<ChannelPool> {
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelInitializer.class);
 
     /**
      * Do any work with a channel.
@@ -47,7 +50,9 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
             channel = pool.getChannel();
             initialize(channel);
         } catch (Throwable e) {
-            //no-op
+            if (LOG.isErrorEnabled()) {
+                LOG.error("Initialization of the channel has failed due to error", e);
+            }
         } finally {
             if (channel != null) {
                 pool.returnChannel(channel);
