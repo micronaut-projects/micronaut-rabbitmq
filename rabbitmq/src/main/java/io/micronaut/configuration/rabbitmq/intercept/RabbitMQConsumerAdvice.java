@@ -194,7 +194,12 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                     @Override
                     public void handleTerminate(String consumerTag) {
-                        ConsumerState state = consumerChannels.remove(channel);
+                        ConsumerState state;
+                        if (channel instanceof RecoverableChannel) {
+                            state = consumerChannels.get(channel);
+                        } else {
+                            state = consumerChannels.remove(channel);
+                        }
                         if (state != null) {
                             state.channelPool.returnChannel(channel);
                             if (LOG.isDebugEnabled()) {
