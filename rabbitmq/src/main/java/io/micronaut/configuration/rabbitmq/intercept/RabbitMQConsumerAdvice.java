@@ -194,11 +194,17 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                     @Override
                     public void handleTerminate(String consumerTag) {
-                        ConsumerState state = consumerChannels.remove(channel);
-                        if (state != null) {
-                            state.channelPool.returnChannel(channel);
+                        if (channel instanceof RecoverableChannel) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
+                                LOG.debug("The channel was been terminated.  Automatic recovery attempt is underway for consumer [{}]", clientTag);
+                            }
+                        } else {
+                            ConsumerState state = consumerChannels.remove(channel);
+                            if (state != null) {
+                                state.channelPool.returnChannel(channel);
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
+                                }
                             }
                         }
                     }
