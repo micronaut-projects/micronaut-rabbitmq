@@ -11,7 +11,7 @@ dependencies {
     
     testCompile "io.micronaut:micronaut-inject-groovy"
     testCompile "io.micronaut:micronaut-inject-java"
-    testCompile "org.testcontainers:spock:1.12.1"
+    testCompile "org.testcontainers:spock:1.13.0"
     testCompile "io.micronaut:micronaut-management"
 }
 
