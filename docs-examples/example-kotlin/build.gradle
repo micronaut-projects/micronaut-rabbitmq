@@ -19,6 +19,7 @@ dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
     testCompile 'io.kotlintest:kotlintest-runner-junit5:3.4.1'
     testCompile "io.projectreactor:reactor-core"
+    testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }
 
 licenseTest.enabled = false
