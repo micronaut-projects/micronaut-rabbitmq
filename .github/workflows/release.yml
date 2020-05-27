@@ -42,17 +42,15 @@ jobs:
           repository: micronaut-projects/micronaut-core
           ref: ${{ env.githubCoreBranch }}
           path: micronaut-core # Must be micronaut-core
-        continue-on-error: true      
+        continue-on-error: true
       - name: Export Gradle Properties
-        uses: micronaut-projects/github-actions/export-gradle-properties@master            
+        uses: micronaut-projects/github-actions/export-gradle-properties@master
       - name: Update BOM
         uses: micronaut-projects/github-actions/update-bom@master
+#        env:
+#          DRY_RUN: true
         with:
           token: ${{ secrets.GH_TOKEN }}
-          branch: ${{ env.githubCoreBranch }}
-          version: ${{ steps.release_version.outputs.release_version }}
-          property: {{ env.bomProperty }}
-          properties: {{ env.bomProperties }}
         continue-on-error: true
       - name: Run post-release
         if: success()
