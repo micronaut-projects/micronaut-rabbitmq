@@ -52,9 +52,7 @@ jobs:
           branch: ${{ env.githubCoreBranch }}
           version: ${{ steps.release_version.outputs.release_version }}
           property: {{ env.bomProperty }}
-# Or:
-#          properties: |
-#            micronautXXXVersion=${{ steps.release_version.outputs.release_version }}
+          properties: {{ env.bomProperties }}
         continue-on-error: true
       - name: Run post-release
         if: success()
