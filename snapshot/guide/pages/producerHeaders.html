@@ -125,9 +125,8 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.messaging.annotation.Header;
 
@@ -150,12 +149,10 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
-
-import javax.annotation.Nullable
 
 
 @RabbitClient
@@ -177,8 +174,8 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.messaging.annotation.Headers

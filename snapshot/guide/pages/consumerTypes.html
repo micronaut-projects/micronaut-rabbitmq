@@ -131,8 +131,8 @@ function addJsClass() {
 <pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
-import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
@@ -160,8 +160,8 @@ public class ProductListener {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.BasicProperties
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
-import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener
@@ -184,8 +184,8 @@ class ProductListener {
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.BasicProperties
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
-import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 import java.util.ArrayList
