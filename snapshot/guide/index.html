@@ -28,6 +28,7 @@
 <body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
 
 <div id="table-of-content-nav-link" class="desktop">
+    <a id="theme-switcher" title="Switch to dark theme" href="javascript:switchTheme(true)"><i class="fa fa-moon-o"></i></a>
     <a title="Collapse/Open Table of contents" title="Hide Table of Contents" href="javascript:hideTableOfContents();" class="button">[ + ]</a>
 </div>
 
@@ -38,8 +39,7 @@
         </div>
         <div class="navLinks">
             <ul>
-                    <li>
-                        <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
+                    <li><div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
                             <a href="../guide/index.html" class="button">Table of contents</a>
                             <div id="nav-summary-childs" style="display:none;">
                                 
@@ -86,7 +86,6 @@
                 <li class="mobile">
                     <a title="Go to Configuration Reference documentation" href="../guide/configurationreference.html" class="button">Conf</a>
                 </li>
-
             </ul>
 
         </div>
@@ -167,11 +166,10 @@
         <h1>Micronaut RabbitMQ</h1>
         <p></p>
         <p>Integration between Micronaut and RabbitMQ</p>
-        <p><strong>Version:</strong> 1.1.4.BUILD-SNAPSHOT</p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option selected='selected' value='https://micronaut-projects.github.io/micronaut-rabbitmq/snapshot/guide/index.html'>SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.3/guide/index.html'>1.1.3</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.2/guide/index.html'>1.1.2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.1/guide/index.html'>1.1.1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0.M2/guide/index.html'>1.1.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0.M1/guide/index.html'>1.1.0.M1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.0.0.RC1/guide/index.html'>1.0.0.RC1</option></select></p>
     </div>
     
-
-<h1 id="introduction">1 Introduction</h1>
+<h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/introduction.adoc"'>
@@ -184,8 +182,7 @@
 <p>This project includes integration between Micronaut and RabbitMQ. The standard <a href="https://www.rabbitmq.com/java-client.html">Java Client</a> is used to do the actual publishing and consuming.</p>
 </div>
 
-
-<h1 id="whatsNew">2 What's New</h1>
+<h1 id="whatsNew"><a class="anchor" href="#whatsNew"></a>2 What's New</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/whatsNew.adoc"'>
@@ -249,8 +246,7 @@
 </div>
 </div>
 
-
-<h1 id="cli">3 Using the Micronaut CLI</h1>
+<h1 id="cli"><a class="anchor" href="#cli"></a>3 Using the Micronaut CLI</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/cli.adoc"'>
@@ -300,8 +296,7 @@ $ mn create-rabbitmq-listener Message
 </div>
 </div>
 
-
-<h1 id="quickStart">4 RabbitMQ Quick Start</h1>
+<h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 RabbitMQ Quick Start</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
@@ -315,8 +310,9 @@ $ mn create-rabbitmq-listener Message
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="gradle">compile <span class="hljs-string">'io.micronaut.configuration:micronaut-rabbitmq'</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.configuration:micronaut-rabbitmq")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -522,8 +518,7 @@ class ProductListener {
 </div>
 </div>
 
-
-<h1 id="config">5 Configuring The Connection</h1>
+<h1 id="config"><a class="anchor" href="#config"></a>5 Configuring The Connection</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/config.adoc"'>
@@ -1137,8 +1132,7 @@ The <code>addresses</code> option can also be used with the multiple server conf
 </div>
 </div>
 
-
-<h1 id="producer">6 RabbitMQ Producers</h1>
+<h1 id="producer"><a class="anchor" href="#producer"></a>6 RabbitMQ Producers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
@@ -1241,8 +1235,7 @@ Exchanges must already exist before you can publish messages to them.
 </div>
 </div>
 
-
-<h2 id="producerMethods">6.1 Defining @RabbitClient Methods</h2>
+<h2 id="producerMethods"><a class="anchor" href="#producerMethods"></a>6.1 Defining @RabbitClient Methods</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
@@ -1301,8 +1294,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 </table>
 </div>
 
-
-<h2 id="producerParameters">6.1.1 Publishing Parameters</h2>
+<h2 id="producerParameters"><a class="anchor" href="#producerParameters"></a>6.1.1 Publishing Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
@@ -1315,8 +1307,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 <p>All options are available to be set for publishing messages. The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicPublish(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)">basicPublish</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> to publish messages and all arguments can be set through annotations or method arguments.</p>
 </div>
 
-
-<h2 id="producerBinding">6.1.1.1 Binding (Routing Key)</h2>
+<h2 id="producerBinding"><a class="anchor" href="#producerBinding"></a>6.1.1.1 Binding (Routing Key)</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
@@ -1458,8 +1449,7 @@ The <code>connection</code> option is also available to be set on the <a href=".
 </div>
 </div>
 
-
-<h2 id="producerProperties">6.1.1.2 RabbitMQ Properties</h2>
+<h2 id="producerProperties"><a class="anchor" href="#producerProperties"></a>6.1.1.2 RabbitMQ Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
@@ -1570,8 +1560,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </table>
 </div>
 
-
-<h2 id="producerHeaders">6.1.1.3 Headers</h2>
+<h2 id="producerHeaders"><a class="anchor" href="#producerHeaders"></a>6.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
@@ -1681,8 +1670,7 @@ interface ProductClient {
 </table>
 </div>
 
-
-<h2 id="producerBody">6.1.1.4 Message Body</h2>
+<h2 id="producerBody"><a class="anchor" href="#producerBody"></a>6.1.1.4 Message Body</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
@@ -1695,8 +1683,7 @@ interface ProductClient {
 <p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON serialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and serialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
 </div>
 
-
-<h2 id="producerAcknowledge">6.1.2 Broker Acknowledgement</h2>
+<h2 id="producerAcknowledge"><a class="anchor" href="#producerAcknowledge"></a>6.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
@@ -1831,8 +1818,7 @@ RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO
 </table>
 </div>
 
-
-<h1 id="consumer">7 RabbitMQ Consumers</h1>
+<h1 id="consumer"><a class="anchor" href="#consumer"></a>7 RabbitMQ Consumers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
@@ -1848,8 +1834,7 @@ RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO
 <p>The implementation that powers <code>@RabbitListener</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ consumers.</p>
 </div>
 
-
-<h2 id="consumerMethods">7.1 Defining @RabbitListener Methods</h2>
+<h2 id="consumerMethods"><a class="anchor" href="#consumerMethods"></a>7.1 Defining @RabbitListener Methods</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods.adoc"'>
@@ -1884,8 +1869,7 @@ In order for all of the functionality to work as designed in this guide your cla
 </table>
 </div>
 
-
-<h2 id="consumerParameters">7.1.1 Consumer Parameters</h2>
+<h2 id="consumerParameters"><a class="anchor" href="#consumerParameters"></a>7.1.1 Consumer Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
@@ -1910,8 +1894,7 @@ In order for the consumer method to be invoked, all arguments must be satisfied.
 </table>
 </div>
 
-
-<h2 id="consumerQueue">7.1.1.1 Queue</h2>
+<h2 id="consumerQueue"><a class="anchor" href="#consumerQueue"></a>7.1.1.1 Queue</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
@@ -2209,8 +2192,7 @@ The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@
 </div>
 </div>
 
-
-<h2 id="consumerProperties">7.1.1.2 Properties</h2>
+<h2 id="consumerProperties"><a class="anchor" href="#consumerProperties"></a>7.1.1.2 Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
@@ -2335,8 +2317,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </table>
 </div>
 
-
-<h2 id="consumerHeaders">7.1.1.3 Headers</h2>
+<h2 id="consumerHeaders"><a class="anchor" href="#consumerHeaders"></a>7.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
@@ -2441,8 +2422,7 @@ class ProductListener {
 </table>
 </div>
 
-
-<h2 id="consumerTypes">7.1.1.4 RabbitMQ Types</h2>
+<h2 id="consumerTypes"><a class="anchor" href="#consumerTypes"></a>7.1.1.4 RabbitMQ Types</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
@@ -2550,8 +2530,7 @@ class ProductListener {
 </table>
 </div>
 
-
-<h2 id="consumerBody">7.1.1.5 Message Body</h2>
+<h2 id="consumerBody"><a class="anchor" href="#consumerBody"></a>7.1.1.5 Message Body</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
@@ -2564,8 +2543,7 @@ class ProductListener {
 <p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON deserialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and deserialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
 </div>
 
-
-<h2 id="consumerCustom">7.1.1.6 Custom Parameter Binding</h2>
+<h2 id="consumerCustom"><a class="anchor" href="#consumerCustom"></a>7.1.1.6 Custom Parameter Binding</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
@@ -3154,8 +3132,7 @@ class ProductInfoTypeBinder constructor(private val conversionService: Conversio
 </div>
 </div>
 
-
-<h2 id="consumerAcknowledge">7.1.2 Acknowledging Messages</h2>
+<h2 id="consumerAcknowledge"><a class="anchor" href="#consumerAcknowledge"></a>7.1.2 Acknowledging Messages</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
@@ -3280,8 +3257,7 @@ class ProductListener {
 </div>
 </div>
 
-
-<h2 id="consumerExceptions">7.2 Handling Consumer Exceptions</h2>
+<h2 id="consumerExceptions"><a class="anchor" href="#consumerExceptions"></a>7.2 Handling Consumer Exceptions</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
@@ -3316,8 +3292,7 @@ class ProductListener {
 <p>If the consumer bean does not implement <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the <a href="../api/io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html">DefaultRabbitListenerExceptionHandler</a> with your own implementation that is designated as <code>@Primary</code>.</p>
 </div>
 
-
-<h2 id="consumerExecutor">7.3 Consumer Execution</h2>
+<h2 id="consumerExecutor"><a class="anchor" href="#consumerExecutor"></a>7.3 Consumer Execution</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
@@ -3346,8 +3321,7 @@ class ProductListener {
 <p>If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.</p>
 </div>
 
-
-<h1 id="rpc">8 Direct Reply-To (RPC)</h1>
+<h1 id="rpc"><a class="anchor" href="#rpc"></a>8 Direct Reply-To (RPC)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc.adoc"'>
@@ -3573,8 +3547,7 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 </div>
 </div>
 
-
-<h1 id="initialization">9 Creating Queues/Exchanges</h1>
+<h1 id="initialization"><a class="anchor" href="#initialization"></a>9 Creating Queues/Exchanges</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/initialization.adoc"'>
@@ -3713,8 +3686,7 @@ class ChannelPoolListener : ChannelInitializer() { <b class="conum">(2)</b>
 </table>
 </div>
 
-
-<h1 id="serdes">10 Message Serialization/Deserialization (SerDes)</h1>
+<h1 id="serdes"><a class="anchor" href="#serdes"></a>10 Message Serialization/Deserialization (SerDes)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
@@ -3733,8 +3705,7 @@ class ChannelPoolListener : ChannelInitializer() { <b class="conum">(2)</b>
 <p>By default, standard Java lang types and JSON format (with Jackson) are supported. You can supply your own ser-des by simply registering a bean of type <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. All ser-des implement the <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/order/Ordered.html">Ordered</a> interface, so custom implementations can come before, after, or in between the default implementations.</p>
 </div>
 
-
-<h2 id="custom">10.1 Custom SerDes</h2>
+<h2 id="custom"><a class="anchor" href="#custom"></a>10.1 Custom SerDes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
@@ -3956,8 +3927,7 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 </table>
 </div>
 
-
-<h1 id="health">11 RabbitMQ Health Indicator</h1>
+<h1 id="health"><a class="anchor" href="#health"></a>11 RabbitMQ Health Indicator</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
@@ -4011,8 +3981,7 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 </table>
 </div>
 
-
-<h1 id="metrics">12 RabbitMQ Metrics</h1>
+<h1 id="metrics"><a class="anchor" href="#metrics"></a>12 RabbitMQ Metrics</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/metrics.adoc"'>

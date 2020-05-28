@@ -2,6 +2,15 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
     <title>6 RabbitMQ Producers 1.1.4.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
@@ -128,8 +137,7 @@ function addJsClass() {
                 
 
                 
-
-<h1 id="producer">6 RabbitMQ Producers</h1>
+<h1 id="producer"><a class="anchor" href="#producer"></a>6 RabbitMQ Producers</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
@@ -232,8 +240,7 @@ Exchanges must already exist before you can publish messages to them.
 </div>
 </div>
 
-
-<h2 id="producerMethods">6.1 Defining @RabbitClient Methods</h2>
+<h2 id="producerMethods"><a class="anchor" href="#producerMethods"></a>6.1 Defining @RabbitClient Methods</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
@@ -292,8 +299,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 </table>
 </div>
 
-
-<h2 id="producerParameters">6.1.1 Publishing Parameters</h2>
+<h2 id="producerParameters"><a class="anchor" href="#producerParameters"></a>6.1.1 Publishing Parameters</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
@@ -306,8 +312,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 <p>All options are available to be set for publishing messages. The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicPublish(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)">basicPublish</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> to publish messages and all arguments can be set through annotations or method arguments.</p>
 </div>
 
-
-<h2 id="producerBinding">6.1.1.1 Binding (Routing Key)</h2>
+<h2 id="producerBinding"><a class="anchor" href="#producerBinding"></a>6.1.1.1 Binding (Routing Key)</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
@@ -449,8 +454,7 @@ The <code>connection</code> option is also available to be set on the <a href=".
 </div>
 </div>
 
-
-<h2 id="producerProperties">6.1.1.2 RabbitMQ Properties</h2>
+<h2 id="producerProperties"><a class="anchor" href="#producerProperties"></a>6.1.1.2 RabbitMQ Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
@@ -561,8 +565,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </table>
 </div>
 
-
-<h2 id="producerHeaders">6.1.1.3 Headers</h2>
+<h2 id="producerHeaders"><a class="anchor" href="#producerHeaders"></a>6.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
@@ -672,8 +675,7 @@ interface ProductClient {
 </table>
 </div>
 
-
-<h2 id="producerBody">6.1.1.4 Message Body</h2>
+<h2 id="producerBody"><a class="anchor" href="#producerBody"></a>6.1.1.4 Message Body</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
@@ -686,8 +688,7 @@ interface ProductClient {
 <p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON serialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and serialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
 </div>
 
-
-<h2 id="producerAcknowledge">6.1.2 Broker Acknowledgement</h2>
+<h2 id="producerAcknowledge"><a class="anchor" href="#producerAcknowledge"></a>6.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
