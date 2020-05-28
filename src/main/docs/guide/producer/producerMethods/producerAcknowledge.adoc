@@ -6,7 +6,7 @@ Micronaut comes with RxJava2 by default, and the link:http://reactivex.io/RxJava
 
 For example:
 
-snippet::io.micronaut.configuration.rabbitmq.docs.publisher.acknowledge.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.publisher.acknowledge.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The recommended approach of using a `Completable` as the return type for those using link:https://github.com/ReactiveX/RxJava[RxJava 2].
 <2> A `Maybe` also closely matches the use case of publisher acknowledgement.

@@ -2,7 +2,7 @@ Arguments can also be bound based on their type. Several types are supported by 
 
 There are only two types that are supported for retrieving data about the message. They are the link:{apirabbit}client/Envelope.html[Envelope] and link:{apirabbit}client/BasicProperties.html[BasicProperties].
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.types.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.types.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The argument is bound from the link:{apirabbit}client/Envelope.html[Envelope]
 <2> The argument is bound from the link:{apirabbit}client/BasicProperties.html[BasicProperties]

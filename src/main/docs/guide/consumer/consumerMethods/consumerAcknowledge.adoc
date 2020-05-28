@@ -5,7 +5,7 @@ There are three ways a message can be acknowledged, rejected, or not acknowledge
 
 === Acknowledgement Type
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.acknowledge.type.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.acknowledge.type.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The `reQueue` option is no longer considered when the method has a api:configuration.rabbitmq.bind.RabbitAcknowledgement[] argument.
 <2> The acknowledgement argument is injected into the method. That signifies that this library is no longer in control of acknowledgement in any way for this consumer.

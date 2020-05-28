@@ -1,6 +1,6 @@
 Headers can be retrieved with the link:{apimicronaut}messaging/annotation/Header.html[@Header] annotation applied to the arguments of the method.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.headers.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.headers.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The header name comes from the annotation and the value is retrieved and converted to a Boolean.
 <2> The header name comes from the annotation and the value is retrieved and converted to a Long.
