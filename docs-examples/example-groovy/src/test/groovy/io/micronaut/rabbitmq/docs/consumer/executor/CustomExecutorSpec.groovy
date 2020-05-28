@@ -14,7 +14,7 @@ class CustomExecutorSpec extends AbstractRabbitMQTest {
         when:
 // tag::producer[]
         def productClient = applicationContext.getBean(ProductClient)
-        productClient.send("quickstart".getBytes())
+        productClient.send("custom-executor-test".getBytes())
 // end::producer[]
 
         ProductListener productListener = applicationContext.getBean(ProductListener)
@@ -22,7 +22,7 @@ class CustomExecutorSpec extends AbstractRabbitMQTest {
         then:
         conditions.eventually {
             productListener.messageLengths.size() == 1
-            productListener.messageLengths[0] == "quickstart"
+            productListener.messageLengths[0] == "custom-executor-test"
         }
 
         cleanup:

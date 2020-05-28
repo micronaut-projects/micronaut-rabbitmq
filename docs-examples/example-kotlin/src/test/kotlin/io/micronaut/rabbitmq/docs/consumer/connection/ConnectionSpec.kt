@@ -21,13 +21,13 @@ class ConnectionSpec : AbstractRabbitMQTest({
 
 // tag::producer[]
             val productClient = ctx.getBean(ProductClient::class.java)
-            productClient.send("quickstart".toByteArray())
+            productClient.send("connection-test".toByteArray())
 // end::producer[]
 
             then("the message is consumed") {
                 eventually(10.seconds, AssertionFailedError::class.java) {
                     productListener.messageLengths.size shouldBe 1
-                    productListener.messageLengths[0] shouldBe "quickstart"
+                    productListener.messageLengths[0] shouldBe "connection-test"
                 }
             }
         }

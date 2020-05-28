@@ -17,7 +17,7 @@ public class CustomExecutorSpec extends AbstractRabbitMQTest {
 
 // tag::producer[]
 ProductClient productClient = applicationContext.getBean(ProductClient.class);
-productClient.send("quickstart".getBytes());
+productClient.send("custom-executor-test".getBytes());
 // end::producer[]
 
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
@@ -25,7 +25,7 @@ productClient.send("quickstart".getBytes());
         try {
             await().atMost(5, SECONDS).until(() ->
                     productListener.messageLengths.size() == 1 &&
-                            productListener.messageLengths.get(0).equals("quickstart")
+                            productListener.messageLengths.get(0).equals("custom-executor-test")
             );
         } finally {
             applicationContext.close();

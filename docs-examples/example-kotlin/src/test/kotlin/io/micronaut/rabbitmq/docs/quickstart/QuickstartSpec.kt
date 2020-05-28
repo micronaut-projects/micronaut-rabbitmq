@@ -21,14 +21,14 @@ productClient.send("quickstart".toByteArray())
 // end::producer[]
 
             then("the message is consumed") {
-                eventually(60.seconds, AssertionFailedError::class.java) {
+                eventually(10.seconds, AssertionFailedError::class.java) {
                     productListener.messageLengths.size shouldBe 1
                     productListener.messageLengths[0] shouldBe "quickstart"
                 }
             }
         }
 
-        Thread.sleep(200)
+        Thread.sleep(1000)
         ctx.stop()
     }
 

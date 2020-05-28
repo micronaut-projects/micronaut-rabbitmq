@@ -17,8 +17,9 @@ class ProductListener {
 
     @Queue("product") // <2>
     fun receive(data: ByteArray) { // <3>
-        messageLengths.add(String(data))
-        println("Kotlin received ${data.size} bytes from RabbitMQ")
+        val string = String(data)
+        messageLengths.add(string)
+        println("Kotlin received ${data.size} bytes from RabbitMQ: ${string}")
     }
 }
 // end::clazz[]
