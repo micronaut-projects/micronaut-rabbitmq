@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>4 RabbitMQ Quick Start 2.0.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut RabbitMQ
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/whatsNew.html"><strong>2</strong><span>What's New</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>4</strong><span>RabbitMQ Quick Start</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/cli.html">&lt;&lt; <strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 RabbitMQ Quick Start</h1>
+
+                    <p><strong>Version:</strong> 2.0.0.M1</p>
+                </div>
+
+                
+
+                
+<h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 RabbitMQ Quick Start</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To add support for RabbitMQ to an existing project, you should first add the Micronaut RabbitMQ configuration to your build configuration. For example:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.rabbitmq:micronaut-rabbitmq")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.rabbitmq&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example the following is a trivial <code>@RabbitClient</code> interface:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.RabbitClient;
+import io.micronaut.context.annotation.Requires;
+
+@RabbitClient <b class="conum">(1)</b>
+public interface ProductClient {
+
+    @Binding("product") <b class="conum">(2)</b>
+    void send(byte[] data); <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(2)</b>
+    void send(byte[] data) <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.context.annotation.Requires
+
+@RabbitClient <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product") <b class="conum">(2)</b>
+    fun send(data: ByteArray)  <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation is used to designate this interface as a client</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation indicates which binding or routing key the message should be routed to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>send</code> method accepts single parameter which is the body of the message.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of <code>ProductClient</code> either by looking up the bean from the <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a> or by injecting the bean with <code>@Inject</code>:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">ProductClient productClient = applicationContext.getBean(ProductClient.class);
+productClient.send("quickstart".getBytes());</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">def productClient = applicationContext.getBean(ProductClient)
+productClient.send("quickstart".getBytes())</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val productClient = ctx.getBean(ProductClient::class.java)
+productClient.send("quickstart".toByteArray())</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Because the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
+</div>
+<div class="paragraph">
+<p>The following example will listen for messages published by the <code>ProductClient</code> in the previous section:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
+import io.micronaut.context.annotation.Requires;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RabbitListener <b class="conum">(1)</b>
+public class ProductListener {
+
+    List&lt;String&gt; messageLengths = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+    @Queue("product") <b class="conum">(2)</b>
+    public void receive(byte[] data) { <b class="conum">(3)</b>
+        messageLengths.add(new String(data));
+        System.out.println("Java received " + data.length + " bytes from RabbitMQ");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+
+@RabbitListener <b class="conum">(1)</b>
+class ProductListener {
+
+    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue("product") <b class="conum">(2)</b>
+    void receive(byte[] data) { <b class="conum">(3)</b>
+        messageLengths.add(new String(data))
+        println("Groovy received ${data.length} bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.context.annotation.Requires
+import java.util.*
+
+
+@RabbitListener <b class="conum">(1)</b>
+class ProductListener {
+
+    val messageLengths: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product") <b class="conum">(2)</b>
+    fun receive(data: ByteArray) { <b class="conum">(3)</b>
+        val string = String(data)
+        messageLengths.add(string)
+        println("Kotlin received ${data.size} bytes from RabbitMQ: ${string}")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> is used to designate the bean as a message listener.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is used to indicate which queue to subscribe to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/cli.html">&lt;&lt; <strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

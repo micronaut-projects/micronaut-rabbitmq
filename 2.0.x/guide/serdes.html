@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>10 Message Serialization/Deserialization (SerDes) 2.0.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut RabbitMQ
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/whatsNew.html"><strong>2</strong><span>What's New</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>4</strong><span>RabbitMQ Quick Start</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>10 Message Serialization/Deserialization (SerDes)</h1>
+
+                    <p><strong>Version:</strong> 2.0.0.M1</p>
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#custom"><strong>10.1</strong><span>Custom SerDes</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+<h1 id="serdes"><a class="anchor" href="#serdes"></a>10 Message Serialization/Deserialization (SerDes)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The serialization and deserialization of message bodies is handled through instances of <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. The ser-des (Serializer/Deserializer) is responsible for both serialization and deserialization of RabbitMQ message bodies into the message body types defined in your clients and consumers methods.</p>
+</div>
+<div class="paragraph">
+<p>The ser-des are managed by a <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html">RabbitMessageSerDesRegistry</a>. All ser-des beans are injected in order into the registry and then searched for when serialization or deserialization is needed. The first ser-des that returns true for <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">RabbitMessageSerDes#supports(Class)</a> is returned and used.</p>
+</div>
+<div class="paragraph">
+<p>By default, standard Java lang types and JSON format (with Jackson) are supported. You can supply your own ser-des by simply registering a bean of type <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. All ser-des implement the <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/order/Ordered.html">Ordered</a> interface, so custom implementations can come before, after, or in between the default implementations.</p>
+</div>
+
+<h2 id="custom"><a class="anchor" href="#custom"></a>10.1 Custom SerDes</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>A custom serializer/deserializer would be necessary to support custom data formats. In the section on <a href="#consumerCustom">Custom Consumer Binding</a> an example was demonstrated that allowed binding a <code>ProductInfo</code> type from the headers of the message. If instead that object should represent the body of the message with a custom data format, you could register your own serializer/deserializer to do so.</p>
+</div>
+<div class="paragraph">
+<p>In this example a simple data format of the string representation of the fields are concatenated together with a pipe character.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.type.Argument;
+
+import javax.inject.Singleton;
+import java.nio.charset.Charset;
+import java.util.Optional;
+
+@Singleton <b class="conum">(1)</b>
+public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private static final Charset CHARSET = Charset.forName("UTF-8");
+
+    private final ConversionService&lt;?&gt; conversionService;
+
+    public ProductInfoSerDes(ConversionService&lt;?&gt; conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService;
+    }
+
+    @Override
+    public ProductInfo deserialize(RabbitConsumerState consumerState, Argument&lt;ProductInfo&gt; argument) { <b class="conum">(4)</b>
+        String body = new String(consumerState.getBody(), CHARSET);
+        String[] parts = body.split("\\|");
+        if (parts.length == 3) {
+            String size = parts[0];
+            if (size.equals("null")) {
+                size = null;
+            }
+
+            Optional&lt;Long&gt; count = conversionService.convert(parts[1], Long.class);
+            Optional&lt;Boolean&gt; sealed = conversionService.convert(parts[2], Boolean.class);
+
+            if (count.isPresent() &amp;&amp; sealed.isPresent()) {
+                return new ProductInfo(size, count.get(), sealed.get());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
+        if (data == null) {
+            return null;
+        }
+        return (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET);
+    }
+
+    @Override
+    public boolean supports(Argument&lt;ProductInfo&gt; argument) { <b class="conum">(6)</b>
+        return argument.getType().isAssignableFrom(ProductInfo.class);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    private static final Charset CHARSET = Charset.forName("UTF-8")
+
+    private final ConversionService conversionService
+
+    ProductInfoSerDes(ConversionService conversionService) { <b class="conum">(3)</b>
+        this.conversionService = conversionService
+    }
+
+    @Override
+    ProductInfo deserialize(RabbitConsumerState consumerState, Argument&lt;ProductInfo&gt; argument) { <b class="conum">(4)</b>
+        String body = new String(consumerState.getBody(), CHARSET)
+        String[] parts = body.split("\\|")
+        if (parts.length == 3) {
+            String size = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            Optional&lt;Long&gt; count = conversionService.convert(parts[1], Long)
+            Optional&lt;Boolean&gt; sealed = conversionService.convert(parts[2], Boolean)
+
+            if (count.isPresent() &amp;&amp; sealed.isPresent()) {
+                return new ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        null
+    }
+
+    @Override
+    byte[] serialize(ProductInfo data, MutableBasicProperties properties) { <b class="conum">(5)</b>
+        if (data == null) {
+            return null
+        }
+        (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
+    }
+
+    @Override
+    boolean supports(Argument&lt;ProductInfo&gt; argument) { <b class="conum">(6)</b>
+        argument.getType().isAssignableFrom(ProductInfo)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
+
+import javax.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton <b class="conum">(1)</b>
+class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
+    : RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
+
+    override fun deserialize(consumerState: RabbitConsumerState, argument: Argument&lt;ProductInfo&gt;): ProductInfo? { <b class="conum">(4)</b>
+        val body = String(consumerState.body, CHARSET)
+        val parts = body.split("\\|".toRegex())
+        if (parts.size == 3) {
+            var size: String? = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            val count = conversionService.convert(parts[1], Long::class.java)
+            val sealed = conversionService.convert(parts[2], Boolean::class.java)
+
+            if (count.isPresent &amp;&amp; sealed.isPresent) {
+                return ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        return null
+    }
+
+    override fun serialize(data: ProductInfo?, properties: MutableBasicProperties): ByteArray { <b class="conum">(5)</b>
+        return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
+    }
+
+    override fun supports(argument: Argument&lt;ProductInfo&gt;): Boolean { <b class="conum">(6)</b>
+        return argument.type.isAssignableFrom(ProductInfo::class.java)
+    }
+
+    companion object {
+        private val CHARSET = Charset.forName("UTF-8")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is declared as a singleton so it will be registered with the context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The generic specifies what type we want to accept and return</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected to convert the parts of the message to the required types</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The deserialize method takes the bytes from the message and constructs a <code>ProductInfo</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The serialize method takes the <code>ProductInfo</code> and returns the bytes to publish. A mutable version of the properties is also provided so properties such as the content type can be set before publishing.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The supports method ensures only the correct body types are processed by this ser-des</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Because the <code>getOrder</code> method was not overridden, the default order of 0 is used. All default ser-des have a lower precedent than the default order which means this ser-des will be checked before the others.
+</td>
+</tr>
+</table>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/initialization.html">&lt;&lt; <strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,770 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>5 Configuring The Connection 2.0.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut RabbitMQ
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/whatsNew.html"><strong>2</strong><span>What's New</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cli.html"><strong>3</strong><span>Using the Micronaut CLI</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>4</strong><span>RabbitMQ Quick Start</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/config.html"><strong>5</strong><span>Configuring The Connection</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/consumer.html"><strong>7</strong><span>RabbitMQ Consumers</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rpc.html"><strong>8</strong><span>Direct Reply-To (RPC)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/initialization.html"><strong>9</strong><span>Creating Queues/Exchanges</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serdes.html"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/health.html"><strong>11</strong><span>RabbitMQ Health Indicator</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/metrics.html"><strong>12</strong><span>RabbitMQ Metrics</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/quickStart.html">&lt;&lt; <strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Configuring The Connection</h1>
+
+                    <p><strong>Version:</strong> 2.0.0.M1</p>
+                </div>
+
+                
+
+                
+<h1 id="config"><a class="anchor" href="#config"></a>5 Configuring The Connection</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/config.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All properties on the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/ConnectionFactory.html">ConnectionFactory</a> are available to be modified, either through configuration or a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a>.</p>
+</div>
+<div class="paragraph">
+<p>The properties that can be converted from the string values in a configuration file can be configured directly.</p>
+</div>
+<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html">SingleRabbitConnectionFactoryConfig</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.virtual-host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.URI</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-channel-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-frame-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.handshake-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-heartbeat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.client-properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.sasl-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shared-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.heartbeat-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.thread-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.exception-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.automatic-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.metrics-collector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-refresh-service</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.nio-params</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.ssl-context-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-should-check-rpc-response-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.work-pool-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.error-on-write-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-recovery-triggering-condition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-retry-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.traffic-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the addresses to be passed to {@link ConnectionFactory#newConnection(List)}.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.consumer-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of which executor service consumers should be executed on. Default {@value #DEFAULT_CONSUMER_EXECUTOR}.</p></td>
+</tr>
+</tbody>
+</table>
+<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.html">ClusterRabbitConnectionFactoryConfig</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.virtual-host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.URI</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-channel-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-frame-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.handshake-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-heartbeat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.client-properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.sasl-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shared-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.heartbeat-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.thread-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.exception-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.automatic-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.metrics-collector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-refresh-service</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.nio-params</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.ssl-context-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-should-check-rpc-response-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.work-pool-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.error-on-write-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-recovery-triggering-condition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-retry-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.traffic-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the addresses to be passed to {@link ConnectionFactory#newConnection(List)}.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.consumer-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of which executor service consumers should be executed on. Default {@value #DEFAULT_CONSUMER_EXECUTOR}.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Without any configuration the defaults in the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/ConnectionFactory.html">ConnectionFactory</a> will be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/impl/CredentialsProvider.html">CredentialsProvider</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package io.micronaut.rabbitmq.docs.config;
+
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.impl.DefaultCredentialsProvider;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
+
+import javax.inject.Singleton;
+
+@Singleton
+public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    @Override
+    public ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
+        ConnectionFactory connectionFactory = event.getBean();
+        connectionFactory.setCredentialsProvider(new DefaultCredentialsProvider("guest", "guest"));
+        return connectionFactory;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    @Override
+    ConnectionFactory onCreated(BeanCreatedEvent&lt;ConnectionFactory&gt; event) {
+        def connectionFactory = event.bean
+        connectionFactory.credentialsProvider = new DefaultCredentialsProvider("guest", "guest")
+        connectionFactory
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+import javax.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    override fun onCreated(event: BeanCreatedEvent&lt;ConnectionFactory&gt;?): ConnectionFactory {
+        val connectionFactory = event!!.bean
+        connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
+        return connectionFactory
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is also possible to disable the integration entirely with <code>rabbitmq.enabled: false</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="_connections">Connections</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to configure multiple connections to the same server, different servers, or a single connection to one of a list of servers.</p>
+</div>
+<div class="paragraph">
+<p>One may want to configure multiple connections to the same server in order to have one or more sets of consumers to be executed on a different thread pool. Additionally, the below config could be used to connect to different servers with the same consumer executor by simply omitting the <code>consumer-executor</code> configuration option or supplying the same value.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
+    servers:
+        server-a:
+            host: localhost
+            port: 5672
+            consumer-executor: "a-pool"
+        server-b:
+            host: localhost
+            port: 5672
+            consumer-executor: "b-pool"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the connection is specified in the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation to be "server-b" for example, the "b-pool" executor service will be used to execute the consumers.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the configuration option <code>rabbitmq.servers</code> is used, no other options underneath <code>rabbitmq</code> are read; for example <code>rabbitmq.uri</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>RabbitMQ also supports a fail over connection strategy where the first server that connects successfully will be used among a list of servers. To use this option in Micronaut, simply supply a list of <code>host:port</code> addresses.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
+    addresses:
+      - localhost:12345
+      - localhost:12346
+    username: guest
+    password: guest</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>addresses</code> option can also be used with the multiple server configuration.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/quickStart.html">&lt;&lt; <strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/producer.html"><strong>6</strong><span>RabbitMQ Producers</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
