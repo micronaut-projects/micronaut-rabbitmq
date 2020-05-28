@@ -1,4 +1,4 @@
-package io.micronaut.configuration
+package io.micronaut.rabbitmq
 
 import org.testcontainers.containers.GenericContainer
 

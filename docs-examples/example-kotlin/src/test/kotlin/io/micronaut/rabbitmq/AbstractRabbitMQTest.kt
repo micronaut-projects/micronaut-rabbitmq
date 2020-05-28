@@ -2,7 +2,6 @@ package io.micronaut.rabbitmq
 
 import io.kotlintest.specs.AbstractBehaviorSpec
 import io.kotlintest.specs.BehaviorSpec
-import io.micronaut.configuration.KGenericContainer
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 
