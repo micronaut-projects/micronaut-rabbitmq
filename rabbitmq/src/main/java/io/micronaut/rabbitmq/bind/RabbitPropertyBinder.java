@@ -16,9 +16,9 @@
 package io.micronaut.rabbitmq.bind;
 
 import com.rabbitmq.client.AMQP;
-import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.rabbitmq.annotation.RabbitProperty;
 
 import javax.inject.Singleton;
 import java.util.HashMap;

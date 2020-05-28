@@ -18,7 +18,6 @@ package io.micronaut.rabbitmq.executor;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.executor.ExecutorConfiguration;
 import io.micronaut.scheduling.executor.ExecutorType;
@@ -28,7 +27,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Configures a {@link java.util.concurrent.ScheduledExecutorService} for running {@link RabbitListener} instances.
+ * Configures a {@link java.util.concurrent.ScheduledExecutorService} for running {@link io.micronaut.rabbitmq.annotation.RabbitListener} instances.
  *
  * @author James Kleeh
  * @since 1.1.0

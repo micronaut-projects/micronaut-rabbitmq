@@ -15,20 +15,19 @@
  */
 package io.micronaut.rabbitmq.intercept;
 
-import io.micronaut.rabbitmq.reactive.ReactivePublisher;
-import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
-import io.micronaut.rabbitmq.annotation.RabbitClient;
+import io.micronaut.rabbitmq.reactive.ReactivePublisher;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * Stores the static state for publishing messages with {@link RabbitClient}.
+ * Stores the static state for publishing messages with {@link io.micronaut.rabbitmq.annotation.RabbitClient}.
  *
  * @author James Kleeh
  * @since 1.1.0

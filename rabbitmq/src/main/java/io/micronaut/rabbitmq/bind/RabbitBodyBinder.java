@@ -15,10 +15,10 @@
  */
 package io.micronaut.rabbitmq.bind;
 
-import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.type.Argument;
 import io.micronaut.messaging.annotation.Body;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 
 import javax.inject.Singleton;
 import java.util.Optional;

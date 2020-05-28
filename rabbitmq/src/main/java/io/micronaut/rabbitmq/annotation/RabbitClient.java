@@ -16,9 +16,9 @@
 package io.micronaut.rabbitmq.annotation;
 
 import io.micronaut.aop.Introduction;
-import io.micronaut.rabbitmq.intercept.RabbitMQIntroductionAdvice;
 import io.micronaut.context.annotation.AliasFor;
 import io.micronaut.context.annotation.Type;
+import io.micronaut.rabbitmq.intercept.RabbitMQIntroductionAdvice;
 import io.micronaut.retry.annotation.Recoverable;
 
 import javax.inject.Scope;

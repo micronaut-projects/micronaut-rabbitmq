@@ -15,8 +15,8 @@
  */
 package io.micronaut.rabbitmq.exception;
 
-import io.micronaut.rabbitmq.reactive.RabbitPublishState;
 import io.micronaut.messaging.exceptions.MessagingClientException;
+import io.micronaut.rabbitmq.reactive.RabbitPublishState;
 
 import java.util.List;
 import java.util.Optional;

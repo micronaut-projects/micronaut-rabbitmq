@@ -15,17 +15,20 @@
  */
 package io.micronaut.rabbitmq.serdes;
 
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 import io.micronaut.core.type.Argument;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Serializes and deserializes standard Java types.

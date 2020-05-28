@@ -16,10 +16,9 @@
 package io.micronaut.rabbitmq.exception;
 
 import io.micronaut.core.exceptions.ExceptionHandler;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
 
 /**
- * Interface that {@link RabbitListener} beans can implement to handle exceptions.
+ * Interface that {@link io.micronaut.rabbitmq.annotation.RabbitListener} beans can implement to handle exceptions.
  *
  * @author James Kleeh
  * @since 1.1.0

@@ -16,21 +16,23 @@
 package io.micronaut.rabbitmq.reactive;
 
 import com.rabbitmq.client.*;
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
-import io.micronaut.rabbitmq.connect.ChannelPool;
-import io.micronaut.rabbitmq.exception.RabbitClientException;
-import io.micronaut.rabbitmq.intercept.DefaultConsumer;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.messaging.exceptions.MessagingClientException;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.connect.ChannelPool;
+import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
+import io.micronaut.rabbitmq.exception.RabbitClientException;
+import io.micronaut.rabbitmq.intercept.DefaultConsumer;
 import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;

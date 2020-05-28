@@ -23,7 +23,9 @@ import io.micronaut.core.util.ArrayUtils;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Used to determine which {@link RabbitArgumentBinder} to use for any given argument.

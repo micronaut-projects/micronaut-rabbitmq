@@ -15,9 +15,8 @@
  */
 package io.micronaut.rabbitmq.exception;
 
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.context.annotation.Primary;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ import javax.inject.Singleton;
 import java.util.Optional;
 
 /**
- * The default ExceptionHandler used when a {@link RabbitListener}
+ * The default ExceptionHandler used when a {@link io.micronaut.rabbitmq.annotation.RabbitListener}
  * fails to process a RabbitMQ message. By default just logs the error.
  *
  * @author James Kleeh

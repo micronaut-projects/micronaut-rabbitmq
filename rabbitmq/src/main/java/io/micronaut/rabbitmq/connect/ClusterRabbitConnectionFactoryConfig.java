@@ -15,7 +15,10 @@
  */
 package io.micronaut.rabbitmq.connect;
 
-import io.micronaut.context.annotation.*;
+import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.EachProperty;
+import io.micronaut.context.annotation.Parameter;
+import io.micronaut.context.annotation.Requires;
 
 import javax.annotation.Nonnull;
 

@@ -15,15 +15,14 @@
  */
 package io.micronaut.rabbitmq.exception;
 
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.messaging.exceptions.MessageListenerException;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
- * Exception thrown when an error occurs processing a RabbitMQ message via a {@link RabbitListener}.
+ * Exception thrown when an error occurs processing a RabbitMQ message via a {@link io.micronaut.rabbitmq.annotation.RabbitListener}.
  *
  * @author James Kleeh
  * @since 1.1.0

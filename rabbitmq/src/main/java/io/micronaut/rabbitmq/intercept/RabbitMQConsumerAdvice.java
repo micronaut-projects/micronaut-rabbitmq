@@ -15,19 +15,10 @@
  */
 package io.micronaut.rabbitmq.intercept;
 
-import com.rabbitmq.client.*;
-import io.micronaut.rabbitmq.annotation.Queue;
-import io.micronaut.rabbitmq.annotation.RabbitConnection;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
-import io.micronaut.rabbitmq.annotation.RabbitProperty;
-import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
-import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.rabbitmq.connect.ChannelPool;
-import io.micronaut.rabbitmq.exception.RabbitListenerException;
-import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
-import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
-import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.RecoverableChannel;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -41,6 +32,18 @@ import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.Acknowledgement;
 import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 import io.micronaut.messaging.exceptions.MessageListenerException;
+import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitConnection;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
+import io.micronaut.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
+import io.micronaut.rabbitmq.connect.ChannelPool;
+import io.micronaut.rabbitmq.exception.RabbitListenerException;
+import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
