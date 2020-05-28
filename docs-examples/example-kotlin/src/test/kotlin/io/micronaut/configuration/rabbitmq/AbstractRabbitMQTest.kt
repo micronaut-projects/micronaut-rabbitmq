@@ -18,11 +18,11 @@ abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}):
         }
 
         fun startContext(specName: String): ApplicationContext {
-            return ApplicationContext.run(getDefaultConfig(specName))
+            return ApplicationContext.run(getDefaultConfig(specName), "test")
         }
 
         fun startContext(configuration: Map<String, Any>): ApplicationContext {
-            return ApplicationContext.run(configuration)
+            return ApplicationContext.run(configuration, "test")
         }
 
         fun getDefaultConfig(specName: String): MutableMap<String, Any> {

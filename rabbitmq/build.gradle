@@ -11,11 +11,9 @@ dependencies {
     
     testCompile "io.micronaut:micronaut-inject-groovy"
     testCompile "io.micronaut:micronaut-inject-java"
-    testCompile "org.testcontainers:spock:1.12.1"
+    testCompile "org.testcontainers:spock:1.14.2"
     testCompile "io.micronaut:micronaut-management"
 }
-
-licenseTest.enabled = false
 
 test {
     jvmArgs '-Duser.country=US'

@@ -1,19 +1,16 @@
 plugins {
     id "groovy"
-    id "io.spring.dependency-management"
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "io.micronaut:micronaut-bom:$micronautVersion"
-    }
+repositories {
+    jcenter()
 }
 
 dependencies {
     testCompile project(":rabbitmq")
     testCompile "io.micronaut:micronaut-inject"
     testCompileOnly "io.micronaut:micronaut-inject-groovy"
-    testCompile "org.testcontainers:spock:1.12.1"
+    testCompile "org.testcontainers:spock:1.14.2"
     testCompile("org.spockframework:spock-core") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
@@ -21,8 +18,6 @@ dependencies {
     testCompile "io.projectreactor:reactor-core"
     testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }
-
-licenseTest.enabled = false
 
 test {
     jvmArgs '-Duser.country=US'
