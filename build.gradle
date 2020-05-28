@@ -21,6 +21,12 @@ subprojects { Project subproject ->
                 if(group == 'com.rabbitmq') {
                     details.useVersion(rabbitVersion)
                 }
+                if(group == 'org.spockframework') {
+                    details.useVersion(spockVersion)
+                }
+                if(group == 'org.junit.jupiter') {
+                    details.useVersion(junitVersion)
+                }
             }
         }
     }
