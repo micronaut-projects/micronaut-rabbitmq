@@ -6,7 +6,7 @@ The following is an example direct reply to where the consumer is converting the
 
 The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.rpc.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.rpc.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The reply to property is set. This could be placed on individual methods.
 <2> The send method is blocking and will return when the response is received.
@@ -18,7 +18,7 @@ IMPORTANT: In order for the publisher to assume RPC should be used instead of ju
 
 The "server side" in this case starts with the consumption of a message, and then a new message is published to the reply to queue.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.rpc.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.rpc.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The reply to property is injected. If the consumer will not always be participating in RPC this could be annotated with `@Nullable` to allow both use cases.
 <2> The channel is injected so it can be used. This could be replaced with a method call of another `@RabbitClient`.
@@ -32,6 +32,6 @@ IMPORTANT: RPC consumer methods must never return a reactive type. Because the r
 
 By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:
 
-include::{includedir}configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]
+include::{includedir}configurationProperties/io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]
 
 

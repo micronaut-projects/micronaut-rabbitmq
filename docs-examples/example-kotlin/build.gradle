@@ -25,11 +25,11 @@ test {
 
     jvmArgs '-Duser.country=US'
     jvmArgs '-Duser.language=en'
-    testLogging {
-        showStandardStreams = true
-        exceptionFormat = 'full'
-    }
     failFast = true
+
+    systemProperties['junit.jupiter.execution.parallel.enabled'] = true
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    forkEvery = 1
 }
 
 compileTestKotlin {

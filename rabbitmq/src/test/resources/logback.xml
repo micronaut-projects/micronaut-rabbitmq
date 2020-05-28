@@ -12,6 +12,6 @@
         <appender-ref ref="STDOUT" />
     </root>
     <logger name="com.rabbitmq.client" level="TRACE" />
-    <logger name="io.micronaut.configuration.rabbitmq" level="TRACE"/>
+    <logger name="io.micronaut.rabbitmq" level="TRACE"/>
     <!--<logger name="io.micronaut.context" level="TRACE"/>-->
 </configuration>
