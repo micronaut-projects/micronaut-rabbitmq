@@ -16,6 +16,7 @@ dependencies {
     }
     testRuntime "ch.qos.logback:logback-classic:1.2.3"
     testCompile "io.projectreactor:reactor-core"
+    testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }
 
 test {
