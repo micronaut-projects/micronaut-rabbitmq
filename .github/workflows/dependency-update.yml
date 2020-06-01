@@ -44,4 +44,4 @@ jobs:
           commit-message: Update dependencies
           title: 'Dependency upgrades'
           labels: "type: dependency-upgrade"
-          branch: ${{ env.githubBranch }}
+          base: ${{ env.githubBranch }}
