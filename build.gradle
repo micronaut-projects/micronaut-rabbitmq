@@ -1,11 +1,12 @@
 buildscript {
     repositories {
+//        mavenLocal()
         jcenter()
         maven { url  "https://dl.bintray.com/micronaut/core-releases-local" }
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.0.RC3"
+        classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.0.RC5"
     }
 }
 
@@ -23,4 +24,4 @@ subprojects { Project subproject ->
     apply plugin: "io.micronaut.build.publishing"
 }
 
-apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-docs/v${micronautDocsVersion}/gradle/docs.gradle"
+apply plugin: "io.micronaut.build.docs"
