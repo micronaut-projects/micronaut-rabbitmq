@@ -1,18 +1,20 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
-    // needed because otherwise IntelliJ integration broken
-    compileOnly "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
-    compile "io.micronaut:micronaut-messaging"
-    compile "io.micronaut:micronaut-inject"
-    compile "com.rabbitmq:amqp-client:$rabbitVersion"
+    api "io.micronaut:micronaut-messaging"
+    api "io.micronaut:micronaut-inject"
+    api "com.rabbitmq:amqp-client:$rabbitVersion"
     compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
     compileOnly "io.micronaut:micronaut-management"
-    
-    testCompile "io.micronaut:micronaut-inject-groovy"
-    testCompile "io.micronaut:micronaut-inject-java"
-    testCompile "org.testcontainers:spock:1.14.3"
-    testCompile "io.micronaut:micronaut-management"
+
+    testImplementation("org.spockframework:spock-core:${spockVersion}") {
+        exclude module:'groovy-all'
+    }
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation "io.micronaut:micronaut-inject-java"
+    testImplementation "org.testcontainers:spock:1.14.3"
+    testImplementation "io.micronaut:micronaut-management"
 }
 
 test {
