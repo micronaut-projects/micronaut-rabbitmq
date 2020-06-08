@@ -2,7 +2,7 @@ A custom serializer/deserializer would be necessary to support custom data forma
 
 In this example a simple data format of the string representation of the fields are concatenated together with a pipe character.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.serdes.ProductInfoSerDes[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.serdes.ProductInfoSerDes[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The class is declared as a singleton so it will be registered with the context
 <2> The generic specifies what type we want to accept and return

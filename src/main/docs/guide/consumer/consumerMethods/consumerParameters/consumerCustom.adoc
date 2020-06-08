@@ -20,11 +20,11 @@ To inject your own argument binding behavior, it is as simple as registering a b
 
 A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the api:configuration.rabbitmq.bind.RabbitConsumerState[] to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.DeliveryTag[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.custom.annotation.DeliveryTag[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The link:{apimicronaut}core/bind/annotation/Bindable.html[@Bindable] annotation is required for the annotation to be considered for binding.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.DeliveryTagAnnotationBinder[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.custom.annotation.DeliveryTagAnnotationBinder[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The class is made a bean by annotating with `@Singleton`.
 <2> The custom annotation is used as the generic type for the interface.
@@ -34,13 +34,13 @@ snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.Del
 
 The annotation can now be used on the argument in a consumer method.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.annotation.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.custom.annotation.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 ==== Type Binding
 
 A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.type.ProductInfo[tags="clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.custom.type.ProductInfo[tags="clazz", project-base="docs-examples/example]
 
 <1> The `size` argument is not required
 <2> The `count` argument is required
@@ -48,7 +48,7 @@ snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.type.ProductIn
 
 A type argument binder can then be created to create the `ProductInfo` instance to bind to your consumer method argument.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.custom.type.ProductInfoTypeBinder[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.custom.type.ProductInfoTypeBinder[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The class is made a bean by annotating with `@Singleton`.
 <2> The custom type is used as the generic type for the interface.

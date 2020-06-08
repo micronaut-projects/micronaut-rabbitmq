@@ -2,7 +2,7 @@ A ann:configuration.rabbitmq.annotation.Queue[] annotation is required for a met
 
 IMPORTANT: Queues must already exist before you can listen to messages from them.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.parameters.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.parameters.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.
 
@@ -10,7 +10,7 @@ snippet::io.micronaut.configuration.rabbitmq.docs.parameters.ProductListener[tag
 
 If multiple RabbitMQ servers have been configured, the name of the server can be set in the ann:configuration.rabbitmq.annotation.Queue[] annotation to designate which connection should be used to listen for messages.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.connection.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.connection.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The connection is set on the queue annotation.
 
@@ -18,7 +18,7 @@ NOTE: The `connection` option is also available to be set on the ann:configurati
 
 By default all consumers are executed on the same "consumer" thread pool. If for some reason one or more consumers should be executed on a different thread pool, it can be specified on the ann:configuration.rabbitmq.annotation.Queue[] annotation.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.consumer.executor.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.executor.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The executor is set on the queue annotation.
 

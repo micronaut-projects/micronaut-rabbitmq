@@ -2,7 +2,7 @@ The arguments passed to link:{apirabbit}client/Channel.html#basicConsume(java.la
 
 In addition, any method parameters can be annotated to bind to properties from the link:{apirabbit}client/BasicProperties.html[BasicProperties] received with the message.
 
-snippet::io.micronaut.configuration.rabbitmq.docs.properties.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.properties.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
 <1> The property is sent as an argument to the Java client consume method. Properties could also be defined on the class level to apply to all consumers in the class. Note the type is required here if RabbitMQ expects something other than a `String`.
 <2> The argument is bound from the `userId` property.
