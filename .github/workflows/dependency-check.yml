@@ -2,21 +2,18 @@
 #
 # https://github.com/micronaut-projects/micronaut-project-template/tree/master/.github/workflows
 #
-# and edit them there. Then, go to:
-#
-# https://github.com/micronaut-projects/micronaut-build/actions?query=workflow%3A%22Actions+sync%22
-#
-# and restart the latest job.
+# and edit them there. Note that it will be sync'ed to all the Micronaut repos
 name: Check Dependencies
 on:
-  schedule:
-    - cron: '0 8 * * *'
+#  schedule:
+#    - cron: '0 16 * * MON-FRI'
+  push:
+    branches:
+      - master
 jobs:
-  build:
+  check-dependencies:
+    if: github.repository == 'micronaut-projects/micronaut-project-template'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: ['8']
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
@@ -28,6 +25,12 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 1.8
       - name: Check Dependencies
         run: ./gradlew dependencyUpdates
+      - name: Google Chat Notification
+        uses: Co-qn/google-chat-notification@releases/v1
+        with:
+          name: Check Dependencies
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          status: ${{ job.status }}
