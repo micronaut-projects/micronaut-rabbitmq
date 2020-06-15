@@ -4,7 +4,7 @@ dependencies {
     api "io.micronaut:micronaut-messaging"
     api "io.micronaut:micronaut-inject"
     api "com.rabbitmq:amqp-client:$rabbitVersion"
-    compileOnly "io.micronaut.configuration:micronaut-micrometer-core"
+    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
     compileOnly "io.micronaut:micronaut-management"
 
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
