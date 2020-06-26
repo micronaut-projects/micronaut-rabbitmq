@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>7.1.1.1 Queue 1.2.1.BUILD-SNAPSHOT</title>
+    <title>7.1.1.1 Queue 2.0.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>7.1.1.1 Queue</h1>
 
-                    <p><strong>Version:</strong> 1.2.1.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 2.0.0.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -137,8 +137,8 @@ Queues must already exist before you can listen to messages from them.
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
@@ -159,8 +159,8 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener
@@ -177,8 +177,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 import java.util.*
 
@@ -209,8 +209,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
@@ -232,8 +232,8 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener
@@ -251,8 +251,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 import java.util.ArrayList
@@ -297,8 +297,8 @@ The <code>connection</code> option is also available to be set on the <a href=".
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
@@ -320,8 +320,8 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener
@@ -339,8 +339,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 import java.util.ArrayList
