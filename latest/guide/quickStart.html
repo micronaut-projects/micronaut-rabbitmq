@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>4 RabbitMQ Quick Start 1.2.0</title>
+    <title>4 RabbitMQ Quick Start 2.0.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>4 RabbitMQ Quick Start</h1>
 
-                    <p><strong>Version:</strong> 1.2.0</p>
+                    <p><strong>Version:</strong> 2.0.0</p>
                 </div>
 
                 
@@ -127,13 +127,13 @@ function addJsClass() {
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.configuration:micronaut-rabbitmq")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.rabbitmq:micronaut-rabbitmq")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;io.micronaut.configuration&lt;/groupId&gt;
+    &lt;groupId&gt;io.micronaut.rabbitmq&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -151,8 +151,8 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.context.annotation.Requires;
 
 @RabbitClient <b class="conum">(1)</b>
@@ -165,8 +165,8 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 
 @RabbitClient <b class="conum">(1)</b>
@@ -179,8 +179,8 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 
 @RabbitClient <b class="conum">(1)</b>
@@ -253,8 +253,8 @@ Because the <code>send</code> method returns <code>void</code> this means the me
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
@@ -276,8 +276,8 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener <b class="conum">(1)</b>
@@ -295,8 +295,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 import java.util.*
 
@@ -308,8 +308,9 @@ class ProductListener {
 
     @Queue("product") <b class="conum">(2)</b>
     fun receive(data: ByteArray) { <b class="conum">(3)</b>
-        messageLengths.add(String(data))
-        println("Kotlin received ${data.size} bytes from RabbitMQ")
+        val string = String(data)
+        messageLengths.add(string)
+        println("Kotlin received ${data.size} bytes from RabbitMQ: ${string}")
     }
 }</code></pre>
 </div>

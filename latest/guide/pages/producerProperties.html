@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>6.1.1.2 RabbitMQ Properties 1.2.0</title>
+    <title>6.1.1.2 RabbitMQ Properties 2.0.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>6.1.1.2 RabbitMQ Properties</h1>
 
-                    <p><strong>Version:</strong> 1.2.0</p>
+                    <p><strong>Version:</strong> 2.0.0</p>
                 </div>
 
                 
@@ -125,9 +125,9 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.RabbitClient;
+import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.context.annotation.Requires;
 
 @RabbitClient
@@ -147,9 +147,9 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
 
 @RabbitClient
@@ -168,10 +168,10 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperties
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperties
+import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
 
 @RabbitClient
@@ -180,8 +180,8 @@ interface ProductClient {
 
     @Binding("product")
     @RabbitProperties( <b class="conum">(2)</b>
-        RabbitProperty(name = "contentType", value = "application/json"),
-        RabbitProperty(name = "userId", value = "guest")
+            RabbitProperty(name = "contentType", value = "application/json"),
+            RabbitProperty(name = "userId", value = "guest")
     )
     fun send(data: ByteArray)
 
