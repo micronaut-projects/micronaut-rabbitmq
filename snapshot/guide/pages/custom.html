@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>10.1 Custom SerDes 1.2.1.BUILD-SNAPSHOT</title>
+    <title>10.1 Custom SerDes 2.0.1.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>10.1 Custom SerDes</h1>
 
-                    <p><strong>Version:</strong> 1.2.1.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 2.0.1.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -128,9 +128,9 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties;
-import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
@@ -187,9 +187,9 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
-import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
-import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
@@ -245,9 +245,9 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.bind.RabbitConsumerState
-import io.micronaut.configuration.rabbitmq.intercept.MutableBasicProperties
-import io.micronaut.configuration.rabbitmq.serdes.RabbitMessageSerDes
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
