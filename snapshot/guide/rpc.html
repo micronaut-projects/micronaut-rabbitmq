@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>8 Direct Reply-To (RPC) 1.2.1.BUILD-SNAPSHOT</title>
+    <title>8 Direct Reply-To (RPC) 2.0.1.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>8 Direct Reply-To (RPC)</h1>
 
-                    <p><strong>Version:</strong> 1.2.1.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 2.0.1.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -134,9 +134,9 @@ function addJsClass() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Binding;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.RabbitClient;
+import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.context.annotation.Requires;
 import io.reactivex.Single;
 
@@ -154,9 +154,9 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
 import io.reactivex.Single
 
@@ -174,9 +174,9 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Binding
-import io.micronaut.configuration.rabbitmq.annotation.RabbitClient
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.context.annotation.Requires
 import io.reactivex.Single
 
@@ -230,14 +230,9 @@ In order for the publisher to assume RPC should be used instead of just completi
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitProperty;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires;
-
-import java.io.IOException;
 
 @RabbitListener
 public class ProductListener {
@@ -251,8 +246,8 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
 @RabbitListener
@@ -267,11 +262,10 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 
-import java.io.IOException
 
 @RabbitListener
 class ProductListener {
@@ -332,7 +326,7 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 <p>By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in &lt;stdin&gt; - include::/home/runner/work/micronaut-rabbitmq/micronaut-rabbitmq/build/generated/configurationProperties/io.micronaut.configuration.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]</p>
+<p>Unresolved directive in &lt;stdin&gt; - include::/home/runner/work/micronaut-rabbitmq/micronaut-rabbitmq/build/generated/configurationProperties/io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]</p>
 </div>
 </div>
 </div>
