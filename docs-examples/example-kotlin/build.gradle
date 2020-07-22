@@ -10,7 +10,7 @@ repositories {
 dependencies {
     testCompile project(":rabbitmq")
     testRuntime "ch.qos.logback:logback-classic:1.2.3"
-    testCompile "org.testcontainers:testcontainers:1.14.3"
+    testCompile "org.testcontainers:testcontainers:1.15.0-rc1"
     testCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))

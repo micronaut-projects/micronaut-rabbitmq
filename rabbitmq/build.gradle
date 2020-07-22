@@ -13,7 +13,7 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "io.micronaut:micronaut-inject-groovy"
     testImplementation "io.micronaut:micronaut-inject-java"
-    testImplementation "org.testcontainers:spock:1.14.3"
+    testImplementation "org.testcontainers:spock:1.15.0-rc1"
     testImplementation "io.micronaut:micronaut-management"
 }
 
