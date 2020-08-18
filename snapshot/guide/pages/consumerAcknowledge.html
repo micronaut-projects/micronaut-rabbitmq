@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>7.1.2 Acknowledging Messages 1.2.1.BUILD-SNAPSHOT</title>
+    <title>7.1.2 Acknowledging Messages 2.0.1.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -105,7 +105,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>7.1.2 Acknowledging Messages</h1>
 
-                    <p><strong>Version:</strong> 1.2.1.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 2.0.1.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -137,9 +137,9 @@ function addJsClass() {
 <h3 id="_acknowledgement_type">Acknowledgement Type</h3>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.configuration.rabbitmq.annotation.Queue;
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener;
-import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
+import io.micronaut.rabbitmq.bind.RabbitAcknowledgement;
 import io.micronaut.context.annotation.Requires;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -163,9 +163,9 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
-import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
 import io.micronaut.context.annotation.Requires
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -190,9 +190,9 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.configuration.rabbitmq.annotation.Queue
-import io.micronaut.configuration.rabbitmq.annotation.RabbitListener
-import io.micronaut.configuration.rabbitmq.bind.RabbitAcknowledgement
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
 import io.micronaut.context.annotation.Requires
 
 import java.util.concurrent.atomic.AtomicInteger
