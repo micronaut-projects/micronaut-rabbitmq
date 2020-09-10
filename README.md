@@ -7,5 +7,5 @@
 
  ## Documentation
 
- See the [Documentation](https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide) for more information.
+ See the Documentation [Latest](https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide) [Snapshot](https://micronaut-projects.github.io/micronaut-rabbitmq/snapshot/guide/index.html) for more information.
 
