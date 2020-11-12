@@ -10,7 +10,7 @@ dependencies {
     testCompile project(":rabbitmq")
     testCompile "io.micronaut:micronaut-inject"
     testCompileOnly "io.micronaut:micronaut-inject-groovy"
-    testCompile "org.testcontainers:spock:1.15.0-rc2"
+    testCompile "org.testcontainers:spock:1.15.0"
     testCompile("org.spockframework:spock-core") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
