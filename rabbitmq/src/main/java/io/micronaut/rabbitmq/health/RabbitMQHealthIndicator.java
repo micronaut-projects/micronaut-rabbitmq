@@ -22,8 +22,9 @@ import io.micronaut.health.HealthStatus;
 import io.micronaut.management.endpoint.health.HealthEndpoint;
 import io.micronaut.management.health.indicator.AbstractHealthIndicator;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class RabbitMQHealthIndicator extends AbstractHealthIndicator<Map<String, Object>> {
 
-    private final Connection connection;
+    private final List<Connection> connections;
 
     /**
      * Default constructor.
@@ -45,27 +46,56 @@ public class RabbitMQHealthIndicator extends AbstractHealthIndicator<Map<String,
      * @param connection The connection to query for details
      */
     public RabbitMQHealthIndicator(Connection connection) {
-        this.connection = connection;
+        this.connections = Collections.singletonList(connection);
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @param connections The connections to query for details
+     */
+    @Inject
+    public RabbitMQHealthIndicator(List<Connection> connections) {
+        this.connections = connections;
     }
 
     @Override
     protected Map<String, Object> getHealthInformation() {
-        if (connection.isOpen()) {
+        if (connections.stream().allMatch(Connection::isOpen)) {
             healthStatus = HealthStatus.UP;
-            return connection.getServerProperties()
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, (entry) -> {
-                        Object value = entry.getValue();
-                        if (value instanceof Map) {
-                            return value;
-                        } else {
-                            return value.toString();
-                        }
-                    }));
         } else {
             throw new RuntimeException("RabbitMQ connection is not open");
         }
+        if (connections.size() == 1) {
+            Connection connection = connections.get(0);
+            return getDetails(connection);
+        } else {
+            Map<String, Object> healthInfo = new HashMap<>();
+            List<Map<String, Object>> connectionDetails = new ArrayList<>(connections.size());
+            healthInfo.put("connections", connectionDetails);
+            for (Connection connection: connections) {
+                connectionDetails.add(getDetails(connection));
+            }
+            return healthInfo;
+        }
+    }
+
+    /**
+     * @param connection The connection
+     * @return The health details for the connection
+     */
+    protected Map<String, Object> getDetails(Connection connection) {
+        return connection.getServerProperties()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, (entry) -> {
+                    Object value = entry.getValue();
+                    if (value instanceof Map) {
+                        return value;
+                    } else {
+                        return value.toString();
+                    }
+                }));
     }
 
     @Override
