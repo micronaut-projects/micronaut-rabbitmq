@@ -80,6 +80,10 @@ public class RabbitMQHealthIndicator extends AbstractHealthIndicator<Map<String,
         }
     }
 
+    /**
+     * @param connection The connection
+     * @return The health details for the connection
+     */
     protected Map<String, Object> getDetails(Connection connection) {
         return connection.getServerProperties()
                 .entrySet()
