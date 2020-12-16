@@ -8,7 +8,7 @@ buildscript {
         maven { url "https://oss.jfrog.org/oss-snapshot-local" }
     }
     dependencies {
-        classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.13"
+        classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.14"
     }
 }
 
