@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.intercept;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.RecoverableChannel;
@@ -310,7 +311,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 ConsumerState state = entry.getValue();
                 try {
                     channel.basicCancel(state.consumerTag);
-                } catch (IOException e) {
+                } catch (IOException | AlreadyClosedException e ) {
                     //ignore
                 }
                 if (!state.inProgress) {
