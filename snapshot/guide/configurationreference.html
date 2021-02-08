@@ -51,9 +51,96 @@
             </div>
 <div class="sect2">
 <h3 id="_rabbitmq_config_properties">Rabbitmq Config Properties</h3>
+<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html">ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.rpc.timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout duration before cancelling an RPC call. Default {@value #DEFAULT_TIMEOUT_SECONDS} seconds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.rpc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html">RabbitConnectionFactoryConfig$RpcConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the RPC configuration.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html">SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html">RabbitConnectionFactoryConfig$ChannelPoolConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the channel pool configuration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-pool.max-idle-channels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of idle channels that will be kept open.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html">ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-pool.max-idle-channels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of idle channels that will be kept open.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-pool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html">RabbitConnectionFactoryConfig$ChannelPoolConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the channel pool configuration.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
 <a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html">SingleRabbitConnectionFactoryConfig</a></caption>
+<caption class="title">Table 4. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html">SingleRabbitConnectionFactoryConfig</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -271,93 +358,6 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.consumer-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of which executor service consumers should be executed on. Default {@value #DEFAULT_CONSUMER_EXECUTOR}.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html">SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.rpc</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html">RabbitConnectionFactoryConfig$RpcConfiguration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the RPC configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.rpc.timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout duration before cancelling an RPC call. Default {@value #DEFAULT_TIMEOUT_SECONDS} seconds.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html">SingleRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-pool</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html">RabbitConnectionFactoryConfig$ChannelPoolConfiguration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the channel pool configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-pool.max-idle-channels</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of idle channels that will be kept open.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 4. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultChannelPoolConfiguration.html">ClusterRabbitConnectionFactoryConfig$DefaultChannelPoolConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-pool</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html">RabbitConnectionFactoryConfig$ChannelPoolConfiguration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the channel pool configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-pool.max-idle-channels</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of idle channels that will be kept open.</p></td>
 </tr>
 </tbody>
 </table>
@@ -586,9 +586,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration">&#128279;</a>
+<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html">ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration</a></caption>
+<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.DefaultRpcConfiguration.html">SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -603,12 +603,12 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.rpc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.rpc</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html">RabbitConnectionFactoryConfig$RpcConfiguration</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the RPC configuration.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.rpc.timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.rpc.timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout duration before cancelling an RPC call. Default {@value #DEFAULT_TIMEOUT_SECONDS} seconds.</p></td>
 </tr>
