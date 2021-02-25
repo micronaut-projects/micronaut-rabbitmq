@@ -201,8 +201,14 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
                 }
 
+                ConsumerParams consumerParams = new ConsumerParams();
+                consumerParams.clientTag = clientTag;
+                consumerParams.exclusive = exclusive;
+                consumerParams.connection = connection;
+                consumerParams.queue = queue;
+
                 DefaultConsumer consumer = createDefaultConsumer(method,
-                        clientTag,
+                        consumerParams,
                         reQueue,
                         hasAckArg,
                         channel,
@@ -210,10 +216,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         bean,
                         binder,
                         executorService,
-                        exclusive,
-                        arguments,
-                        queue,
-                        connection);
+                        arguments);
                 channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, consumer);
             } catch (Throwable e) {
                 if (!channel.isOpen()) {
@@ -229,7 +232,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
     }
 
-    private DefaultConsumer createDefaultConsumer(ExecutableMethod<?, ?> method, String clientTag, boolean reQueue, boolean hasAckArg, Channel channel, boolean isVoid, Object bean, DefaultExecutableBinder<RabbitConsumerState> binder, ExecutorService executorService, boolean exclusive, Map<String, Object> arguments, String queue, String connection) {
+    private DefaultConsumer createDefaultConsumer(ExecutableMethod<?, ?> method, ConsumerParams consumerParams, boolean reQueue, boolean hasAckArg, Channel channel, boolean isVoid, Object bean, DefaultExecutableBinder<RabbitConsumerState> binder, ExecutorService executorService, Map<String, Object> arguments) {
         DefaultConsumer consumer = new DefaultConsumer() {
             @Override
             public void handleTerminate(String consumerTag) {
@@ -237,10 +240,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(
                                 "The channel was terminated.  Automatic recovery attempt is underway for consumer [{}]",
-                                clientTag);
+                                consumerParams.clientTag);
                     }
                     try {
-                        channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, this);
+                        channel.basicConsume(consumerParams.queue, false, consumerParams.clientTag, false, consumerParams.exclusive, arguments, this);
                     } catch (IOException | AlreadyClosedException e) {
                         retryRecovery(e);
                     }
@@ -251,7 +254,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(
                                     "The channel was terminated. The consumer [{}] will no longer receive messages",
-                                    clientTag);
+                                    consumerParams.clientTag);
                         }
                     }
                 }
@@ -279,17 +282,18 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 amqConnection.handleIoError(cause);
 
                 Channel newChannel = createNewChannelAndReturnOldOne();
-                DefaultConsumer consumer = createDefaultConsumer(method, clientTag, reQueue, hasAckArg,
-                    newChannel, isVoid, bean, binder, executorService, exclusive, arguments, queue, connection);
+
+                DefaultConsumer consumer = createDefaultConsumer(method, consumerParams, reQueue, hasAckArg,
+                    newChannel, isVoid, bean, binder, executorService, arguments);
                 try {
-                    newChannel.basicConsume(queue, false, clientTag, false, exclusive, arguments, consumer);
+                    newChannel.basicConsume(consumerParams.queue, false, consumerParams.clientTag, false, consumerParams.exclusive, arguments, consumer);
                 } catch (IOException | AlreadyClosedException e2) {
                     retryRecovery(e2, recoveryAttempts + 1);
                 }
             }
 
             private Channel createNewChannelAndReturnOldOne() {
-                ChannelPool channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(connection));
+                ChannelPool channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(consumerParams.connection));
                 Channel newChannel = getChannel(channelPool);
 
                 ConsumerState oldChannelState = consumerChannels.remove(channel);
@@ -299,7 +303,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
                 ConsumerState state = new ConsumerState();
                 state.channelPool = channelPool;
-                state.consumerTag = clientTag;
+                state.consumerTag = consumerParams.clientTag;
                 consumerChannels.put(newChannel, state);
 
                 return newChannel;
@@ -381,7 +385,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                         if (LOG.isErrorEnabled()) {
                             LOG.error(
                                     "The channel was closed due to an exception. The consumer [{}] will no longer receive messages",
-                                    clientTag);
+                                    consumerParams.clientTag);
                         }
                     }
                     handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
@@ -457,5 +461,15 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         private String consumerTag;
         private ChannelPool channelPool;
         private volatile boolean inProgress;
+    }
+
+    /***
+     * Connection params.
+     */
+    private static class ConsumerParams {
+        private String clientTag;
+        private String connection;
+        private boolean exclusive;
+        private String queue;
     }
 }
