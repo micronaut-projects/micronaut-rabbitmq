@@ -20,6 +20,9 @@ import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.RecoverableChannel;
+import com.rabbitmq.client.RecoveryDelayHandler;
+import com.rabbitmq.client.ShutdownSignalException;
+import com.rabbitmq.client.impl.AMQConnection;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -45,6 +48,7 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,26 +79,30 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final ConversionService conversionService;
     private final Map<Channel, ConsumerState> consumerChannels = new ConcurrentHashMap<>();
+    private final RabbitConnectionFactoryConfig connectionFactoryConfig;
 
     /**
      * Default constructor.
      *
-     * @param beanContext       The bean context
-     * @param binderRegistry    The registry to bind arguments to the method
-     * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
-     * @param serDesRegistry    The serialization/deserialization registry
-     * @param conversionService The service to convert consume argument values
+     * @param beanContext             The bean context
+     * @param binderRegistry          The registry to bind arguments to the method
+     * @param exceptionHandler        The exception handler to use if the consumer isn't a handler
+     * @param serDesRegistry          The serialization/deserialization registry
+     * @param conversionService       The service to convert consume argument values
+     * @param connectionFactoryConfig The configuration of the rabbit connection
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
-                                  ConversionService conversionService) {
+                                  ConversionService conversionService,
+                                  RabbitConnectionFactoryConfig connectionFactoryConfig) {
         this.beanContext = beanContext;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
         this.serDesRegistry = serDesRegistry;
         this.conversionService = conversionService;
+        this.connectionFactoryConfig = connectionFactoryConfig;
     }
 
     @Override
@@ -193,99 +201,20 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
                 }
 
-                channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
-
-                    @Override
-                    public void handleTerminate(String consumerTag) {
-                        if (channel instanceof RecoverableChannel) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("The channel was been terminated.  Automatic recovery attempt is underway for consumer [{}]", clientTag);
-                            }
-                        } else {
-                            ConsumerState state = consumerChannels.remove(channel);
-                            if (state != null) {
-                                state.channelPool.returnChannel(channel);
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("The channel was terminated. The consumer [{}] will no longer receive messages", clientTag);
-                                }
-                            }
-                        }
-                    }
-
-                    public void doHandleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                        final RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
-
-                        BoundExecutable boundExecutable = null;
-                        try {
-                            boundExecutable = binder.bind(method, binderRegistry, state);
-                        } catch (Throwable e) {
-                            handleException(new RabbitListenerException("An error occurred binding the message to the method", e, bean, state));
-                        }
-
-                        try {
-                            if (boundExecutable != null) {
-                                try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(hasAckArg ? null : false)) {
-                                    Object returnedValue = boundExecutable.invoke(bean);
-
-                                    String replyTo = properties.getReplyTo();
-                                    if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
-                                        MutableBasicProperties replyProps = new MutableBasicProperties();
-                                        replyProps.setCorrelationId(properties.getCorrelationId());
-
-                                        byte[] converted = null;
-                                        if (returnedValue != null) {
-                                            RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType().asArgument())
-                                                    .map(RabbitMessageSerDes.class::cast)
-                                                    .orElseThrow(() -> new RabbitListenerException(String.format("Could not find a serializer for the body argument of type [%s]", returnedValue.getClass().getName()), bean, state));
-
-                                            converted = serDes.serialize(returnedValue, replyProps);
-                                        }
-
-                                        channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
-                                    }
-
-                                    if (!hasAckArg) {
-                                        closeable.withAcknowledge(true);
-                                    }
-                                } catch (MessageAcknowledgementException e) {
-                                    throw e;
-                                } catch (Throwable e) {
-                                    if (e instanceof RabbitListenerException) {
-                                        handleException((RabbitListenerException) e);
-                                    } else {
-                                        handleException(new RabbitListenerException("An error occurred executing the listener", e, bean, state));
-                                    }
-                                }
-                            } else {
-                                new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
-                            }
-                        } catch (MessageAcknowledgementException e) {
-                            if (!channel.isOpen()) {
-                                ConsumerState consumerState = consumerChannels.remove(channel);
-                                if (consumerState != null) {
-                                    consumerState.channelPool.returnChannel(channel);
-                                }
-                                if (LOG.isErrorEnabled()) {
-                                    LOG.error("The channel was closed due to an exception. The consumer [{}] will no longer receive messages", clientTag);
-                                }
-                            }
-                            handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
-                        } finally {
-                            consumerChannels.get(channel).inProgress = false;
-                        }
-                    }
-
-                    @Override
-                    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                        consumerChannels.get(channel).inProgress = true;
-
-                        if (executorService != null) {
-                            executorService.submit(() -> doHandleDelivery(consumerTag, envelope, properties, body));
-                        } else {
-                            doHandleDelivery(consumerTag, envelope, properties, body);
-                        }
-                    }
-                });
+                DefaultConsumer consumer = createDefaultConsumer(method,
+                        clientTag,
+                        reQueue,
+                        hasAckArg,
+                        channel,
+                        isVoid,
+                        bean,
+                        binder,
+                        executorService,
+                        exclusive,
+                        arguments,
+                        queue,
+                        connection);
+                channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, consumer);
             } catch (Throwable e) {
                 if (!channel.isOpen()) {
                     channelPool.returnChannel(channel);
@@ -300,6 +229,182 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
 
     }
 
+    private DefaultConsumer createDefaultConsumer(ExecutableMethod<?, ?> method, String clientTag, boolean reQueue, boolean hasAckArg, Channel channel, boolean isVoid, Object bean, DefaultExecutableBinder<RabbitConsumerState> binder, ExecutorService executorService, boolean exclusive, Map<String, Object> arguments, String queue, String connection) {
+        DefaultConsumer consumer = new DefaultConsumer() {
+            @Override
+            public void handleTerminate(String consumerTag) {
+                if (channel instanceof RecoverableChannel) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                                "The channel was terminated.  Automatic recovery attempt is underway for consumer [{}]",
+                                clientTag);
+                    }
+                    try {
+                        channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, this);
+                    } catch (IOException | AlreadyClosedException e) {
+                        retryRecovery(e);
+                    }
+                } else {
+                    ConsumerState state = consumerChannels.remove(channel);
+                    if (state != null) {
+                        state.channelPool.returnChannel(channel);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                    "The channel was terminated. The consumer [{}] will no longer receive messages",
+                                    clientTag);
+                        }
+                    }
+                }
+            }
+
+            private void retryRecovery(Exception e) {
+                retryRecovery(e, 0);
+                LOG.info("Connection restablished");
+            }
+
+            private void retryRecovery(Exception e, int recoveryAttempts) {
+                try {
+                    long delay = getDelay(recoveryAttempts);
+                    Thread.sleep(delay);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+                ShutdownSignalException cause;
+                if (e.getCause() instanceof ShutdownSignalException) {
+                    cause = (ShutdownSignalException) e.getCause();
+                } else {
+                    cause = new ShutdownSignalException(false, false, null, null);
+                }
+                AMQConnection amqConnection = (AMQConnection) channel.getConnection();
+                amqConnection.handleIoError(cause);
+
+                Channel newChannel = createNewChannelAndReturnOldOne();
+                DefaultConsumer consumer = createDefaultConsumer(method, clientTag, reQueue, hasAckArg,
+                    newChannel, isVoid, bean, binder, executorService, exclusive, arguments, queue, connection);
+                try {
+                    newChannel.basicConsume(queue, false, clientTag, false, exclusive, arguments, consumer);
+                } catch (IOException | AlreadyClosedException e2) {
+                    retryRecovery(e2, recoveryAttempts + 1);
+                }
+            }
+
+            private Channel createNewChannelAndReturnOldOne() {
+                ChannelPool channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(connection));
+                Channel newChannel = getChannel(channelPool);
+
+                ConsumerState oldChannelState = consumerChannels.remove(channel);
+                if (oldChannelState != null) {
+                    channelPool.returnChannel(channel);
+                }
+
+                ConsumerState state = new ConsumerState();
+                state.channelPool = channelPool;
+                state.consumerTag = clientTag;
+                consumerChannels.put(newChannel, state);
+
+                return newChannel;
+            }
+
+            private long getDelay(int attempts) {
+                RecoveryDelayHandler configuredDelayHandler = connectionFactoryConfig.getRecoveryDelayHandler();
+                long networkRecoveryInterval = connectionFactoryConfig.getNetworkRecoveryInterval();
+                RecoveryDelayHandler delayHandler = configuredDelayHandler == null ? new RecoveryDelayHandler.DefaultRecoveryDelayHandler(networkRecoveryInterval) : configuredDelayHandler;
+                return delayHandler.getDelay(attempts);
+            }
+
+            public void doHandleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+                final RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
+
+                BoundExecutable boundExecutable = null;
+                try {
+                    boundExecutable = binder.bind(method, binderRegistry, state);
+                } catch (Throwable e) {
+                    handleException(new RabbitListenerException(
+                            "An error occurred binding the message to the method",
+                            e,
+                            bean,
+                            state));
+                }
+
+                try {
+                    if (boundExecutable != null) {
+                        try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state,
+                                false,
+                                reQueue).withAcknowledge(hasAckArg ? null : false)) {
+                            Object returnedValue = boundExecutable.invoke(bean);
+
+                            String replyTo = properties.getReplyTo();
+                            if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
+                                MutableBasicProperties replyProps = new MutableBasicProperties();
+                                replyProps.setCorrelationId(properties.getCorrelationId());
+
+                                byte[] converted = null;
+                                if (returnedValue != null) {
+                                    RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType()
+                                            .asArgument())
+                                            .map(RabbitMessageSerDes.class::cast)
+                                            .orElseThrow(() -> new RabbitListenerException(String.format(
+                                                    "Could not find a serializer for the body argument of type [%s]",
+                                                    returnedValue.getClass().getName()), bean, state));
+
+                                    converted = serDes.serialize(returnedValue, replyProps);
+                                }
+
+                                channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
+                            }
+
+                            if (!hasAckArg) {
+                                closeable.withAcknowledge(true);
+                            }
+                        } catch (MessageAcknowledgementException e) {
+                            throw e;
+                        } catch (Throwable e) {
+                            if (e instanceof RabbitListenerException) {
+                                handleException((RabbitListenerException) e);
+                            } else {
+                                handleException(new RabbitListenerException(
+                                        "An error occurred executing the listener",
+                                        e,
+                                        bean,
+                                        state));
+                            }
+                        }
+                    } else {
+                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                    }
+                } catch (MessageAcknowledgementException e) {
+                    if (!channel.isOpen()) {
+                        ConsumerState consumerState = consumerChannels.remove(channel);
+                        if (consumerState != null) {
+                            consumerState.channelPool.returnChannel(channel);
+                        }
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                    "The channel was closed due to an exception. The consumer [{}] will no longer receive messages",
+                                    clientTag);
+                        }
+                    }
+                    handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
+                } finally {
+                    consumerChannels.get(channel).inProgress = false;
+                }
+            }
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+                    throws IOException {
+                consumerChannels.get(channel).inProgress = true;
+
+                if (executorService != null) {
+                    executorService.submit(() -> doHandleDelivery(consumerTag, envelope, properties, body));
+                } else {
+                    doHandleDelivery(consumerTag, envelope, properties, body);
+                }
+            }
+        };
+        return consumer;
+    }
+
     @PreDestroy
     @Override
     public void close() throws Exception {
@@ -311,7 +416,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 ConsumerState state = entry.getValue();
                 try {
                     channel.basicCancel(state.consumerTag);
-                } catch (IOException | AlreadyClosedException e ) {
+                } catch (IOException | AlreadyClosedException e) {
                     //ignore
                 }
                 if (!state.inProgress) {
