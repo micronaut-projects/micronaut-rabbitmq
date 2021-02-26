@@ -463,7 +463,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
         private volatile boolean inProgress;
     }
 
-    /***
+    /**
      * Connection params.
      */
     private static class ConsumerParams {
