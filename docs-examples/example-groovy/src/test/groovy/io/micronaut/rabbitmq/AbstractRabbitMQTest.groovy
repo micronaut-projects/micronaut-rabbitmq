@@ -8,7 +8,7 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import spock.lang.Specification
 
 abstract class AbstractRabbitMQTest extends Specification {
-    Logger logger =  LoggerFactory.getLogger(AbstractRabbitMQTest.class)
+    private static final Logger LOG =  LoggerFactory.getLogger(AbstractRabbitMQTest.class)
 
     static GenericContainer rabbitContainer =
             new GenericContainer("library/rabbitmq:3.7")
@@ -20,7 +20,7 @@ abstract class AbstractRabbitMQTest extends Specification {
     }
 
     def setup() {
-        logger.info("Running " + specificationContext.currentIteration.name)
+        LOG.debug("Running " + specificationContext.currentIteration.name)
     }
 
     protected ApplicationContext startContext() {
