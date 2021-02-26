@@ -266,6 +266,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             }
 
             private void retryRecovery(Exception e, int recoveryAttempts) {
+				LOG.debug("Retrying network recovery");
                 try {
                     long delay = getDelay(recoveryAttempts);
                     Thread.sleep(delay);

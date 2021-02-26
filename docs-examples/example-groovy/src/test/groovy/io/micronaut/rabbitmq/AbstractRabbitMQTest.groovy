@@ -4,8 +4,10 @@ import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import spock.lang.Specification
+import java.util.logging.Logger
 
 abstract class AbstractRabbitMQTest extends Specification {
+    Logger logger = Logger.getLogger("")
 
     static GenericContainer rabbitContainer =
             new GenericContainer("library/rabbitmq:3.7")
@@ -14,6 +16,10 @@ abstract class AbstractRabbitMQTest extends Specification {
 
     static {
         rabbitContainer.start()
+    }
+
+    def setup() {
+        logger.info("Running " + specificationContext.currentIteration.name)
     }
 
     protected ApplicationContext startContext() {
