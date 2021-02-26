@@ -1,13 +1,14 @@
 package io.micronaut.rabbitmq
 
 import io.micronaut.context.ApplicationContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import spock.lang.Specification
-import java.util.logging.Logger
 
 abstract class AbstractRabbitMQTest extends Specification {
-    Logger logger = Logger.getLogger("")
+    Logger logger =  LoggerFactory.getLogger(AbstractRabbitMQTest.class)
 
     static GenericContainer rabbitContainer =
             new GenericContainer("library/rabbitmq:3.7")
