@@ -15,11 +15,18 @@
  */
 package io.micronaut.rabbitmq.intercept;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.RecoverableChannel;
+import com.rabbitmq.client.RecoveryDelayHandler;
+import com.rabbitmq.client.ShutdownSignalException;
+import com.rabbitmq.client.impl.AMQConnection;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
+import io.micronaut.core.bind.BoundExecutable;
 import io.micronaut.core.bind.DefaultExecutableBinder;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.util.StringUtils;
@@ -27,6 +34,7 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.Acknowledgement;
+import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
@@ -34,11 +42,13 @@ import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.rabbitmq.connect.ChannelPool;
-import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,15 +201,22 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                     throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
                 }
 
-                ConnectionAwareConsumer.Builder.SharedWithRabbitMQConsumerAdvice sharedWithRabbitMQConsumerAdvice = new ConnectionAwareConsumer.Builder.SharedWithRabbitMQConsumerAdvice(bean, binder, executorService, consumerChannels, beanContext, connectionFactoryConfig, binderRegistry, serDesRegistry, exceptionHandler);
+                ConsumerParams consumerParams = new ConsumerParams();
+                consumerParams.clientTag = clientTag;
+                consumerParams.exclusive = exclusive;
+                consumerParams.connection = connection;
+                consumerParams.queue = queue;
 
-                DefaultConsumer consumer = new ConnectionAwareConsumer.Builder(method, clientTag, connection, queue, channel, sharedWithRabbitMQConsumerAdvice)
-                        .withExclusive(exclusive)
-                        .withReQueue(reQueue)
-                        .withHasAckArg(hasAckArg)
-                        .withIsVoid(isVoid)
-                        .withArguments(arguments)
-                        .build();
+                DefaultConsumer consumer = createDefaultConsumer(method,
+                        consumerParams,
+                        reQueue,
+                        hasAckArg,
+                        channel,
+                        isVoid,
+                        bean,
+                        binder,
+                        executorService,
+                        arguments);
                 channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, consumer);
             } catch (Throwable e) {
                 if (!channel.isOpen()) {
@@ -213,6 +230,184 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             }
         }
 
+    }
+
+    private DefaultConsumer createDefaultConsumer(ExecutableMethod<?, ?> method, ConsumerParams consumerParams, boolean reQueue, boolean hasAckArg, Channel channel, boolean isVoid, Object bean, DefaultExecutableBinder<RabbitConsumerState> binder, ExecutorService executorService, Map<String, Object> arguments) {
+        DefaultConsumer consumer = new DefaultConsumer() {
+            @Override
+            public void handleTerminate(String consumerTag) {
+                if (channel instanceof RecoverableChannel) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                                "The channel was terminated.  Automatic recovery attempt is underway for consumer [{}]",
+                                consumerParams.clientTag);
+                    }
+                    try {
+                        channel.basicConsume(consumerParams.queue, false, consumerParams.clientTag, false, consumerParams.exclusive, arguments, this);
+                    } catch (IOException | AlreadyClosedException e) {
+                        retryRecovery(e);
+                    }
+                } else {
+                    ConsumerState state = consumerChannels.remove(channel);
+                    if (state != null) {
+                        state.channelPool.returnChannel(channel);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                    "The channel was terminated. The consumer [{}] will no longer receive messages",
+                                    consumerParams.clientTag);
+                        }
+                    }
+                }
+            }
+
+            private void retryRecovery(Exception e) {
+                retryRecovery(e, 0);
+                LOG.info("Connection restablished");
+            }
+
+            private void retryRecovery(Exception e, int recoveryAttempts) {
+				LOG.debug("Retrying network recovery");
+                try {
+                    long delay = getDelay(recoveryAttempts);
+                    Thread.sleep(delay);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+                ShutdownSignalException cause;
+                if (e.getCause() instanceof ShutdownSignalException) {
+                    cause = (ShutdownSignalException) e.getCause();
+                } else {
+                    cause = new ShutdownSignalException(false, false, null, null);
+                }
+                AMQConnection amqConnection = (AMQConnection) channel.getConnection();
+                amqConnection.handleIoError(cause);
+
+                Channel newChannel = createNewChannelAndReturnOldOne();
+
+                DefaultConsumer consumer = createDefaultConsumer(method, consumerParams, reQueue, hasAckArg,
+                    newChannel, isVoid, bean, binder, executorService, arguments);
+                try {
+                    newChannel.basicConsume(consumerParams.queue, false, consumerParams.clientTag, false, consumerParams.exclusive, arguments, consumer);
+                } catch (IOException | AlreadyClosedException e2) {
+                    retryRecovery(e2, recoveryAttempts + 1);
+                }
+            }
+
+            private Channel createNewChannelAndReturnOldOne() {
+                ChannelPool channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(consumerParams.connection));
+                Channel newChannel = getChannel(channelPool);
+
+                ConsumerState oldChannelState = consumerChannels.remove(channel);
+                if (oldChannelState != null) {
+                    channelPool.returnChannel(channel);
+                }
+
+                ConsumerState state = new ConsumerState();
+                state.channelPool = channelPool;
+                state.consumerTag = consumerParams.clientTag;
+                consumerChannels.put(newChannel, state);
+
+                return newChannel;
+            }
+
+            private long getDelay(int attempts) {
+                RecoveryDelayHandler configuredDelayHandler = connectionFactoryConfig.getRecoveryDelayHandler();
+                long networkRecoveryInterval = connectionFactoryConfig.getNetworkRecoveryInterval();
+                RecoveryDelayHandler delayHandler = configuredDelayHandler == null ? new RecoveryDelayHandler.DefaultRecoveryDelayHandler(networkRecoveryInterval) : configuredDelayHandler;
+                return delayHandler.getDelay(attempts);
+            }
+
+            public void doHandleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+                final RabbitConsumerState state = new RabbitConsumerState(envelope, properties, body, channel);
+
+                BoundExecutable boundExecutable = null;
+                try {
+                    boundExecutable = binder.bind(method, binderRegistry, state);
+                } catch (Throwable e) {
+                    handleException(new RabbitListenerException(
+                            "An error occurred binding the message to the method",
+                            e,
+                            bean,
+                            state));
+                }
+
+                try {
+                    if (boundExecutable != null) {
+                        try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state,
+                                false,
+                                reQueue).withAcknowledge(hasAckArg ? null : false)) {
+                            Object returnedValue = boundExecutable.invoke(bean);
+
+                            String replyTo = properties.getReplyTo();
+                            if (!isVoid && StringUtils.isNotEmpty(replyTo)) {
+                                MutableBasicProperties replyProps = new MutableBasicProperties();
+                                replyProps.setCorrelationId(properties.getCorrelationId());
+
+                                byte[] converted = null;
+                                if (returnedValue != null) {
+                                    RabbitMessageSerDes serDes = serDesRegistry.findSerdes(method.getReturnType()
+                                            .asArgument())
+                                            .map(RabbitMessageSerDes.class::cast)
+                                            .orElseThrow(() -> new RabbitListenerException(String.format(
+                                                    "Could not find a serializer for the body argument of type [%s]",
+                                                    returnedValue.getClass().getName()), bean, state));
+
+                                    converted = serDes.serialize(returnedValue, replyProps);
+                                }
+
+                                channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
+                            }
+
+                            if (!hasAckArg) {
+                                closeable.withAcknowledge(true);
+                            }
+                        } catch (MessageAcknowledgementException e) {
+                            throw e;
+                        } catch (Throwable e) {
+                            if (e instanceof RabbitListenerException) {
+                                handleException((RabbitListenerException) e);
+                            } else {
+                                handleException(new RabbitListenerException(
+                                        "An error occurred executing the listener",
+                                        e,
+                                        bean,
+                                        state));
+                            }
+                        }
+                    } else {
+                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                    }
+                } catch (MessageAcknowledgementException e) {
+                    if (!channel.isOpen()) {
+                        ConsumerState consumerState = consumerChannels.remove(channel);
+                        if (consumerState != null) {
+                            consumerState.channelPool.returnChannel(channel);
+                        }
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(
+                                    "The channel was closed due to an exception. The consumer [{}] will no longer receive messages",
+                                    consumerParams.clientTag);
+                        }
+                    }
+                    handleException(new RabbitListenerException(e.getMessage(), e, bean, null));
+                } finally {
+                    consumerChannels.get(channel).inProgress = false;
+                }
+            }
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+                    throws IOException {
+                consumerChannels.get(channel).inProgress = true;
+
+                if (executorService != null) {
+                    executorService.submit(() -> doHandleDelivery(consumerTag, envelope, properties, body));
+                } else {
+                    doHandleDelivery(consumerTag, envelope, properties, body);
+                }
+            }
+        };
+        return consumer;
     }
 
     @PreDestroy
@@ -263,9 +458,19 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
     /**
      * Consumer state.
      */
-    static class ConsumerState {
-        String consumerTag;
-        ChannelPool channelPool;
-        volatile boolean inProgress;
+    private static class ConsumerState {
+        private String consumerTag;
+        private ChannelPool channelPool;
+        private volatile boolean inProgress;
+    }
+
+    /**
+     * Connection params.
+     */
+    private static class ConsumerParams {
+        private String clientTag;
+        private String connection;
+        private boolean exclusive;
+        private String queue;
     }
 }
