@@ -20,7 +20,7 @@ abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}):
         }
 
         fun startContext(specName: String): ApplicationContext {
-            logger.info("Running " + specName)
+            logger.info("Running: " + specName)
             return ApplicationContext.run(getDefaultConfig(specName), "test")
         }
 
