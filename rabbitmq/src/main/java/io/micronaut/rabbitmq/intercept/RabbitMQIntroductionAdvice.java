@@ -276,7 +276,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message with publisher confirms.", context);
                     }
-                    reactive = Flowable.fromPublisher(reactivePublisher.publish(publishState))
+                    reactive = Flowable.fromPublisher(reactivePublisher.publishAndConfirm(publishState))
                             .subscribeOn(scheduler);
                 }
 

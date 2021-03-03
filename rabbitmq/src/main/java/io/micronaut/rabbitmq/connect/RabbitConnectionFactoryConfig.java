@@ -41,6 +41,7 @@ public abstract class RabbitConnectionFactoryConfig extends ConnectionFactory {
     private ChannelPoolConfiguration channelPool = new ChannelPoolConfiguration();
     private List<Address> addresses = null;
     private String consumerExecutor = DEFAULT_CONSUMER_EXECUTOR;
+    private Duration confirmTimeout = Duration.ofSeconds(5);
 
     /**
      * Default constructor.
@@ -122,6 +123,19 @@ public abstract class RabbitConnectionFactoryConfig extends ConnectionFactory {
         this.consumerExecutor = consumerExecutor;
     }
 
+    /**
+     * @return How long to wait for a publisher confirm
+     */
+    public Duration getConfirmTimeout() {
+        return confirmTimeout;
+    }
+
+    /**
+     * @param confirmTimeout How long to wait for a publisher confirm. Default value (5s).
+     */
+    public void setConfirmTimeout(Duration confirmTimeout) {
+        this.confirmTimeout = confirmTimeout;
+    }
 
     /**
      * Configuration for RPC.

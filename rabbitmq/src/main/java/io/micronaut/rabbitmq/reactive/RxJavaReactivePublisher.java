@@ -30,6 +30,7 @@ import io.reactivex.disposables.Disposable;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,9 +69,12 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
     @Override
     public Flowable<Void> publishAndConfirm(RabbitPublishState publishState) {
         return getChannel()
-            .flatMap(this::initializePublish)
-            .flatMapCompletable(channel -> publishInternal(channel, publishState))
-            .toFlowable();
+                .flatMap(this::initializePublish)
+                .flatMapCompletable(channel -> publishInternal(channel, publishState))
+                .timeout(config.getConfirmTimeout().toMillis(),
+                        TimeUnit.MILLISECONDS,
+                        Completable.error(new RabbitClientException(String.format("Timed out waiting for publisher confirm for exchange: [%s] and routing key: [%s]", publishState.getExchange(), publishState.getRoutingKey()))))
+                .toFlowable();
     }
 
     @Override
