@@ -311,7 +311,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
                 ConsumerState state = entry.getValue();
                 try {
                     channel.basicCancel(state.consumerTag);
-                } catch (IOException | AlreadyClosedException e ) {
+                } catch (IOException | AlreadyClosedException e) {
                     //ignore
                 }
                 if (!state.inProgress) {
