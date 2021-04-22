@@ -31,9 +31,11 @@ import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
+import io.micronaut.messaging.annotation.Headers;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
+import io.micronaut.rabbitmq.annotation.RabbitHeaderMap;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.exception.RabbitClientException;
@@ -150,6 +152,15 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     String value = header.getValue(String.class).orElse(null);
 
                     if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                        methodHeaders.put(name, value);
+                    }
+                });
+
+                Map<AnnotationValue<RabbitHeaderMap>> headerMapAnn = method.findAnnotation(RabbitHeaderMap.class);
+                headerMapAnn.keySet().forEach((key) -> {
+                    String value = (String)headerMapAnn.get(key).orElse(null);
+
+                    if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
                         methodHeaders.put(name, value);
                     }
                 });
@@ -361,6 +372,20 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .map(argumentValues::get)
                 .filter(Objects::nonNull)
                 .map(Object::toString)
+                .findFirst();
+    }
+
+    private Optional<Argument> findHeadersCollectionArgument(ExecutableMethod<?, ?> method) {
+        return Arrays.stream(method.getArguments())
+                .filter(arg -> arg.getType().isAssignableFrom(Collection.class))
+                .filter(arg -> arg.getFirstTypeVariable().isPresent())
+                .filter(arg -> arg.getFirstTypeVariable().get().getType() == Header.class || arg.getFirstTypeVariable().get().getType() == RecordHeader.class)
+                .findFirst();
+    }
+
+    private Optional<Argument> findHeadersArgument(ExecutableMethod<?, ?> method) {
+        return Arrays.stream(method.getArguments())
+                .filter(arg -> arg.getType() == Headers.class || arg.getType() == RecordHeaders.class)
                 .findFirst();
     }
 
