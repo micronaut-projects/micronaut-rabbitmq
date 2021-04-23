@@ -32,10 +32,11 @@ import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
 import io.micronaut.messaging.annotation.Headers;
+import io.micronaut.messaging.MessageHeaders;
+import io.micronaut.rabbitmq.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
-import io.micronaut.rabbitmq.annotation.RabbitHeaderMap;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.exception.RabbitClientException;
@@ -156,14 +157,17 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
                 });
 
-                Map<AnnotationValue<RabbitHeaderMap>> headerMapAnn = method.findAnnotation(RabbitHeaderMap.class);
-                headerMapAnn.keySet().forEach((key) -> {
-                    String value = (String)headerMapAnn.get(key).orElse(null);
+//                final Optional<Argument> messageHeadersArgument = findMessageHeadersArgument(context);
+//                if (messageHeadersArgument.isPresent()) {
+//                    final String parameterName = messageHeadersArgument.get().getName();
+//                    final MessageHeaders parameterValue = (MessageHeaders) context.getParameterValueMap().get(parameterName);
+//                    if (parameterValue != null) {
+//                        parameterValue.names().forEach((name) -> {
+//                                methodHeaders.put(name, parameterValue.get(name));
+//                        });
+//                    }
+//                }
 
-                    if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
-                        methodHeaders.put(name, value);
-                    }
-                });
 
                 Map<String, String> methodProperties = new HashMap<>();
 
@@ -239,6 +243,17 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
                         properties.get(argumentName).accept(parameterValues.get(argumentName), mutableProperties);
+                    } else {
+                        Class argumentType = argument.getType();
+                        if (argumentType == MessageHeaders.class || argumentType == RabbitHeaders.class) {
+                            final MessageHeaders parameterValue = (MessageHeaders) parameterValues.get(argument.getName());
+                            if (parameterValue != null) {
+                                parameterValue.names().forEach((name) -> {
+                                    headers.put(name, parameterValue.get(name));
+                                });
+                            }
+                        }
+
                     }
                 }
             }
@@ -375,17 +390,9 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .findFirst();
     }
 
-    private Optional<Argument> findHeadersCollectionArgument(ExecutableMethod<?, ?> method) {
+    private Optional<Argument> findMessageHeadersArgument(ExecutableMethod<?, ?> method) {
         return Arrays.stream(method.getArguments())
-                .filter(arg -> arg.getType().isAssignableFrom(Collection.class))
-                .filter(arg -> arg.getFirstTypeVariable().isPresent())
-                .filter(arg -> arg.getFirstTypeVariable().get().getType() == Header.class || arg.getFirstTypeVariable().get().getType() == RecordHeader.class)
-                .findFirst();
-    }
-
-    private Optional<Argument> findHeadersArgument(ExecutableMethod<?, ?> method) {
-        return Arrays.stream(method.getArguments())
-                .filter(arg -> arg.getType() == Headers.class || arg.getType() == RecordHeaders.class)
+                .filter(arg -> arg.getType() == MessageHeaders.class || arg.getType() == RabbitHeaders.class)
                 .findFirst();
     }
 
@@ -397,6 +404,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         Arrays.stream(method.getArguments())
                                 .filter(arg -> !arg.getAnnotationMetadata().hasStereotype(Bindable.class))
                                 .filter(arg -> !properties.containsKey(arg.getName()))
+                                .filter(arg -> !(arg.getType() == MessageHeaders.class || arg.getType() == RabbitHeaders.class))
                                 .findFirst()
                                 .orElse(null)
                 ));

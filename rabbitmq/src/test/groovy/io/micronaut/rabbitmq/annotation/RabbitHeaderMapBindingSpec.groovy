@@ -4,7 +4,8 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.rabbitmq.annotation.RabbitHeaderMap
+import io.micronaut.messaging.MessageHeaders;
+import io.micronaut.rabbitmq.RabbitHeaders;
 import spock.util.concurrent.PollingConditions
 
 class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
@@ -16,12 +17,14 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
         PollingConditions conditions = new PollingConditions(timeout: 3)
         MyProducer producer = applicationContext.getBean(MyProducer)
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
+
         Map<String, String> headerMap = new HashMap();
         headerMap.put("weight", "200lbs");
         headerMap.put("height", "6ft");
+        RabbitHeaders rabbitHeaders = new RabbitHeaders(headerMap);
 
         when:
-        producer.go(new Person(name: "abc"), headerMap)
+        producer.go(new Person(name: "abc"), rabbitHeaders)
 
         then:
         conditions.eventually {
@@ -45,7 +48,7 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("header")
-        void go(Person data, @RabbitHeaderMap Map<String, String> myHeaderMap)
+        void go(Person data, RabbitHeaders rabbitHeaders)
 
     }
 
