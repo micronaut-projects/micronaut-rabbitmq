@@ -164,18 +164,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     }
                 });
 
-//                final Optional<Argument> messageHeadersArgument = findMessageHeadersArgument(context);
-//                if (messageHeadersArgument.isPresent()) {
-//                    final String parameterName = messageHeadersArgument.get().getName();
-//                    final MessageHeaders parameterValue = (MessageHeaders) context.getParameterValueMap().get(parameterName);
-//                    if (parameterValue != null) {
-//                        parameterValue.names().forEach((name) -> {
-//                                methodHeaders.put(name, parameterValue.get(name));
-//                        });
-//                    }
-//                }
-
-
                 Map<String, String> methodProperties = new HashMap<>();
 
                 List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
@@ -394,12 +382,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .map(argumentValues::get)
                 .filter(Objects::nonNull)
                 .map(Object::toString)
-                .findFirst();
-    }
-
-    private Optional<Argument> findMessageHeadersArgument(ExecutableMethod<?, ?> method) {
-        return Arrays.stream(method.getArguments())
-                .filter(arg -> arg.getType() == MessageHeaders.class || arg.getType() == RabbitHeaders.class)
                 .findFirst();
     }
 

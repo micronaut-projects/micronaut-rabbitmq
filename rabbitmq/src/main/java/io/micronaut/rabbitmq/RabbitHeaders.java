@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A {@link MessageHeaders} implementation for Rabbit.
+ * A {@link MessageHeaders} implementation for Rabbit using a Map object.
  *
  * @author Raj Selvaraj
  * @since 2.4.1
@@ -40,9 +40,9 @@ public class RabbitHeaders implements MessageHeaders {
     private final Map<String, String> headers;
 
     /**
-     * Constructs a new instance for the given headers.
+     * Constructs a new instance for the given map of headers.
      *
-     * @param headers The kafka headers
+     * @param headers A Map of headers
      */
     public RabbitHeaders(Map headers) {
         Objects.requireNonNull(headers, "Argument [headers] cannot be null");

@@ -1,6 +1,7 @@
 package io.micronaut.rabbitmq.docs.headers
 
 // tag::imports[]
+import io.micronaut.rabbitmq.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
@@ -28,5 +29,9 @@ interface ProductClient {
     fun send(@Header productSize: String?, // <3>
              @Header("x-product-count") count: Long,
              data: ByteArray)
+
+    @Binding("product")
+    fun send(rabbitHeaders: RabbitHeaders, // <4>
+                      data: ByteArray)
 }
 // end::clazz[]

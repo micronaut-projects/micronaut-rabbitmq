@@ -1,18 +1,19 @@
-package io.micronaut.rabbitmq.annotation
+package io.micronaut.rabbitmq
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.messaging.MessageHeaders;
-import io.micronaut.rabbitmq.RabbitHeaders;
+import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import spock.util.concurrent.PollingConditions
 
-class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
+class RabbitHeadersSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming with the RabbitHeaders parameter"() {
         ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
+                ["rabbitmq.port": AbstractRabbitMQTest.rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
         PollingConditions conditions = new PollingConditions(timeout: 3)
         MyProducer producer = applicationContext.getBean(MyProducer)
@@ -28,11 +29,12 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
 
         then:
         conditions.eventually {
-            consumer.person.name() == "abc"
-            consumer.headers.keySet()[0] == "weight"
-            consumer.headers.values()[0] == "200lbs"
-            consumer.headers.keySet()[1] == "height"
-            consumer.headers.values()[1] == "6ft"
+            consumer.person.name == "abc"
+            consumer.headers.keySet()[0] == "height"
+            consumer.headers.values()[0] == "6ft"
+            consumer.headers.keySet()[1] == "weight"
+            consumer.headers.values()[1] == "200lbs"
+
         }
 
         cleanup:
@@ -43,7 +45,7 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
         String name
     }
 
-    @Requires(property = "spec.name", value = "RabbitHeaderMapBindingSpec")
+    @Requires(property = "spec.name", value = "RabbitHeadersSpec")
     @RabbitClient
     static interface MyProducer {
 
@@ -52,7 +54,7 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
 
     }
 
-    @Requires(property = "spec.name", value = "RabbitHeaderMapBindingSpec")
+    @Requires(property = "spec.name", value = "RabbitHeadersSpec")
     @RabbitListener
     static class MyConsumer {
 
