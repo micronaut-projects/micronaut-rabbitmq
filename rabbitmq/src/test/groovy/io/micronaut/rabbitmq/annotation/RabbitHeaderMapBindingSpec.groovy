@@ -10,7 +10,7 @@ import spock.util.concurrent.PollingConditions
 
 class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
 
-    void "test simple producing and consuming with the header annotation"() {
+    void "test simple producing and consuming with the RabbitHeaders parameter"() {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
@@ -43,7 +43,7 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
         String name
     }
 
-    @Requires(property = "spec.name", value = "HeaderBindingSpec")
+    @Requires(property = "spec.name", value = "RabbitHeaderMapBindingSpec")
     @RabbitClient
     static interface MyProducer {
 
@@ -52,7 +52,7 @@ class RabbitHeaderMapBindingSpec extends AbstractRabbitMQTest {
 
     }
 
-    @Requires(property = "spec.name", value = "HeaderBindingSpec")
+    @Requires(property = "spec.name", value = "RabbitHeaderMapBindingSpec")
     @RabbitListener
     static class MyConsumer {
 
