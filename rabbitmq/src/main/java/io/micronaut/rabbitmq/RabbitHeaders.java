@@ -44,7 +44,7 @@ public class RabbitHeaders implements MessageHeaders {
      *
      * @param headers A Map of headers
      */
-    public RabbitHeaders(Map headers) {
+    public RabbitHeaders(Map<String, Object> headers) {
         Objects.requireNonNull(headers, "Argument [headers] cannot be null");
         this.headers = headers;
     }

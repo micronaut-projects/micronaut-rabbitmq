@@ -389,7 +389,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         Arrays.stream(method.getArguments())
                                 .filter(arg -> !arg.getAnnotationMetadata().hasStereotype(Bindable.class))
                                 .filter(arg -> !properties.containsKey(arg.getName()))
-                                .filter(arg -> !(arg.getType() == MessageHeaders.class || arg.getType() == RabbitHeaders.class))
+                                .filter(arg -> !arg.getType().isAssignableFrom(MessageHeaders.class))
                                 .findFirst()
                                 .orElse(null)
                 ));
