@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.rabbitmq;
+package io.micronaut.rabbitmq.bind;
 
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * A {@link MessageHeaders} implementation for Rabbit using a Map object.
@@ -50,12 +49,12 @@ public class RabbitHeaders implements MessageHeaders {
     }
 
     @Override
-    public List<String> getAll(CharSequence name) {
+    public List getAll(CharSequence name) {
         if (name != null) {
-            List<String> returnList = new ArrayList();
+            List returnList = new ArrayList();
             Object value = this.headers.get(name.toString());
             if (value != null) {
-                returnList.add(value.toString());
+                returnList.add(value);
             }
             return returnList;
         } else {
@@ -65,8 +64,18 @@ public class RabbitHeaders implements MessageHeaders {
 
     @Override
     public String get(CharSequence name) {
-        if (this.headers != null && this.headers.get(name.toString()) != null) {
-            return this.headers.get(name.toString()).toString();
+        if (this.headers != null) {
+            Object value = this.headers.get(name.toString());
+            if (value != null && value instanceof String) {
+                return value.toString();
+            }
+        }
+        return null;
+    }
+
+    public Object get(String name) {
+        if (this.headers != null) {
+            return this.headers.get(name);
         }
         return null;
     }
@@ -77,20 +86,13 @@ public class RabbitHeaders implements MessageHeaders {
     }
 
     @Override
-    public Collection<List<String>> values() {
-        return names().stream().map(name -> {
-            List<String> values = new ArrayList<>();
-            Object value = this.headers.get(name);
-            if (value != null) {
-                values.add(value.toString());
-            }
-            return values;
-        }).collect(Collectors.toList());
+    public Collection values() {
+        return this.headers.values();
     }
 
     @Override
     public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
-        String v = get(name);
+        Object v = get(name);
         if (v != null) {
             return ConversionService.SHARED.convert(v, conversionContext);
         }
@@ -101,6 +103,13 @@ public class RabbitHeaders implements MessageHeaders {
     public RabbitHeaders add(CharSequence header, CharSequence value) {
         if (header != null && value != null) {
             this.headers.put(header.toString(), value.toString());
+        }
+        return this;
+    }
+
+    public RabbitHeaders add(CharSequence header, Object value) {
+        if (header != null && value != null) {
+            this.headers.put(header.toString(), value);
         }
         return this;
     }

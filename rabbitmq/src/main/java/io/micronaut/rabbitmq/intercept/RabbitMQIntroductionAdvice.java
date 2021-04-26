@@ -32,7 +32,7 @@ import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.MessageHeaders;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
-import io.micronaut.rabbitmq.RabbitHeaders;
+import io.micronaut.rabbitmq.bind.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
@@ -238,7 +238,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
                         properties.get(argumentName).accept(parameterValues.get(argumentName), mutableProperties);
-                    } else if (argument.getType().isAssignableFrom(MessageHeaders.class)) {
+                    } else if (argument.getType().isAssignableFrom(MessageHeaders.class) || argument.getType().isAssignableFrom(RabbitHeaders.class)) {
                             final MessageHeaders parameterValue = (MessageHeaders) parameterValues.get(argument.getName());
                             if (parameterValue != null) {
                                 parameterValue.names().forEach((name) -> {
@@ -389,7 +389,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         Arrays.stream(method.getArguments())
                                 .filter(arg -> !arg.getAnnotationMetadata().hasStereotype(Bindable.class))
                                 .filter(arg -> !properties.containsKey(arg.getName()))
-                                .filter(arg -> !arg.getType().isAssignableFrom(MessageHeaders.class))
+                                .filter(arg -> !(arg.getType().isAssignableFrom(MessageHeaders.class) || arg.getType().isAssignableFrom(RabbitHeaders.class)))
                                 .findFirst()
                                 .orElse(null)
                 ));
