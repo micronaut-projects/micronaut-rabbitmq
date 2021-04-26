@@ -1,12 +1,12 @@
 package io.micronaut.rabbitmq.docs.headers
 
 // tag::imports[]
-import io.micronaut.rabbitmq.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.messaging.annotation.Headers
+import io.micronaut.messaging.MessageHeaders
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
@@ -31,7 +31,7 @@ interface ProductClient {
              data: ByteArray)
 
     @Binding("product")
-    fun send(rabbitHeaders: RabbitHeaders, // <4>
+    fun send(messageHeaders: MessageHeaders, // <4>
                       data: ByteArray)
 }
 // end::clazz[]

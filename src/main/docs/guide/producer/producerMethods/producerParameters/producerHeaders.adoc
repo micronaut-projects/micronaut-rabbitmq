@@ -7,4 +7,4 @@ snippet::io.micronaut.rabbitmq.docs.headers.ProductClient[tags="imports,clazz", 
 <1> Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.
 <2> Multiple annotations can be used to set multiple headers on the method or class level.
 <3> Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.
-<4> A key/value map of headers can be set with the 'RabbitHeaders' object, which implements the MessageHeaders interface.
+<4> An implementation of MessageHeaders interface.
