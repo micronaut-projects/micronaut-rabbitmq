@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.MessageHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitClient
@@ -50,7 +51,7 @@ class RabbitHeadersSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("header")
-        void go(Person data, RabbitHeaders rabbitHeaders)
+        void go(Person data, MessageHeaders messageHeaders)
 
     }
 

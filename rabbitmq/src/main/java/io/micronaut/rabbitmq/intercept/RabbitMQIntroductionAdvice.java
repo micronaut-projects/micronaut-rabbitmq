@@ -238,17 +238,13 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
                         properties.get(argumentName).accept(parameterValues.get(argumentName), mutableProperties);
-                    } else {
-                        Class argumentType = argument.getType();
-                        if (argumentType == MessageHeaders.class || argumentType == RabbitHeaders.class) {
+                    } else if (argument.getType().isAssignableFrom(MessageHeaders.class)) {
                             final MessageHeaders parameterValue = (MessageHeaders) parameterValues.get(argument.getName());
                             if (parameterValue != null) {
                                 parameterValue.names().forEach((name) -> {
                                     headers.put(name, parameterValue.get(name));
                                 });
                             }
-                        }
-
                     }
                 }
             }

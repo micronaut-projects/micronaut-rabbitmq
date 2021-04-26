@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class RabbitHeaders implements MessageHeaders {
 
-    private final Map<String, String> headers;
+    private final Map<String, Object> headers;
 
     /**
      * Constructs a new instance for the given map of headers.
@@ -53,7 +53,10 @@ public class RabbitHeaders implements MessageHeaders {
     public List<String> getAll(CharSequence name) {
         if (name != null) {
             List<String> returnList = new ArrayList();
-            returnList.add(this.headers.get(name.toString()));
+            Object value = this.headers.get(name.toString());
+            if (value != null) {
+                returnList.add(value.toString());
+            }
             return returnList;
         } else {
             return Collections.emptyList();
@@ -62,8 +65,8 @@ public class RabbitHeaders implements MessageHeaders {
 
     @Override
     public String get(CharSequence name) {
-        if (this.headers != null) {
-            return this.headers.get(name.toString());
+        if (this.headers != null && this.headers.get(name.toString()) != null) {
+            return this.headers.get(name.toString()).toString();
         }
         return null;
     }
@@ -77,7 +80,10 @@ public class RabbitHeaders implements MessageHeaders {
     public Collection<List<String>> values() {
         return names().stream().map(name -> {
             List<String> values = new ArrayList<>();
-            values.add(new String(this.headers.get(name)));
+            Object value = this.headers.get(name);
+            if (value != null) {
+                values.add(value.toString());
+            }
             return values;
         }).collect(Collectors.toList());
     }
