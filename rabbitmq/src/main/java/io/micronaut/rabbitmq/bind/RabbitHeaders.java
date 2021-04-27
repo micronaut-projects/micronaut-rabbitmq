@@ -73,6 +73,11 @@ public class RabbitHeaders implements MessageHeaders {
         return null;
     }
 
+    /**
+     * Get  the  Object from the headers for the given name.
+     * @param name
+     * @return Object
+     */
     public Object get(String name) {
         if (this.headers != null) {
             return this.headers.get(name);
@@ -107,6 +112,13 @@ public class RabbitHeaders implements MessageHeaders {
         return this;
     }
 
+    /**
+     * Add a header for the given name and Object value.
+     *
+     * @param header The head name
+     * @param value  The value object
+     * @return This headers object
+     */
     public RabbitHeaders add(CharSequence header, Object value) {
         if (header != null && value != null) {
             this.headers.put(header.toString(), value);
