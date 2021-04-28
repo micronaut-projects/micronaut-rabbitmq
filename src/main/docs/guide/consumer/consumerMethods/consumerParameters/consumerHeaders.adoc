@@ -5,3 +5,4 @@ snippet::io.micronaut.rabbitmq.docs.headers.ProductListener[tags="imports,clazz"
 <1> The header name comes from the annotation and the value is retrieved and converted to a Boolean.
 <2> The header name comes from the annotation and the value is retrieved and converted to a Long.
 <3> The header name comes from the argument name. This argument allows null values.
+<4> All headers can be bound to a single `Map` argument with ann:rabbitmq.annotation.RabbitHeaders[].

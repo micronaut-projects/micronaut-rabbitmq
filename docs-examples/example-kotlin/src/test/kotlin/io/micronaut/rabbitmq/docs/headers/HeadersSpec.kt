@@ -22,14 +22,16 @@ class HeadersSpec : AbstractRabbitMQTest({
             productClient.send("body".toByteArray())
             productClient.send("medium", 20L, "body2".toByteArray())
             productClient.send(null, 30L, "body3".toByteArray())
+            productClient.send(mapOf<String, Any>("productSize" to "large", "x-product-count" to 40L), "body4".toByteArray())
             // end::producer[]
 
             then("The messages are received") {
                 eventually(10.seconds, AssertionFailedError::class.java) {
-                    productListener.messageProperties.size shouldBe 3
+                    productListener.messageProperties.size shouldBe 4
                     productListener.messageProperties shouldContain "true|10|small"
                     productListener.messageProperties shouldContain "true|20|medium"
                     productListener.messageProperties shouldContain "true|30|null"
+                    productListener.messageProperties shouldContain "true|40|large"
                 }
             }
         }

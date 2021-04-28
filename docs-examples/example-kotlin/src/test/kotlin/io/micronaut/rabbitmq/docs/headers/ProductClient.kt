@@ -7,6 +7,8 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
 import io.micronaut.messaging.annotation.Headers
 import io.micronaut.messaging.MessageHeaders
+import io.micronaut.rabbitmq.annotation.RabbitHeaders
+
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
@@ -31,7 +33,7 @@ interface ProductClient {
              data: ByteArray)
 
     @Binding("product")
-    fun send(messageHeaders: MessageHeaders, // <4>
-                      data: ByteArray)
+    fun send(@RabbitHeaders headers: Map<String, Any>, // <4>
+             data: ByteArray)
 }
 // end::clazz[]

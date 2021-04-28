@@ -29,10 +29,9 @@ import io.micronaut.core.type.ReturnType;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.messaging.MessageHeaders;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
-import io.micronaut.rabbitmq.bind.RabbitHeaders;
+import io.micronaut.rabbitmq.annotation.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
@@ -218,33 +217,27 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             for (Argument argument : arguments) {
                 AnnotationValue<Header> headerAnn = argument.getAnnotation(Header.class);
                 AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
+                boolean headersMap = argument.getAnnotationMetadata().hasAnnotation(RabbitHeaders.class);
                 if (headerAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, headerAnn, parameterValues);
                     String name = entry.getKey();
                     Object value = entry.getValue();
-
-                    //if (StringUtils.isNotEmpty(name) && value != null) {
-                        headers.put(name, value);
-                    //}
+                    headers.put(name, value);
                 } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
                     String name = entry.getKey();
                     Object value = entry.getValue();
-
-                    //if (StringUtils.isNotEmpty(name) && value != null) {
-                        setBasicProperty(mutableProperties, name, value);
-                    //}
+                    setBasicProperty(mutableProperties, name, value);
+                } else if (headersMap) {
+                    if (!argument.equalsType(Argument.mapOf(String.class, Object.class))) {
+                        throw new RabbitClientException("The @RabbitHeaders annotation is applied to an argument that is not java.util.Map<String, ?>.");
+                    }
+                    Object value = parameterValues.get(argument.getName());
+                    headers.putAll((Map) value);
                 } else if (argument != bodyArgument) {
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
                         properties.get(argumentName).accept(parameterValues.get(argumentName), mutableProperties);
-                    } else if (argument.getType().isAssignableFrom(MessageHeaders.class) || argument.getType().isAssignableFrom(RabbitHeaders.class)) {
-                            final MessageHeaders parameterValue = (MessageHeaders) parameterValues.get(argument.getName());
-                            if (parameterValue != null) {
-                                parameterValue.names().forEach((name) -> {
-                                    headers.put(name, parameterValue.get(name));
-                                });
-                            }
                     }
                 }
             }
@@ -266,7 +259,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
-            Class dataTypeClass = publisherState.getDataType().getType();
+            Class<?> dataTypeClass = publisherState.getDataType().getType();
             boolean isVoid = dataTypeClass == void.class || dataTypeClass == Void.class;
             boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
             boolean rpc = replyToSet && !isVoid;
@@ -275,7 +268,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             if (publisherState.isReactive()) {
 
-                Publisher reactive;
+                Publisher<?> reactive;
                 if (rpc) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
@@ -389,7 +382,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         Arrays.stream(method.getArguments())
                                 .filter(arg -> !arg.getAnnotationMetadata().hasStereotype(Bindable.class))
                                 .filter(arg -> !properties.containsKey(arg.getName()))
-                                .filter(arg -> !(arg.getType().isAssignableFrom(MessageHeaders.class) || arg.getType().isAssignableFrom(RabbitHeaders.class)))
                                 .findFirst()
                                 .orElse(null)
                 ));

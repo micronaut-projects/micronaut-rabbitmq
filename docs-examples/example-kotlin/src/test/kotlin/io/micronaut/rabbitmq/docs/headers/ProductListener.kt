@@ -5,6 +5,7 @@ import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import java.util.ArrayList
 import java.util.Collections
 // end::imports[]
@@ -22,6 +23,16 @@ class ProductListener {
                 @Header("x-product-count") count: Long, // <2>
                 @Header productSize: String?) { // <3>
         messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
+    }
+
+    @Queue("product")
+    fun receive(data: ByteArray,
+                @RabbitHeaders headers: Map<String, Any>) { // <4>
+        messageProperties.add(
+            headers["x-product-sealed"] + "|" +
+            headers["x-product-count"] + "|" +
+            headers["productSize"]
+        )
     }
 }
 // end::clazz[]

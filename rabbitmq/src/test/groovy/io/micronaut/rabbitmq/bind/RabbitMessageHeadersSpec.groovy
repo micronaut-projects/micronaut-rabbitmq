@@ -9,7 +9,7 @@ import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.rabbitmq.bind.RabbitHeaders
+import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import spock.util.concurrent.PollingConditions
 
 class RabbitMessageHeadersSpec extends AbstractRabbitMQTest {
@@ -24,57 +24,37 @@ class RabbitMessageHeadersSpec extends AbstractRabbitMQTest {
         AnimalListener consumer = applicationContext.getBean(AnimalListener)
 
         when:
-        producer.goWithMessageHeaders("Cat", new Cat(lives: 9, name: "Whiskers"), new RabbitHeaders(["color":"black"]))
-        producer.goWithRabbitHeaders("Dog", new Dog(size: "M", name: "Chloe"), new RabbitHeaders(["weight":"2lbs"]))
+        producer.goWithRabbitHeaders("test", ["weight": "2lbs", "color": "black"])
 
         then:
         conditions.eventually {
-            consumer.messages.size() == 2
-            consumer.dogHeaders.size() == 1
-            consumer.dogHeaders.get("weight") == "2lbs"
-            consumer.catHeaders.size() == 1
-            consumer.catHeaders.get("color") == "black"
+            consumer.headers == ["weight": "2lbs", "color": "black"]
         }
 
         cleanup:
         applicationContext.close()
     }
 
-    static class Cat extends Animal {
-        int lives
-    }
-    static class Dog extends Animal {
-        String size
-    }
-    static abstract class Animal {
-        String name
-    }
-
     @Requires(property = "spec.name", value = "RabbitMessageHeadersSpec")
-    @RabbitClient("animals")
+    @RabbitClient
     static interface AnimalProducer {
-        void goWithMessageHeaders(@Header String animalType, Animal animal, MessageHeaders rabbitHeaders)
-        void goWithRabbitHeaders(@Header String animalType, Animal animal, RabbitHeaders rabbitHeaders)
+
+        @Binding("header")
+        void goWithRabbitHeaders(String body, @RabbitHeaders Map<String, Object> rabbitHeaders)
     }
 
     @Requires(property = "spec.name", value = "RabbitMessageHeadersSpec")
     @RabbitListener
     static class AnimalListener {
 
-        public List<Animal> messages = []
-        public Map<String, String> dogHeaders = [:]
-        public Map<String, String> catHeaders = [:]
+        public Map<String, Object> headers = [:]
 
-        @Queue("dogs")
-        void listen(Dog dog, @Header String weight) {
-            messages.add(dog)
-            dogHeaders.put("weight", weight)
+        @Queue("header")
+        void listen(@RabbitHeaders Map<String, Object> rabbitHeaders) {
+            for (Map.Entry<String, Object> entry: rabbitHeaders) {
+                headers.put(entry.getKey(), entry.getValue().toString())
+            }
         }
 
-        @Queue("cats")
-        void listen(Cat cat, @Header String color) {
-            messages.add(cat)
-            catHeaders.put("color", color)
-        }
     }
 }
