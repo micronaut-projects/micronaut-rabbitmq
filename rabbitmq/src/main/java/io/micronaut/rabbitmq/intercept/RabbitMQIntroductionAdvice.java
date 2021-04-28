@@ -31,6 +31,7 @@ import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.annotation.Body;
 import io.micronaut.messaging.annotation.Header;
+import io.micronaut.rabbitmq.annotation.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
@@ -50,7 +51,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -208,22 +217,23 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             for (Argument argument : arguments) {
                 AnnotationValue<Header> headerAnn = argument.getAnnotation(Header.class);
                 AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
+                boolean headersMap = argument.getAnnotationMetadata().hasAnnotation(RabbitHeaders.class);
                 if (headerAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, headerAnn, parameterValues);
                     String name = entry.getKey();
                     Object value = entry.getValue();
-
-                    //if (StringUtils.isNotEmpty(name) && value != null) {
-                        headers.put(name, value);
-                    //}
+                    headers.put(name, value);
                 } else if (propertyAnn != null) {
                     Map.Entry<String, Object> entry = getNameAndValue(argument, propertyAnn, parameterValues);
                     String name = entry.getKey();
                     Object value = entry.getValue();
-
-                    //if (StringUtils.isNotEmpty(name) && value != null) {
-                        setBasicProperty(mutableProperties, name, value);
-                    //}
+                    setBasicProperty(mutableProperties, name, value);
+                } else if (headersMap) {
+                    if (!argument.equalsType(Argument.mapOf(String.class, Object.class))) {
+                        throw new RabbitClientException("The @RabbitHeaders annotation is applied to an argument that is not java.util.Map<String, ?>.");
+                    }
+                    Object value = parameterValues.get(argument.getName());
+                    headers.putAll((Map) value);
                 } else if (argument != bodyArgument) {
                     String argumentName = argument.getName();
                     if (properties.containsKey(argumentName)) {
@@ -249,7 +259,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
-            Class dataTypeClass = publisherState.getDataType().getType();
+            Class<?> dataTypeClass = publisherState.getDataType().getType();
             boolean isVoid = dataTypeClass == void.class || dataTypeClass == Void.class;
             boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
             boolean rpc = replyToSet && !isVoid;
@@ -258,7 +268,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             if (publisherState.isReactive()) {
 
-                Publisher reactive;
+                Publisher<?> reactive;
                 if (rpc) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
