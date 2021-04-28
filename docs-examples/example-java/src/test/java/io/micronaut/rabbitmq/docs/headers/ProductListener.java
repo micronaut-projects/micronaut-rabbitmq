@@ -32,10 +32,11 @@ public class ProductListener {
     @Queue("product")
     public void receive(byte[] data,
                         @RabbitHeaders Map<String, Object> headers) { // <4>
+        Object productSize = headers.get("productSize");
         messageProperties.add(
-                headers.get("x-product-sealed") + "|" +
-                headers.get("x-product-count") + "|" +
-                headers.get("productSize"));
+                headers.get("x-product-sealed").toString() + "|" +
+                headers.get("x-product-count").toString() + "|" +
+                (productSize != null ? productSize.toString() : null));
     }
 }
 // end::clazz[]

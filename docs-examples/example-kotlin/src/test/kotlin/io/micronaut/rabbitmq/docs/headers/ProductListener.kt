@@ -29,9 +29,9 @@ class ProductListener {
     fun receive(data: ByteArray,
                 @RabbitHeaders headers: Map<String, Any>) { // <4>
         messageProperties.add(
-            headers["x-product-sealed"] + "|" +
-            headers["x-product-count"] + "|" +
-            headers["productSize"]
+            headers["x-product-sealed"].toString() + "|" +
+            headers["x-product-count"].toString() + "|" +
+            headers["productSize"]?.toString()
         )
     }
 }
