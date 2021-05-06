@@ -1,12 +1,12 @@
 package io.micronaut.rabbitmq.docs.consumer.types;
 
+import io.micronaut.context.annotation.Requires;
 // tag::imports[]
 import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitListener;
-import io.micronaut.context.annotation.Requires;
 
 import java.util.ArrayList;
 import java.util.Collections;

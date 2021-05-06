@@ -1,12 +1,12 @@
 package io.micronaut.rabbitmq.docs.properties;
 
+import io.micronaut.context.annotation.Requires;
 // tag::imports[]
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
-import io.micronaut.context.annotation.Requires;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

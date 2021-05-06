@@ -3,19 +3,19 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    testCompile project(":rabbitmq")
-    testCompile "io.micronaut:micronaut-inject"
+    testImplementation project(":rabbitmq")
+    testImplementation "io.micronaut:micronaut-inject"
     testCompileOnly "io.micronaut:micronaut-inject-groovy"
-    testCompile "org.testcontainers:spock:1.15.3"
-    testCompile("org.spockframework:spock-core") {
+    testImplementation "org.testcontainers:spock:1.15.3"
+    testImplementation("org.spockframework:spock-core") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    testRuntime "ch.qos.logback:logback-classic:1.2.3"
-    testCompile "io.projectreactor:reactor-core"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "io.projectreactor:reactor-core"
     testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }
 

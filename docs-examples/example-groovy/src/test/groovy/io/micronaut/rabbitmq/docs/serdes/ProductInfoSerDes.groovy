@@ -1,12 +1,12 @@
 package io.micronaut.rabbitmq.docs.serdes
 
+import io.micronaut.context.annotation.Requires
 // tag::imports[]
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
-import io.micronaut.context.annotation.Requires
-import io.micronaut.core.convert.ConversionService
-import io.micronaut.core.type.Argument
 
 import javax.inject.Singleton
 import java.nio.charset.Charset

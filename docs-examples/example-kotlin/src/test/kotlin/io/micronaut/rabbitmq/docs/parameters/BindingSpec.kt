@@ -1,7 +1,9 @@
 package io.micronaut.rabbitmq.docs.parameters
 
-import io.kotlintest.*
+import io.kotlintest.eventually
 import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.seconds
+import io.kotlintest.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import org.opentest4j.AssertionFailedError
 

@@ -1,6 +1,5 @@
 package io.micronaut.rabbitmq.docs.consumer.connection
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions

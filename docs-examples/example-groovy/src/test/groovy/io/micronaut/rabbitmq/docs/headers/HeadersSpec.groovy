@@ -1,7 +1,7 @@
-package io.micronaut.rabbitmq.docs.headers;
+package io.micronaut.rabbitmq.docs.headers
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
 class HeadersSpec extends AbstractRabbitMQTest {

@@ -1,8 +1,9 @@
 package io.micronaut.rabbitmq.docs.quickstart
 
-import io.kotlintest.*
+import io.kotlintest.eventually
+import io.kotlintest.seconds
+import io.kotlintest.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.context.ApplicationContext
 import org.opentest4j.AssertionFailedError
 
 class QuickstartSpec: AbstractRabbitMQTest({

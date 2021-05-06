@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.annotation
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Body
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.reactivex.Completable
 import spock.util.concurrent.PollingConditions
 

@@ -18,8 +18,8 @@ package io.micronaut.rabbitmq.bind;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
+import io.micronaut.core.annotation.NonNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -64,7 +64,7 @@ public class RabbitConsumerState {
     /**
      * @return The properties
      */
-    @Nonnull
+    @NonNull
     public AMQP.BasicProperties getProperties() {
         return properties;
     }
@@ -72,7 +72,7 @@ public class RabbitConsumerState {
     /**
      * @return The envelope
      */
-    @Nonnull
+    @NonNull
     public Envelope getEnvelope() {
         return envelope;
     }

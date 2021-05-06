@@ -1,7 +1,7 @@
-package io.micronaut.rabbitmq.rpc;
+package io.micronaut.rabbitmq.rpc
 
-import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.reactivex.Flowable
 import io.reactivex.Maybe

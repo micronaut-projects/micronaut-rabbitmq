@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.health
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthResult
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.reactivex.Single
 
 class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {

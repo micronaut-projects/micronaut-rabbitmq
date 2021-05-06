@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.rpc;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import org.junit.jupiter.api.Test;
 
 public class RpcUppercaseSpec extends AbstractRabbitMQTest {

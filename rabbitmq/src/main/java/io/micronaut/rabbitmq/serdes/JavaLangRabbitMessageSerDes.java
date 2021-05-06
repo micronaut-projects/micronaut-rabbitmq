@@ -15,13 +15,13 @@
  */
 package io.micronaut.rabbitmq.serdes;
 
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 import io.micronaut.core.type.Argument;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -109,7 +109,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link String}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<String> getStringSerDes() {
         return new StringSerDes();
     }
@@ -117,7 +117,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link Short}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Short> getShortSerDes() {
         return new ShortSerDes();
     }
@@ -125,7 +125,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link Integer}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Integer> getIntegerSerDes() {
         return new IntegerSerDes();
     }
@@ -133,7 +133,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link Long}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Long> getLongSerDes() {
         return new LongSerDes();
     }
@@ -141,7 +141,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link Float}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Float> getFloatSerDes() {
         return new FloatSerDes();
     }
@@ -149,7 +149,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link Double}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Double> getDoubleSerDes() {
         return new DoubleSerDes();
     }
@@ -157,7 +157,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles byte[]
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<byte[]> getByteArraySerDes() {
         return new ByteArraySerDes();
     }
@@ -165,7 +165,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link ByteBuffer}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<ByteBuffer> getByteBufferSerDes() {
         return new ByteBufferSerDes();
     }
@@ -173,7 +173,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link UUID}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<UUID> getUUIDSerDes() {
         return new UUIDSerDes();
     }
@@ -181,7 +181,7 @@ public class JavaLangRabbitMessageSerDes implements RabbitMessageSerDes<Object> 
     /**
      * @return The serDes that handles {@link UUID}
      */
-    @Nonnull
+    @NonNull
     protected RabbitMessageSerDes<Boolean> getBooleanSerDes() {
         return new BooleanSerDes();
     }

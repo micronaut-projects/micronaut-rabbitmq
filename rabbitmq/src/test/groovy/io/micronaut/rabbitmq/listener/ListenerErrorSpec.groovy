@@ -1,18 +1,19 @@
 package io.micronaut.rabbitmq.listener
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.exception.DefaultRabbitListenerExceptionHandler
 import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
 import spock.util.concurrent.PollingConditions
+
 import javax.inject.Singleton
 
 class ListenerErrorSpec extends AbstractRabbitMQTest {

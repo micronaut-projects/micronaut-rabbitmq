@@ -1,6 +1,5 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.reactivex.Completable

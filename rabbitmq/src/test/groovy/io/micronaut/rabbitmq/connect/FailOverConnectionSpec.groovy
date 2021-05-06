@@ -1,8 +1,8 @@
 package io.micronaut.rabbitmq.connect
 
 import com.rabbitmq.client.Connection
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 
 class FailOverConnectionSpec extends AbstractRabbitMQTest {
 

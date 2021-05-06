@@ -16,13 +16,13 @@
 package io.micronaut.rabbitmq.intercept;
 
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.type.ReturnType;
 import io.micronaut.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 

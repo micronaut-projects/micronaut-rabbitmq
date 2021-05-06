@@ -1,12 +1,11 @@
 package io.micronaut.rabbitmq.docs.properties
 
+import io.micronaut.context.annotation.Requires
 // tag::imports[]
+import io.micronaut.core.annotation.Nullable
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.annotation.RabbitProperty
-import io.micronaut.context.annotation.Requires
-
-import javax.annotation.Nullable
 // end::imports[]
 
 @Requires(property = "spec.name", value = "PropertiesSpec")

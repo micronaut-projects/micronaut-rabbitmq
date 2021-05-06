@@ -19,8 +19,7 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.context.annotation.Requires;
-
-import javax.annotation.Nonnull;
+import io.micronaut.core.annotation.NonNull;
 
 /**
  * Allows configuration of multiple RabbitMQ connections.
@@ -48,7 +47,7 @@ public class ClusterRabbitConnectionFactoryConfig extends RabbitConnectionFactor
      *
      * @param rpc The RPC configuration
      */
-    public void setRpc(@Nonnull DefaultRpcConfiguration rpc) {
+    public void setRpc(@NonNull DefaultRpcConfiguration rpc) {
         super.setRpc(rpc);
     }
 
@@ -57,7 +56,7 @@ public class ClusterRabbitConnectionFactoryConfig extends RabbitConnectionFactor
      *
      * @param channelPool The channel pool configuration
      */
-    public void setChannelPool(@Nonnull DefaultChannelPoolConfiguration channelPool) {
+    public void setChannelPool(@NonNull DefaultChannelPoolConfiguration channelPool) {
         super.setChannelPool(channelPool);
     }
 

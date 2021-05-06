@@ -1,5 +1,9 @@
 package io.micronaut.rabbitmq.listener
 
+import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Requires
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.messaging.annotation.Header
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
@@ -7,12 +11,8 @@ import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
-import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
 import spock.util.concurrent.PollingConditions
 
-import javax.annotation.Nullable
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MissingHeaderSpec extends AbstractRabbitMQTest {
@@ -40,10 +40,8 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
     @Requires(property = "spec.name", value = "MissingHeaderSpec")
     @RabbitClient
     static interface MyProducer {
-
         @Binding("simple")
         void go(String data)
-
     }
 
     @Requires(property = "spec.name", value = "MissingHeaderSpec")

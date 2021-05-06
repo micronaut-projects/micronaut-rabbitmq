@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.docs.consumer.executor
 
+import io.micronaut.context.annotation.Requires
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.context.annotation.Requires
 // end::imports[]
 
 @Requires(property = "spec.name", value = "CustomExecutorSpec")
