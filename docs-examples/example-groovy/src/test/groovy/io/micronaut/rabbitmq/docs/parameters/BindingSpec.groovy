@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.parameters
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
 class BindingSpec extends AbstractRabbitMQTest {

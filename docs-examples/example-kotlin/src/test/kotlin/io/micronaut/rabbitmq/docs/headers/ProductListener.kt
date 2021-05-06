@@ -1,12 +1,11 @@
 package io.micronaut.rabbitmq.docs.headers
 
-// tag::imports[]
-import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.context.annotation.Requires
+// tag::imports[]
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
-import java.util.ArrayList
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
 // end::imports[]
 

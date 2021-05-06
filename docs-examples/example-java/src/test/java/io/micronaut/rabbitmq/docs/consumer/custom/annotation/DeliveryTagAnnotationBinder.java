@@ -1,11 +1,11 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation;
 
-// tag::imports[]
-import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder;
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.context.annotation.Requires;
+// tag::imports[]
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 
 import javax.inject.Singleton;
 // end::imports[]

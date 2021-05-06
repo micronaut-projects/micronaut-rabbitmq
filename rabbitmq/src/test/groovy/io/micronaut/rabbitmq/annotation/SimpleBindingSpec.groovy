@@ -1,11 +1,10 @@
 package io.micronaut.rabbitmq.annotation
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
-
-import javax.annotation.Nullable
 
 class SimpleBindingSpec extends AbstractRabbitMQTest {
 
@@ -87,10 +86,8 @@ class SimpleBindingSpec extends AbstractRabbitMQTest {
     @Requires(property = "spec.name", value = "SimpleBindingSpec")
     @RabbitClient
     static interface MyListProducer {
-
         @Binding("simple-list")
         void go(List<Boolean> data)
-
     }
 
     @Requires(property = "spec.name", value = "SimpleBindingSpec")

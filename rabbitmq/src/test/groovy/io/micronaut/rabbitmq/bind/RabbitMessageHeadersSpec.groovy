@@ -2,14 +2,12 @@ package io.micronaut.rabbitmq.bind
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.messaging.MessageHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
+import io.micronaut.rabbitmq.annotation.RabbitListener
 import spock.util.concurrent.PollingConditions
 
 class RabbitMessageHeadersSpec extends AbstractRabbitMQTest {

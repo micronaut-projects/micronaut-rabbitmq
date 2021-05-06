@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.exchange;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import org.junit.jupiter.api.Test;
 
 import static java.util.concurrent.TimeUnit.SECONDS;

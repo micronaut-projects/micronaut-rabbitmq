@@ -2,9 +2,9 @@ package io.micronaut.rabbitmq.annotation
 
 import com.rabbitmq.client.BasicProperties
 import com.rabbitmq.client.Envelope
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.atomic.AtomicInteger

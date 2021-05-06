@@ -1,12 +1,10 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation
 
+import io.micronaut.context.annotation.Requires
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.context.annotation.Requires
-
 import java.util.Collections
-import java.util.HashSet
 // end::imports[]
 
 @Requires(property = "spec.name", value = "DeliveryTagSpec")

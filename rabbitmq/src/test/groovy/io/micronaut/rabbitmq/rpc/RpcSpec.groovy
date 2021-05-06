@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.rpc
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 
 class RpcSpec extends AbstractRabbitMQTest {
 

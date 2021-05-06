@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.properties
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
 class PropertiesSpec extends AbstractRabbitMQTest {

@@ -18,10 +18,10 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.ConnectionFactory;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.scheduling.TaskExecutors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +71,7 @@ public abstract class RabbitConnectionFactoryConfig extends ConnectionFactory {
      *
      * @param rpc The RPC configuration
      */
-    public void setRpc(@Nonnull RpcConfiguration rpc) {
+    public void setRpc(@NonNull RpcConfiguration rpc) {
         this.rpc = rpc;
     }
 
@@ -87,7 +87,7 @@ public abstract class RabbitConnectionFactoryConfig extends ConnectionFactory {
      *
      * @param channelPool The channel pool configuration
      */
-    public void setChannelPool(@Nonnull ChannelPoolConfiguration channelPool) {
+    public void setChannelPool(@NonNull ChannelPoolConfiguration channelPool) {
         this.channelPool = channelPool;
     }
 
@@ -119,7 +119,7 @@ public abstract class RabbitConnectionFactoryConfig extends ConnectionFactory {
      *
      * @param consumerExecutor The consumer executor service name.
      */
-    public void setConsumerExecutor(@Nonnull String consumerExecutor) {
+    public void setConsumerExecutor(@NonNull String consumerExecutor) {
         this.consumerExecutor = consumerExecutor;
     }
 

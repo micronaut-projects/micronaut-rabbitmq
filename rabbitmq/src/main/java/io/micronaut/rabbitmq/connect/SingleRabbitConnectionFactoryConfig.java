@@ -17,8 +17,8 @@ package io.micronaut.rabbitmq.connect;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.NonNull;
 
-import javax.annotation.Nonnull;
 import javax.inject.Named;
 
 /**
@@ -48,7 +48,7 @@ public class SingleRabbitConnectionFactoryConfig extends RabbitConnectionFactory
      *
      * @param rpc The RPC configuration
      */
-    public void setRpc(@Nonnull DefaultRpcConfiguration rpc) {
+    public void setRpc(@NonNull DefaultRpcConfiguration rpc) {
         super.setRpc(rpc);
     }
 
@@ -57,7 +57,7 @@ public class SingleRabbitConnectionFactoryConfig extends RabbitConnectionFactory
      *
      * @param channelPool The channel pool configuration
      */
-    public void setChannelPool(@Nonnull DefaultChannelPoolConfiguration channelPool) {
+    public void setChannelPool(@NonNull DefaultChannelPoolConfiguration channelPool) {
         super.setChannelPool(channelPool);
     }
 

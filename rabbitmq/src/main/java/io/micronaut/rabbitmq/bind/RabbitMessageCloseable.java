@@ -16,9 +16,9 @@
 package io.micronaut.rabbitmq.bind;
 
 import com.rabbitmq.client.Channel;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**

@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
+import io.micronaut.context.annotation.Requires;
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
-import io.micronaut.context.annotation.Requires;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import org.reactivestreams.Publisher;

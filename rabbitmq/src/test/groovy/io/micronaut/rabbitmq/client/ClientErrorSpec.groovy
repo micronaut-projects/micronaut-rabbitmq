@@ -1,11 +1,11 @@
 package io.micronaut.rabbitmq.client
 
-import io.micronaut.messaging.annotation.Body
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
+import io.micronaut.messaging.annotation.Body
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.rabbitmq.exception.RabbitClientException
 import io.reactivex.Completable

@@ -1,10 +1,9 @@
-package io.micronaut.rabbitmq.docs.serdes;
+package io.micronaut.rabbitmq.docs.serdes
 
-// tag::imports[]
-import io.micronaut.rabbitmq.annotation.Queue;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.context.annotation.Requires
-
+// tag::imports[]
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSerDesSpec")

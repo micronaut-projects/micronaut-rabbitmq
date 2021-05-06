@@ -1,6 +1,6 @@
 package io.micronaut.rabbitmq.docs.rpc
 
-import io.kotlintest.*
+import io.kotlintest.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 
 class RpcUppercaseSpec: AbstractRabbitMQTest({

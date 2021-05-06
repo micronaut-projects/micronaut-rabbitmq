@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.consumer.connection;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

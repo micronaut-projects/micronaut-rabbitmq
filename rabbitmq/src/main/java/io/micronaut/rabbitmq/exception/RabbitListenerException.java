@@ -15,10 +15,10 @@
  */
 package io.micronaut.rabbitmq.exception;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -39,7 +39,8 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(String message, Object listener, @Nullable RabbitConsumerState messageState) {
+    public RabbitListenerException(String message, Object listener,
+                                   @Nullable RabbitConsumerState messageState) {
         super(message);
         this.listener = listener;
         this.messageState = messageState;
@@ -53,7 +54,8 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(String message, Throwable cause, Object listener, @Nullable RabbitConsumerState messageState) {
+    public RabbitListenerException(String message, Throwable cause,
+                                   Object listener, @Nullable RabbitConsumerState messageState) {
         super(message, cause);
         this.listener = listener;
         this.messageState = messageState;
@@ -66,7 +68,8 @@ public class RabbitListenerException extends MessageListenerException {
      * @param listener The listener
      * @param messageState The message
      */
-    public RabbitListenerException(Throwable cause, Object listener, @Nullable RabbitConsumerState messageState) {
+    public RabbitListenerException(Throwable cause, Object listener,
+                                   @Nullable RabbitConsumerState messageState) {
         super(cause.getMessage(), cause);
         this.listener = listener;
         this.messageState = messageState;

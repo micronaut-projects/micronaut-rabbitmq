@@ -15,7 +15,11 @@
  */
 package io.micronaut.rabbitmq.reactive;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmListener;
+import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.ShutdownSignalException;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.Internal;
@@ -25,7 +29,11 @@ import io.micronaut.rabbitmq.connect.ChannelPool;
 import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import io.micronaut.rabbitmq.exception.RabbitClientException;
 import io.micronaut.rabbitmq.intercept.DefaultConsumer;
-import io.reactivex.*;
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
 import io.reactivex.disposables.Disposable;
 
 import java.io.IOException;

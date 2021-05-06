@@ -3,8 +3,8 @@ package io.micronaut.rabbitmq.connect
 import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.intercept.DefaultConsumer
 import io.micronaut.rabbitmq.reactive.RabbitPublishState
 import io.micronaut.rabbitmq.reactive.RxJavaReactivePublisher

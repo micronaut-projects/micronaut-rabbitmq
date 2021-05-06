@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.docs.exchange
 
-// tag::imports[]
-import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.context.annotation.Requires
+// tag::imports[]
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.rabbitmq.annotation.RabbitClient
 // end::imports[]
 
 @Requires(property = "spec.name", value = "CustomExchangeSpec")

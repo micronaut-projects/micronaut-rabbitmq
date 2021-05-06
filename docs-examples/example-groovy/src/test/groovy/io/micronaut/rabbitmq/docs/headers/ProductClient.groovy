@@ -1,13 +1,11 @@
 package io.micronaut.rabbitmq.docs.headers
 
+import io.micronaut.context.annotation.Requires
 // tag::imports[]
+import io.micronaut.messaging.annotation.Header
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
-import io.micronaut.messaging.MessageHeaders
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
-
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")

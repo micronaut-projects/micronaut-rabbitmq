@@ -1,17 +1,19 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.type;
 
-// tag::imports[]
-import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues;
-import io.micronaut.rabbitmq.bind.RabbitConsumerState;
-import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder;
 import io.micronaut.context.annotation.Requires;
+// tag::imports[]
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionError;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
+import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues;
+import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSpec")

@@ -1,9 +1,9 @@
 package io.micronaut.rabbitmq.annotation
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.Header
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
 class HeaderExchangeSpec extends AbstractRabbitMQTest {

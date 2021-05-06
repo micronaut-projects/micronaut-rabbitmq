@@ -15,12 +15,11 @@
  */
 package io.micronaut.rabbitmq.serdes;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
 import io.micronaut.core.type.Argument;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
-
-import javax.annotation.Nullable;
 
 /**
  * Responsible for serializing and deserializing RabbitMQ message bodies.
