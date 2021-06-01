@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.annotation;
 
 import io.micronaut.context.annotation.AliasFor;
+import io.micronaut.messaging.annotation.MessageMapping;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -38,6 +39,7 @@ public @interface Queue {
     /**
      * @return The queue to subscribe to.
      */
+    @AliasFor(annotation = MessageMapping.class, member = "value")
     String value();
 
     /**
