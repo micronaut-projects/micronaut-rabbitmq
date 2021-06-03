@@ -184,7 +184,9 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>value</h4>
-<pre>public abstract&nbsp;java.lang.String&nbsp;value</pre>
+<pre>@AliasFor(annotation=io.micronaut.messaging.annotation.MessageMapping.class,
+          member="value")
+public abstract&nbsp;java.lang.String&nbsp;value</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The queue to subscribe to.</dd>
