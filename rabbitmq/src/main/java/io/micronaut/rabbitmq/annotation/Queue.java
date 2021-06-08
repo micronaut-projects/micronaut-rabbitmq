@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.annotation;
 
 import io.micronaut.context.annotation.AliasFor;
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.messaging.annotation.MessageMapping;
 
 import java.lang.annotation.Documented;
@@ -34,6 +35,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
+@Executable
 public @interface Queue {
 
     /**

@@ -71,7 +71,7 @@ import java.util.concurrent.ExecutorService;
  * @since 1.1.0
  */
 @Singleton
-public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitListener>, AutoCloseable {
+public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQConsumerAdvice.class);
 
@@ -170,7 +170,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<RabbitL
             });
 
             io.micronaut.context.Qualifier<Object> qualifer = beanDefinition
-                    .getAnnotationTypeByStereotype(Qualifier.class)
+                    .getAnnotationNameByStereotype("javax.inject.Qualifier")
                     .map(type -> Qualifiers.byAnnotation(beanDefinition, type))
                     .orElse(null);
 
