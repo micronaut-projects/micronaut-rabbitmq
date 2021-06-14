@@ -1,13 +1,13 @@
 package io.micronaut.rabbitmq.docs.exchange
 
-import io.kotlintest.eventually
-import io.kotlintest.matchers.collections.shouldExist
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.collections.shouldExist
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
-import org.opentest4j.AssertionFailedError
-
+@OptIn(ExperimentalTime::class)
 class CustomExchangeSpec: AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -26,8 +26,8 @@ class CustomExchangeSpec: AbstractRabbitMQTest({
 
             then("the messages are received") {
                 val messages = listener.receivedAnimals
-                eventually(10.seconds, AssertionFailedError::class.java) {
-                    messages.size shouldBe 4
+                eventually(Duration.seconds(10)) {
+                    messages.size shouldBe  4
                     messages shouldExist({ animal: Animal ->
                         Cat::class.isInstance(animal) && animal.name == "Whiskers"
                     })

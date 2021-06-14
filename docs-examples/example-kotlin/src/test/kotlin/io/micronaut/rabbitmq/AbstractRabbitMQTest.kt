@@ -1,11 +1,11 @@
 package io.micronaut.rabbitmq
 
-import io.kotlintest.specs.AbstractBehaviorSpec
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.micronaut.context.ApplicationContext
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
+import kotlin.time.ExperimentalTime
 
-abstract class AbstractRabbitMQTest(body: AbstractBehaviorSpec.() -> Unit = {}): BehaviorSpec(body) {
+abstract class AbstractRabbitMQTest(body: BehaviorSpec.() -> Unit = {}): BehaviorSpec(body) {
 
     companion object {
         val rabbitContainer = KGenericContainer("library/rabbitmq:3.7")
