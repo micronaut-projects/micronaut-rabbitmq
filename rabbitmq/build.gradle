@@ -5,8 +5,7 @@ dependencies {
     api "io.micronaut:micronaut-inject"
     api "com.rabbitmq:amqp-client:$rabbitVersion"
 
-    implementation "jakarta.inject:jakarta.inject-api:2.0.0"
-
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
     compileOnly "io.micronaut:micronaut-management"
 
@@ -18,6 +17,8 @@ dependencies {
     testImplementation "io.micronaut:micronaut-inject-java"
     testImplementation "org.testcontainers:spock:1.15.3"
     testImplementation "io.micronaut:micronaut-management"
+    testImplementation "jakarta.inject:jakarta.inject-api:2.0.0"
+    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
 }
 
 test {
