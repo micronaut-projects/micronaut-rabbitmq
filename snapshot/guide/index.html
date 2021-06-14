@@ -962,8 +962,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.impl.DefaultCredentialsProvider;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
@@ -985,8 +984,7 @@ import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.impl.DefaultCredentialsProvider
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;ConnectionFactory&gt; {
@@ -1008,7 +1006,7 @@ import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.impl.DefaultCredentialsProvider
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
@@ -2627,8 +2625,7 @@ annotation class DeliveryTag</code></pre>
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton <b class="conum">(1)</b>
 public class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
@@ -2658,8 +2655,7 @@ public class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinde
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
@@ -2690,7 +2686,7 @@ import io.micronaut.core.convert.ArgumentConversionContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class DeliveryTagAnnotationBinder(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
@@ -2906,8 +2902,8 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues;
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -2968,8 +2964,7 @@ import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;ProductInfo&gt; { <b class="conum">(2)</b>
@@ -3029,7 +3024,7 @@ import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
 import java.util.Optional
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class ProductInfoTypeBinder constructor(private val conversionService: ConversionService&lt;*&gt;) <b class="conum">(3)</b>
@@ -3525,8 +3520,8 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.rabbitmq.client.Channel;
 import io.micronaut.rabbitmq.connect.ChannelInitializer;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -3563,8 +3558,7 @@ public class ChannelPoolListener extends ChannelInitializer { <b class="conum">(
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class ChannelPoolListener extends ChannelInitializer { <b class="conum">(2)</b>
@@ -3595,7 +3589,7 @@ class ChannelPoolListener extends ChannelInitializer { <b class="conum">(2)</b>
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
 import java.io.IOException
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class ChannelPoolListener : ChannelInitializer() { <b class="conum">(2)</b>
@@ -3684,8 +3678,8 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
@@ -3742,8 +3736,7 @@ import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 import java.nio.charset.Charset
 
 @Singleton <b class="conum">(1)</b>
@@ -3800,7 +3793,7 @@ import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
 import java.nio.charset.Charset
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton <b class="conum">(1)</b>
 class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>

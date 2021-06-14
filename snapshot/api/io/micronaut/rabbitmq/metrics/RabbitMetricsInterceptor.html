@@ -143,7 +143,7 @@ implements io.micronaut.context.event.BeanCreatedEventListener&lt;com.rabbitmq.c
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/metrics/RabbitMetricsInterceptor.html#RabbitMetricsInterceptor-javax.inject.Provider-java.lang.String-java.util.Map-">RabbitMetricsInterceptor</a></span>(javax.inject.Provider&lt;io.micrometer.core.instrument.MeterRegistry&gt;&nbsp;meterRegistryProvider,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/metrics/RabbitMetricsInterceptor.html#RabbitMetricsInterceptor-io.micronaut.context.BeanProvider-java.lang.String-java.util.Map-">RabbitMetricsInterceptor</a></span>(io.micronaut.context.BeanProvider&lt;io.micrometer.core.instrument.MeterRegistry&gt;&nbsp;meterRegistryBeanProvider,
                         java.lang.String&nbsp;prefix,
                         java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;tags)</code>
 <div class="block">Default constructor.</div>
@@ -190,13 +190,13 @@ implements io.micronaut.context.event.BeanCreatedEventListener&lt;com.rabbitmq.c
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMetricsInterceptor-javax.inject.Provider-java.lang.String-java.util.Map-">
+<a name="RabbitMetricsInterceptor-io.micronaut.context.BeanProvider-java.lang.String-java.util.Map-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RabbitMetricsInterceptor</h4>
-<pre>public&nbsp;RabbitMetricsInterceptor(javax.inject.Provider&lt;io.micrometer.core.instrument.MeterRegistry&gt;&nbsp;meterRegistryProvider,
+<pre>public&nbsp;RabbitMetricsInterceptor(io.micronaut.context.BeanProvider&lt;io.micrometer.core.instrument.MeterRegistry&gt;&nbsp;meterRegistryBeanProvider,
                                 @Nullable @Property(name="micronaut.metrics.binders.rabbitmq.prefix")
                                 java.lang.String&nbsp;prefix,
                                 @Property(name="micronaut.metrics.binders.rabbitmq.tags") @MapFormat(transformation=FLAT)
@@ -204,8 +204,8 @@ implements io.micronaut.context.event.BeanCreatedEventListener&lt;com.rabbitmq.c
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>meterRegistryBeanProvider</code> - The meter registry bean provider</dd>
 <dd><code>prefix</code> - The prefix</dd>
-<dd><code>meterRegistryProvider</code> - The meter registry provider</dd>
 <dd><code>tags</code> - The tags</dd>
 </dl>
 </li>
