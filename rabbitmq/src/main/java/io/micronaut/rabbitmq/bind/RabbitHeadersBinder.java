@@ -18,8 +18,7 @@ package io.micronaut.rabbitmq.bind;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * Binds an argument of with the {@link RabbitHeaders} annotation from the {@link RabbitConsumerState}.

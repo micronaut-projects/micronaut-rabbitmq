@@ -18,8 +18,8 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Address;
 import io.micronaut.core.convert.ConversionContext;
 import io.micronaut.core.convert.TypeConverter;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.Optional;
 
 /**

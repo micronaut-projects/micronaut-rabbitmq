@@ -17,10 +17,10 @@ package io.micronaut.rabbitmq.exception;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
 import java.util.Optional;
 
 /**

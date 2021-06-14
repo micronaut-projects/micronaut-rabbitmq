@@ -18,8 +18,7 @@ package io.micronaut.rabbitmq.connect;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.NonNull;
-
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * The default RabbitMQ configuration class.

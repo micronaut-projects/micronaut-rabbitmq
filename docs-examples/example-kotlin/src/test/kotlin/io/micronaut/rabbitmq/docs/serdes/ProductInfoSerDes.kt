@@ -8,7 +8,7 @@ import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
 import java.nio.charset.Charset
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSerDesSpec")

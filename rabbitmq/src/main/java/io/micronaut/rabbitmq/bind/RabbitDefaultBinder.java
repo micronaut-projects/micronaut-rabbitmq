@@ -16,8 +16,7 @@
 package io.micronaut.rabbitmq.bind;
 
 import io.micronaut.core.convert.ArgumentConversionContext;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * The default binder for binding an argument from the {@link RabbitConsumerState}

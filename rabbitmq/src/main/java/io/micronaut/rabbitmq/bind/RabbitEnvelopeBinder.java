@@ -18,8 +18,8 @@ package io.micronaut.rabbitmq.bind;
 import com.rabbitmq.client.Envelope;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.type.Argument;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.Optional;
 
 /**

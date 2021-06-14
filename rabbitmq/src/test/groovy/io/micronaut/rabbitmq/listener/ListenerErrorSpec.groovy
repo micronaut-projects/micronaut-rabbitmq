@@ -12,9 +12,8 @@ import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.exception.DefaultRabbitListenerExceptionHandler
 import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
+import jakarta.inject.Singleton
 import spock.util.concurrent.PollingConditions
-
-import javax.inject.Singleton
 
 class ListenerErrorSpec extends AbstractRabbitMQTest {
 
