@@ -1,12 +1,13 @@
 package io.micronaut.rabbitmq.docs.properties
 
-import io.kotlintest.eventually
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class PropertiesSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -25,7 +26,7 @@ class PropertiesSpec : AbstractRabbitMQTest({
             then("the messages are received") {
                 val productListener = ctx.getBean(ProductListener::class.java)
 
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     productListener.messageProperties.size shouldBe 3
                     productListener.messageProperties shouldContain "guest|application/json|myApp"
                     productListener.messageProperties shouldContain "guest|text/html|myApp"

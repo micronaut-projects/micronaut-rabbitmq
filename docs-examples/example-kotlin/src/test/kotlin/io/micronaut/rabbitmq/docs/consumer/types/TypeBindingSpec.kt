@@ -1,12 +1,13 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
-import io.kotlintest.eventually
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class TypeBindingSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -25,7 +26,7 @@ class TypeBindingSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     productListener.messages.size shouldBe 3
                     productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/html]"
                     productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [application/json]"

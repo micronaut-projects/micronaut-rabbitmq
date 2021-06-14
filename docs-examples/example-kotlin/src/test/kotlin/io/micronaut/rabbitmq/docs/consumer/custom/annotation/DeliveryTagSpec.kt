@@ -1,11 +1,12 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation
 
-import io.kotlintest.eventually
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class DeliveryTagSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -24,7 +25,7 @@ class DeliveryTagSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     productListener.messages.size shouldBe 3
                 }
             }

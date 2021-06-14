@@ -15,7 +15,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
+    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
     testImplementation "io.projectreactor:reactor-core"
     testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }

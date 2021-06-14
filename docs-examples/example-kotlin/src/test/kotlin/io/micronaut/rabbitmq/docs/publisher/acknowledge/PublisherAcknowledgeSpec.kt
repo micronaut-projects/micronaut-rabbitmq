@@ -1,17 +1,18 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
-import io.kotlintest.eventually
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
 import io.reactivex.disposables.Disposable
-import org.opentest4j.AssertionFailedError
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -81,7 +82,7 @@ class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
 // end::producer[]
 
             then("The messages are published") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     errorCount.get() shouldBe 0
                     successCount.get() shouldBe 4
                 }

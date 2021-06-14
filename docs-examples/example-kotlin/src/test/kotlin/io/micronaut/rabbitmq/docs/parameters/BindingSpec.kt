@@ -1,12 +1,13 @@
 package io.micronaut.rabbitmq.docs.parameters
 
-import io.kotlintest.eventually
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class BindingSpec: AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -24,7 +25,7 @@ class BindingSpec: AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     productListener.messageLengths.size shouldBe 2
                     productListener.messageLengths shouldContain 12
                     productListener.messageLengths shouldContain 13
