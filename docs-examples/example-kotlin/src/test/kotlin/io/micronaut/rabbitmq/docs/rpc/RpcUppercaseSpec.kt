@@ -1,8 +1,10 @@
 package io.micronaut.rabbitmq.docs.rpc
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class RpcUppercaseSpec: AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName

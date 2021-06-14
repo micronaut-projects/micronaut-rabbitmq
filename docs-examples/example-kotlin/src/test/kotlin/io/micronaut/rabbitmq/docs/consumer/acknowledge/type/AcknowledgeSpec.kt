@@ -1,11 +1,12 @@
 package io.micronaut.rabbitmq.docs.consumer.acknowledge.type
 
-import io.kotlintest.eventually
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class AcknowledgeSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -25,7 +26,7 @@ class AcknowledgeSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                    eventually(Duration.seconds(10)) {
                     productListener.messageCount.get() shouldBe 5
                 }
             }

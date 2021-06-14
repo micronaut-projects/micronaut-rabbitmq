@@ -1,12 +1,13 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.type
 
-import io.kotlintest.eventually
-import io.kotlintest.matchers.collections.shouldExist
-import io.kotlintest.seconds
-import io.kotlintest.shouldBe
+import io.kotest.assertions.timing.eventually
+import io.kotest.matchers.collections.shouldExist
+import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import org.opentest4j.AssertionFailedError
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class ProductInfoSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -25,7 +26,7 @@ class ProductInfoSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(10.seconds, AssertionFailedError::class.java) {
+                eventually(Duration.seconds(10)) {
                     productListener.messages.size shouldBe 3
                     productListener.messages shouldExist { p -> p.size == "small" && p.count == 10L && p.sealed }
                     productListener.messages shouldExist { p -> p.size == "medium" && p.count == 20L && p.sealed }
