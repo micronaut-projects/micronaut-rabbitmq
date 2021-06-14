@@ -9,8 +9,8 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues;
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.connect
 
 import com.rabbitmq.client.Channel
 
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class ChannelPoolListener extends ChannelInitializer {

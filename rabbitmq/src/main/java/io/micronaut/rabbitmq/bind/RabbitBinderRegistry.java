@@ -20,8 +20,8 @@ import io.micronaut.core.bind.ArgumentBinderRegistry;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArrayUtils;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;

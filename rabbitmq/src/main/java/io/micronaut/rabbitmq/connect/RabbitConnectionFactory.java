@@ -23,8 +23,8 @@ import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.inject.qualifiers.Qualifiers;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

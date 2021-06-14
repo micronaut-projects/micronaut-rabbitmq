@@ -3,8 +3,7 @@ package io.micronaut.rabbitmq
 // tag::clazz[]
 import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
-
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton // <1>
 class ChannelPoolListener extends ChannelInitializer { // <2>

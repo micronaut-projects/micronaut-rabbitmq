@@ -20,9 +20,9 @@ import io.micronaut.context.annotation.AliasFor;
 import io.micronaut.context.annotation.Type;
 import io.micronaut.rabbitmq.intercept.RabbitMQIntroductionAdvice;
 import io.micronaut.retry.annotation.Recoverable;
+import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 
-import javax.inject.Scope;
-import javax.inject.Singleton;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
