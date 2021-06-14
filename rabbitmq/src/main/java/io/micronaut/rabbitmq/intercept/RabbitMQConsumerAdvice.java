@@ -35,7 +35,6 @@ import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
-import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
 import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
@@ -49,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
-import javax.inject.Qualifier;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Arrays;
@@ -64,7 +62,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * An {@link ExecutableMethodProcessor} that will process all beans annotated
- * with {@link RabbitListener} and create and subscribe the relevant methods
+ * with {@link io.micronaut.rabbitmq.annotation.RabbitListener} and create and subscribe the relevant methods
  * as consumers to RabbitMQ queues.
  *
  * @author James Kleeh
