@@ -3,7 +3,7 @@ package io.micronaut.rabbitmq.docs.headers;
 import io.micronaut.context.annotation.Requires;
 // tag::imports[]
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.messaging.annotation.Header;
+import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.RabbitListener;
@@ -23,9 +23,9 @@ public class ProductListener {
 
     @Queue("product")
     public void receive(byte[] data,
-                        @Header("x-product-sealed") Boolean sealed, // <1>
-                        @Header("x-product-count") Long count, // <2>
-                        @Nullable @Header String productSize) { // <3>
+                        @MessageHeader("x-product-sealed") Boolean sealed, // <1>
+                        @MessageHeader("x-product-count") Long count, // <2>
+                        @Nullable @MessageHeader String productSize) { // <3>
         messageProperties.add(sealed + "|" + count + "|" + productSize);
     }
 

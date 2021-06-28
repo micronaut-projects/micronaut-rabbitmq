@@ -2,8 +2,8 @@ package io.micronaut.rabbitmq.client
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Body
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageBody
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperty
@@ -66,7 +66,7 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
     @RabbitClient
     static interface Publisher {
 
-        void noBody(@Header String contentType)
+        void noBody(@MessageHeader String contentType)
 
         void invalidProperty(@RabbitProperty String xyz, byte[] body)
 
@@ -78,6 +78,6 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
     @RabbitClient("abc-xyz")
     static interface PublisherInvalidExchange {
 
-        Completable invalidExchange(@Body String body)
+        Completable invalidExchange(@MessageBody String body)
     }
 }

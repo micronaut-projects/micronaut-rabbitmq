@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Body
+import io.micronaut.messaging.annotation.MessageBody
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.reactivex.Completable
 import spock.util.concurrent.PollingConditions
@@ -40,7 +40,7 @@ class BasicAopSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("abc")
-        void go(@Body byte[] data)
+        void go(@MessageBody byte[] data)
 
         @Binding("abc")
         Completable goConfirm(byte[] data)
