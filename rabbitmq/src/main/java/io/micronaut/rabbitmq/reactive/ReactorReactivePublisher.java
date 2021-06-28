@@ -29,34 +29,30 @@ import io.micronaut.rabbitmq.connect.ChannelPool;
 import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import io.micronaut.rabbitmq.exception.RabbitClientException;
 import io.micronaut.rabbitmq.intercept.DefaultConsumer;
-import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.disposables.Disposable;
+import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoSink;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
  * A reactive publisher implementation that uses a single channel per publish
- * operation and returns an RxJava2 {@link Completable}.
- *
+ * operation and returns a Reactor {@link Mono}.
+ * <p>
  * This is an internal API and may change at any time
  *
  * @author James Kleeh
- * @since 1.1.0
+ * @author Iván López
+ * @since 3.0.0
  */
 @Internal
 @EachBean(ChannelPool.class)
-public class RxJavaReactivePublisher implements ReactivePublisher {
+public class ReactorReactivePublisher implements ReactivePublisher {
 
     private final ChannelPool channelPool;
     private final RabbitConnectionFactoryConfig config;
@@ -65,79 +61,77 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * Default constructor.
      *
      * @param channelPool The channel pool to retrieve channels
-     * @param config Any configuration used in building the publishers
+     * @param config      Any configuration used in building the publishers
      */
-    public RxJavaReactivePublisher(@Parameter ChannelPool channelPool,
-                                   @Parameter RabbitConnectionFactoryConfig config) {
+    public ReactorReactivePublisher(@Parameter ChannelPool channelPool,
+                                    @Parameter RabbitConnectionFactoryConfig config) {
         this.channelPool = channelPool;
         this.config = config;
     }
 
     @Override
-    public Flowable<Void> publishAndConfirm(RabbitPublishState publishState) {
-        return getChannel()
+    public Mono<Void> publishAndConfirm(RabbitPublishState publishState) {
+        return Mono.from(getChannel()
                 .flatMap(this::initializePublish)
-                .flatMapCompletable(channel -> publishInternal(channel, publishState))
-                .timeout(config.getConfirmTimeout().toMillis(),
-                        TimeUnit.MILLISECONDS,
-                        Completable.error(new RabbitClientException(String.format("Timed out waiting for publisher confirm for exchange: [%s] and routing key: [%s]", publishState.getExchange(), publishState.getRoutingKey()))))
-                .toFlowable();
+                .flatMap(channel -> publishInternal(channel, publishState))
+                .timeout(config.getConfirmTimeout(),
+                        Mono.error(new RabbitClientException(String.format("Timed out waiting for publisher confirm for exchange: [%s] and routing key: [%s]", publishState.getExchange(), publishState.getRoutingKey())))
+                )
+                .then());
+//                .toFlowable();
     }
 
     @Override
-    public Flowable<Void> publish(RabbitPublishState publishState) {
+    public Mono<Void> publish(RabbitPublishState publishState) {
         return getChannel()
-                .flatMapCompletable(channel -> publishInternalNoConfirm(channel, publishState))
-                .toFlowable();
+                .flatMap(channel -> publishInternalNoConfirm(channel, publishState))
+                .then();
+//                .toFlowable();
     }
 
     @Override
-    public Flowable<RabbitConsumerState> publishAndReply(RabbitPublishState publishState) {
-        Flowable<RabbitConsumerState> flowable = getChannel()
+    public Flux<RabbitConsumerState> publishAndReply(RabbitPublishState publishState) {
+        Flux<RabbitConsumerState> flowable = getChannel()
                 .flatMap(channel -> publishRpcInternal(channel, publishState))
-                .toFlowable();
+                .flux();
 
-        Optional<Duration> optionalDuration = config.getRpc().getTimeout();
-        if (optionalDuration.isPresent()) {
-            long nanos = optionalDuration.get().toNanos();
-            flowable = flowable.timeout(nanos, TimeUnit.NANOSECONDS);
-        }
+        config.getRpc()
+                .getTimeout()
+                .ifPresent(flowable::timeout);
 
         return flowable;
     }
 
     /**
-     * Creates a {@link Single} from a channel, emitting an error
+     * Creates a {@link Mono} from a channel, emitting an error
      * if the channel could not be retrieved.
      *
-     * @return A {@link Single} that emits the channel on success
+     * @return A {@link Mono} that emits the channel on success
      */
-    protected Single<Channel> getChannel() {
-        return Single.create(emitter -> {
+    protected Mono<Channel> getChannel() {
+        return Mono.create(emitter -> {
             try {
                 Channel channel = channelPool.getChannel();
-                emitter.onSuccess(channel);
+                emitter.success(channel);
             } catch (IOException e) {
-                emitter.onError(new RabbitClientException("Failed to retrieve a channel from the pool", e));
+                emitter.error(new RabbitClientException("Failed to retrieve a channel from the pool", e));
             }
         });
     }
 
     /**
-     * Publishes the message to the channel. The {@link Completable} returned from this
+     * Publishes the message to the channel. The {@link Mono} returned from this
      * method should ensure the {@link ConfirmListener} is added to the channel prior
      * to publishing and the {@link ConfirmListener} is removed from the channel after
      * the publish has been acknowledged.
      *
-     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
-     *
-     * @param channel The channel to publish the message to
+     * @param channel      The channel to publish the message to
      * @param publishState The publishing state
-     *
      * @return A completable that terminates when the publish has been acknowledged
+     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
-    protected Completable publishInternal(Channel channel, RabbitPublishState publishState) {
-        return Completable.create(subscriber -> {
+    protected Mono<Object> publishInternal(Channel channel, RabbitPublishState publishState) {
+        return Mono.create(subscriber -> {
             Disposable listener = createListener(channel, subscriber, publishState);
             try {
                 channel.basicPublish(
@@ -148,26 +142,24 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
                 );
             } catch (IOException e) {
                 listener.dispose();
-                subscriber.onError(e);
+                subscriber.error(e);
             }
-        }).doFinally(() -> returnChannel(channel));
+        }).doFinally(signalType -> returnChannel(channel));
     }
 
     /**
-     * Publishes the message to the channel. The {@link Completable} returned from this
+     * Publishes the message to the channel. The {@link Mono} returned from this
      * method should ensure the {@link ConfirmListener} is added to the channel prior
      * to publishing and the {@link ConfirmListener} is removed from the channel after
      * the publish has been acknowledged.
      *
-     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
-     *
-     * @param channel The channel to publish the message to
+     * @param channel      The channel to publish the message to
      * @param publishState The publishing state
-     *
      * @return A completable that terminates when the publish has been acknowledged
+     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
-    protected Single<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
-        return Single.<RabbitConsumerState>create(subscriber -> {
+    protected Mono<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
+        return Mono.<RabbitConsumerState>create(subscriber -> {
             Disposable listener = null;
             try {
                 String correlationId = UUID.randomUUID().toString();
@@ -184,26 +176,24 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
                 if (listener != null) {
                     listener.dispose();
                 }
-                subscriber.onError(new MessagingClientException("Failed to publish the message", e));
+                subscriber.error(new MessagingClientException("Failed to publish the message", e));
             }
-        }).doFinally(() -> returnChannel(channel));
+        }).doFinally(signalType -> returnChannel(channel));
     }
 
     /**
-     * Publishes the message to the channel. The {@link Completable} returned from this
+     * Publishes the message to the channel. The {@link Mono} returned from this
      * method should ensure the {@link ConfirmListener} is added to the channel prior
      * to publishing and the {@link ConfirmListener} is removed from the channel after
      * the publish has been acknowledged.
      *
-     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
-     *
-     * @param channel The channel to publish the message to
+     * @param channel      The channel to publish the message to
      * @param publishState The publishing state
-     *
      * @return A completable that terminates when the publish has been acknowledged
+     * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
-    protected Completable publishInternalNoConfirm(Channel channel, RabbitPublishState publishState) {
-        return Completable.create(subscriber -> {
+    protected Mono<Object> publishInternalNoConfirm(Channel channel, RabbitPublishState publishState) {
+        return Mono.create(subscriber -> {
             try {
                 channel.basicPublish(
                         publishState.getExchange(),
@@ -212,27 +202,27 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
                         publishState.getBody()
                 );
 
-                subscriber.onComplete();
+                subscriber.success();
             } catch (IOException e) {
-                subscriber.onError(new MessagingClientException("Failed to publish the message", e));
+                subscriber.error(new MessagingClientException("Failed to publish the message", e));
             }
-        }).doFinally(() -> returnChannel(channel));
+        }).doFinally(signalType -> returnChannel(channel));
     }
 
     /**
      * Initializes the channel to allow publisher acknowledgements.
      *
      * @param channel The channel to enable acknowledgements.
-     * @return A {@link Single} that will complete according to the
+     * @return A {@link Mono} that will complete according to the
      * success of the operation.
      */
-    protected Single<Channel> initializePublish(Channel channel) {
-        return Single.create(emitter -> {
+    protected Mono<Channel> initializePublish(Channel channel) {
+        return Mono.create(emitter -> {
             try {
                 channel.confirmSelect();
-                emitter.onSuccess(channel);
+                emitter.success(channel);
             } catch (IOException e) {
-                emitter.onError(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
+                emitter.error(new MessagingClientException("Failed to enable publisher confirms on the channel", e));
             }
         });
     }
@@ -252,12 +242,12 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * itself after receiving a response from the broker. If no response is
      * received, the caller is responsible for disposing the listener.
      *
-     * @param channel The channel to listen for confirms
-     * @param emitter The emitter to send the event
+     * @param channel      The channel to listen for confirms
+     * @param emitter      The emitter to send the event
      * @param publishState The publishing state
      * @return A disposable to allow cleanup of the listener
      */
-    protected Disposable createListener(Channel channel, CompletableEmitter emitter, RabbitPublishState publishState) {
+    protected Disposable createListener(Channel channel, MonoSink<Object> emitter, RabbitPublishState publishState) {
         AtomicBoolean disposed = new AtomicBoolean();
         Consumer<ConfirmListener> dispose = (listener) -> {
             if (disposed.compareAndSet(false, true)) {
@@ -278,9 +268,9 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
 
             private void ackNack(long deliveryTag, boolean multiple, boolean ack) {
                 if (ack) {
-                    emitter.onComplete();
+                    emitter.success();
                 } else {
-                    emitter.onError(new RabbitClientException("Message could not be delivered to the broker", Collections.singletonList(publishState)));
+                    emitter.error(new RabbitClientException("Message could not be delivered to the broker", Collections.singletonList(publishState)));
                 }
                 dispose.accept(this);
             }
@@ -306,14 +296,14 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
      * itself after receiving a response from the broker. If no response is
      * received, the caller is responsible for disposing the listener.
      *
-     * @param channel The channel to listen for confirms
-     * @param publishState The publish state
+     * @param channel       The channel to listen for confirms
+     * @param publishState  The publish state
      * @param correlationId The correlation id
-     * @param emitter The emitter to send the response
-     * @throws IOException If an error occurred subscribing
+     * @param emitter       The emitter to send the response
      * @return A disposable to allow cleanup of the listener
+     * @throws IOException If an error occurred subscribing
      */
-    protected Disposable createConsumer(Channel channel, RabbitPublishState publishState, String correlationId, SingleEmitter<RabbitConsumerState> emitter) throws IOException {
+    protected Disposable createConsumer(Channel channel, RabbitPublishState publishState, String correlationId, MonoSink<RabbitConsumerState> emitter) throws IOException {
         String replyTo = publishState.getProperties().getReplyTo();
         AtomicBoolean disposed = new AtomicBoolean();
 
@@ -327,12 +317,12 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
             }
         };
 
-        io.micronaut.rabbitmq.intercept.DefaultConsumer consumer = new DefaultConsumer() {
+        DefaultConsumer consumer = new DefaultConsumer() {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 if (replyTo.equals("amq.rabbitmq.reply-to") || correlationId.equals(properties.getCorrelationId())) {
                     dispose.accept(consumerTag);
-                    emitter.onSuccess(new RabbitConsumerState(envelope, properties, body, channel));
+                    emitter.success(new RabbitConsumerState(envelope, properties, body, channel));
                 }
             }
 
@@ -348,7 +338,7 @@ public class RxJavaReactivePublisher implements ReactivePublisher {
 
             private void handleError(String consumerTag) {
                 dispose.accept(consumerTag);
-                emitter.onError(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
+                emitter.error(new RabbitClientException("Message was not able to be received from the reply to queue. The consumer was cancelled", Collections.singletonList(publishState)));
             }
         };
 
