@@ -4,9 +4,6 @@ package io.micronaut.rabbitmq.docs.serdes
 import io.micronaut.core.annotation.NonNull
 import io.micronaut.core.annotation.Nullable
 
-import javax.annotation.concurrent.Immutable
-
-@Immutable
 class ProductInfo {
 
     private String size
