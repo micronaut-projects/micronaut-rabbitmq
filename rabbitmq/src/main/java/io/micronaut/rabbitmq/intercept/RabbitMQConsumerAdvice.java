@@ -89,6 +89,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
+     * @param channelPools      The channel pools to retrieve channels
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   RabbitBinderRegistry binderRegistry,

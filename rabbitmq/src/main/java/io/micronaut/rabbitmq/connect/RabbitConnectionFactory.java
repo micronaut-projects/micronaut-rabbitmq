@@ -18,7 +18,6 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Connection;
 import io.micronaut.context.BeanContext;
-import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.exceptions.BeanInstantiationException;
