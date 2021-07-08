@@ -315,12 +315,11 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message without publisher confirms.", context);
                     }
-
-                    Mono.from(reactivePublisher.publish(publishState)).doOnError(throwable -> {
-                        if (throwable != null) {
-                            throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
-                        }
-                    });
+                    try {
+                        Mono.from(reactivePublisher.publish(publishState)).block();
+                    } catch (Throwable throwable) {
+                        throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
+                    }
                     return null;
                 }
             }

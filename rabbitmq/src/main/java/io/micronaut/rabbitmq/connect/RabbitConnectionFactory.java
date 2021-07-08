@@ -45,7 +45,6 @@ public class RabbitConnectionFactory {
      * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection
      */
-    @Bean(preDestroy = "close")
     @Singleton
     @EachBean(RabbitConnectionFactoryConfig.class)
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,

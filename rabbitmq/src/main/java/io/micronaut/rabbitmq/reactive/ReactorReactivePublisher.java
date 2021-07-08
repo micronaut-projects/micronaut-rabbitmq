@@ -86,7 +86,6 @@ public class ReactorReactivePublisher implements ReactivePublisher {
         return getChannel()
                 .flatMap(channel -> publishInternalNoConfirm(channel, publishState))
                 .then();
-//                .toFlowable();
     }
 
     @Override

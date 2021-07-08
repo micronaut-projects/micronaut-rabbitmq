@@ -112,7 +112,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "rabbitmq.channelPool.maxIdleChannels": 10])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
-        AtomicInteger integer = new AtomicInteger(2)
+        AtomicInteger integer = new AtomicInteger(75)
         ReactorReactivePublisher reactiveChannel = new ReactorReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
@@ -130,22 +130,26 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Mono> monos = []
         50.times {
-            monos.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
+            monos.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+                integer.decrementAndGet()
+            }))
         }
 
         List<Mono> monos2 = []
         25.times {
-            monos2.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
+            monos2.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+                integer.decrementAndGet()
+            }))
         }
 
-        Flux.concat(monos).subscribe({ -> integer.decrementAndGet()})
+        Flux.merge(monos).subscribe()
         Thread.sleep(10)
-        Flux.concat(monos2).subscribe({ -> integer.decrementAndGet()})
+        Flux.merge(monos2).subscribe()
 
         then:
         conditions.eventually {
-            integer.get() == 0
-            messageCount.get() == 75
+            assert messageCount.get() == 75
+            assert integer.get() == 0
         }
 
         cleanup:
