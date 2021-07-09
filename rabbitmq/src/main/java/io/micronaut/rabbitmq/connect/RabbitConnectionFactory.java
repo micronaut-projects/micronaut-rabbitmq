@@ -18,6 +18,7 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Connection;
 import io.micronaut.context.BeanContext;
+import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.exceptions.BeanInstantiationException;
@@ -44,6 +45,7 @@ public class RabbitConnectionFactory {
      * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection
      */
+    @Bean(preDestroy = "close")
     @Singleton
     @EachBean(RabbitConnectionFactoryConfig.class)
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,
