@@ -25,7 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -72,20 +74,28 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 
     @Override
     public Channel getChannel() throws IOException {
-        Channel channel = null;
-        while (channel == null) {
-            channel = channels.poll();
+       return getMultipleChannels(1).get(0);
+    }
+
+    @Override
+    public List<Channel> getMultipleChannels(int numberOfChannels) throws IOException {
+        List<Channel> channelsList = new ArrayList<>();
+        for (int i = 0; i < numberOfChannels; i++) {
+            Channel channel = channels.poll();
             if (channel == null) {
                 channel = createChannel();
             } else if (!channel.isOpen()) {
                 channel = null;
                 totalChannels.decrementAndGet();
             }
+            channelsList.add(channel);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Retrieved channel [{}] from the pool", channel.toString());
+            }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Retrieved channel [{}] from the pool", channel.toString());
-        }
-        return channel;
+
+        return channelsList;
     }
 
     @Override

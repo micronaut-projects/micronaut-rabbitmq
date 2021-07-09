@@ -19,6 +19,7 @@ import com.rabbitmq.client.Channel;
 import io.micronaut.core.naming.Named;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * A pool of {@link Channel}s to allow for channels to be shared across
@@ -39,6 +40,16 @@ public interface ChannelPool extends Named {
      * @throws IOException If a channel needed to be created and encountered an error
      */
     Channel getChannel() throws IOException;
+
+    /**
+     * Retrieves a list of channels channel from the pool. All channels must be returned to the
+     * pool after it is no longer being used.
+     *
+     * @param numberOfChannels the number of channels to create
+     * @return The list of channels
+     * @throws IOException If there were errors creating any of the channels
+     */
+    List<Channel> getMultipleChannels(int numberOfChannels) throws IOException;
 
     /**
      * Returns a channel to the pool. No further use of the channel
