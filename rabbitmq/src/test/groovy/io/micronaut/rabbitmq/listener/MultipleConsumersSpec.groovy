@@ -16,7 +16,7 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
 
     void "test multiple consumers"() {
         ApplicationContext ctx = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        PollingConditions conditions = new PollingConditions(timeout: 5)
         MyProducer producer = ctx.getBean(MyProducer)
         MyConsumer consumer = ctx.getBean(MyConsumer)
 
