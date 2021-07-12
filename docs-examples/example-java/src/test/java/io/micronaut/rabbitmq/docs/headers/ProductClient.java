@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.docs.headers;
 
 import io.micronaut.context.annotation.Requires;
 // tag::imports[]
-import io.micronaut.messaging.annotation.Header;
+import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
@@ -13,18 +13,18 @@ import java.util.Map;
 @Requires(property = "spec.name", value = "HeadersSpec")
 // tag::clazz[]
 @RabbitClient
-@Header(name = "x-product-sealed", value = "true") // <1>
-@Header(name = "productSize", value = "large")
+@MessageHeader(name = "x-product-sealed", value = "true") // <1>
+@MessageHeader(name = "productSize", value = "large")
 public interface ProductClient {
 
     @Binding("product")
-    @Header(name = "x-product-count", value = "10") // <2>
-    @Header(name = "productSize", value = "small")
+    @MessageHeader(name = "x-product-count", value = "10") // <2>
+    @MessageHeader(name = "productSize", value = "small")
     void send(byte[] data);
 
     @Binding("product")
-    void send(@Header String productSize, // <3>
-              @Header("x-product-count") Long count,
+    void send(@MessageHeader String productSize, // <3>
+              @MessageHeader("x-product-count") Long count,
               byte[] data);
 
     @Binding("product")

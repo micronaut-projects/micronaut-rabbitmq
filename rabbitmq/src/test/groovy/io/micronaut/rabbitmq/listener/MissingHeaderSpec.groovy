@@ -3,7 +3,7 @@ package io.micronaut.rabbitmq.listener
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.annotation.Nullable
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
@@ -53,7 +53,7 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
         public static CopyOnWriteArrayList<String> bodies = []
 
         @Queue("simple")
-        void listen(@Nullable @Header("X-Header") String header, String data) {
+        void listen(@Nullable @MessageHeader("X-Header") String header, String data) {
             if (header != null) headers.add(header)
             bodies.add(data)
         }

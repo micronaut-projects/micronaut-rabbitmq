@@ -18,15 +18,14 @@ package io.micronaut.rabbitmq.reactive;
 import com.rabbitmq.client.AMQP;
 import io.micronaut.core.annotation.Nullable;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Stores the state of a RabbitMQ message to be published.
+ *
+ * This class should be treated as immutable.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
-@Immutable
 public class RabbitPublishState {
 
     private final String exchange;

@@ -20,15 +20,14 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
 import io.micronaut.core.annotation.NonNull;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Stores the state of a RabbitMQ message to be consumed.
+ *
+ * This class should be treated as immutable.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
-@Immutable
 public class RabbitConsumerState {
 
     private final Envelope envelope;

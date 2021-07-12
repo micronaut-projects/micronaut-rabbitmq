@@ -17,7 +17,7 @@ class RabbitMessageHeadersSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        PollingConditions conditions = new PollingConditions(timeout: 5, initialDelay: 1)
         AnimalProducer producer = applicationContext.getBean(AnimalProducer)
         AnimalListener consumer = applicationContext.getBean(AnimalListener)
 

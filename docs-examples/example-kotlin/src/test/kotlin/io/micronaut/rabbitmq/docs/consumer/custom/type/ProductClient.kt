@@ -2,8 +2,8 @@ package io.micronaut.rabbitmq.docs.consumer.custom.type
 
 import io.micronaut.context.annotation.Requires
 // tag::imports[]
-import io.micronaut.messaging.annotation.Header
-import io.micronaut.messaging.annotation.Headers
+import io.micronaut.messaging.annotation.MessageHeader
+import io.micronaut.messaging.annotation.MessageHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 // end::imports[]
@@ -11,22 +11,22 @@ import io.micronaut.rabbitmq.annotation.RabbitClient
 @Requires(property = "spec.name", value = "ProductInfoSpec")
 // tag::clazz[]
 @RabbitClient
-@Headers( // <1>
-        Header(name = "x-product-sealed", value = "true"),
-        Header(name = "productSize", value = "large")
+@MessageHeaders( // <1>
+        MessageHeader(name = "x-product-sealed", value = "true"),
+        MessageHeader(name = "productSize", value = "large")
 )
 interface ProductClient {
 
     @Binding("product")
-    @Headers( // <2>
-        Header(name = "x-product-count", value = "10"),
-        Header(name = "productSize", value = "small")
+    @MessageHeaders( // <2>
+        MessageHeader(name = "x-product-count", value = "10"),
+        MessageHeader(name = "productSize", value = "small")
     )
     fun send(data: ByteArray)
 
     @Binding("product")
-    fun send(@Header productSize: String?, // <3>
-             @Header("x-product-count") count: Long,
+    fun send(@MessageHeader productSize: String?, // <3>
+             @MessageHeader("x-product-count") count: Long,
              data: ByteArray)
 }
 // end::clazz[]

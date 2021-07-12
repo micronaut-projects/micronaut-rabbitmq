@@ -18,6 +18,7 @@ package io.micronaut.rabbitmq.annotation;
 import io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Target;
 
 /**
@@ -27,6 +28,7 @@ import java.lang.annotation.Target;
  * @since 1.1.0
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Inherited
 public @interface RabbitConnection {
 
     String DEFAULT_CONNECTION = SingleRabbitConnectionFactoryConfig.DEFAULT_NAME;

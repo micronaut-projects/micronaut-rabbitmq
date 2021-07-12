@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.docs.exchange
 
 import io.micronaut.context.annotation.Requires
 // tag::imports[]
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.RabbitClient
 // end::imports[]
 
@@ -11,7 +11,7 @@ import io.micronaut.rabbitmq.annotation.RabbitClient
 @RabbitClient("animals") // <1>
 abstract class AnimalClient {
 
-    abstract fun send(@Header animalType: String, animal: Animal)  // <2>
+    abstract fun send(@MessageHeader animalType: String, animal: Animal)  // <2>
 
     fun send(animal: Animal) { //<3>
         send(animal.javaClass.simpleName, animal)
