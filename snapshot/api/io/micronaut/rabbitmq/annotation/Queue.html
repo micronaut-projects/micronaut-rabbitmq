@@ -156,9 +156,13 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#prefetch--">prefetch</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#numberOfConsumers--">numberOfConsumers</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#prefetch--">prefetch</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>
 <div class="block">Only applies to consumer methods that do not inject an
@@ -255,6 +259,26 @@ public abstract&nbsp;java.lang.String&nbsp;value</pre>
 <dl>
 <dt>Default:</dt>
 <dd>0</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="numberOfConsumers--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>numberOfConsumers</h4>
+<pre>public abstract&nbsp;int&nbsp;numberOfConsumers</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of consumers used to consumer from a queue concurrently</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>1</dd>
 </dl>
 </li>
 </ul>
