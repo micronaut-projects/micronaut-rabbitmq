@@ -13,3 +13,13 @@ micronaut:
 ----
 
 If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.
+
+=== Concurrent Consumers
+
+By default a single consumer may not process multiple messages simultaneously. RabbitMQ waits to provide the consumer with a message until the previous message has been acknowledged. Starting in version 3.0.0, a new option has been added to the ann:configuration.rabbitmq.annotation.Queue[] annotation to set the number of consumers that should be registered to RabbitMQ for a single consumer method. This will allow for concurrent execution of the consumers.
+
+snippet::io.micronaut.rabbitmq.docs.consumer.concurrent.ProductListener[tags="imports,clazz", project-base="docs-examples/example"]
+
+<1> The `numberOfConsumers` is set on the annotation
+<2> Multiple messages received in a short time window will result in the `threads` collection containing something like `[pool-2-thread-9, pool-2-thread-7, pool-2-thread-10, pool-2-thread-8, pool-2-thread-6]`
+

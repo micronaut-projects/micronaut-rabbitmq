@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         if (queueAnn != null) {
             String queue = queueAnn.getRequiredValue(String.class);
 
-            String clientTag = method.getDeclaringType().getSimpleName() + '#' + method.toString();
+            String methodTag = method.getDeclaringType().getSimpleName() + '#' + method;
 
             boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
             boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
@@ -126,8 +127,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             boolean hasAckArg = Arrays.stream(method.getArguments())
                     .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
 
-            String connection = method.findAnnotation(RabbitConnection.class)
-                    .flatMap(conn -> conn.get("connection", String.class))
+            String connection = method.stringValue(RabbitConnection.class, "connection")
                     .orElse(RabbitConnection.DEFAULT_CONNECTION);
 
             ChannelPool channelPool = channelPools.get(connection);
@@ -135,27 +135,27 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 throw new MessageListenerException(String.format("Failed to find a channel pool named [%s] to register a listener", connection));
             }
 
-            Integer numberOfConsumers = queueAnn.getRequiredValue("numberOfConsumers", Integer.class);
+            int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
 
             Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
 
             Map<String, Object> arguments = retrieveArguments(method);
             Object bean = getExecutableMethodBean(beanDefinition, method);
-            boolean isVoid = isVoid(method);
+            boolean isVoid = method.getReturnType().isVoid();
 
             DefaultExecutableBinder<RabbitConsumerState> binder = new DefaultExecutableBinder<>();
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
+            List<Channel> channelList = new ArrayList<>(numberOfConsumers);
+            for (int i = 0; i < numberOfConsumers; i++) {
+                channelList.add(getChannel(channelPool));
             }
-
-            List<Channel> channelList = IntStream.range(0, numberOfConsumers)
-                    .mapToObj(index -> this.getChannel(channelPool))
-                    .collect(Collectors.toList());
 
             ExecutorService executorService = getExecutorService(method);
 
+            int idx = 0;
             for (Channel channel : channelList) {
+                String clientTag = methodTag + "[" + idx + "]";
+                idx ++;
                 try {
                     if (prefetch != null) {
                         channel.basicQos(prefetch);
@@ -170,6 +170,11 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 consumerChannels.put(channel, state);
 
                 try {
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
+                    }
+
                     channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
 
                         @Override
@@ -314,24 +319,13 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         return bean;
     }
 
-    private boolean isVoid(ExecutableMethod<?, ?> method) {
-        Class<?> returnTypeClass = method.getReturnType().getType();
-        boolean isVoid = returnTypeClass == Void.class || returnTypeClass == void.class;
-        return isVoid;
-    }
-
     private ExecutorService getExecutorService(ExecutableMethod<?, ?> method) {
-        Optional<String> executor = method.findAnnotation(RabbitConnection.class)
-                .flatMap(conn -> conn.get("executor", String.class));
-
-        ExecutorService executorService = executor
-                .flatMap(exec -> beanContext.findBean(ExecutorService.class, Qualifiers.byName(exec)))
-                .orElse(null);
-
-        if (executor.isPresent() && executorService == null) {
-            throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
+        String executor = method.stringValue(RabbitConnection.class, "executor").orElse(null);
+        if (executor != null) {
+            return beanContext.findBean(ExecutorService.class, Qualifiers.byName(executor))
+                .orElseThrow(() -> new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor, method)));
         }
-        return executorService;
+        return null;
     }
 
     @PreDestroy
