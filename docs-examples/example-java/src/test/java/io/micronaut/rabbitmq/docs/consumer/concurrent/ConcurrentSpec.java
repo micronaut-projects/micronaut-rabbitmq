@@ -14,13 +14,13 @@ public class ConcurrentSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = startContext();
 
         ProductClient productClient = applicationContext.getBean(ProductClient.class);
-        for (int i = 0; i < 5; i++) { productClient.send("body".getBytes()); }
+        for (int i = 0; i < 4; i++) { productClient.send("body".getBytes()); }
 
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
         try {
             await().atMost(5, SECONDS).until(() ->
-                    productListener.threads.size() == 5
+                    productListener.threads.size() == 4
             );
         } finally {
             applicationContext.close();

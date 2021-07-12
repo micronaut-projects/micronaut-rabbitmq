@@ -17,13 +17,13 @@ class ConcurrentSpec : AbstractRabbitMQTest({
         `when`("The messages are published") {
             val productListener = ctx.getBean(ProductListener::class.java)
             val productClient = ctx.getBean(ProductClient::class.java)
-            for (i in 0..4) {
+            for (i in 0..3) {
                 productClient.send("body".toByteArray())
             }
 
             then("The messages are received") {
                 eventually(Duration.seconds(5)) {
-                    productListener.threads.size shouldBe 5
+                    productListener.threads.size shouldBe 4
                 }
             }
         }
