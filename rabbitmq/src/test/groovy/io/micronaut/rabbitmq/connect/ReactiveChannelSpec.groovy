@@ -7,12 +7,13 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.intercept.DefaultConsumer
 import io.micronaut.rabbitmq.reactive.RabbitPublishState
-import io.micronaut.rabbitmq.reactive.RxJavaReactivePublisher
-import io.reactivex.Completable
+import io.micronaut.rabbitmq.reactive.ReactorReactivePublisher
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import spock.lang.Stepwise
 import spock.util.concurrent.PollingConditions
 
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 @Stepwise
@@ -44,14 +45,14 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 }
             }
         })
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
-        List<Completable> completables = ["abc", "def", "ghi", "jkl"].collect {
-            Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), it.bytes)))
+        ReactorReactivePublisher reactiveChannel = new ReactorReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
+        List<Mono> monos = ["abc", "def", "ghi", "jkl"].collect {
+            Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), it.bytes)))
         }
 
         then:
-        Completable.merge(completables)
-                .blockingGet(10, TimeUnit.SECONDS) == null
+        Flux.merge(monos)
+            .blockFirst(Duration.ofSeconds(10)) == null
 
         conditions.eventually {
             consumerAckd
@@ -78,8 +79,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 messageCount.incrementAndGet()
             }
         })
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
-
+        ReactorReactivePublisher reactiveChannel = new ReactorReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
 
         when:
         reactiveChannel
@@ -112,8 +112,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "rabbitmq.channelPool.maxIdleChannels": 10])
         ChannelPool channelPool = applicationContext.getBean(ChannelPool)
-        AtomicInteger integer = new AtomicInteger(2)
-        RxJavaReactivePublisher reactiveChannel = new RxJavaReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
+        AtomicInteger integer = new AtomicInteger(75)
+        ReactorReactivePublisher reactiveChannel = new ReactorReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
         AtomicInteger messageCount = new AtomicInteger()
         Channel consumeChannel = channelPool.getChannel()
@@ -128,24 +128,28 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         })
 
         when:
-        List<Completable> publishes = []
+        List<Mono> monos = []
         50.times {
-            publishes.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
+            monos.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+                integer.decrementAndGet()
+            }))
         }
 
-        List<Completable> publishes2 = []
+        List<Mono> monos2 = []
         25.times {
-            publishes2.add(Completable.fromPublisher(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))))
+            monos2.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+                integer.decrementAndGet()
+            }))
         }
 
-        Completable.merge(publishes).subscribe({ -> integer.decrementAndGet()})
+        Flux.merge(monos).subscribe()
         Thread.sleep(10)
-        Completable.merge(publishes2).subscribe({ -> integer.decrementAndGet()})
+        Flux.merge(monos2).subscribe()
 
         then:
         conditions.eventually {
-            integer.get() == 0
-            messageCount.get() == 75
+            assert messageCount.get() == 75
+            assert integer.get() == 0
         }
 
         cleanup:

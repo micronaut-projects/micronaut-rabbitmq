@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
@@ -13,7 +13,7 @@ class HeaderExchangeSpec extends AbstractRabbitMQTest {
         ApplicationContext applicationContext = ApplicationContext.run(
                 ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
                  "spec.name": getClass().simpleName], "test")
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        PollingConditions conditions = new PollingConditions(timeout: 10)
         AnimalProducer producer = applicationContext.getBean(AnimalProducer)
         AnimalListener consumer = applicationContext.getBean(AnimalListener)
 
@@ -50,7 +50,7 @@ class HeaderExchangeSpec extends AbstractRabbitMQTest {
     @RabbitClient("animals")
     static interface AnimalProducer {
 
-        void go(@Header String animalType, Animal animal)
+        void go(@MessageHeader String animalType, Animal animal)
     }
 
     @Requires(property = "spec.name", value = "HeaderExchangeSpec")

@@ -19,6 +19,7 @@ import io.micronaut.core.bind.annotation.Bindable;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -46,6 +47,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.METHOD})
 @Repeatable(value = RabbitProperties.class)
 @Bindable
+@Inherited
 public @interface RabbitProperty {
 
     /**

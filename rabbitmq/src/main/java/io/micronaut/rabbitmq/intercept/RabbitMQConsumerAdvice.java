@@ -77,7 +77,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
-    private final ConversionService conversionService;
+    private final ConversionService<?> conversionService;
+    private final Map<String, ChannelPool> channelPools;
     private final Map<Channel, ConsumerState> consumerChannels = new ConcurrentHashMap<>();
 
     /**
@@ -88,17 +89,23 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
+     * @param channelPools      The channel pools to retrieve channels
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
-                                  ConversionService conversionService) {
+                                  ConversionService<?> conversionService,
+                                  List<ChannelPool> channelPools) {
         this.beanContext = beanContext;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
         this.serDesRegistry = serDesRegistry;
         this.conversionService = conversionService;
+        this.channelPools = new HashMap<>(channelPools.size());
+        for (ChannelPool cp: channelPools) {
+            this.channelPools.put(cp.getName(), cp);
+        }
     }
 
     @Override
@@ -121,11 +128,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     .flatMap(conn -> conn.get("connection", String.class))
                     .orElse(RabbitConnection.DEFAULT_CONNECTION);
 
-            ChannelPool channelPool;
-            try {
-                channelPool = beanContext.getBean(ChannelPool.class, Qualifiers.byName(connection));
-            } catch (Throwable e) {
-                throw new MessageListenerException(String.format("Failed to retrieve a channel pool named [%s] to register a listener", connection), e);
+            ChannelPool channelPool = channelPools.get(connection);
+            if (channelPool == null) {
+                throw new MessageListenerException(String.format("Failed to find a channel pool named [%s] to register a listener", connection));
             }
 
             Channel channel = getChannel(channelPool);

@@ -43,17 +43,15 @@ import io.micronaut.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import io.micronaut.scheduling.TaskExecutors;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -102,7 +100,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
         this.beanContext = beanContext;
         this.conversionService = conversionService;
         this.serDesRegistry = serDesRegistry;
-        this.scheduler = Schedulers.from(executorService);
+        this.scheduler = Schedulers.fromExecutor(executorService);
 
 
         properties.put("contentType", (prop, builder) ->
@@ -277,20 +275,20 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
                     }
-                    reactive = Flowable.fromPublisher(reactivePublisher.publishAndReply(publishState))
+                    reactive = Flux.from(reactivePublisher.publishAndReply(publishState))
                             .flatMap(consumerState -> {
                                 Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
                                 if (deserialized == null) {
-                                    return Flowable.empty();
+                                    return Flux.empty();
                                 } else {
-                                    return Flowable.just(deserialized);
+                                    return Flux.just(deserialized);
                                 }
                             }).subscribeOn(scheduler);
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message with publisher confirms.", context);
                     }
-                    reactive = Flowable.fromPublisher(reactivePublisher.publishAndConfirm(publishState))
+                    reactive = Flux.from(reactivePublisher.publishAndConfirm(publishState))
                             .subscribeOn(scheduler);
                 }
 
@@ -303,23 +301,23 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         LOG.debug("Publish is an RPC call. Blocking until a response is received.", context);
                     }
 
-                    return Single.fromPublisher(reactivePublisher.publishAndReply(publishState))
-                            .flatMapMaybe(consumerState -> {
+                    return Mono.from(reactivePublisher.publishAndReply(publishState))
+                            .flatMap(consumerState -> {
                                 Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
                                 if (deserialized == null) {
-                                    return Maybe.empty();
+                                    return Mono.empty();
                                 } else {
-                                    return Maybe.just(deserialized);
+                                    return Mono.just(deserialized);
                                 }
                             })
-                            .blockingGet();
+                            .block();
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Sending the message without publisher confirms.", context);
                     }
-
-                    Throwable throwable = Completable.fromPublisher(reactivePublisher.publish(publishState)).blockingGet();
-                    if (throwable != null) {
+                    try {
+                        Mono.from(reactivePublisher.publish(publishState)).block();
+                    } catch (Throwable throwable) {
                         throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
                     }
                     return null;

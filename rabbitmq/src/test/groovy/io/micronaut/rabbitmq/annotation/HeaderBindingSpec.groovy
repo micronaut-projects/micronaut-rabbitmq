@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import spock.util.concurrent.PollingConditions
 
@@ -39,8 +39,8 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("header")
-        @Header(name = "static", value = "static header")
-        void go(Person data, @Header String myHeader)
+        @MessageHeader(name = "static", value = "static header")
+        void go(Person data, @MessageHeader String myHeader)
 
     }
 
@@ -51,7 +51,7 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
         public static Map<Person, String> messages = [:]
 
         @Queue("header")
-        void listen(Person data, @Header String myHeader, @Header("static") String otherHeader) {
+        void listen(Person data, @MessageHeader String myHeader, @MessageHeader("static") String otherHeader) {
             messages.put(data, myHeader + '|' + otherHeader)
         }
     }
