@@ -112,7 +112,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     @Override
     public void process(BeanDefinition<?> beanDefinition, ExecutableMethod<?, ?> method) {
 
-        AnnotationValue<io.micronaut.rabbitmq.annotation.Queue> queueAnn = method.getAnnotation(Queue.class);
+        AnnotationValue<Queue> queueAnn = method.getAnnotation(Queue.class);
 
         if (queueAnn != null) {
             String queue = queueAnn.getRequiredValue(String.class);
