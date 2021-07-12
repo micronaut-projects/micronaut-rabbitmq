@@ -59,6 +59,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * An {@link ExecutableMethodProcessor} that will process all beans annotated
@@ -129,10 +131,26 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             }
 
             Integer numberOfConsumers = queueAnn.getRequiredValue("numberOfConsumers", Integer.class);
-            List<Channel> channelList = getMutipleChannels(channelPool, numberOfConsumers);
+
+            Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
+
+            Map<String, Object> arguments = retrieveArguments(method);
+            Object bean = getExecutableMethodBean(beanDefinition, method);
+            boolean isVoid = isVoid(method);
+
+            DefaultExecutableBinder<RabbitConsumerState> binder = new DefaultExecutableBinder<>();
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
+            }
+
+            List<Channel> channelList = IntStream.range(0, numberOfConsumers)
+                    .mapToObj(index -> this.getChannel(channelPool))
+                    .collect(Collectors.toList());
+
+            ExecutorService executorService = getExecutorService(method);
 
             for (Channel channel : channelList) {
-                Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
                 try {
                     if (prefetch != null) {
                         channel.basicQos(prefetch);
@@ -146,59 +164,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 state.consumerTag = clientTag;
                 consumerChannels.put(channel, state);
 
-                Map<String, Object> arguments = new HashMap<>();
-
-                List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
-                Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
-                propertyAnnotations.forEach((prop) -> {
-                    String name = prop.getRequiredValue("name", String.class);
-                    String value = prop.getValue(String.class).orElse(null);
-                    Class type = prop.get("type", Class.class).orElse(null);
-
-                    if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                        if (type != null && type != Void.class) {
-                            Optional<Object> converted = conversionService.convert(value, type);
-                            if (converted.isPresent()) {
-                                arguments.put(name, converted.get());
-                            } else {
-                                throw new MessageListenerException(String.format("Could not convert the argument [%s] to the required type [%s]", name, type));
-                            }
-                        } else {
-                            arguments.put(name, value);
-                        }
-                    }
-                });
-
-                io.micronaut.context.Qualifier<Object> qualifer = beanDefinition
-                        .getAnnotationNameByStereotype("javax.inject.Qualifier")
-                        .map(type -> Qualifiers.byAnnotation(beanDefinition, type))
-                        .orElse(null);
-
-                Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
-
-                Class<?> returnTypeClass = method.getReturnType().getType();
-                boolean isVoid = returnTypeClass == Void.class || returnTypeClass == void.class;
-
-                Object bean = beanContext.findBean(beanType, qualifer).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
-
                 try {
-                    DefaultExecutableBinder<RabbitConsumerState> binder = new DefaultExecutableBinder<>();
-
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, clientTag);
-                    }
-
-                    Optional<String> executor = method.findAnnotation(RabbitConnection.class)
-                            .flatMap(conn -> conn.get("executor", String.class));
-
-                    ExecutorService executorService = executor
-                            .flatMap(exec -> beanContext.findBean(ExecutorService.class, Qualifiers.byName(exec)))
-                            .orElse(null);
-
-                    if (executor.isPresent() && executorService == null) {
-                        throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
-                    }
-
                     channel.basicConsume(queue, false, clientTag, false, exclusive, arguments, new DefaultConsumer() {
 
                         @Override
@@ -306,6 +272,63 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         }
     }
 
+    private Map<String, Object> retrieveArguments(ExecutableMethod<?, ?> method) {
+        Map<String, Object> arguments = new HashMap<>();
+
+        List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
+        Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
+        propertyAnnotations.forEach((prop) -> {
+            String name = prop.getRequiredValue("name", String.class);
+            String value = prop.getValue(String.class).orElse(null);
+            Class type = prop.get("type", Class.class).orElse(null);
+
+            if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                if (type != null && type != Void.class) {
+                    Optional<Object> converted = conversionService.convert(value, type);
+                    if (converted.isPresent()) {
+                        arguments.put(name, converted.get());
+                    } else {
+                        throw new MessageListenerException(String.format("Could not convert the argument [%s] to the required type [%s]", name, type));
+                    }
+                } else {
+                    arguments.put(name, value);
+                }
+            }
+        });
+        return arguments;
+    }
+
+    private Object getExecutableMethodBean(BeanDefinition<?> beanDefinition, ExecutableMethod<?, ?> method) {
+        io.micronaut.context.Qualifier<Object> qualifier = beanDefinition
+                .getAnnotationNameByStereotype("javax.inject.Qualifier")
+                .map(type -> Qualifiers.byAnnotation(beanDefinition, type))
+                .orElse(null);
+
+        Class<Object> beanType = (Class<Object>) beanDefinition.getBeanType();
+        Object bean = beanContext.findBean(beanType, qualifier).orElseThrow(() -> new MessageListenerException("Could not find the bean to execute the method " + method));
+        return bean;
+    }
+
+    private boolean isVoid(ExecutableMethod<?, ?> method) {
+        Class<?> returnTypeClass = method.getReturnType().getType();
+        boolean isVoid = returnTypeClass == Void.class || returnTypeClass == void.class;
+        return isVoid;
+    }
+
+    private ExecutorService getExecutorService(ExecutableMethod<?, ?> method) {
+        Optional<String> executor = method.findAnnotation(RabbitConnection.class)
+                .flatMap(conn -> conn.get("executor", String.class));
+
+        ExecutorService executorService = executor
+                .flatMap(exec -> beanContext.findBean(ExecutorService.class, Qualifiers.byName(exec)))
+                .orElse(null);
+
+        if (executor.isPresent() && executorService == null) {
+            throw new MessageListenerException(String.format("Could not find the executor service [%s] specified for the method [%s]", executor.get(), method));
+        }
+        return executorService;
+    }
+
     @PreDestroy
     @Override
     public void close() throws Exception {
@@ -329,15 +352,14 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     }
 
     /**
-     * Retrieves multiple channels to use for consuming messages.
+     * Retrieves a channel to use for consuming messages.
      *
-     * @param channelPool The channel pool to retrieve the channels from
-     * @param numberOfChannels The nuumber of channels to create
-     * @return A list of channels
+     * @param channelPool The channel pool to retrieve the channel from
+     * @return A channel to publish with
      */
-    protected List<Channel> getMutipleChannels(ChannelPool channelPool, int numberOfChannels) {
+    protected Channel getChannel(ChannelPool channelPool) {
         try {
-            return channelPool.getMultipleChannels(numberOfChannels);
+            return channelPool.getChannel();
         } catch (IOException e) {
             throw new MessageListenerException("Could not retrieve a channel", e);
         }
