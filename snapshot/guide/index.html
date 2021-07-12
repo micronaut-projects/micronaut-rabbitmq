@@ -1123,13 +1123,13 @@ The <code>addresses</code> option can also be used with the multiple server conf
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.messaging.annotation.Header;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 
 @RabbitClient("animals") <b class="conum">(1)</b>
 public interface AnimalClient {
 
-    void send(@Header String animalType, Animal animal); <b class="conum">(2)</b>
+    void send(@MessageHeader String animalType, Animal animal); <b class="conum">(2)</b>
 
     default void send(Animal animal) { <b class="conum">(3)</b>
         send(animal.getClass().getSimpleName(), animal);
@@ -1139,13 +1139,13 @@ public interface AnimalClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.messaging.annotation.Header
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
 @RabbitClient("animals") <b class="conum">(1)</b>
 abstract class AnimalClient {
 
-    abstract void send(@Header String animalType, Animal animal) <b class="conum">(2)</b>
+    abstract void send(@MessageHeader String animalType, Animal animal) <b class="conum">(2)</b>
 
     void send(Animal animal) { <b class="conum">(3)</b>
         send(animal.class.simpleName, animal)
@@ -1155,13 +1155,13 @@ abstract class AnimalClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.Header
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
 @RabbitClient("animals") <b class="conum">(1)</b>
 abstract class AnimalClient {
 
-    abstract fun send(@Header animalType: String, animal: Animal)  <b class="conum">(2)</b>
+    abstract fun send(@MessageHeader animalType: String, animal: Animal)  <b class="conum">(2)</b>
 
     fun send(animal: Animal) { <b class="conum">(3)</b>
         send(animal.javaClass.simpleName, animal)
@@ -1525,11 +1525,11 @@ If the annotation or argument name cannot be matched to a property name, an exce
 
 
 <div class="paragraph">
-<p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
+<p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/MessageHeader.html">@MessageHeader</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.messaging.annotation.Header;
+<pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
@@ -1537,18 +1537,18 @@ import io.micronaut.rabbitmq.annotation.RabbitHeaders;
 import java.util.Map;
 
 @RabbitClient
-@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
-@Header(name = "productSize", value = "large")
+@MessageHeader(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@MessageHeader(name = "productSize", value = "large")
 public interface ProductClient {
 
     @Binding("product")
-    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
-    @Header(name = "productSize", value = "small")
+    @MessageHeader(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @MessageHeader(name = "productSize", value = "small")
     void send(byte[] data);
 
     @Binding("product")
-    void send(@Header String productSize, <b class="conum">(3)</b>
-              @Header("x-product-count") Long count,
+    void send(@MessageHeader String productSize, <b class="conum">(3)</b>
+              @MessageHeader("x-product-count") Long count,
               byte[] data);
 
     @Binding("product")
@@ -1559,24 +1559,24 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.messaging.annotation.Header
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 
 @RabbitClient
-@Header(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
-@Header(name = "productSize", value = "large")
+@MessageHeader(name = "x-product-sealed", value = "true") <b class="conum">(1)</b>
+@MessageHeader(name = "productSize", value = "large")
 interface ProductClient {
 
     @Binding("product")
-    @Header(name = "x-product-count", value = "10") <b class="conum">(2)</b>
-    @Header(name = "productSize", value = "small")
+    @MessageHeader(name = "x-product-count", value = "10") <b class="conum">(2)</b>
+    @MessageHeader(name = "productSize", value = "small")
     void send(byte[] data)
 
     @Binding("product")
-    void send(@Header String productSize, <b class="conum">(3)</b>
-              @Header("x-product-count") Long count,
+    void send(@MessageHeader String productSize, <b class="conum">(3)</b>
+              @MessageHeader("x-product-count") Long count,
               byte[] data)
 
     @Binding("product")
@@ -1587,29 +1587,29 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.Header
-import io.micronaut.messaging.annotation.Headers
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
+import io.micronaut.messaging.annotation.MessageHeaders
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 
 @RabbitClient
-@Headers(
-    Header(name = "x-product-sealed", value = "true"), <b class="conum">(1)</b>
-    Header(name = "productSize", value = "large")
+@MessageHeaders(
+    MessageHeader(name = "x-product-sealed", value = "true"), <b class="conum">(1)</b>
+    MessageHeader(name = "productSize", value = "large")
 )
 interface ProductClient {
 
     @Binding("product")
-    @Headers(
-        Header(name = "x-product-count", value = "10"), <b class="conum">(2)</b>
-        Header(name = "productSize", value = "small")
+    @MessageHeaders(
+        MessageHeader(name = "x-product-count", value = "10"), <b class="conum">(2)</b>
+        MessageHeader(name = "productSize", value = "small")
     )
     fun send(data: ByteArray)
 
     @Binding("product")
-    fun send(@Header productSize: String?, <b class="conum">(3)</b>
-             @Header("x-product-count") count: Long,
+    fun send(@MessageHeader productSize: String?, <b class="conum">(3)</b>
+             @MessageHeader("x-product-count") count: Long,
              data: ByteArray)
 
     @Binding("product")
@@ -2275,12 +2275,12 @@ If the annotation or argument name cannot be matched to a property name, an exce
 
 
 <div class="paragraph">
-<p>Headers can be retrieved with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/Header.html">@Header</a> annotation applied to the arguments of the method.</p>
+<p>Headers can be retrieved with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/MessageHeader.html">@MessageHeader</a> annotation applied to the arguments of the method.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.core.annotation.Nullable;
-import io.micronaut.messaging.annotation.Header;
+import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
 import io.micronaut.rabbitmq.annotation.RabbitListener;
@@ -2297,9 +2297,9 @@ public class ProductListener {
 
     @Queue("product")
     public void receive(byte[] data,
-                        @Header("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
-                        @Header("x-product-count") Long count, <b class="conum">(2)</b>
-                        @Nullable @Header String productSize) { <b class="conum">(3)</b>
+                        @MessageHeader("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
+                        @MessageHeader("x-product-count") Long count, <b class="conum">(2)</b>
+                        @Nullable @MessageHeader String productSize) { <b class="conum">(3)</b>
         messageProperties.add(sealed + "|" + count + "|" + productSize);
     }
 
@@ -2318,7 +2318,7 @@ public class ProductListener {
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.core.annotation.Nullable
-import io.micronaut.messaging.annotation.Header
+import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.RabbitListener
@@ -2330,9 +2330,9 @@ class ProductListener {
 
     @Queue("product")
     void receive(byte[] data,
-                 @Header("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
-                 @Header("x-product-count") Long count, <b class="conum">(2)</b>
-                 @Nullable @Header String productSize) { <b class="conum">(3)</b>
+                 @MessageHeader("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
+                 @MessageHeader("x-product-count") Long count, <b class="conum">(2)</b>
+                 @Nullable @MessageHeader String productSize) { <b class="conum">(3)</b>
         messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
     }
 
@@ -2349,7 +2349,7 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.Header
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.RabbitListener
@@ -2362,9 +2362,9 @@ class ProductListener {
 
     @Queue("product")
     fun receive(data: ByteArray,
-                @Header("x-product-sealed") sealed: Boolean, <b class="conum">(1)</b>
-                @Header("x-product-count") count: Long, <b class="conum">(2)</b>
-                @Header productSize: String?) { <b class="conum">(3)</b>
+                @MessageHeader("x-product-sealed") sealed: Boolean, <b class="conum">(1)</b>
+                @MessageHeader("x-product-count") count: Long, <b class="conum">(2)</b>
+                @MessageHeader productSize: String?) { <b class="conum">(3)</b>
         messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
     }
 
@@ -2797,9 +2797,6 @@ class ProductListener {
 <pre class="highlight"><code class="language-java" data-lang="java">import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 
-import javax.annotation.concurrent.Immutable;
-
-@Immutable
 public class ProductInfo {
 
     private String size;
@@ -2833,9 +2830,6 @@ public class ProductInfo {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.core.annotation.NonNull
 import io.micronaut.core.annotation.Nullable
 
-import javax.annotation.concurrent.Immutable
-
-@Immutable
 class ProductInfo {
 
     private String size
@@ -2866,10 +2860,7 @@ class ProductInfo {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import javax.annotation.concurrent.Immutable
-
-@Immutable
-class ProductInfo(val size: String?, <b class="conum">(1)</b>
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class ProductInfo(val size: String?, <b class="conum">(1)</b>
                   val count: Long, <b class="conum">(2)</b>
                   val sealed: Boolean)<b class="conum">(3)</b></code></pre>
 </div>

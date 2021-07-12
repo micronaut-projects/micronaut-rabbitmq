@@ -142,11 +142,12 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-java.util.List-">RabbitMQConsumerAdvice</a></span>(io.micronaut.context.BeanContext&nbsp;beanContext,
                       <a href="../../../../io/micronaut/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
                       <a href="../../../../io/micronaut/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
                       <a href="../../../../io/micronaut/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
-                      io.micronaut.core.convert.ConversionService&nbsp;conversionService)</code>
+                      io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
+                      java.util.List&lt;<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -202,7 +203,7 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-">
+<a name="RabbitMQConsumerAdvice-io.micronaut.context.BeanContext-io.micronaut.rabbitmq.bind.RabbitBinderRegistry-io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler-io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry-io.micronaut.core.convert.ConversionService-java.util.List-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -212,7 +213,8 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
                               <a href="../../../../io/micronaut/rabbitmq/bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
                               <a href="../../../../io/micronaut/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
                               <a href="../../../../io/micronaut/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
-                              io.micronaut.core.convert.ConversionService&nbsp;conversionService)</pre>
+                              io.micronaut.core.convert.ConversionService&lt;?&gt;&nbsp;conversionService,
+                              java.util.List&lt;<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -221,6 +223,7 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <dd><code>exceptionHandler</code> - The exception handler to use if the consumer isn't a handler</dd>
 <dd><code>serDesRegistry</code> - The serialization/deserialization registry</dd>
 <dd><code>conversionService</code> - The service to convert consume argument values</dd>
+<dd><code>channelPools</code> - The channel pools to retrieve channels</dd>
 </dl>
 </li>
 </ul>
