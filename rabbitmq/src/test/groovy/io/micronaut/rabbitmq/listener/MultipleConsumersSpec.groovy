@@ -21,12 +21,12 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         MyConsumer consumer = ctx.getBean(MyConsumer)
 
         when:
-        5.times { producer.go("abc") }
+        4.times { producer.go("abc") }
 
         then:
         conditions.eventually {
             //size check because container is set, so 5 different threads are used.
-            assert consumer.threads.size() == 5
+            assert consumer.threads.size() == 4
         }
     }
 
@@ -43,7 +43,7 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
 
         CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
 
-        @Queue(value = "simple", numberOfConsumers = 5)
+        @Queue(value = "simple", numberOfConsumers = 4)
         void listen(@MessageBody String body) {
             threads.add(Thread.currentThread().getName())
             Thread.sleep(500)
