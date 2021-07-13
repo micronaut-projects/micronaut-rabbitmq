@@ -5,8 +5,6 @@ dependencies {
     api "io.micronaut:micronaut-inject"
     api "com.rabbitmq:amqp-client:$rabbitVersion"
 
-    // TODO: Remove when there is a new Micronaut 3 compatible version of micronaut-micrometer
-    implementation 'javax.inject:javax.inject:1'
     implementation 'io.projectreactor:reactor-core'
 
     compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
@@ -21,7 +19,6 @@ dependencies {
     testImplementation "io.micronaut:micronaut-inject-java"
     testImplementation "org.testcontainers:spock:1.15.3"
     testImplementation "io.micronaut:micronaut-management"
-    testImplementation "jakarta.inject:jakarta.inject-api:2.0.0"
     testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
 }
 
