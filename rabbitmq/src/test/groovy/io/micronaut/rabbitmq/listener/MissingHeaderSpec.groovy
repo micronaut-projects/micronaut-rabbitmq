@@ -40,7 +40,7 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
     @Requires(property = "spec.name", value = "MissingHeaderSpec")
     @RabbitClient
     static interface MyProducer {
-        @Binding("simple")
+        @Binding("simple-header")
         void go(String data)
     }
 
@@ -52,7 +52,7 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
         public static CopyOnWriteArrayList<RabbitListenerException> errors = []
         public static CopyOnWriteArrayList<String> bodies = []
 
-        @Queue("simple")
+        @Queue("simple-header")
         void listen(@Nullable @MessageHeader("X-Header") String header, String data) {
             if (header != null) headers.add(header)
             bodies.add(data)

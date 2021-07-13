@@ -15,11 +15,13 @@ import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
 import jakarta.inject.Singleton
 import spock.util.concurrent.PollingConditions
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 class ListenerErrorSpec extends AbstractRabbitMQTest {
 
     void "test a local error handler"() {
         ApplicationContext ctx = startContext([global: false])
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        PollingConditions conditions = new PollingConditions(timeout: 10)
         MyProducer producer = ctx.getBean(MyProducer)
         producer.go("abc")
         producer.go("def")
@@ -40,7 +42,7 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
 
     void "test a global error handler"() {
         ApplicationContext ctx = startContext([global: true])
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        PollingConditions conditions = new PollingConditions(timeout: 10)
         MyProducer producer = ctx.getBean(MyProducer)
         producer.go("abc")
         producer.go("def")
@@ -63,7 +65,7 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @RabbitClient
     static interface MyProducer {
 
-        @Binding("simple")
+        @Binding("error")
         void go(String data)
 
     }
@@ -73,9 +75,9 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @RabbitListener
     static class MyConsumer implements RabbitListenerExceptionHandler {
 
-        public static List<Throwable> errors = []
+        public CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>()
 
-        @Queue("simple")
+        @Queue("error")
         void listen(String data) {
             throw new RuntimeException(data)
         }
@@ -91,7 +93,7 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @RabbitListener
     static class MyConsumer2 {
 
-        @Queue("simple")
+        @Queue("error")
         void listen(String data) {
             throw new RuntimeException(data)
         }
@@ -104,7 +106,7 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @Singleton
     static class MyGlobalErrorHandler implements RabbitListenerExceptionHandler {
 
-        public static List<Throwable> errors = []
+        public CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>()
 
         @Override
         void handle(RabbitListenerException exception) {
