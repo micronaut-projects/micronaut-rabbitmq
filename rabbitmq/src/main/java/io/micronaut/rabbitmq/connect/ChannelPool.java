@@ -15,10 +15,10 @@
  */
 package io.micronaut.rabbitmq.connect;
 
-import java.io.IOException;
-
 import com.rabbitmq.client.Channel;
 import io.micronaut.core.naming.Named;
+
+import java.io.IOException;
 
 /**
  * A pool of {@link Channel}s to allow for channels to be shared across

@@ -15,13 +15,6 @@
  */
 package io.micronaut.rabbitmq.connect;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.annotation.PreDestroy;
-
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -30,6 +23,13 @@ import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.PreDestroy;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Default implementation of {@link ChannelPool}. There is no limit
@@ -55,16 +55,17 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     /**
      * Default constructor.
      *
-     * @param name       The pool name
+     * @param name The pool name
      * @param connection The connection
-     * @param config     The connection factory config
+     * @param config The connection factory config
      */
-    public DefaultChannelPool(@Parameter String name, @Parameter Connection connection,
-            @Parameter RabbitConnectionFactoryConfig config) {
+    public DefaultChannelPool(@Parameter String name,
+                              @Parameter Connection connection,
+                              @Parameter RabbitConnectionFactoryConfig config) {
         this.name = name;
         this.connection = connection;
         Integer maxIdleChannels = config.getChannelPool().getMaxIdleChannels().orElse(null);
-        this.recoveryDelayHandler = config.getRecoveryDelayHandler();
+        this.recoveryDelayHandler = config.params(null).getRecoveryDelayHandler();
         topologyRecoveryEnabled = config.isTopologyRecoveryEnabled();
         this.channels = new LinkedBlockingQueue<>(maxIdleChannels == null ? Integer.MAX_VALUE : maxIdleChannels);
     }
@@ -115,8 +116,7 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Attempted to return a closed channel to the pool [{}]. Channel has been ignored",
-                        channel.toString());
+                LOG.debug("Attempted to return a closed channel to the pool [{}]. Channel has been ignored", channel.toString());
             }
             totalChannels.decrementAndGet();
         }
@@ -139,9 +139,7 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     public void close() {
         if (totalChannels.get() > channels.size()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(
-                        "Channel pool is being closed without all channels being returned! Any channels not returned are the responsibility of the owner to close. Total channels [{}] - Returned Channels [{}]",
-                        totalChannels.get(), channels.size());
+                LOG.warn("Channel pool is being closed without all channels being returned! Any channels not returned are the responsibility of the owner to close. Total channels [{}] - Returned Channels [{}]", totalChannels.get(), channels.size());
             }
         }
         final Iterator<Channel> iterator = channels.iterator();
