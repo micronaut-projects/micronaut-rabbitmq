@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.intercept;
 
 import com.rabbitmq.client.AMQP;
+import io.micronaut.aop.InterceptedMethod;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.caffeine.cache.Cache;
@@ -46,9 +47,12 @@ import io.micronaut.scheduling.TaskExecutors;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -62,7 +66,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -136,71 +143,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
         if (context.hasAnnotation(RabbitClient.class)) {
 
-            StaticPublisherState publisherState = publisherCache.get(context.getExecutableMethod(), (method) -> {
-                AnnotationValue<RabbitClient> client = method.findAnnotation(RabbitClient.class).orElseThrow(() -> new IllegalStateException("No @RabbitClient annotation present on method: " + method));
-
-
-                String exchange = client.getValue(String.class).orElse("");
-                Optional<AnnotationValue<Binding>> bindingAnn = method.findAnnotation(Binding.class);
-
-                Optional<String> routingKey = bindingAnn.flatMap(b -> b.getValue(String.class));
-
-                String connection = method.findAnnotation(RabbitConnection.class)
-                        .flatMap(conn -> conn.get("connection", String.class))
-                        .orElse(RabbitConnection.DEFAULT_CONNECTION);
-
-                Argument<?> bodyArgument = findBodyArgument(method)
-                        .orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
-
-                Map<String, Object> methodHeaders = new HashMap<>();
-
-                List<AnnotationValue<MessageHeader>> headerAnnotations = method.getAnnotationValuesByType(MessageHeader.class);
-                Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
-                headerAnnotations.forEach((header) -> {
-                    String name = header.get("name", String.class).orElse(null);
-                    String value = header.getValue(String.class).orElse(null);
-
-                    if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                        methodHeaders.put(name, value);
-                    }
-                });
-
-                Map<String, String> methodProperties = new HashMap<>();
-
-                List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
-                Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
-                propertyAnnotations.forEach((prop) -> {
-                    String name = prop.get("name", String.class).orElse(null);
-                    String value = prop.getValue(String.class).orElse(null);
-
-                    if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-                        if (this.properties.containsKey(name)) {
-                            methodProperties.put(name, value);
-                        } else {
-                            throw new RabbitClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
-                        }
-                    }
-                });
-
-                RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not find a serializer for the body argument of type [%s]", bodyArgument.getType().getName())));
-
-                ReactivePublisher reactivePublisher;
-                try {
-                    reactivePublisher = beanContext.getBean(ReactivePublisher.class, Qualifiers.byName(connection));
-                } catch (Throwable e) {
-                    throw new RabbitClientException(String.format("Failed to retrieve a publisher named [%s] to publish messages", connection), e);
-                }
-
-                return new StaticPublisherState(exchange,
-                        routingKey.orElse(null),
-                        bodyArgument,
-                        methodHeaders,
-                        methodProperties,
-                        method.getReturnType(),
-                        serDes,
-                        reactivePublisher);
-
-            });
+            StaticPublisherState publisherState = getPublisherState(context);
 
             String exchange = publisherState.getExchange();
             String routingKey = publisherState.getRoutingKey().orElse(findRoutingKey(context).orElse(""));
@@ -248,9 +191,6 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 mutableProperties.setHeaders(headers);
             }
 
-            ReturnType<Object> returnType = context.getReturnType();
-            Class<?> javaReturnType = returnType.getType();
-
             Object body = parameterValues.get(bodyArgument.getName());
             byte[] converted = publisherState.getSerDes().serialize(body, mutableProperties);
 
@@ -261,47 +201,16 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             }
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
-            Class<?> dataTypeClass = publisherState.getDataType().getType();
-            boolean isVoid = dataTypeClass == void.class || dataTypeClass == Void.class;
-            boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
-            boolean rpc = replyToSet && !isVoid;
-
             ReactivePublisher reactivePublisher = publisherState.getReactivePublisher();
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
 
-            if (publisherState.isReactive()) {
+            try {
+                boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
+                boolean rpc = replyToSet && !interceptedMethod.returnTypeValue().isVoid();
 
-                Publisher<?> reactive;
+                Mono<?> reactive;
                 if (rpc) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
-                    }
-                    reactive = Flux.from(reactivePublisher.publishAndReply(publishState))
-                            .flatMap(consumerState -> {
-                                Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
-                                if (deserialized == null) {
-                                    return Flux.empty();
-                                } else {
-                                    return Flux.just(deserialized);
-                                }
-                            }).subscribeOn(scheduler);
-                } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Sending the message with publisher confirms.", context);
-                    }
-                    reactive = Flux.from(reactivePublisher.publishAndConfirm(publishState))
-                            .subscribeOn(scheduler);
-                }
-
-                return conversionService.convert(reactive, javaReturnType)
-                        .orElseThrow(() -> new RabbitClientException("Could not convert the publisher acknowledgement response to the return type of the method", Collections.singletonList(publishState)));
-            } else {
-
-                if (rpc) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Publish is an RPC call. Blocking until a response is received.", context);
-                    }
-
-                    return Mono.from(reactivePublisher.publishAndReply(publishState))
+                    reactive = Mono.from(reactivePublisher.publishAndReply(publishState))
                             .flatMap(consumerState -> {
                                 Object deserialized = deserialize(consumerState, publisherState.getDataType(), publisherState.getDataType());
                                 if (deserialized == null) {
@@ -309,24 +218,145 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                                 } else {
                                     return Mono.just(deserialized);
                                 }
-                            })
-                            .block();
+                            });
+
+                    if (interceptedMethod.resultType() == InterceptedMethod.ResultType.SYNCHRONOUS) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Publish is an RPC call. Blocking until a response is received.", context);
+                        }
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
+                        }
+                        reactive = reactive.subscribeOn(scheduler);
+                    }
                 } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Sending the message without publisher confirms.", context);
+                    if (interceptedMethod.resultType() == InterceptedMethod.ResultType.SYNCHRONOUS) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Sending the message without publisher confirms.", context);
+                        }
+                        reactive = Mono.from(reactivePublisher.publish(publishState));
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Sending the message with publisher confirms.", context);
+                        }
+                        reactive = Mono.from(reactivePublisher.publishAndConfirm(publishState))
+                                .subscribeOn(scheduler);
                     }
-                    try {
-                        Mono.from(reactivePublisher.publish(publishState)).block();
-                    } catch (Throwable throwable) {
-                        throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
-                    }
-                    return null;
                 }
+
+                switch (interceptedMethod.resultType()) {
+                    case PUBLISHER:
+                        return interceptedMethod.handleResult(reactive);
+                    case COMPLETION_STAGE:
+                        CompletableFuture<Object> future = new CompletableFuture<>();
+                        reactive.subscribe(new Subscriber<Object>() {
+                            Object value = null;
+                            @Override
+                            public void onSubscribe(Subscription s) {
+                                s.request(1);
+                            }
+
+                            @Override
+                            public void onNext(Object o) {
+                                value = o;
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                future.completeExceptionally(t);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                future.complete(value);
+                            }
+                        });
+                        return interceptedMethod.handleResult(future);
+                    case SYNCHRONOUS:
+                        try {
+                            return interceptedMethod.handleResult(reactive.block());
+                        } catch (Throwable throwable) {
+                            throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
+                        }
+                    default:
+                        return interceptedMethod.unsupported();
+                }
+            } catch (Exception e) {
+                return interceptedMethod.handleException(e);
             }
         } else {
             // can't be implemented so proceed
             return context.proceed();
         }
+    }
+
+    private StaticPublisherState getPublisherState(MethodInvocationContext<?, ?> context) {
+        return publisherCache.get(context.getExecutableMethod(), (method) -> {
+            AnnotationValue<RabbitClient> client = method.findAnnotation(RabbitClient.class).orElseThrow(() -> new IllegalStateException("No @RabbitClient annotation present on method: " + method));
+
+
+            String exchange = client.getValue(String.class).orElse("");
+            Optional<AnnotationValue<Binding>> bindingAnn = method.findAnnotation(Binding.class);
+
+            Optional<String> routingKey = bindingAnn.flatMap(b -> b.getValue(String.class));
+
+            String connection = method.findAnnotation(RabbitConnection.class)
+                    .flatMap(conn -> conn.get("connection", String.class))
+                    .orElse(RabbitConnection.DEFAULT_CONNECTION);
+
+            Argument<?> bodyArgument = findBodyArgument(method)
+                    .orElseThrow(() -> new RabbitClientException("No valid message body argument found for method: " + method));
+
+            Map<String, Object> methodHeaders = new HashMap<>();
+
+            List<AnnotationValue<MessageHeader>> headerAnnotations = method.getAnnotationValuesByType(MessageHeader.class);
+            Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
+            headerAnnotations.forEach((header) -> {
+                String name = header.get("name", String.class).orElse(null);
+                String value = header.getValue(String.class).orElse(null);
+
+                if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                    methodHeaders.put(name, value);
+                }
+            });
+
+            Map<String, String> methodProperties = new HashMap<>();
+
+            List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
+            Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
+            propertyAnnotations.forEach((prop) -> {
+                String name = prop.get("name", String.class).orElse(null);
+                String value = prop.getValue(String.class).orElse(null);
+
+                if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+                    if (this.properties.containsKey(name)) {
+                        methodProperties.put(name, value);
+                    } else {
+                        throw new RabbitClientException(String.format("Attempted to set property [%s], but could not match the name to any of the com.rabbitmq.client.BasicProperties", name));
+                    }
+                }
+            });
+
+            RabbitMessageSerDes<?> serDes = serDesRegistry.findSerdes(bodyArgument).orElseThrow(() -> new RabbitClientException(String.format("Could not find a serializer for the body argument of type [%s]", bodyArgument.getType().getName())));
+
+            ReactivePublisher reactivePublisher;
+            try {
+                reactivePublisher = beanContext.getBean(ReactivePublisher.class, Qualifiers.byName(connection));
+            } catch (Throwable e) {
+                throw new RabbitClientException(String.format("Failed to retrieve a publisher named [%s] to publish messages", connection), e);
+            }
+
+            return new StaticPublisherState(exchange,
+                    routingKey.orElse(null),
+                    bodyArgument,
+                    methodHeaders,
+                    methodProperties,
+                    method.getReturnType(),
+                    serDes,
+                    reactivePublisher);
+
+        });
     }
 
     private Object deserialize(RabbitConsumerState consumerState, Argument dataType, Argument returnType) {

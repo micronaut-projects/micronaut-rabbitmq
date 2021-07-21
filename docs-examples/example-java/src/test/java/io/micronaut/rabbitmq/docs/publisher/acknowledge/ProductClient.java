@@ -5,6 +5,8 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import org.reactivestreams.Publisher;
+
+import java.util.concurrent.CompletableFuture;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "PublisherAcknowledgeSpec")
@@ -13,6 +15,9 @@ import org.reactivestreams.Publisher;
 public interface ProductClient {
 
     @Binding("product")
-    Publisher<Void> sendPublisher(byte[] data); // <4>
+    Publisher<Void> sendPublisher(byte[] data); // <1>
+
+    @Binding("product")
+    CompletableFuture<Void> sendFuture(byte[] data); // <2>
 }
 // end::clazz[]

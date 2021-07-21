@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import reactor.core.publisher.Mono;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -24,6 +24,7 @@ public class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
 // tag::producer[]
 ProductClient productClient = applicationContext.getBean(ProductClient.class);
 Publisher<Void> publisher = productClient.sendPublisher("publisher body".getBytes());
+CompletableFuture<Void> future = productClient.sendFuture("future body".getBytes());
 
 Subscriber<Void> subscriber = new Subscriber<Void>() {
     @Override
@@ -47,12 +48,19 @@ Subscriber<Void> subscriber = new Subscriber<Void>() {
     }
 };
 publisher.subscribe(subscriber);
+future.whenComplete((v, t) -> {
+    if (t == null) {
+        successCount.incrementAndGet();
+    } else {
+        errorCount.incrementAndGet();
+    }
+});
 // end::producer[]
 
         try {
             await().atMost(5, SECONDS).until(() ->
                     errorCount.get() == 0 &&
-                    successCount.get() == 1
+                    successCount.get() == 2
             );
         } finally {
             applicationContext.close();
