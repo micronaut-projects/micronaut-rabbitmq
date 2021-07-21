@@ -8,7 +8,8 @@ import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperty
 import io.micronaut.rabbitmq.exception.RabbitClientException
-import io.reactivex.Completable
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 import spock.util.concurrent.PollingConditions
 
 class ClientErrorSpec extends AbstractRabbitMQTest {
@@ -49,16 +50,36 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
         PollingConditions conditions = new PollingConditions(delay: 3, timeout: 7)
 
         when:
-        Throwable t
+        Throwable abc
         publisher.invalidExchange("abc")
-            .subscribe(() -> {}, (ex) -> {
-                t = ex
+            .subscribe(new Subscriber<Void>() {
+                Subscription s
+                @Override
+                void onSubscribe(Subscription s) {
+                    this.s = s
+                    s.request(1)
+                }
+
+                @Override
+                void onNext(Void unused) {
+
+                }
+
+                @Override
+                void onError(Throwable t) {
+                    abc = t
+                }
+
+                @Override
+                void onComplete() {
+
+                }
             })
 
         then:
         conditions.eventually {
-            t instanceof RabbitClientException
-            t.message.contains("Timed out waiting for publisher confirm")
+            abc instanceof RabbitClientException
+            abc.message.contains("Timed out waiting for publisher confirm")
         }
     }
 
@@ -78,6 +99,6 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
     @RabbitClient("abc-xyz")
     static interface PublisherInvalidExchange {
 
-        Completable invalidExchange(@MessageBody String body)
+        org.reactivestreams.Publisher<Void> invalidExchange(@MessageBody String body)
     }
 }
