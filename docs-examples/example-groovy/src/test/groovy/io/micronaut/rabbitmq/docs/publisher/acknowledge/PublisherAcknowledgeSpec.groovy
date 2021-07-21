@@ -2,11 +2,6 @@ package io.micronaut.rabbitmq.docs.publisher.acknowledge
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.reactivex.Completable
-import io.reactivex.CompletableObserver
-import io.reactivex.Maybe
-import io.reactivex.MaybeObserver
-import io.reactivex.disposables.Disposable
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
@@ -27,48 +22,8 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
         when:
         // tag::producer[]
         ProductClient productClient = applicationContext.getBean(ProductClient)
-        Completable completable = productClient.send("completable body".bytes)
-        Maybe<Void> maybe = productClient.sendMaybe("maybe body".bytes)
-        Mono<Void> mono = productClient.sendMono("mono body".bytes)
         Publisher<Void> publisher = productClient.sendPublisher("publisher body".bytes)
 
-        completable.subscribe(new CompletableObserver() {
-            @Override
-            void onSubscribe(Disposable d) { }
-
-            @Override
-            void onComplete() {
-                // if the publish was acknowledged
-                successCount.incrementAndGet()
-            }
-
-            @Override
-            void onError(Throwable e) {
-                // if an error occurs
-                errorCount.incrementAndGet()
-            }
-        })
-        maybe.subscribe(new MaybeObserver<Void>() {
-            @Override
-            void onSubscribe(Disposable d) { }
-
-            @Override
-            void onSuccess(Void aVoid) {
-                throw new UnsupportedOperationException("Should never be called");
-            }
-
-            @Override
-            void onError(Throwable e) {
-                // if an error occurs
-                errorCount.incrementAndGet()
-            }
-
-            @Override
-            void onComplete() {
-                // if the publish was acknowledged
-                successCount.incrementAndGet()
-            }
-        })
         Subscriber<Void> subscriber = new Subscriber<Void>() {
             @Override
             void onSubscribe(Subscription subscription) { }
@@ -90,14 +45,13 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
                 successCount.incrementAndGet()
             }
         }
-        mono.subscribe(subscriber)
         publisher.subscribe(subscriber)
 // end::producer[]
 
         then:
         conditions.eventually {
             errorCount.get() == 0
-            successCount.get() == 4
+            successCount.get() == 1
         }
 
         cleanup:

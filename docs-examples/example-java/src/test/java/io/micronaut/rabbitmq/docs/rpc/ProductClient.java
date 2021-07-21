@@ -5,7 +5,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
-import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "RpcUppercaseSpec")
@@ -18,6 +18,6 @@ public interface ProductClient {
     String send(String data); // <2>
 
     @Binding("product")
-    Single<String> sendReactive(String data); // <3>
+    Publisher<String> sendReactive(String data); // <3>
 }
 // end::clazz[]
