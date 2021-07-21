@@ -17,20 +17,20 @@ package io.micronaut.rabbitmq.bind;
 
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.type.Argument;
-import io.micronaut.messaging.annotation.Body;
+import io.micronaut.messaging.annotation.MessageBody;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import jakarta.inject.Singleton;
 
 import java.util.Optional;
 
 /**
- * Binds an argument of with the {@link Body} annotation from the {@link RabbitConsumerState}.
+ * Binds an argument of with the {@link MessageBody} annotation from the {@link RabbitConsumerState}.
  *
  * @author James Kleeh
  * @since 1.1.0
  */
 @Singleton
-public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
+public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<MessageBody> {
 
     private final RabbitMessageSerDesRegistry serDesRegistry;
 
@@ -44,8 +44,8 @@ public class RabbitBodyBinder implements RabbitAnnotatedArgumentBinder<Body> {
     }
 
     @Override
-    public Class<Body> getAnnotationType() {
-        return Body.class;
+    public Class<MessageBody> getAnnotationType() {
+        return MessageBody.class;
     }
 
     @Override

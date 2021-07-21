@@ -4,10 +4,10 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageBody
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.reactivex.Completable
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 import spock.util.concurrent.PollingConditions
-
-import java.util.concurrent.TimeUnit
 
 class BasicAopSpec extends AbstractRabbitMQTest {
 
@@ -21,14 +21,38 @@ class BasicAopSpec extends AbstractRabbitMQTest {
 
         when:
         producer.go("abc".bytes)
-        boolean success = producer.goConfirm("def".bytes).blockingAwait(2, TimeUnit.SECONDS)
+        boolean success
+        producer.goConfirm("def".bytes)
+                .subscribe(new Subscriber<Void>() {
+                    Subscription s
+                    @Override
+                    void onSubscribe(Subscription s) {
+                        this.s = s
+                        s.request(1)
+                    }
+
+                    @Override
+                    void onNext(Void unused) {
+                        s.request(1)
+                    }
+
+                    @Override
+                    void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    void onComplete() {
+                        success = true
+                    }
+                })
 
         then:
-        success
         conditions.eventually {
-            consumer.messages.size() == 2
-            consumer.messages[0] == "abc".bytes
-            consumer.messages[1] == "def".bytes
+            assert success
+            assert consumer.messages.size() == 2
+            assert consumer.messages[0] == "abc".bytes
+            assert consumer.messages[1] == "def".bytes
         }
 
         cleanup:
@@ -43,7 +67,7 @@ class BasicAopSpec extends AbstractRabbitMQTest {
         void go(@MessageBody byte[] data)
 
         @Binding("abc")
-        Completable goConfirm(byte[] data)
+        Publisher<Void> goConfirm(byte[] data)
     }
 
     @Requires(property = "spec.name", value = "BasicAopSpec")

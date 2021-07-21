@@ -29,8 +29,8 @@ import io.micronaut.core.type.ReturnType;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.messaging.annotation.Body;
-import io.micronaut.messaging.annotation.Header;
+import io.micronaut.messaging.annotation.MessageBody;
+import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
@@ -154,7 +154,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
                 Map<String, Object> methodHeaders = new HashMap<>();
 
-                List<AnnotationValue<Header>> headerAnnotations = method.getAnnotationValuesByType(Header.class);
+                List<AnnotationValue<MessageHeader>> headerAnnotations = method.getAnnotationValuesByType(MessageHeader.class);
                 Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
                 headerAnnotations.forEach((header) -> {
                     String name = header.get("name", String.class).orElse(null);
@@ -217,7 +217,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Argument[] arguments = context.getArguments();
             Map<String, Object> parameterValues = context.getParameterValueMap();
             for (Argument argument : arguments) {
-                AnnotationValue<Header> headerAnn = argument.getAnnotation(Header.class);
+                AnnotationValue<MessageHeader> headerAnn = argument.getAnnotation(MessageHeader.class);
                 AnnotationValue<RabbitProperty> propertyAnn = argument.getAnnotation(RabbitProperty.class);
                 boolean headersMap = argument.getAnnotationMetadata().hasAnnotation(RabbitHeaders.class);
                 if (headerAnn != null) {
@@ -378,7 +378,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private Optional<Argument<?>> findBodyArgument(ExecutableMethod<?, ?> method) {
         return Optional.ofNullable(Arrays.stream(method.getArguments())
-                .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Body.class))
+                .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(MessageBody.class))
                 .findFirst()
                 .orElseGet(() ->
                         Arrays.stream(method.getArguments())

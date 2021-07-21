@@ -2,6 +2,7 @@ package io.micronaut.rabbitmq.docs.rpc
 
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import reactor.core.publisher.Mono
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -18,7 +19,7 @@ class RpcUppercaseSpec: AbstractRabbitMQTest({
 
             then("the message is consumed") {
                 productClient.send("hello") shouldBe "HELLO"
-                productClient.sendReactive("world").blockingGet() shouldBe "WORLD"
+                Mono.from(productClient.sendReactive("world")).block() shouldBe "WORLD"
             }
         }
 

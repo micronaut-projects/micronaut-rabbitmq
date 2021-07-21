@@ -16,8 +16,6 @@ dependencies {
     }
     testRuntimeOnly "ch.qos.logback:logback-classic:1.2.4"
     testImplementation "io.projectreactor:reactor-core"
-    testImplementation "jakarta.inject:jakarta.inject-api:2.0.0"
-    testRuntimeOnly "io.micronaut.reactor:micronaut-reactor"
 }
 
 test {

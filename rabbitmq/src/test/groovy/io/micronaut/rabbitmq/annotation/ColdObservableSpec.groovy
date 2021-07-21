@@ -3,70 +3,59 @@ package io.micronaut.rabbitmq.annotation
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 import spock.util.concurrent.PollingConditions
 
 class ColdObservableSpec extends AbstractRabbitMQTest {
 
     void "test publisher acknowledgement returns a cold observable"() {
-            ApplicationContext applicationContext = ApplicationContext.run(
-                    ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                     "spec.name": getClass().simpleName], "test")
-            PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
-            MyProducer producer = applicationContext.getBean(MyProducer)
-            MyConsumer consumer = applicationContext.getBean(MyConsumer)
+        ApplicationContext applicationContext = ApplicationContext.run(
+                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
+                 "spec.name": getClass().simpleName], "test")
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1)
+        MyProducer producer = applicationContext.getBean(MyProducer)
+        MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
-            when:
-            Completable completable = producer.completable("def".bytes)
-            Single<Void> single = producer.single("ghi".bytes)
-            Flowable<Void> flowable = producer.flowable("jkl".bytes)
-            Maybe<Void> maybe = producer.maybe("mno".bytes)
+        when:
+        Publisher<Void> publisher = producer.publisher("def".bytes)
 
-            then:
-            conditions.eventually {
-                consumer.messages.size() == 0
+        then:
+        conditions.eventually {
+            consumer.messages.size() == 0
+        }
+
+        when:
+        publisher.subscribe(new Subscriber<Void>() {
+            @Override
+            void onSubscribe(Subscription s) {
+                s.request(1)
             }
 
-            when:
-            completable.subscribe()
+            @Override
+            void onNext(Void unused) {
 
-            then:
-            conditions.eventually {
-                consumer.messages.size() == 1
             }
 
-            when:
-            single.subscribe()
+            @Override
+            void onError(Throwable t) {
 
-            then:
-            conditions.eventually {
-                consumer.messages.size() == 2
             }
 
-            when:
-            flowable.subscribe()
+            @Override
+            void onComplete() {
 
-            then:
-            conditions.eventually {
-                consumer.messages.size() == 3
             }
+        })
 
-            when:
-            maybe.subscribe()
+        then:
+        conditions.eventually {
+            consumer.messages.size() == 1
+        }
 
-            then:
-            conditions.eventually {
-                consumer.messages.size() == 4
-            }
-
-            cleanup:
-            applicationContext.close()
-
-
-
+        cleanup:
+        applicationContext.close()
     }
 
     @Requires(property = "spec.name", value = "ColdObservableSpec")
@@ -74,16 +63,7 @@ class ColdObservableSpec extends AbstractRabbitMQTest {
     static interface MyProducer {
 
         @Binding("abc")
-        Completable completable(byte[] data)
-
-        @Binding("abc")
-        Single<Void> single(byte[] data)
-
-        @Binding("abc")
-        Flowable<Void> flowable(byte[] data)
-
-        @Binding("abc")
-        Maybe<Void> maybe(byte[] data)
+        Publisher<Void> publisher(byte[] data)
 
     }
 

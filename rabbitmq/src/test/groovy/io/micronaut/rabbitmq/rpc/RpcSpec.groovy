@@ -2,6 +2,7 @@ package io.micronaut.rabbitmq.rpc
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import reactor.core.publisher.Mono
 
 class RpcSpec extends AbstractRabbitMQTest {
 
@@ -10,17 +11,8 @@ class RpcSpec extends AbstractRabbitMQTest {
         RpcPublisher producer = applicationContext.getBean(RpcPublisher)
 
         expect:
-        producer.rpcCall("hello").blockingFirst() == "HELLO"
-        producer.rpcCallMaybe("hello").blockingGet() == "HELLO"
-        producer.rpcCallMaybe(null).blockingGet() == null
-        producer.rpcCallSingle("hello").blockingGet() == "HELLO"
+        Mono.from(producer.rpcCall("hello")).block() == "HELLO"
         producer.rpcBlocking("world") == "WORLD"
-
-        when:
-        producer.rpcCallSingle(null).blockingGet() == null
-
-        then:
-        thrown(NoSuchElementException)
 
         cleanup:
         applicationContext.close()

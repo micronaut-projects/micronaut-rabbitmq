@@ -4,7 +4,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthResult
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 
 class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
@@ -14,7 +14,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
-        HealthResult result = Single.fromPublisher(healthIndicator.result).blockingGet()
+        HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
         result.status == HealthStatus.UP
@@ -33,7 +33,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
-        HealthResult result = Single.fromPublisher(healthIndicator.result).blockingGet()
+        HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
         result.status == HealthStatus.UP
@@ -52,7 +52,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
         rabbitContainer.stop()
-        HealthResult result = Single.fromPublisher(healthIndicator.result).blockingGet()
+        HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
         result.status == HealthStatus.DOWN
