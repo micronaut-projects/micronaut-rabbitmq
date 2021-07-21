@@ -14,7 +14,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
-        HealthResult result = Single.fromPublisher(healthIndicator.result).blockingGet()
+        HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
         result.status == HealthStatus.UP

@@ -48,11 +48,11 @@ class BasicAopSpec extends AbstractRabbitMQTest {
                 })
 
         then:
-        success
         conditions.eventually {
-            consumer.messages.size() == 2
-            consumer.messages[0] == "abc".bytes
-            consumer.messages[1] == "def".bytes
+            assert success
+            assert consumer.messages.size() == 2
+            assert consumer.messages[0] == "abc".bytes
+            assert consumer.messages[1] == "def".bytes
         }
 
         cleanup:
