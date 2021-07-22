@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import kotlinx.coroutines.async
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.atomic.AtomicInteger
@@ -23,6 +24,10 @@ class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
             // tag::producer[]
             val productClient = ctx.getBean(ProductClient::class.java)
             val publisher = productClient.sendPublisher("publisher body".toByteArray())
+            val future = productClient.sendFuture("future body".toByteArray())
+            val deferred = async {
+                productClient.sendSuspend("suspend body".toByteArray())
+            }
 
             val subscriber = (object: Subscriber<Void> {
                 override fun onSubscribe(subscription: Subscription) { }
@@ -42,12 +47,26 @@ class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
                 }
             })
             publisher.subscribe(subscriber)
+            future.handle { _, t ->
+                if (t == null) {
+                    successCount.incrementAndGet()
+                } else {
+                    errorCount.incrementAndGet()
+                }
+            }
+            deferred.invokeOnCompletion {
+                if (it == null) {
+                    successCount.incrementAndGet()
+                } else {
+                    errorCount.incrementAndGet()
+                }
+            }
 // end::producer[]
 
             then("The messages are published") {
                 eventually(Duration.seconds(10)) {
                     errorCount.get() shouldBe 0
-                    successCount.get() shouldBe 1
+                    successCount.get() shouldBe 3
                 }
             }
         }

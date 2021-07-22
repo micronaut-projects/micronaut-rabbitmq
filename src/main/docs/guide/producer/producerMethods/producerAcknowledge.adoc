@@ -2,16 +2,12 @@ Client methods support two return types, `void` and a reactive type. If the meth
 
 Since the publisher is cold, the message will not actually be published until the stream is subscribed to.
 
-Micronaut comes with RxJava2 by default, and the link:http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Completable.html[Completable] type is the reactive type that best fits the publisher acknowledgement use case. No value of any type is returned, the message is either acknowledged (completed) or not (error).
-
 For example:
 
 snippet::io.micronaut.rabbitmq.docs.publisher.acknowledge.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
 
-<1> The recommended approach of using a `Completable` as the return type for those using link:https://github.com/ReactiveX/RxJava[RxJava 2].
-<2> A `Maybe` also closely matches the use case of publisher acknowledgement.
-<3> For those that prefer link:https://projectreactor.io/[Project Reactor], a `Mono` can be used. Note that Micronaut does not ship with Reactor.
-<4> For those who prefer not to use any reactive library in their code, a `Publisher` can be returned.
+<1> A `Publisher` can be returned. Any other reactive streams implementation type can also be returned given the required relevant dependency is in place
+<2> Java futures can also be returned
 
 NOTE: RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO thread pool.
 

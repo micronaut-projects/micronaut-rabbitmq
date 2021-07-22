@@ -5,9 +5,9 @@ import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-import reactor.core.publisher.Mono
 import spock.util.concurrent.PollingConditions
 
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
 
 class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
@@ -23,6 +23,7 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
         // tag::producer[]
         ProductClient productClient = applicationContext.getBean(ProductClient)
         Publisher<Void> publisher = productClient.sendPublisher("publisher body".bytes)
+        CompletableFuture<Void> future = productClient.sendFuture("future body".bytes)
 
         Subscriber<Void> subscriber = new Subscriber<Void>() {
             @Override
@@ -46,12 +47,19 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
             }
         }
         publisher.subscribe(subscriber)
+        future.whenComplete {v, t ->
+            if (t == null) {
+                successCount.incrementAndGet()
+            } else {
+                errorCount.incrementAndGet()
+            }
+        }
 // end::producer[]
 
         then:
         conditions.eventually {
             errorCount.get() == 0
-            successCount.get() == 1
+            successCount.get() == 2
         }
 
         cleanup:
