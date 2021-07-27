@@ -10,7 +10,7 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testImplementation "io.micronaut:micronaut-inject"
     testImplementation project(":rabbitmq")
-    testImplementation "org.testcontainers:testcontainers:1.15.3"
+    testImplementation "org.testcontainers:testcontainers:1.16.0"
     testImplementation 'org.awaitility:awaitility:4.1.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
