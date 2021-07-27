@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     testImplementation project(":rabbitmq")
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.4"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.5"
     testImplementation "org.testcontainers:testcontainers:1.16.0"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
