@@ -14,11 +14,6 @@ dependencies {
         exclude module:'groovy-all'
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "io.micronaut.test:micronaut-test-junit5:$micronautTestVersion"
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
-    testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testImplementation "org.junit.jupiter:junit-jupiter-params"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
     testImplementation "io.micronaut:micronaut-inject-groovy"
     testImplementation "io.micronaut:micronaut-inject-java"
     testImplementation "org.testcontainers:spock:1.16.0"
@@ -26,7 +21,6 @@ dependencies {
     testImplementation("io.micronaut.micrometer:micronaut-micrometer-core") {
         exclude group: "io.micronaut.reactor", module: "micronaut-reactor"
     }
-    testImplementation "org.awaitility:awaitility:4.1.0"
 }
 
 test {

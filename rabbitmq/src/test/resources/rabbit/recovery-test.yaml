@@ -1,7 +1,0 @@
-rabbitmq.servers:
-  node1:
-    port: 5672
-  node2:
-    port: 5673
-  node3:
-    port: 5674

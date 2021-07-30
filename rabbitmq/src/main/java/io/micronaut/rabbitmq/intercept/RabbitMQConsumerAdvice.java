@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An {@link ExecutableMethodProcessor} that will process all beans annotated
@@ -324,7 +324,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         private final DeliverCallback deliverCallback;
         private com.rabbitmq.client.DefaultConsumer consumer;
         private boolean canceled = false;
-        private volatile boolean isHandlingDelivery = false;
+        private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
 
         /**
          * Create the consumer and register ({@code Channel.basicConsume}) it with a dedicated channel from the
@@ -372,7 +372,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 // ignore
             }
             try {
-                while (isHandlingDelivery) {
+                while (handlingDeliveryCount.get() > 0) {
                     this.wait(500);
                 }
             } catch (InterruptedException e) {
@@ -430,17 +430,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                  */
                 @Override
                 public void handleCancel(String consumerTag) throws IOException {
-                    try {
-                        getChannel().close(AMQP.REPLY_SUCCESS, "closing channel of canceled consumer");
-                    } catch (AlreadyClosedException e) {
-                        // ignore
-                    } catch (TimeoutException e) {
-                        throw new IOException("close timeout", e);
-                    } finally {
-                        synchronized (RecoverableConsumerWrapper.this) {
-                            RecoverableConsumerWrapper.this.consumer = null;
-                            channelPool.returnChannel(getChannel());
-                        }
+                    synchronized (RecoverableConsumerWrapper.this) {
+                        RecoverableConsumerWrapper.this.consumer = null;
+                        channelPool.returnChannel(getChannel());
                     }
 
                     if (channelPool.isTopologyRecoveryEnabled() && getChannel() instanceof RecoverableChannel) {
@@ -497,6 +489,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     if (!getChannel().isOpen()) {
                         return;
                     }
+                    handlingDeliveryCount.incrementAndGet();
                     if (executorService != null) {
                         executorService.submit(() -> callbackHandle(envelope, properties, body));
                     } else {
@@ -506,10 +499,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
 
                 private void callbackHandle(Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                     try {
-                        isHandlingDelivery = true;
                         deliverCallback.handle(getChannel(), new Delivery(envelope, properties, body));
                     } finally {
-                        isHandlingDelivery = false;
+                        handlingDeliveryCount.decrementAndGet();
                     }
                 }
             };
