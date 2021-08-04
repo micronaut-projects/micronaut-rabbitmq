@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -171,12 +171,6 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#close--">close</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected com.rabbitmq.client.Channel</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#getChannel-io.micronaut.rabbitmq.connect.ChannelPool-">getChannel</a></span>(<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool)</code>
-<div class="block">Retrieves a channel to use for consuming messages.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#process-io.micronaut.inject.BeanDefinition-io.micronaut.inject.ExecutableMethod-">process</a></span>(io.micronaut.inject.BeanDefinition&lt;?&gt;&nbsp;beanDefinition,
        io.micronaut.inject.ExecutableMethod&lt;?,?&gt;&nbsp;method)</code>&nbsp;</td>
@@ -254,7 +248,7 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <a name="close--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>close</h4>
 <pre>@PreDestroy
@@ -265,22 +259,6 @@ public&nbsp;void&nbsp;close()
 <dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
-</dl>
-</li>
-</ul>
-<a name="getChannel-io.micronaut.rabbitmq.connect.ChannelPool-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getChannel</h4>
-<pre>protected&nbsp;com.rabbitmq.client.Channel&nbsp;getChannel(<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&nbsp;channelPool)</pre>
-<div class="block">Retrieves a channel to use for consuming messages.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>channelPool</code> - The channel pool to retrieve the channel from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A channel to publish with</dd>
 </dl>
 </li>
 </ul>

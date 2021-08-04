@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -131,6 +131,21 @@ implements java.lang.AutoCloseable, <a href="../../../../io/micronaut/rabbitmq/c
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="fields.inherited.from.class.io.micronaut.rabbitmq.connect.ChannelPool">
+<!--   -->
+</a>
+<h3>Fields inherited from interface&nbsp;io.micronaut.rabbitmq.connect.<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></h3>
+<code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html#DEFAULT_RECOVERY_DELAY">DEFAULT_RECOVERY_DELAY</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -181,10 +196,25 @@ implements java.lang.AutoCloseable, <a href="../../../../io/micronaut/rabbitmq/c
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>com.rabbitmq.client.Channel</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/DefaultChannelPool.html#getChannelWithRecoveringDelay-int-">getChannelWithRecoveringDelay</a></span>(int&nbsp;recoveryAttempts)</code>
+<div class="block">Retrieves a channel from the pool after blocking the thread for a delay period defined by the
+ <code>RecoveryDelayHandler</code>
+ of the connection for this pool.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/DefaultChannelPool.html#getName--">getName</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/DefaultChannelPool.html#isTopologyRecoveryEnabled--">isTopologyRecoveryEnabled</a></span>()</code>
+<div class="block">Returns whether <code>topology recovery</code>
+ is enabled for the connection of this pool.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/DefaultChannelPool.html#returnChannel-com.rabbitmq.client.Channel-">returnChannel</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
 <div class="block">Returns a channel to the pool.</div>
@@ -272,6 +302,50 @@ implements java.lang.AutoCloseable, <a href="../../../../io/micronaut/rabbitmq/c
 <dd>The channel</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If a channel needed to be created and encountered an error</dd>
+</dl>
+</li>
+</ul>
+<a name="getChannelWithRecoveringDelay-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getChannelWithRecoveringDelay</h4>
+<pre>public&nbsp;com.rabbitmq.client.Channel&nbsp;getChannelWithRecoveringDelay(int&nbsp;recoveryAttempts)
+                                                          throws java.io.IOException,
+                                                                 java.lang.InterruptedException</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html#getChannelWithRecoveringDelay-int-">ChannelPool</a></code></span></div>
+<div class="block">Retrieves a channel from the pool after blocking the thread for a delay period defined by the
+ <code>RecoveryDelayHandler</code>
+ of the connection for this pool.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html#getChannelWithRecoveringDelay-int-">getChannelWithRecoveringDelay</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>recoveryAttempts</code> - the number of recovery attempts so far</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a channel from the pool</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if a channel needed to be created and encountered an error</dd>
+<dd><code>java.lang.InterruptedException</code> - if the thread was interrupted during the delay period</dd>
+</dl>
+</li>
+</ul>
+<a name="isTopologyRecoveryEnabled--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isTopologyRecoveryEnabled</h4>
+<pre>public&nbsp;boolean&nbsp;isTopologyRecoveryEnabled()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html#isTopologyRecoveryEnabled--">ChannelPool</a></code></span></div>
+<div class="block">Returns whether <code>topology recovery</code>
+ is enabled for the connection of this pool.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html#isTopologyRecoveryEnabled--">isTopologyRecoveryEnabled</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true by default</dd>
 </dl>
 </li>
 </ul>

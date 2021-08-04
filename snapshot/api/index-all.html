@@ -198,6 +198,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html#DEFAULT_NAME">DEFAULT_NAME</a></span> - Static variable in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html" title="class in io.micronaut.rabbitmq.connect">SingleRabbitConnectionFactoryConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/ChannelPool.html#DEFAULT_RECOVERY_DELAY">DEFAULT_RECOVERY_DELAY</a></span> - Static variable in interface io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></dt>
+<dd>
+<div class="block">The default delay to apply for recovery channel getter.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html#DEFAULT_TIMEOUT_SECONDS">DEFAULT_TIMEOUT_SECONDS</a></span> - Static variable in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.RpcConfiguration</a></dt>
 <dd>
 <div class="block">The default timeout before cancelling an RPC call.</div>
@@ -305,16 +309,20 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html#getChannel--">getChannel()</a></span> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.rabbitmq.connect">DefaultChannelPool</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#getChannel-io.micronaut.rabbitmq.connect.ChannelPool-">getChannel(ChannelPool)</a></span> - Method in class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html" title="class in io.micronaut.rabbitmq.intercept">RabbitMQConsumerAdvice</a></dt>
-<dd>
-<div class="block">Retrieves a channel to use for consuming messages.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/reactive/ReactorReactivePublisher.html#getChannel--">getChannel()</a></span> - Method in class io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/ReactorReactivePublisher.html" title="class in io.micronaut.rabbitmq.reactive">ReactorReactivePublisher</a></dt>
 <dd>
 <div class="block">Creates a <code>Mono</code> from a channel, emitting an error
  if the channel could not be retrieved.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.html#getChannelPool--">getChannelPool()</a></span> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/ChannelPool.html#getChannelWithRecoveringDelay-int-">getChannelWithRecoveringDelay(int)</a></span> - Method in interface io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></dt>
+<dd>
+<div class="block">Retrieves a channel from the pool after blocking the thread for a delay period defined by the
+ <code>RecoveryDelayHandler</code>
+ of the connection for this pool.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html#getChannelWithRecoveringDelay-int-">getChannelWithRecoveringDelay(int)</a></span> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.rabbitmq.connect">DefaultChannelPool</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html#getClusterId--">getClusterId()</a></span> - Method in class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.rabbitmq.intercept">MutableBasicProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -478,6 +486,13 @@
 <dd>
 <div class="block">Classes for serializing and deserializing RabbitMQ message bodies.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/ChannelPool.html#isTopologyRecoveryEnabled--">isTopologyRecoveryEnabled()</a></span> - Method in interface io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></dt>
+<dd>
+<div class="block">Returns whether <code>topology recovery</code>
+ is enabled for the connection of this pool.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html#isTopologyRecoveryEnabled--">isTopologyRecoveryEnabled()</a></span> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html" title="class in io.micronaut.rabbitmq.connect">DefaultChannelPool</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a name="I:J">
 <!--   -->
