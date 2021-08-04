@@ -18,6 +18,7 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.RecoveryDelayHandler;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
 import org.slf4j.Logger;
@@ -48,6 +49,8 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
     private final Connection connection;
     private final AtomicLong totalChannels = new AtomicLong(0);
     private final String name;
+    private final RecoveryDelayHandler recoveryDelayHandler;
+    private final boolean topologyRecoveryEnabled;
 
     /**
      * Default constructor.
@@ -62,6 +65,8 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
         this.name = name;
         this.connection = connection;
         Integer maxIdleChannels = config.getChannelPool().getMaxIdleChannels().orElse(null);
+        this.recoveryDelayHandler = config.params(null).getRecoveryDelayHandler();
+        topologyRecoveryEnabled = config.isTopologyRecoveryEnabled();
         this.channels = new LinkedBlockingQueue<>(maxIdleChannels == null ? Integer.MAX_VALUE : maxIdleChannels);
     }
 
@@ -86,6 +91,17 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
             LOG.debug("Retrieved channel [{}] from the pool", channel.toString());
         }
         return channel;
+    }
+
+    @Override
+    public Channel getChannelWithRecoveringDelay(int recoveryAttempts) throws IOException, InterruptedException {
+        Thread.sleep(recoveryDelayHandler.getDelay(recoveryAttempts));
+        return getChannel();
+    }
+
+    @Override
+    public boolean isTopologyRecoveryEnabled() {
+        return topologyRecoveryEnabled;
     }
 
     @Override

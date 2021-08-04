@@ -32,6 +32,11 @@ import java.io.IOException;
 public interface ChannelPool extends Named {
 
     /**
+     * The default delay to apply for recovery channel getter.
+     */
+    int DEFAULT_RECOVERY_DELAY = 5000;
+
+    /**
      * Retrieves a channel from the pool. The channel must be returned to the
      * pool after it is no longer being used.
      *
@@ -39,6 +44,31 @@ public interface ChannelPool extends Named {
      * @throws IOException If a channel needed to be created and encountered an error
      */
     Channel getChannel() throws IOException;
+
+    /**
+     * Retrieves a channel from the pool after blocking the thread for a delay period defined by the
+     * {@link com.rabbitmq.client.ConnectionFactory#getRecoveryDelayHandler() RecoveryDelayHandler}
+     * of the connection for this pool.
+     *
+     * @param recoveryAttempts the number of recovery attempts so far
+     * @return a channel from the pool
+     * @throws IOException if a channel needed to be created and encountered an error
+     * @throws InterruptedException if the thread was interrupted during the delay period
+     */
+    default Channel getChannelWithRecoveringDelay(int recoveryAttempts) throws IOException, InterruptedException {
+        Thread.sleep(DEFAULT_RECOVERY_DELAY);
+        return getChannel();
+    }
+
+    /**
+     * Returns whether {@link com.rabbitmq.client.ConnectionFactory#isTopologyRecoveryEnabled() topology recovery}
+     * is enabled for the connection of this pool.
+     *
+     * @return true by default
+     */
+    default boolean isTopologyRecoveryEnabled() {
+        return true;
+    }
 
     /**
      * Returns a channel to the pool. No further use of the channel
