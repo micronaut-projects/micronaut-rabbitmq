@@ -1,8 +1,11 @@
 package io.micronaut.rabbitmq.listener
 
 import com.github.dockerjava.api.DockerClient
-import com.rabbitmq.client.*
-import io.micronaut.context.ApplicationContext
+import com.rabbitmq.client.AMQP
+import com.rabbitmq.client.AlreadyClosedException
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.Return
+import com.rabbitmq.client.ReturnCallback
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageBody
 import io.micronaut.rabbitmq.AbstractRabbitMQClusterTest
@@ -20,83 +23,84 @@ import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.equalTo
 
 class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
-    private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec.class)
+
+    private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
+
     private static final DockerClient DOCKER_CLIENT = DockerClientFactory.lazyClient()
 
     @Shared
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
+
     @Shared
     private Set<String> publishedMessages = new LinkedHashSet<>()
+
     @Shared
     private boolean enablePublisher = false
 
-    def setupSpec() {
+    void setupSpec() {
         /*
          * The current Micronaut publisher implementation has a flaw in detecting unroutable drop/return messages
          * in a Rabbit cluster setup. It considers the messages as published even if the broker did not enqueue it.
          * So for this test a simple custom publisher is used that detects unpublished messages.
          */
-        ConnectionFactory connectionFactory = new ConnectionFactory()
-        connectionFactory.setPort(node3Port)
-        connectionFactory.newConnection().openChannel()
-                .map(ch -> {
-                    try {
-                        ch.confirmSelect()
-                        // returned messages must not count as published
-                        ch.addReturnListener(new ReturnCallback() {
-                            @Override
-                            void handle(Return r) {
-                                String returned = new String(r.getBody())
-                                publishedMessages.remove(returned)
-                                log.warn("{} publish message returned: {}", publishedMessages.size(), returned)
-                            }
-                        })
-                    } catch (IOException e) {
-                        log.error("failed to set confirmSelect", e)
+        ConnectionFactory connectionFactory = new ConnectionFactory(port: node3Port)
+        connectionFactory.newConnection().openChannel().map(ch -> {
+                try {
+                    ch.confirmSelect()
+                    // returned messages must not count as published
+                    ch.addReturnListener(new ReturnCallback() {
+                        @Override
+                        void handle(Return r) {
+                            String returned = new String(r.body)
+                            publishedMessages.remove(returned)
+                            log.warn("{} publish message returned: {}", publishedMessages.size(), returned)
+                        }
+                    })
+                } catch (IOException e) {
+                    log.error("failed to set confirmSelect", e)
+                }
+                return ch
+            })
+            .ifPresent(ch -> executorService.scheduleWithFixedDelay(() -> {
+                if (!enablePublisher) {
+                    return
+                }
+                String msg = UUID.randomUUID()
+                try {
+                    publishedMessages << msg
+                    ch.basicPublish(EXCHANGE, "", true,
+                            new AMQP.BasicProperties.Builder().deliveryMode(2).build(),
+                            msg.bytes)
+                    if (ch.waitForConfirms(1000)) {
+                        log.info("publish ack")
                     }
-                    return ch
-                })
-                .ifPresent(
-                        ch -> executorService.scheduleWithFixedDelay(() -> {
-                            if (!enablePublisher) {
-                                return
-                            }
-                            String msg = UUID.randomUUID().toString()
-                            try {
-                                publishedMessages.add(msg)
-                                ch.basicPublish(EXCHANGE, "", true,
-                                        new AMQP.BasicProperties.Builder().deliveryMode(2).build(),
-                                        msg.getBytes())
-                                if (ch.waitForConfirms(1000)) {
-                                    log.info("publish ack")
-                                }
-                            } catch (IOException | RuntimeException | InterruptedException | TimeoutException e) {
-                                publishedMessages.remove(msg)
-                                log.error("failed to publish: {}", e.getMessage())
-                            }
-                        }, 500, 500, TimeUnit.MILLISECONDS))
+                } catch (IOException | RuntimeException | InterruptedException | TimeoutException e) {
+                    publishedMessages.remove(msg)
+                    log.error("failed to publish: {}", e.message)
+                }
+            }, 500, 500, MILLISECONDS))
     }
 
-    def cleanupSpec() {
+    void cleanupSpec() {
         executorService.shutdown()
     }
 
-    def setup() {
+    void setup() {
         publishedMessages.clear()
         enablePublisher = true
     }
 
-    def "test restart of Node1 with consumer connected to Node1"() {
+    void "test restart of Node1 with consumer connected to Node1"() {
         given:
-        ApplicationContext ctx = startContext(["connectToNode": "node1"])
-        TestConsumer consumer = ctx.getBean(TestConsumer)
+        startContext(connectToNode: "node1")
+        TestConsumer consumer = applicationContext.getBean(TestConsumer)
         awaitPublishConsumeOfMessages(consumer)
 
         when:
@@ -105,15 +109,12 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         then:
         awaitPublishConsumeOfMessages(consumer)
         stopPublishAndAssertAllConsumed(consumer)
-
-        cleanup:
-        ctx.close()
     }
 
-    def "test restart of Node1 with consumer connected to Node2"() {
+    void "test restart of Node1 with consumer connected to Node2"() {
         given:
-        ApplicationContext ctx = startContext(["connectToNode": "node2"])
-        TestConsumer consumer = ctx.getBean(TestConsumer)
+        startContext(connectToNode: "node2")
+        TestConsumer consumer = applicationContext.getBean(TestConsumer)
         awaitPublishConsumeOfMessages(consumer)
 
         when:
@@ -122,15 +123,12 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         then:
         awaitPublishConsumeOfMessages(consumer)
         stopPublishAndAssertAllConsumed(consumer)
-
-        cleanup:
-        ctx.close()
     }
 
-    def "test restart of Node2 with consumer connected to Node1"() {
+    void "test restart of Node2 with consumer connected to Node1"() {
         given:
-        ApplicationContext ctx = startContext(["connectToNode": "node1"])
-        TestConsumer consumer = ctx.getBean(TestConsumer)
+        startContext(connectToNode: "node1")
+        TestConsumer consumer = applicationContext.getBean(TestConsumer)
         awaitPublishConsumeOfMessages(consumer)
 
         when:
@@ -139,15 +137,12 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         then:
         awaitPublishConsumeOfMessages(consumer)
         stopPublishAndAssertAllConsumed(consumer)
-
-        cleanup:
-        ctx.close()
     }
 
-    def "test restart of Node2 with consumer connected to Node2"() {
+    void "test restart of Node2 with consumer connected to Node2"() {
         given:
-        ApplicationContext ctx = startContext(["connectToNode": "node2"])
-        TestConsumer consumer = ctx.getBean(TestConsumer)
+        startContext(connectToNode: "node2")
+        TestConsumer consumer = applicationContext.getBean(TestConsumer)
         awaitPublishConsumeOfMessages(consumer)
 
         when:
@@ -156,31 +151,23 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         then:
         awaitPublishConsumeOfMessages(consumer)
         stopPublishAndAssertAllConsumed(consumer)
-
-        cleanup:
-        ctx.close()
     }
 
-    def "test consumer recovery after delivery acknowledgement timeout"() {
+    void "test consumer recovery after delivery acknowledgement timeout"() {
         given:
-        ApplicationContext ctx = startContext(["connectToNode": "node3"])
-        SlowTestConsumer slowConsumer = ctx.getBean(SlowTestConsumer)
-        PollingConditions until = new PollingConditions(timeout: 120)
+        startContext(connectToNode: "node3")
+        SlowTestConsumer slowConsumer = applicationContext.getBean(SlowTestConsumer)
 
         when:
-        until.eventually {
+        new PollingConditions(timeout: 120).eventually {
             RabbitListenerException e = slowConsumer.lastException
-            assert e != null && e.getCause() instanceof AlreadyClosedException
+            e && e.cause instanceof AlreadyClosedException
         }
-        slowConsumer.doSlowdown = false;
+        slowConsumer.doSlowdown = false
 
         then:
         stopPublishAndAssertAllConsumed(slowConsumer)
-
-        cleanup:
-        ctx.close()
     }
-
 
     @Requires(property = "spec.name", value = "ConsumerRecoverySpec")
     @Requires(property = "connectToNode", value = "node1")
@@ -191,14 +178,14 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
     @Requires(property = "spec.name", value = "ConsumerRecoverySpec")
     @Requires(property = "connectToNode", value = "node2")
     @RabbitListener(connection = "node2")
-    static class Node2Consumer extends TestConsumer {
-    }
+    static class Node2Consumer extends TestConsumer {}
 
     @Requires(property = "spec.name", value = "ConsumerRecoverySpec")
     @Requires(property = "connectToNode", value = "node3")
     @RabbitListener(connection = "node3")
     static class SlowTestConsumer extends TestConsumer {
-        public boolean doSlowdown = true
+
+        boolean doSlowdown = true
 
         @Override
         @Queue(value = QUEUE, prefetch = 5)
@@ -206,62 +193,62 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
             super.handleMessage(body)
 
             if (doSlowdown && consumedMessages.size() % 10 == 0) {
-                Thread.sleep(20000) // simulate slow processing
+                sleep 20_000 // simulate slow processing
                 log.info("slow message processing complete")
             }
         }
     }
 
     private void awaitPublishConsumeOfMessages(TestConsumer consumer) {
-        PollingConditions until = new PollingConditions(timeout: 60)
         int targetPubCount = publishedMessages.size() + 10
         int targetConCount = consumer.consumedMessages.size() + 10
 
-        until.eventually {
-            assert publishedMessages.size() > targetPubCount
-            assert consumer.consumedMessages.size() > targetConCount
+        new PollingConditions(timeout: 60).eventually {
+            publishedMessages.size() > targetPubCount
+            consumer.consumedMessages.size() > targetConCount
         }
     }
 
     private void stopPublishAndAssertAllConsumed(TestConsumer consumer) {
-        PollingConditions until = new PollingConditions(timeout: 60)
         enablePublisher = false
 
-        until.eventually {
+        new PollingConditions(timeout: 60).eventually {
             assertThat "all published messages must be consumed",
                     publishedMessages, equalTo(consumer.consumedMessages)
         }
     }
 
     private static restartContainer(GenericContainer container) throws InterruptedException {
-        PollingConditions until = new PollingConditions(timeout: 60)
+        log.info("stopping container: {}", container.containerId)
+        DOCKER_CLIENT.stopContainerCmd(container.containerId).exec()
 
-        log.info("stopping container: {}", container.getContainerId())
-        DOCKER_CLIENT.stopContainerCmd(container.getContainerId()).exec()
-        log.info("re-starting container: {}", container.getContainerId())
-        DOCKER_CLIENT.startContainerCmd(container.getContainerId()).exec()
-        until.eventually {
-            assert container.isHealthy()
+        log.info("re-starting container: {}", container.containerId)
+        DOCKER_CLIENT.startContainerCmd(container.containerId).exec()
+
+        new PollingConditions(timeout: 60).eventually {
+            container.isHealthy()
         }
-        log.info("started container: {}", container.getContainerId())
+        log.info("started container: {}", container.containerId)
     }
 }
 
 abstract class TestConsumer implements RabbitListenerExceptionHandler {
-    static final Logger log = LoggerFactory.getLogger(TestConsumer.class)
-    public final Set<String> consumedMessages = new LinkedHashSet<>()
-    public RabbitListenerException lastException
+    static final Logger log = LoggerFactory.getLogger(TestConsumer)
+
+    final Set<String> consumedMessages = new LinkedHashSet<>()
+
+    RabbitListenerException lastException
 
     @Queue(AbstractRabbitMQClusterTest.QUEUE)
     void handleMessage(@MessageBody String body) {
-        consumedMessages.add(body)
+        consumedMessages << body
         log.info("{} received: {}", consumedMessages.size(), body)
     }
 
     @Override
     void handle(RabbitListenerException e) {
         lastException = e
-        String msg = e.getMessageState()
+        String msg = e.messageState
                 .map(RabbitConsumerState::getBody)
                 .map(String::new)
                 .orElse("<<no message>>")

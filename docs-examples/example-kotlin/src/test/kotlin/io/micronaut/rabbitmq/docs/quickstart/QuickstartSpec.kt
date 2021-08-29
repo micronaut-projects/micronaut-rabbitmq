@@ -33,5 +33,4 @@ productClient.send("quickstart".toByteArray())
         Thread.sleep(1000)
         ctx.stop()
     }
-
 })

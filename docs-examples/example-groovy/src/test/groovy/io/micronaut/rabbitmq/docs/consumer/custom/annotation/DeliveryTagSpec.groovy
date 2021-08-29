@@ -1,14 +1,11 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class DeliveryTagSpec extends AbstractRabbitMQTest {
 
     void "test using a custom annotation binder"() {
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 10)
+        startContext()
 
         when:
 // tag::producer[]
@@ -21,11 +18,8 @@ class DeliveryTagSpec extends AbstractRabbitMQTest {
         ProductListener productListener = applicationContext.getBean(ProductListener)
 
         then:
-        conditions.eventually {
+        waitFor {
             productListener.messages.size() == 3
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

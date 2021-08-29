@@ -12,6 +12,6 @@ import io.micronaut.rabbitmq.annotation.RabbitClient
 public interface ProductClient {
 
     @Binding("product") // <2>
-    void send(byte[] data, String contentType); // <3>
+    void send(byte[] data, String contentType) // <3>
 }
 // end::clazz[]

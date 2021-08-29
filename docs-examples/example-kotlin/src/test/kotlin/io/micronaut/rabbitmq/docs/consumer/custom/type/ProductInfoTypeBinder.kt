@@ -10,8 +10,8 @@ import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
-import java.util.Optional
 import jakarta.inject.Singleton
+import java.util.Optional
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSpec")

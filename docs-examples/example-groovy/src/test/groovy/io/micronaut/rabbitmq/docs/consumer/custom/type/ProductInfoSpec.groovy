@@ -1,14 +1,11 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.type
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class ProductInfoSpec extends AbstractRabbitMQTest {
 
     void "test using a custom type binder"() {
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        startContext()
 
         when:
 // tag::producer[]
@@ -21,20 +18,20 @@ class ProductInfoSpec extends AbstractRabbitMQTest {
         ProductListener productListener = applicationContext.getBean(ProductListener)
 
         then:
-        conditions.eventually {
+        waitFor {
             productListener.messages.size() == 3
+
             productListener.messages.find({ pi ->
                 pi.size == "small" && pi.count == 10 && pi.sealed
             }) != null
+
             productListener.messages.find({ pi ->
                 pi.size == "medium" && pi.count == 20 && pi.sealed
             }) != null
+
             productListener.messages.find({ pi ->
                 pi.size == null && pi.count == 30 && pi.sealed
             }) != null
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

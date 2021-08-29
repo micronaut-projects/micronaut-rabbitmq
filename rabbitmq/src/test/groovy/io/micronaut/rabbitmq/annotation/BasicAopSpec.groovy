@@ -1,21 +1,17 @@
 package io.micronaut.rabbitmq.annotation
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageBody
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-import spock.util.concurrent.PollingConditions
 
 class BasicAopSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming"() {
-        ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                "spec.name": getClass().simpleName], "test")
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        startContext()
+
         MyProducer producer = applicationContext.getBean(MyProducer)
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
@@ -24,7 +20,9 @@ class BasicAopSpec extends AbstractRabbitMQTest {
         boolean success
         producer.goConfirm("def".bytes)
                 .subscribe(new Subscriber<Void>() {
+
                     Subscription s
+
                     @Override
                     void onSubscribe(Subscription s) {
                         this.s = s
@@ -37,9 +35,7 @@ class BasicAopSpec extends AbstractRabbitMQTest {
                     }
 
                     @Override
-                    void onError(Throwable t) {
-
-                    }
+                    void onError(Throwable t) {}
 
                     @Override
                     void onComplete() {
@@ -48,15 +44,12 @@ class BasicAopSpec extends AbstractRabbitMQTest {
                 })
 
         then:
-        conditions.eventually {
-            assert success
-            assert consumer.messages.size() == 2
-            assert consumer.messages[0] == "abc".bytes
-            assert consumer.messages[1] == "def".bytes
+        waitFor {
+            success
+            consumer.messages.size() == 2
+            consumer.messages[0] == "abc".bytes
+            consumer.messages[1] == "def".bytes
         }
-
-        cleanup:
-        applicationContext.close()
     }
 
     @Requires(property = "spec.name", value = "BasicAopSpec")
@@ -74,11 +67,11 @@ class BasicAopSpec extends AbstractRabbitMQTest {
     @RabbitListener
     static class MyConsumer {
 
-        public static List<byte[]> messages = []
+        static List<byte[]> messages = []
 
         @Queue("abc")
         void listen(byte[] data) {
-            messages.add(data)
+            messages << data
         }
     }
 }

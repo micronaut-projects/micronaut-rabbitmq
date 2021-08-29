@@ -4,6 +4,8 @@ import io.micronaut.context.annotation.Requires
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArraySet
 // end::imports[]
 
 @Requires(property = "spec.name", value = "DeliveryTagSpec")
@@ -11,11 +13,11 @@ import io.micronaut.rabbitmq.annotation.RabbitListener
 @RabbitListener
 class ProductListener {
 
-    Set<Long> messages = Collections.synchronizedSet(new HashSet<>())
+    CopyOnWriteArraySet<Long> messages = []
 
     @Queue("product")
     void receive(byte[] data, @DeliveryTag Long tag) { // <1>
-        messages.add(tag)
+        messages << tag
     }
 }
 // end::clazz[]

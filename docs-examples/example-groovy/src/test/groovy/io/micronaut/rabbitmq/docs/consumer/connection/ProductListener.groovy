@@ -15,8 +15,7 @@ class ProductListener {
 
     @Queue(value = "product", connection = "product-cluster") // <1>
     void receive(byte[] data) {
-        messageLengths.add(new String(data))
-        System.out.println("Groovy received " + data.length + " bytes from RabbitMQ")
+        messageLengths << new String(data)
     }
 }
 // end::clazz[]

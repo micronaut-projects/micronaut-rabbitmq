@@ -7,6 +7,8 @@ import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
 // end::imports[]
 
 @Requires(property = "spec.name", value = "HeadersSpec")
@@ -14,23 +16,23 @@ import io.micronaut.rabbitmq.annotation.RabbitListener
 @RabbitListener
 class ProductListener {
 
-    List<String> messageProperties = Collections.synchronizedList(new ArrayList<>())
+    CopyOnWriteArrayList<String> messageProperties = []
 
     @Queue("product")
     void receive(byte[] data,
                  @MessageHeader("x-product-sealed") Boolean sealed, // <1>
                  @MessageHeader("x-product-count") Long count, // <2>
                  @Nullable @MessageHeader String productSize) { // <3>
-        messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
+        messageProperties << sealed.toString() + "|" + count + "|" + productSize
     }
 
     @Queue("product")
     void receive(byte[] data,
                  @RabbitHeaders Map<String, Object> headers) { // <4>
-        messageProperties.add(
+        messageProperties <<
                 headers["x-product-sealed"].toString() + "|" +
-                headers["x-product-count"].toString() + "|" +
-                headers["productSize"]?.toString())
+                headers["x-product-count"] + "|" +
+                headers["productSize"]?.toString()
     }
 }
 // end::clazz[]

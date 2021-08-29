@@ -1,4 +1,4 @@
-package io.micronaut.rabbitmq.docs.consumer.concurrent;
+package io.micronaut.rabbitmq.docs.consumer.concurrent
 
 // tag::imports[]
 import io.micronaut.context.annotation.Requires
@@ -17,8 +17,8 @@ class ProductListener {
 
     @Queue(value = "product", numberOfConsumers = 5) // <1>
     void receive(byte[] data) {
-        threads.add(Thread.currentThread().name) // <2>
-        Thread.sleep(500)
+        threads << Thread.currentThread().name // <2>
+        sleep 500
     }
 }
 // end::clazz[]
