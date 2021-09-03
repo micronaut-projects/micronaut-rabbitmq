@@ -7,6 +7,8 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
 // end::imports[]
 
 @Requires(property = "spec.name", value = "TypeBindingSpec")
@@ -14,14 +16,14 @@ import io.micronaut.rabbitmq.annotation.RabbitListener
 @RabbitListener
 class ProductListener {
 
-    List<String> messages = Collections.synchronizedList([])
+    CopyOnWriteArrayList<String> messages = []
 
     @Queue("product")
     void receive(byte[] data,
                  Envelope envelope, // <1>
                  BasicProperties basicProperties, // <2>
                  Channel channel) { // <3>
-        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]".toString())
+        messages << "exchange: [$envelope.exchange], routingKey: [$envelope.routingKey], contentType: [$basicProperties.contentType]".toString()
     }
 }
 // end::clazz[]

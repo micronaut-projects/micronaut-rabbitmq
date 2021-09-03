@@ -1,14 +1,11 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class TypeBindingSpec extends AbstractRabbitMQTest {
 
     void "test publishing and receiving rabbitmq types"() {
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        startContext()
 
         when:
 // tag::producer[]
@@ -21,14 +18,11 @@ class TypeBindingSpec extends AbstractRabbitMQTest {
         ProductListener productListener = applicationContext.getBean(ProductListener)
 
         then:
-        conditions.eventually {
+        waitFor {
             productListener.messages.size() == 3
             productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/html]")
             productListener.messages.contains("exchange: [], routingKey: [product], contentType: [application/json]")
             productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/xml]")
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

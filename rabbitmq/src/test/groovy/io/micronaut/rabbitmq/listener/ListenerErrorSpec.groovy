@@ -1,6 +1,5 @@
 package io.micronaut.rabbitmq.listener
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
@@ -13,61 +12,50 @@ import io.micronaut.rabbitmq.exception.DefaultRabbitListenerExceptionHandler
 import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
 import jakarta.inject.Singleton
-import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.CopyOnWriteArrayList
 
 class ListenerErrorSpec extends AbstractRabbitMQTest {
 
     void "test a local error handler"() {
-        ApplicationContext ctx = startContext([global: false])
-        PollingConditions conditions = new PollingConditions(timeout: 10)
-        MyProducer producer = ctx.getBean(MyProducer)
+        startContext(global: false)
+        MyProducer producer = applicationContext.getBean(MyProducer)
         producer.go("abc")
         producer.go("def")
         producer.go("ghi")
 
         when:
-        MyConsumer consumer = ctx.getBean(MyConsumer)
+        MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
         then:
-        conditions.eventually {
+        waitFor {
             consumer.errors.size() == 3
             consumer.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
         }
-
-        cleanup:
-        ctx.close()
     }
 
     void "test a global error handler"() {
-        ApplicationContext ctx = startContext([global: true])
-        PollingConditions conditions = new PollingConditions(timeout: 10)
-        MyProducer producer = ctx.getBean(MyProducer)
+        startContext(global: true)
+        MyProducer producer = applicationContext.getBean(MyProducer)
         producer.go("abc")
         producer.go("def")
         producer.go("ghi")
 
         when:
-        MyGlobalErrorHandler handler = ctx.getBean(MyGlobalErrorHandler)
+        MyGlobalErrorHandler handler = applicationContext.getBean(MyGlobalErrorHandler)
 
         then:
-        conditions.eventually {
+        waitFor {
             handler.errors.size() == 3
             handler.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
         }
-
-        cleanup:
-        ctx.close()
     }
 
     @Requires(property = "spec.name", value = "ListenerErrorSpec")
     @RabbitClient
     static interface MyProducer {
-
         @Binding("error")
         void go(String data)
-
     }
 
     @Requires(property = "spec.name", value = "ListenerErrorSpec")
@@ -75,7 +63,7 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @RabbitListener
     static class MyConsumer implements RabbitListenerExceptionHandler {
 
-        public CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>()
+        CopyOnWriteArrayList<Throwable> errors = []
 
         @Queue("error")
         void listen(String data) {
@@ -83,8 +71,8 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
         }
 
         @Override
-        void handle(RabbitListenerException exception) {
-            errors.add(exception)
+        void handle(RabbitListenerException e) {
+            errors << e
         }
     }
 
@@ -106,11 +94,11 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
     @Singleton
     static class MyGlobalErrorHandler implements RabbitListenerExceptionHandler {
 
-        public CopyOnWriteArrayList<Throwable> errors = new CopyOnWriteArrayList<>()
+        CopyOnWriteArrayList<Throwable> errors = []
 
         @Override
-        void handle(RabbitListenerException exception) {
-            errors.add(exception)
+        void handle(RabbitListenerException e) {
+            errors << e
         }
     }
 }

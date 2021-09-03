@@ -17,27 +17,29 @@ import spock.util.concurrent.PollingConditions
 
 import java.time.Duration
 
-class AbstractRabbitMQClusterTest extends Specification {
+abstract class AbstractRabbitMQClusterTest extends Specification {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
+
     private static final int AMQP_PORT = 5672
     private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("library/rabbitmq:3.8-management")
-    private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest.class)
     private static final String CLUSTER_COOKIE = "test-cluster"
-    private static final String RABBIT_CONFIG_PATH = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").getPath()
-    private static final String RABBIT_DEFINITIONS_PATH = ClassLoader.getSystemResource("rabbit/definitions.json").getPath()
+    private static final String RABBIT_CONFIG_PATH = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").path
+    private static final String RABBIT_DEFINITIONS_PATH = ClassLoader.getSystemResource("rabbit/definitions.json").path
     private static final Network mqClusterNet = Network.newNetwork()
 
-    public static final String EXCHANGE = "test-exchange"
-    public static final String QUEUE = "test-durable-queue"
-    public static final GenericContainer NODE1_CONT = new GenericContainer<>(RABBIT_IMAGE)
-    public static final GenericContainer NODE2_CONT = new GenericContainer<>(RABBIT_IMAGE)
-    public static final GenericContainer NODE3_CONT = new GenericContainer<>(RABBIT_IMAGE)
-    public static int node1Port
-    public static int node2Port
-    public static int node3Port
+    protected ApplicationContext applicationContext
 
+    static final String EXCHANGE = "test-exchange"
+    static final String QUEUE = "test-durable-queue"
+    static final GenericContainer NODE1_CONT = new GenericContainer<>(RABBIT_IMAGE)
+    static final GenericContainer NODE2_CONT = new GenericContainer<>(RABBIT_IMAGE)
+    static final GenericContainer NODE3_CONT = new GenericContainer<>(RABBIT_IMAGE)
+    static int node1Port
+    static int node2Port
+    static int node3Port
 
     static {
-        PollingConditions until = new PollingConditions(timeout: 60)
         getNodePorts()
         log.info("rabbit.conf path: {}", RABBIT_CONFIG_PATH)
         log.info("rabbit definitions path: {}", RABBIT_DEFINITIONS_PATH)
@@ -56,31 +58,31 @@ class AbstractRabbitMQClusterTest extends Specification {
         NODE3_CONT.waitingFor(new DoNotWaitStrategy())
         NODE2_CONT.start()
         NODE3_CONT.start()
-        until.eventually {
-            assert NODE2_CONT.isHealthy()
-            assert NODE3_CONT.isHealthy()
+        new PollingConditions(timeout: 60).eventually {
+            NODE2_CONT.isHealthy()
+            NODE3_CONT.isHealthy()
         }
         log.info("cluster startup complete")
     }
 
-    protected ApplicationContext startContext(Map additionalConfig = [:]) {
-        Map<String, Object> properties = ["spec.name" : getClass().simpleName]
-        properties.put("rabbitmq.servers.node1.port", node1Port)
-        properties.put("rabbitmq.servers.node2.port", node2Port)
-        properties.put("rabbitmq.servers.node3.port", node3Port)
-        properties << additionalConfig
+    protected void startContext(Map additionalConfig = [:]) {
+        Map<String, Object> properties = [
+                "spec.name" : getClass().simpleName,
+                "rabbitmq.servers.node1.port": node1Port,
+                "rabbitmq.servers.node2.port": node2Port,
+                "rabbitmq.servers.node3.port": node3Port] << additionalConfig
 
         log.info("context properties: {}", properties)
-        ApplicationContext.run(properties, "test")
+        applicationContext = ApplicationContext.run(properties, "test")
     }
 
     private static getNodePorts() {
         try (ServerSocket s1 = new ServerSocket(0)
              ServerSocket s2 = new ServerSocket(0)
              ServerSocket s3 = new ServerSocket(0)) {
-            node1Port = s1.getLocalPort()
-            node2Port = s2.getLocalPort()
-            node3Port = s3.getLocalPort()
+            node1Port = s1.localPort
+            node2Port = s2.localPort
+            node3Port = s3.localPort
         }
     }
 
@@ -94,7 +96,7 @@ class AbstractRabbitMQClusterTest extends Specification {
                 .withCreateContainerCmdModifier(cmd -> cmd
                         .withHostName(hostname)
                         .withHealthcheck(new HealthCheck()
-                                .withTest(Arrays.asList("CMD-SHELL", "rabbitmqctl status"))
+                                .withTest(["CMD-SHELL", "rabbitmqctl status"])
                                 .withStartPeriod(Duration.ofMinutes(4).toNanos())
                                 .withInterval(Duration.ofSeconds(5).toNanos())
                                 .withRetries(10)
@@ -106,8 +108,8 @@ class AbstractRabbitMQClusterTest extends Specification {
     }
 
     private static addPortBinding(GenericContainer cont, int hostPort, int contPort) {
-        cont.getPortBindings().add(String.format("%d:%d/%s",
-                hostPort, contPort, InternetProtocol.TCP.toDockerNotation()))
+        cont.portBindings << String.format("%d:%d/%s",
+                hostPort, contPort, InternetProtocol.TCP.toDockerNotation())
     }
 
     private static class DoNotWaitStrategy extends AbstractWaitStrategy {

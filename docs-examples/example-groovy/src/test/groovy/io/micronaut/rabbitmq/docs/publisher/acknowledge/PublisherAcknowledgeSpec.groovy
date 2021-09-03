@@ -1,11 +1,9 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
@@ -14,8 +12,7 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
 
     void "test publisher acknowledgement"() {
         given:
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        startContext()
         AtomicInteger successCount = new AtomicInteger(0)
         AtomicInteger errorCount = new AtomicInteger(0)
 
@@ -27,7 +24,7 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
 
         Subscriber<Void> subscriber = new Subscriber<Void>() {
             @Override
-            void onSubscribe(Subscription subscription) { }
+            void onSubscribe(Subscription subscription) {}
 
             @Override
             void onNext(Void aVoid) {
@@ -46,7 +43,9 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
                 successCount.incrementAndGet()
             }
         }
+
         publisher.subscribe(subscriber)
+
         future.whenComplete {v, t ->
             if (t == null) {
                 successCount.incrementAndGet()
@@ -57,13 +56,9 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
 // end::producer[]
 
         then:
-        conditions.eventually {
+        waitFor {
             errorCount.get() == 0
             successCount.get() == 2
         }
-
-        cleanup:
-        applicationContext.close()
     }
-
 }

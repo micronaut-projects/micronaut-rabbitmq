@@ -37,5 +37,4 @@ class ProductInfoSerDesSpec: AbstractRabbitMQTest({
 
         ctx.stop()
     }
-
 })

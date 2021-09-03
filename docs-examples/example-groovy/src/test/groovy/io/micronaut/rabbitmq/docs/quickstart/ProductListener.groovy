@@ -4,6 +4,8 @@ import io.micronaut.context.annotation.Requires
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
 // end::imports[]
 
 @Requires(property = "spec.name", value = "QuickstartSpec")
@@ -11,12 +13,11 @@ import io.micronaut.rabbitmq.annotation.RabbitListener
 @RabbitListener // <1>
 class ProductListener {
 
-    List<String> messageLengths = Collections.synchronizedList([])
+    CopyOnWriteArrayList<String> messageLengths = []
 
     @Queue("product") // <2>
     void receive(byte[] data) { // <3>
-        messageLengths.add(new String(data))
-        println("Groovy received ${data.length} bytes from RabbitMQ")
+        messageLengths << new String(data)
     }
 }
 // end::clazz[]

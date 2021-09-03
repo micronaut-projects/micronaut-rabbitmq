@@ -13,7 +13,7 @@ class ProductListener {
 
     @Queue("product")
     fun toUpperCase(data: String): String { // <1>
-        return data.toUpperCase() // <2>
+        return data.uppercase() // <2>
     }
 }
 // end::clazz[]

@@ -1,19 +1,15 @@
 package io.micronaut.rabbitmq.docs.consumer.executor;
 
-import io.micronaut.context.ApplicationContext;
 import io.micronaut.rabbitmq.AbstractRabbitMQTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
-
 public class CustomExecutorSpec extends AbstractRabbitMQTest {
 
     @Test
     void testProductClientAndListener() {
-        ApplicationContext applicationContext = startContext();
+        startContext();
 
 // tag::producer[]
 ProductClient productClient = applicationContext.getBean(ProductClient.class);
@@ -22,14 +18,10 @@ productClient.send("custom-executor-test".getBytes());
 
         ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
-        try {
-            await().atMost(5, SECONDS).until(() ->
-                    productListener.messageLengths.size() == 1 &&
-                            productListener.messageLengths.get(0).equals("custom-executor-test")
-            );
-        } finally {
-            applicationContext.close();
-        }
+        waitFor(() ->
+                productListener.messageLengths.size() == 1 &&
+                productListener.messageLengths.get(0).equals("custom-executor-test")
+        );
     }
 
     protected Map<String, Object> getConfiguration() {

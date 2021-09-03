@@ -1,4 +1,4 @@
-package io.micronaut.rabbitmq.docs.exchange;
+package io.micronaut.rabbitmq.docs.exchange
 
 class Cat extends Animal {
 

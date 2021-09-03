@@ -1,4 +1,4 @@
-package io.micronaut.rabbitmq.docs.exchange;
+package io.micronaut.rabbitmq.docs.exchange
 
 abstract class Animal {
 
@@ -9,5 +9,4 @@ abstract class Animal {
     }
 
     Animal() {}
-
 }

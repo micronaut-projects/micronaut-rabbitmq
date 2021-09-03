@@ -25,5 +25,4 @@ class RpcUppercaseSpec: AbstractRabbitMQTest({
 
         ctx.stop()
     }
-
 })

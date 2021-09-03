@@ -14,7 +14,7 @@ abstract class AnimalClient {
     abstract void send(@MessageHeader String animalType, Animal animal) // <2>
 
     void send(Animal animal) { // <3>
-        send(animal.class.simpleName, animal)
+        send(animal.getClass().simpleName, animal)
     }
 }
 // end::clazz[]
