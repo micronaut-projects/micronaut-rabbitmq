@@ -29,7 +29,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.equalTo
 
-@spock.lang.Ignore // TODO fix
 class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
@@ -173,8 +172,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
     @Requires(property = "spec.name", value = "ConsumerRecoverySpec")
     @Requires(property = "connectToNode", value = "node1")
     @RabbitListener(connection = "node1")
-    static class Node1Consumer extends TestConsumer {
-    }
+    static class Node1Consumer extends TestConsumer {}
 
     @Requires(property = "spec.name", value = "ConsumerRecoverySpec")
     @Requires(property = "connectToNode", value = "node2")
@@ -234,6 +232,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 }
 
 abstract class TestConsumer implements RabbitListenerExceptionHandler {
+
     static final Logger log = LoggerFactory.getLogger(TestConsumer)
 
     final Set<String> consumedMessages = new LinkedHashSet<>()
