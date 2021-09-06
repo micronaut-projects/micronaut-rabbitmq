@@ -59,8 +59,8 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
         NODE2_CONT.start()
         NODE3_CONT.start()
         new PollingConditions(timeout: 60).eventually {
-            NODE2_CONT.isHealthy()
-            NODE3_CONT.isHealthy()
+            assert NODE2_CONT.isHealthy()
+            assert NODE3_CONT.isHealthy()
         }
         log.info("cluster startup complete")
     }
@@ -74,6 +74,10 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
 
         log.info("context properties: {}", properties)
         applicationContext = ApplicationContext.run(properties, "test")
+    }
+
+    void cleanup() {
+        applicationContext?.close()
     }
 
     private static getNodePorts() {
