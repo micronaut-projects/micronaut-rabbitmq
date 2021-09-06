@@ -357,7 +357,7 @@ productClient.send("quickstart".getBytes());</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">def productClient = applicationContext.getBean(ProductClient)
-productClient.send("quickstart".getBytes())</code></pre>
+productClient.send("quickstart".bytes)</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -416,15 +416,16 @@ public class ProductListener {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener <b class="conum">(1)</b>
 class ProductListener {
 
-    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
 
     @Queue("product") <b class="conum">(2)</b>
     void receive(byte[] data) { <b class="conum">(3)</b>
-        messageLengths.add(new String(data))
-        println("Groovy received ${data.length} bytes from RabbitMQ")
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -1148,7 +1149,7 @@ abstract class AnimalClient {
     abstract void send(@MessageHeader String animalType, Animal animal) <b class="conum">(2)</b>
 
     void send(Animal animal) { <b class="conum">(3)</b>
-        send(animal.class.simpleName, animal)
+        send(animal.getClass().simpleName, animal)
     }
 }</code></pre>
 </div>
@@ -1694,10 +1695,8 @@ public interface ProductClient {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import org.reactivestreams.Publisher
-import reactor.core.publisher.Mono
 
 import java.util.concurrent.CompletableFuture
-
 
 @RabbitClient
 interface ProductClient {
@@ -1883,14 +1882,16 @@ public class ProductListener {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener
 class ProductListener {
 
-    List&lt;Integer&gt; messageLengths = Collections.synchronizedList([])
+    CopyOnWriteArrayList&lt;Integer&gt; messageLengths = []
 
     @Queue("product") <b class="conum">(1)</b>
     void receive(byte[] data) {
-        messageLengths.add(data.length)
+        messageLengths &lt;&lt; data.length
     }
 }</code></pre>
 </div>
@@ -1960,8 +1961,7 @@ class ProductListener {
 
     @Queue(value = "product", connection = "product-cluster") <b class="conum">(1)</b>
     void receive(byte[] data) {
-        messageLengths.add(new String(data))
-        System.out.println("Groovy received " + data.length + " bytes from RabbitMQ")
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -2035,15 +2035,16 @@ public class ProductListener {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener
 class ProductListener {
 
-    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
 
     @Queue(value = "product", executor = "product-listener") <b class="conum">(1)</b>
     void receive(byte[] data) {
-        messageLengths.add(new String(data))
-        System.out.println("Groovy received " + data.length + " bytes from RabbitMQ")
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -2166,18 +2167,20 @@ import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.annotation.RabbitProperty
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener
 class ProductListener {
 
-    List&lt;String&gt; messageProperties = Collections.synchronizedList([])
+    CopyOnWriteArrayList&lt;String&gt; messageProperties = []
 
     @Queue("product")
-    @RabbitProperty(name = "x-priority", value = "10", type = Integer.class) <b class="conum">(1)</b>
+    @RabbitProperty(name = "x-priority", value = "10", type = Integer) <b class="conum">(1)</b>
     void receive(byte[] data,
                  @RabbitProperty("userId") String user, <b class="conum">(2)</b>
                  @Nullable @RabbitProperty String contentType, <b class="conum">(3)</b>
                  String appId) { <b class="conum">(4)</b>
-        messageProperties.add(user + "|" + contentType + "|" + appId)
+        messageProperties &lt;&lt; user + "|" + contentType + "|" + appId
     }
 }</code></pre>
 </div>
@@ -2296,26 +2299,28 @@ import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener
 class ProductListener {
 
-    List&lt;String&gt; messageProperties = Collections.synchronizedList(new ArrayList&lt;&gt;())
+    CopyOnWriteArrayList&lt;String&gt; messageProperties = []
 
     @Queue("product")
     void receive(byte[] data,
                  @MessageHeader("x-product-sealed") Boolean sealed, <b class="conum">(1)</b>
                  @MessageHeader("x-product-count") Long count, <b class="conum">(2)</b>
                  @Nullable @MessageHeader String productSize) { <b class="conum">(3)</b>
-        messageProperties.add(sealed.toString() + "|" + count + "|" + productSize)
+        messageProperties &lt;&lt; sealed.toString() + "|" + count + "|" + productSize
     }
 
     @Queue("product")
     void receive(byte[] data,
                  @RabbitHeaders Map&lt;String, Object&gt; headers) { <b class="conum">(4)</b>
-        messageProperties.add(
+        messageProperties &lt;&lt;
                 headers["x-product-sealed"].toString() + "|" +
-                headers["x-product-count"].toString() + "|" +
-                headers["productSize"]?.toString())
+                headers["x-product-count"] + "|" +
+                headers["productSize"]?.toString()
     }
 }</code></pre>
 </div>
@@ -2425,17 +2430,19 @@ import com.rabbitmq.client.Envelope
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 @RabbitListener
 class ProductListener {
 
-    List&lt;String&gt; messages = Collections.synchronizedList([])
+    CopyOnWriteArrayList&lt;String&gt; messages = []
 
     @Queue("product")
     void receive(byte[] data,
                  Envelope envelope, <b class="conum">(1)</b>
                  BasicProperties basicProperties, <b class="conum">(2)</b>
                  Channel channel) { <b class="conum">(3)</b>
-        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]".toString())
+        messages &lt;&lt; "exchange: [$envelope.exchange], routingKey: [$envelope.routingKey], contentType: [$basicProperties.contentType]".toString()
     }
 }</code></pre>
 </div>
@@ -2633,7 +2640,7 @@ import jakarta.inject.Singleton
 @Singleton <b class="conum">(1)</b>
 class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { <b class="conum">(2)</b>
 
-    private final ConversionService conversionService;
+    private final ConversionService conversionService
 
     DeliveryTagAnnotationBinder(ConversionService conversionService) { <b class="conum">(3)</b>
         this.conversionService = conversionService
@@ -2646,7 +2653,7 @@ class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;De
 
     @Override
     BindingResult&lt;Object&gt; bind(ArgumentConversionContext&lt;Object&gt; context, RabbitConsumerState source) {
-        Long deliveryTag = source.envelope.deliveryTag <b class="conum">(4)</b>
+        long deliveryTag = source.envelope.deliveryTag <b class="conum">(4)</b>
         return { -&gt; conversionService.convert(deliveryTag, context) } <b class="conum">(5)</b>
     }
 }</code></pre>
@@ -2729,14 +2736,16 @@ public class ProductListener {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
+import java.util.concurrent.CopyOnWriteArraySet
+
 @RabbitListener
 class ProductListener {
 
-    Set&lt;Long&gt; messages = Collections.synchronizedSet(new HashSet&lt;&gt;())
+    CopyOnWriteArraySet&lt;Long&gt; messages = []
 
     @Queue("product")
     void receive(byte[] data, @DeliveryTag Long tag) { <b class="conum">(1)</b>
-        messages.add(tag)
+        messages &lt;&lt; tag
     }
 }</code></pre>
 </div>
@@ -2958,7 +2967,7 @@ class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;ProductInfo&g
         Optional&lt;Long&gt; count = headers.get("x-product-count", Long) <b class="conum">(6)</b>
         Optional&lt;Boolean&gt; sealed = headers.get("x-product-sealed", Boolean) <b class="conum">(7)</b>
 
-        if (headers.getConversionErrors().isEmpty() &amp;&amp; count.isPresent() &amp;&amp; sealed.isPresent()) {
+        if (headers.conversionErrors.isEmpty() &amp;&amp; count.isPresent() &amp;&amp; sealed.isPresent()) {
             { -&gt; Optional.of(new ProductInfo(size, count.get(), sealed.get())) } <b class="conum">(8)</b>
         } else {
             new BindingResult&lt;ProductInfo&gt;() {
@@ -2987,8 +2996,8 @@ import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
 import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
-import java.util.Optional
 import jakarta.inject.Singleton
+import java.util.Optional
 
 @Singleton <b class="conum">(1)</b>
 class ProductInfoTypeBinder constructor(private val conversionService: ConversionService&lt;*&gt;) <b class="conum">(3)</b>
@@ -3294,8 +3303,8 @@ class ProductListener {
 
     @Queue(value = "product", numberOfConsumers = 5) <b class="conum">(1)</b>
     void receive(byte[] data) {
-        threads.add(Thread.currentThread().name) <b class="conum">(2)</b>
-        Thread.sleep(500)
+        threads &lt;&lt; Thread.currentThread().name <b class="conum">(2)</b>
+        sleep 500
     }
 }</code></pre>
 </div>
@@ -3500,7 +3509,7 @@ class ProductListener {
 
     @Queue("product")
     fun toUpperCase(data: String): String { <b class="conum">(1)</b>
-        return data.toUpperCase() <b class="conum">(2)</b>
+        return data.uppercase() <b class="conum">(2)</b>
     }
 }</code></pre>
 </div>
@@ -3646,8 +3655,8 @@ class ChannelPoolListener extends ChannelInitializer { <b class="conum">(2)</b>
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
-import java.io.IOException
 import jakarta.inject.Singleton
+import java.io.IOException
 
 @Singleton <b class="conum">(1)</b>
 class ChannelPoolListener : ChannelInitializer() { <b class="conum">(2)</b>
@@ -3800,7 +3809,7 @@ import java.nio.charset.Charset
 @Singleton <b class="conum">(1)</b>
 class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b class="conum">(2)</b>
 
-    private static final Charset CHARSET = Charset.forName("UTF-8")
+    private static final Charset UTF8 = Charset.forName("UTF-8")
 
     private final ConversionService conversionService
 
@@ -3810,7 +3819,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
 
     @Override
     ProductInfo deserialize(RabbitConsumerState consumerState, Argument&lt;ProductInfo&gt; argument) { <b class="conum">(4)</b>
-        String body = new String(consumerState.getBody(), CHARSET)
+        String body = new String(consumerState.body, UTF8)
         String[] parts = body.split("\\|")
         if (parts.length == 3) {
             String size = parts[0]
@@ -3833,12 +3842,12 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { <b c
         if (data == null) {
             return null
         }
-        (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
+        (data.size + "|" + data.count + "|" + data.sealed).getBytes(UTF8)
     }
 
     @Override
     boolean supports(Argument&lt;ProductInfo&gt; argument) { <b class="conum">(6)</b>
-        argument.getType().isAssignableFrom(ProductInfo)
+        argument.type.isAssignableFrom(ProductInfo)
     }
 }</code></pre>
 </div>
@@ -3850,8 +3859,8 @@ import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
-import java.nio.charset.Charset
 import jakarta.inject.Singleton
+import java.nio.charset.Charset
 
 @Singleton <b class="conum">(1)</b>
 class ProductInfoSerDes(private val conversionService: ConversionService&lt;*&gt;)<b class="conum">(3)</b>
