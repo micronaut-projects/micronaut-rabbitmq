@@ -3,4 +3,6 @@ rootProject.name = 'rabbitmq-root'
 include 'rabbitmq'
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-java'
-include 'docs-examples:example-kotlin'
+if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_16)) {
+    include 'docs-examples:example-kotlin'
+}

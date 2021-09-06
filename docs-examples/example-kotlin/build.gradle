@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "${kotlinVersion}"
-    id "org.jetbrains.kotlin.kapt" version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.kapt" version "$kotlinVersion"
 }
 
 repositories {
@@ -37,5 +37,3 @@ compileTestKotlin {
         javaParameters = true
     }
 }
-
-
