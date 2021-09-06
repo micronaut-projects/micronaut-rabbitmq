@@ -16,7 +16,7 @@ import java.nio.charset.Charset
 @Singleton // <1>
 class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
 
-    private static final Charset CHARSET = Charset.forName("UTF-8")
+    private static final Charset UTF8 = Charset.forName("UTF-8")
 
     private final ConversionService conversionService
 
@@ -26,7 +26,7 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
 
     @Override
     ProductInfo deserialize(RabbitConsumerState consumerState, Argument<ProductInfo> argument) { // <4>
-        String body = new String(consumerState.getBody(), CHARSET)
+        String body = new String(consumerState.body, UTF8)
         String[] parts = body.split("\\|")
         if (parts.length == 3) {
             String size = parts[0]
@@ -49,12 +49,12 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
         if (data == null) {
             return null
         }
-        (data.getSize() + "|" + data.getCount() + "|" + data.getSealed()).getBytes(CHARSET)
+        (data.size + "|" + data.count + "|" + data.sealed).getBytes(UTF8)
     }
 
     @Override
     boolean supports(Argument<ProductInfo> argument) { // <6>
-        argument.getType().isAssignableFrom(ProductInfo)
+        argument.type.isAssignableFrom(ProductInfo)
     }
 }
 // end::clazz[]

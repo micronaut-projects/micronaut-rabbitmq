@@ -1,18 +1,14 @@
 package io.micronaut.rabbitmq.annotation
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class HeaderBindingSpec extends AbstractRabbitMQTest {
 
     void "test simple producing and consuming with the header annotation"() {
-        ApplicationContext applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-                 "spec.name": getClass().simpleName], "test")
-        PollingConditions conditions = new PollingConditions(timeout: 3)
+        startContext()
+
         MyProducer producer = applicationContext.getBean(MyProducer)
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
@@ -20,14 +16,11 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
         producer.go(new Person(name: "abc"), "some header")
 
         then:
-        conditions.eventually {
+        waitFor {
             consumer.messages.size() == 1
             consumer.messages.keySet()[0].name == "abc"
             consumer.messages.values()[0] == "some header|static header"
         }
-
-        cleanup:
-        applicationContext.close()
     }
 
     static class Person {
@@ -37,22 +30,21 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
     @Requires(property = "spec.name", value = "HeaderBindingSpec")
     @RabbitClient
     static interface MyProducer {
-
         @Binding("header")
         @MessageHeader(name = "static", value = "static header")
         void go(Person data, @MessageHeader String myHeader)
-
     }
 
     @Requires(property = "spec.name", value = "HeaderBindingSpec")
     @RabbitListener
     static class MyConsumer {
 
-        public static Map<Person, String> messages = [:]
+        static Map<Person, String> messages = [:]
 
         @Queue("header")
-        void listen(Person data, @MessageHeader String myHeader, @MessageHeader("static") String otherHeader) {
-            messages.put(data, myHeader + '|' + otherHeader)
+        void listen(Person data, @MessageHeader String myHeader,
+                    @MessageHeader("static") String otherHeader) {
+            messages[data] = myHeader + '|' + otherHeader
         }
     }
 }

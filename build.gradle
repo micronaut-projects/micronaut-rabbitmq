@@ -9,9 +9,13 @@ buildscript {
 }
 
 subprojects { Project subproject ->
+
     group "io.micronaut.rabbitmq"
-    apply plugin: "io.micronaut.build.internal.common"
-    apply plugin: "io.micronaut.build.internal.dependency-updates"
+
+    if (subproject.name != 'docs-examples') {
+        apply plugin: "io.micronaut.build.internal.common"
+        apply plugin: "io.micronaut.build.internal.dependency-updates"
+    }
 
     repositories {
         maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
@@ -29,7 +33,7 @@ apply plugin: "io.micronaut.build.internal.dependency-updates"
 
 def prepareGuideHotfix = tasks.register("prepareGuideHotfix") {
     doLast {
-        file("${buildDir}/doc-resources").mkdirs()
+        new File(buildDir, 'doc-resources').mkdirs()
     }
 }
 

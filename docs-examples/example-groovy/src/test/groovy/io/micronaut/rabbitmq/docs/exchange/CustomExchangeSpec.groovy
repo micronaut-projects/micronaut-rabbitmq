@@ -1,18 +1,15 @@
 package io.micronaut.rabbitmq.docs.exchange
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class CustomExchangeSpec extends AbstractRabbitMQTest {
 
     void "test using a custom exchange"() {
         given:
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        startContext()
 
-        AnimalClient client = applicationContext.getBean(AnimalClient.class)
-        AnimalListener listener = applicationContext.getBean(AnimalListener.class)
+        AnimalClient client = applicationContext.getBean(AnimalClient)
+        AnimalListener listener = applicationContext.getBean(AnimalListener)
 
         when:
 // tag::producer[]
@@ -23,23 +20,24 @@ class CustomExchangeSpec extends AbstractRabbitMQTest {
 // end::producer[]
 
         then:
-        conditions.eventually {
+        waitFor {
             listener.receivedAnimals.size() == 4
+
             listener.receivedAnimals.find({ animal ->
                 animal instanceof Cat && animal.name == "Whiskers" && ((Cat) animal).lives == 9
             }) != null
+
             listener.receivedAnimals.find({ animal ->
                 animal instanceof Cat && animal.name == "Mr. Bigglesworth" && ((Cat) animal).lives == 8
             }) != null
+
             listener.receivedAnimals.find({ animal ->
                 animal instanceof Snake && animal.name == "Buttercup" && !((Snake) animal).venomous
             }) != null
+
             listener.receivedAnimals.find({ animal ->
                 animal instanceof Snake && animal.name == "Monty the Python" && ((Snake) animal).venomous
             }) != null
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

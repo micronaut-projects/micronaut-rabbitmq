@@ -1,14 +1,11 @@
 package io.micronaut.rabbitmq.docs.properties
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class PropertiesSpec extends AbstractRabbitMQTest {
 
     void "test sending and receiving properties"() {
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 5)
+        startContext()
 
         when:
 // tag::producer[]
@@ -21,14 +18,11 @@ class PropertiesSpec extends AbstractRabbitMQTest {
         ProductListener productListener = applicationContext.getBean(ProductListener)
 
         then:
-        conditions.eventually {
+        waitFor {
             productListener.messageProperties.size() == 3
             productListener.messageProperties.contains("guest|application/json|myApp")
             productListener.messageProperties.contains("guest|text/html|myApp")
             productListener.messageProperties.contains("guest|null|myApp")
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

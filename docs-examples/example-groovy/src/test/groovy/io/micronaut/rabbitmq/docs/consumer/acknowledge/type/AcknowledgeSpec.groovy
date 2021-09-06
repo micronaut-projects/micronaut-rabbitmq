@@ -1,14 +1,11 @@
 package io.micronaut.rabbitmq.docs.consumer.acknowledge.type
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import spock.util.concurrent.PollingConditions
 
 class AcknowledgeSpec extends AbstractRabbitMQTest {
 
     void "test acking with an acknowledgement argument"() {
-        ApplicationContext applicationContext = startContext()
-        PollingConditions conditions = new PollingConditions(timeout: 10)
+        startContext()
 
         when:
 // tag::producer[]
@@ -22,11 +19,8 @@ productClient.send("message body".bytes)
         ProductListener productListener = applicationContext.getBean(ProductListener)
 
         then:
-        conditions.eventually {
+        waitFor {
             productListener.messageCount.get() == 5
         }
-
-        cleanup:
-        applicationContext.close()
     }
 }

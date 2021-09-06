@@ -4,18 +4,20 @@ import io.micronaut.context.annotation.Requires
 // tag::imports[]
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
 // end::imports[]
 
 @Requires(property = "spec.name", value = "ProductInfoSerDesSpec")
 // tag::clazz[]
 @RabbitListener
-public class ProductListener {
+class ProductListener {
 
-    List<ProductInfo> messages = Collections.synchronizedList(new ArrayList<>());
+    CopyOnWriteArrayList<ProductInfo> messages = []
 
     @Queue("product")
-    public void receive(ProductInfo productInfo) { // <1>
-        messages.add(productInfo);
+    void receive(ProductInfo productInfo) { // <1>
+        messages << productInfo
     }
 }
 // end::clazz[]

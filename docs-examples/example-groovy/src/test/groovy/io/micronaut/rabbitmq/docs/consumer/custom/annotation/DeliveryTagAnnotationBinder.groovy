@@ -14,7 +14,7 @@ import jakarta.inject.Singleton
 @Singleton // <1>
 class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder<DeliveryTag> { // <2>
 
-    private final ConversionService conversionService;
+    private final ConversionService conversionService
 
     DeliveryTagAnnotationBinder(ConversionService conversionService) { // <3>
         this.conversionService = conversionService
@@ -27,7 +27,7 @@ class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder<Deliv
 
     @Override
     BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState source) {
-        Long deliveryTag = source.envelope.deliveryTag // <4>
+        long deliveryTag = source.envelope.deliveryTag // <4>
         return { -> conversionService.convert(deliveryTag, context) } // <5>
     }
 }
