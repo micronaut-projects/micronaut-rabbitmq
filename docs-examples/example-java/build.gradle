@@ -14,7 +14,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:4.1.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.5"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.6"
     testImplementation "io.projectreactor:reactor-core"
 }
 
