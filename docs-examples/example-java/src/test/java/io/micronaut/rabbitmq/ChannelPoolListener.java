@@ -13,7 +13,7 @@ import java.util.Map;
 public class ChannelPoolListener extends ChannelInitializer { // <2>
 
     @Override
-    public void initialize(Channel channel) throws IOException { // <3>
+    public void initialize(Channel channel, String name) throws IOException { // <3>
         //docs/quickstart
         Map<String, Object> args = new HashMap<>();
         args.put("x-max-priority", 100);
