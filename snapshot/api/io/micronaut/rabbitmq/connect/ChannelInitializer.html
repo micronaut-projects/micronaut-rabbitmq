@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":10,"i2":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -152,18 +152,27 @@ implements io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="../..
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>abstract void</code></td>
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize-com.rabbitmq.client.Channel-">initialize</a></span>(com.rabbitmq.client.Channel&nbsp;channel)</code>
-<div class="block">Do any work with a channel.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Override <a href="../../../../io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize-com.rabbitmq.client.Channel-java.lang.String-"><code>initialize(Channel, String)</code></a> instead</span></div>
+</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize-com.rabbitmq.client.Channel-java.lang.String-">initialize</a></span>(com.rabbitmq.client.Channel&nbsp;channel,
+          java.lang.String&nbsp;name)</code>
+<div class="block">Do any work with a channel.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/connect/ChannelInitializer.html#onCreated-io.micronaut.context.event.BeanCreatedEvent-">onCreated</a></span>(io.micronaut.context.event.BeanCreatedEvent&lt;<a href="../../../../io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;event)</code>&nbsp;</td>
 </tr>
@@ -212,12 +221,33 @@ implements io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="../..
 <ul class="blockList">
 <li class="blockList">
 <h4>initialize</h4>
-<pre>public abstract&nbsp;void&nbsp;initialize(com.rabbitmq.client.Channel&nbsp;channel)
-                         throws java.io.IOException</pre>
+<pre>@Deprecated
+public&nbsp;void&nbsp;initialize(com.rabbitmq.client.Channel&nbsp;channel)
+                            throws java.io.IOException</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Override <a href="../../../../io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize-com.rabbitmq.client.Channel-java.lang.String-"><code>initialize(Channel, String)</code></a> instead</span></div>
 <div class="block">Do any work with a channel.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>channel</code> - The channel to use</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - If any error occurs</dd>
+</dl>
+</li>
+</ul>
+<a name="initialize-com.rabbitmq.client.Channel-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>initialize</h4>
+<pre>public&nbsp;void&nbsp;initialize(com.rabbitmq.client.Channel&nbsp;channel,
+                       java.lang.String&nbsp;name)
+                throws java.io.IOException</pre>
+<div class="block">Do any work with a channel.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel to use</dd>
+<dd><code>name</code> - The name of the channel pool, like configured under `rabbitmq.servers`</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If any error occurs</dd>
 </dl>
