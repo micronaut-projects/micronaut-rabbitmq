@@ -9,7 +9,7 @@ import jakarta.inject.Singleton
 class ChannelPoolListener extends ChannelInitializer { // <2>
 
     @Override
-    void initialize(Channel channel) throws IOException { // <3>
+    void initialize(Channel channel, String name) throws IOException { // <3>
         channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) // <4>
 
         //docs/exchange
