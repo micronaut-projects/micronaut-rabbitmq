@@ -10,7 +10,7 @@ import java.io.IOException
 class ChannelPoolListener : ChannelInitializer() { // <2>
 
     @Throws(IOException::class)
-    override fun initialize(channel: Channel) { // <3>
+    override fun initialize(channel: Channel, name: String) { // <3>
         channel.queueDeclare("product", false, false, false, mapOf("x-max-priority" to 100)) // <4>
 
         //docs/exchange
