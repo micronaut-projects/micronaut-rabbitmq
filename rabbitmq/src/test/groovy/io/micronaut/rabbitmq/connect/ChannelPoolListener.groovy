@@ -7,7 +7,7 @@ import jakarta.inject.Singleton
 class ChannelPoolListener extends ChannelInitializer {
 
     @Override
-    void initialize(Channel channel) throws IOException {
+    void initialize(Channel channel, String name) throws IOException {
         channel.queueDeclare("abc", false, false, false, [:])
         channel.queueDeclare("pojo", false, false, false, [:])
         channel.queueDeclare("pojo-list", false, false, false, [:])

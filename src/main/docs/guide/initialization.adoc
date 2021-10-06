@@ -6,5 +6,5 @@ snippet::io.micronaut.rabbitmq.ChannelPoolListener[tags="clazz", project-base="d
 
 <1> The class is declared as a singleton so it will be registered with the context
 <2> The class extends an abstract class provided by this library
-<3> The method is implemented that receives a channel to do the initialization
+<3> The method is implemented that receives a channel and the connection name to do the initialization
 <4> Declare a queue or perform any operations desired
