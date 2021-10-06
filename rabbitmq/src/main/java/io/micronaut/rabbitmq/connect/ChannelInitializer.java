@@ -37,7 +37,7 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
      * Do any work with a channel.
      *
      * @param channel The channel to use
-     * @param name - The name of the related connection, like configured under rabbitmq.servers
+     * @param name The name of the related connection, like configured under rabbitmq.servers
      * @throws IOException If any error occurs
      */
     public abstract void initialize(Channel channel, String name) throws IOException;
