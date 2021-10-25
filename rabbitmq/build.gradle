@@ -16,7 +16,7 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation "io.micronaut:micronaut-inject-groovy"
     testImplementation "io.micronaut:micronaut-inject-java"
-    testImplementation "org.testcontainers:spock:1.16.0"
+    testImplementation "org.testcontainers:spock:1.16.2"
     testImplementation "io.micronaut:micronaut-management"
     testImplementation("io.micronaut.micrometer:micronaut-micrometer-core") {
         exclude group: "io.micronaut.reactor", module: "micronaut-reactor"
