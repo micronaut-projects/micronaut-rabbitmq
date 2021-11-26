@@ -46,7 +46,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     private final JsonMapper jsonMapper;
 
     /**
-     * Legacy jackson constructor
+     * Legacy jackson constructor.
      *
      * @param objectMapper The jackson object mapper
      * @deprecated Use {@link #JsonRabbitMessageSerDes(JsonMapper)} instead
