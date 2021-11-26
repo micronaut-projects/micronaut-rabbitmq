@@ -51,6 +51,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
      * @param objectMapper The jackson object mapper
      * @deprecated Use {@link #JsonRabbitMessageSerDes(JsonMapper)} instead
      */
+    @Deprecated
     public JsonRabbitMessageSerDes(ObjectMapper objectMapper) {
         this(new JacksonDatabindMapper(objectMapper));
     }
