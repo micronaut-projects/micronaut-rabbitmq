@@ -59,6 +59,7 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
      * Default constructor.
      *
      * @param jsonMapper The json mapper
+     * @since 2.1.0
      */
     @Inject
     public JsonRabbitMessageSerDes(JsonMapper jsonMapper) {
