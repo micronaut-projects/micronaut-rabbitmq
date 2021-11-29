@@ -1,8 +1,17 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id("io.micronaut.build.shared.settings") version "4.2.6"
+}
+
 rootProject.name = 'rabbitmq-root'
 
 include 'rabbitmq'
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-java'
-if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_16)) {
-    include 'docs-examples:example-kotlin'
-}
+include 'docs-examples:example-kotlin'
