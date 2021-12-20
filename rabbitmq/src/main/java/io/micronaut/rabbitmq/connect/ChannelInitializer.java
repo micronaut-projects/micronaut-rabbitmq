@@ -45,7 +45,6 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
         //no-op
     }
 
-
     /**
      * Do any work with a channel.
      *
