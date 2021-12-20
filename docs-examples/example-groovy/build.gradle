@@ -1,29 +1,16 @@
 plugins {
-    id "groovy"
-}
-
-repositories {
-    mavenCentral()
+    id 'io.micronaut.build.internal.rabbitmq-module'
+    id 'groovy'
 }
 
 dependencies {
-    testImplementation project(":rabbitmq")
-    testImplementation "io.micronaut:micronaut-inject"
-    testCompileOnly "io.micronaut:micronaut-inject-groovy"
-    testImplementation "org.testcontainers:spock:1.16.2"
-    testImplementation("org.spockframework:spock-core") {
-        exclude group: "org.codehaus.groovy", module: "groovy-all"
-    }
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.7"
-    testImplementation "io.projectreactor:reactor-core"
-}
+    testImplementation projects.rabbitmq
 
-test {
-    useJUnitPlatform()
-
-    jvmArgs '-Duser.country=US'
-    jvmArgs '-Duser.language=en'
-    failFast = true
+    testCompileOnly mn.micronaut.inject.groovy
+    testImplementation libs.testcontainers
+    testImplementation mn.micronaut.inject
+    testImplementation mn.reactor
+    testImplementation mn.spock
 }
 
 tasks.withType(GroovyCompile) {
