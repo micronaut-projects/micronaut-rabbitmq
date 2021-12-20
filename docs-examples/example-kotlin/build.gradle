@@ -1,31 +1,22 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-    id "org.jetbrains.kotlin.kapt" version "$kotlinVersion"
-}
-
-repositories {
-    mavenCentral()
+    id 'io.micronaut.build.internal.rabbitmq-module'
+    alias libs.plugins.kotlin.jvm
+    alias libs.plugins.kotlin.kapt
 }
 
 dependencies {
-    testImplementation project(":rabbitmq")
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.7"
-    testImplementation "org.testcontainers:testcontainers:1.16.2"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
-    testImplementation "io.projectreactor:reactor-core"
+    kaptTest enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion")
+    kaptTest mn.micronaut.inject.java
+
+    testImplementation projects.rabbitmq
+    testImplementation libs.kotest
+    testImplementation libs.kotlin.reflect
+    testImplementation libs.kotlin.stdlib
+    testImplementation libs.testcontainers
+    testImplementation mn.reactor
 }
 
 test {
-    useJUnitPlatform()
-
-    jvmArgs '-Duser.country=US'
-    jvmArgs '-Duser.language=en'
-    failFast = true
-
     systemProperties['junit.jupiter.execution.parallel.enabled'] = true
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 1

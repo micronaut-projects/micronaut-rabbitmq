@@ -1,34 +1,33 @@
+plugins {
+    id 'io.micronaut.build.internal.rabbitmq-module'
+}
+
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor mn.micronaut.inject.java
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
-    api "io.micronaut:micronaut-messaging"
-    api "io.micronaut:micronaut-inject"
-    api "com.rabbitmq:amqp-client:$rabbitVersion"
+    api mn.micronaut.messaging
+    api mn.micronaut.inject
+    api libs.amqp.client
 
-    implementation 'io.projectreactor:reactor-core'
+    implementation mn.reactor
 
-    compileOnly "io.micronaut.micrometer:micronaut-micrometer-core"
-    compileOnly "io.micronaut:micronaut-management"
+    compileOnly mn.micronaut.management
+    compileOnly 'io.micronaut.micrometer:micronaut-micrometer-core'
 
-    testImplementation("org.spockframework:spock-core:${spockVersion}") {
-        exclude module:'groovy-all'
-    }
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation "io.micronaut:micronaut-inject-java"
-    testImplementation "org.testcontainers:spock:1.16.2"
-    testImplementation "io.micronaut:micronaut-management"
-    testImplementation("io.micronaut.micrometer:micronaut-micrometer-core") {
-        exclude group: "io.micronaut.reactor", module: "micronaut-reactor"
+    testImplementation libs.testcontainers.spock
+    testImplementation mn.micronaut.inject.groovy
+    testImplementation mn.micronaut.inject.java
+    testImplementation mn.micronaut.management
+    testImplementation mn.micronaut.test.spock
+    testImplementation mn.spock
+    testImplementation('io.micronaut.micrometer:micronaut-micrometer-core') {
+        exclude group: 'io.micronaut.reactor', module: 'micronaut-reactor'
     }
 }
 
 test {
-    jvmArgs '-Duser.country=US'
-    jvmArgs '-Duser.language=en'
     testLogging {
         showStandardStreams = true
         exceptionFormat = 'full'
     }
-    failFast = true
 }

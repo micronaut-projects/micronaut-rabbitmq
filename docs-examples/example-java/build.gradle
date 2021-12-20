@@ -1,30 +1,18 @@
 plugins {
-    id "java"
-}
-
-repositories {
-    mavenCentral()
+    id 'io.micronaut.build.internal.rabbitmq-module'
+    id 'java'
 }
 
 dependencies {
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut:micronaut-inject"
-    testImplementation project(":rabbitmq")
-    testImplementation "org.testcontainers:testcontainers:1.16.2"
-    testImplementation 'org.awaitility:awaitility:4.1.1'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.7"
-    testImplementation "io.projectreactor:reactor-core"
+    testImplementation projects.rabbitmq
+
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.inject
+    testImplementation mn.reactor
+    testImplementation libs.awaitility
+    testImplementation libs.testcontainers
+    testImplementation libs.junit.jupiter.api
 }
 
 compileJava.options.compilerArgs += '-parameters'
 compileTestJava.options.compilerArgs += '-parameters'
-
-test {
-    useJUnitPlatform()
-
-    jvmArgs '-Duser.country=US'
-    jvmArgs '-Duser.language=en'
-    failFast = true
-}
