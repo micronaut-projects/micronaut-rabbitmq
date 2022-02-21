@@ -9,7 +9,7 @@ plugins {
     id 'io.micronaut.build.shared.settings' version '5.1.3'
 }
 
-rootProject.name = 'rabbitmq-root'
+rootProject.name = 'micronaut-rabbitmq'
 
 include 'rabbitmq'
 include 'docs-examples:example-groovy'
@@ -17,7 +17,6 @@ include 'docs-examples:example-java'
 include 'docs-examples:example-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
-enableFeaturePreview 'VERSION_CATALOGS'
 
 dependencyResolutionManagement {
     repositories {
