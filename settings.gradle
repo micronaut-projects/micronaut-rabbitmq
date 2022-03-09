@@ -6,10 +6,10 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '5.2.1'
+    id 'io.micronaut.build.shared.settings' version '5.2.3'
 }
 
-rootProject.name = 'micronaut-rabbitmq'
+rootProject.name = 'rabbitmq-parent'
 
 include 'rabbitmq'
 include 'docs-examples:example-groovy'
