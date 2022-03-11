@@ -67,7 +67,7 @@ public @interface Queue {
     /**
      * @return The number of consumers used to consumer from a queue concurrently
      */
-    int numberOfConsumers() default 1;
+    String numberOfConsumers() default "1";
 
     /**
      * @see RabbitConnection#connection()
