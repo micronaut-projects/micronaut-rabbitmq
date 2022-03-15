@@ -13,6 +13,7 @@ junit-jupiter-api = { module = 'org.junit.jupiter:junit-jupiter-api', version.re
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
+micronaut-micrometer-core = { module = 'io.micronaut.micrometer:micronaut-micrometer-core', version = '' }
 testcontainers = { module = 'org.testcontainers:testcontainers', version.ref = 'testcontainers' }
 testcontainers-spock = { module = 'org.testcontainers:spock', version.ref = 'testcontainers' }
 
