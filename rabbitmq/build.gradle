@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor mn.micronaut.inject.java
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
     api mn.micronaut.messaging
     api mn.micronaut.inject
     api libs.amqp.client
@@ -12,7 +10,7 @@ dependencies {
     implementation mn.reactor
 
     compileOnly mn.micronaut.management
-    compileOnly 'io.micronaut.micrometer:micronaut-micrometer-core'
+    compileOnly libs.micronaut.micrometer.core
 
     testImplementation libs.testcontainers.spock
     testImplementation mn.micronaut.inject.groovy
@@ -20,7 +18,7 @@ dependencies {
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.test.spock
     testImplementation mn.spock
-    testImplementation('io.micronaut.micrometer:micronaut-micrometer-core') {
+    testImplementation(libs.micronaut.micrometer.core) {
         exclude group: 'io.micronaut.reactor', module: 'micronaut-reactor'
     }
 }
