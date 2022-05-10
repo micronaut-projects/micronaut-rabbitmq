@@ -1,5 +1,5 @@
 [versions]
-awaitility = '4.1.1'
+awaitility = '4.2.0'
 junit = '5.8.2'
 kotest = '4.6.4'
 kotlin = '1.6.10'
