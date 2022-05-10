@@ -2,7 +2,7 @@
 awaitility = '4.2.0'
 junit = '5.8.2'
 kotest = '4.6.4'
-kotlin = '1.6.10'
+kotlin = '1.6.21'
 rabbit = '5.14.1'
 testcontainers = '1.17.1'
 
