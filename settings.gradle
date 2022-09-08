@@ -21,10 +21,10 @@ enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
     }
-    versionCatalogs {
-        mn {
-            from "io.micronaut:micronaut-bom:${providers.gradleProperty('micronautVersion').get()}"
-        }
-    }
+}
+
+micronautBuild {
+    importMicronautCatalog()
 }

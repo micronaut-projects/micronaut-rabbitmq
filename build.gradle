@@ -4,6 +4,11 @@ plugins {
     id 'io.micronaut.build.internal.quality-reporting'
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+}
+
 def prepareGuideHotfix = tasks.register('prepareGuideHotfix') {
     doLast {
         new File(buildDir, 'doc-resources').mkdirs()
