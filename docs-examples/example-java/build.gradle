@@ -1,9 +1,10 @@
 plugins {
-    id 'io.micronaut.build.internal.rabbitmq-module'
+    id 'io.micronaut.build.internal.rabbitmq-examples'
     id 'java'
 }
 
 dependencies {
+    testCompileOnly mn.jsr305 // for "warning: unknown enum constant When.MAYBE"
     testImplementation projects.rabbitmq
 
     testAnnotationProcessor mn.micronaut.inject.java
@@ -12,6 +13,7 @@ dependencies {
     testImplementation libs.awaitility
     testImplementation libs.testcontainers
     testImplementation libs.junit.jupiter.api
+    testRuntimeOnly mn.logback
 }
 
 compileJava.options.compilerArgs += '-parameters'
