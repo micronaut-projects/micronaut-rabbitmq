@@ -29,7 +29,11 @@ consumer:
     consumerAcknowledge: Acknowledging Messages
   consumerExceptions: Handling Consumer Exceptions
   consumerExecutor: Consumer Execution
-rpc: Direct Reply-To (RPC)
+rpc:
+  title: Directly Reply-To (RPC)
+  rpcClientSide: Client Side
+  rpcServerSide: Server Side
+  rpcConfiguration: Configuration
 initialization: Creating Queues/Exchanges
 serdes:
   title: Message Serialization/Deserialization (SerDes)
