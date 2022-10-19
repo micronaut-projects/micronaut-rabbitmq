@@ -57,7 +57,7 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>7</strong><span>RabbitMQ Consumers</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#rpc"><strong>8</strong><span>Direct Reply-To (RPC)</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#rpc"><strong>8</strong><span>Directly Reply-To (RPC)</span></a></div>
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#initialization"><strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
                                 
@@ -148,7 +148,13 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>7.3</strong><span>Consumer Execution</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-rpc"><a href="#rpc"><strong>8</strong><span>Direct Reply-To (RPC)</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-rpc"><a href="#rpc"><strong>8</strong><span>Directly Reply-To (RPC)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcClientSide"><a href="#rpcClientSide"><strong>8.1</strong><span>Client Side</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcServerSide"><a href="#rpcServerSide"><strong>8.2</strong><span>Server Side</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcConfiguration"><a href="#rpcConfiguration"><strong>8.3</strong><span>Configuration</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-initialization"><a href="#initialization"><strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
         
@@ -1883,7 +1889,7 @@ As with any other case of concurrent execution, operations on data in the instan
 </div>
 </div>
 
-<h1 id="rpc"><a class="anchor" href="#rpc"></a>8 Direct Reply-To (RPC)</h1>
+<h1 id="rpc"><a class="anchor" href="#rpc"></a>8 Directly Reply-To (RPC)</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/3.3.x/src/main/docs/guide/rpc.adoc"'>
@@ -1898,9 +1904,16 @@ As with any other case of concurrent execution, operations on data in the instan
 <div class="paragraph">
 <p>The following is an example direct reply to where the consumer is converting the body to upper case and replying with the converted string.</p>
 </div>
-<div class="sect1">
-<h2 id="_client_side">Client Side</h2>
-<div class="sectionbody">
+
+<h2 id="rpcClientSide"><a class="anchor" href="#rpcClientSide"></a>8.1 Client Side</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/3.3.x/src/main/docs/guide/rpc/rpcClientSide.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
 <div class="paragraph">
 <p>The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.</p>
 </div>
@@ -1932,11 +1945,16 @@ In order for the publisher to assume RPC should be used instead of just completi
 </tr>
 </table>
 </div>
+
+<h2 id="rpcServerSide"><a class="anchor" href="#rpcServerSide"></a>8.2 Server Side</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/3.3.x/src/main/docs/guide/rpc/rpcServerSide.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_server_side">Server Side</h2>
-<div class="sectionbody">
+
+
 <div class="paragraph">
 <p>The "server side" in this case starts with the consumption of a message, and then a new message is published to the reply to queue.</p>
 </div>
@@ -1980,15 +1998,18 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 </tr>
 </table>
 </div>
+
+<h2 id="rpcConfiguration"><a class="anchor" href="#rpcConfiguration"></a>8.3 Configuration</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/3.3.x/src/main/docs/guide/rpc/rpcConfiguration.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_configuration">Configuration</h2>
-<div class="sectionbody">
+
+
 <div class="paragraph">
 <p>By default, if an RPC call does not have a response within a <a href="https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide/configurationreference.html">given time frame</a>, a <code>TimeoutException</code> will be thrown or emitted.</p>
-</div>
-</div>
 </div>
 
 <h1 id="initialization"><a class="anchor" href="#initialization"></a>9 Creating Queues/Exchanges</h1>
