@@ -1,0 +1,9 @@
+The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.
+
+snippet::io.micronaut.rabbitmq.docs.rpc.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+
+<1> The reply to property is set. This could be placed on individual methods.
+<2> The send method is blocking and will return when the response is received.
+<3> The sendReactive method returns a reactive type that will complete when the response is received. Reactive methods will be executed on the IO thread pool.
+
+IMPORTANT: In order for the publisher to assume RPC should be used instead of just completing when the publish is confirmed, the data type must *not* be `Void`. In both cases above, the data type is `String`. In addition, the `replyTo` property must be set. Queues will not be auto created by specifying a value with `replyTo`. The "amq.rabbitmq.reply-to" queue is special and does not need creating.
