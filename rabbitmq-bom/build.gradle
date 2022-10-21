@@ -1,0 +1,9 @@
+plugins {
+    id "io.micronaut.build.internal.bom"
+}
+
+micronautBom {
+    excludeProject.set({ p ->
+        p.path.startsWith(':docs-examples')
+    } as Spec<Project>)
+}

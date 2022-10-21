@@ -11,20 +11,15 @@ plugins {
 
 rootProject.name = 'rabbitmq-parent'
 
+include 'rabbitmq-bom'
 include 'rabbitmq'
+
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-java'
 include 'docs-examples:example-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-    versionCatalogs {
-        mn {
-            from "io.micronaut:micronaut-bom:${providers.gradleProperty('micronautVersion').get()}"
-        }
-    }
+micronautBuild {
+    importMicronautCatalog()
 }
