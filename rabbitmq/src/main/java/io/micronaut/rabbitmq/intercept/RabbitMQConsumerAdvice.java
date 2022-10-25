@@ -486,7 +486,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     // memory and will call handleDelivery for these messages, even if they are re-queued by the broker.
                     // The client will be unable to acknowledge these messages. So it is safe to silently discard
                     // them, without bothering the callback handler.
-                    if (!getChannel().isOpen()) {
+                    // In addition, consuming of queued messages is stopped when the consumer is canceled.
+                    if (canceled || !getChannel().isOpen()) {
                         return;
                     }
                     handlingDeliveryCount.incrementAndGet();
