@@ -21,21 +21,6 @@ class QueueAnnotationSpec extends AbstractRabbitMQTest {
         annotationValue.get().contains 'simple'
     }
 
-    void 'test that @Queue autoAcknowledgment flag is disabled by default'() {
-        given:
-        startContext()
-
-        def definition = applicationContext.getBeanDefinition(MyConsumer)
-
-        when:
-        def method = definition.getRequiredMethod('receive', String)
-        def annotationValue = method.getAnnotation(Queue.class)
-        def autoAcknowledgment = annotationValue.booleanValue("autoAcknowledgment")
-
-        then:
-        autoAcknowledgment.isEmpty()
-    }
-
     void 'test that @Queue autoAcknowledgment flag is enabled'() {
         given:
         startContext()
