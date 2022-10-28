@@ -51,8 +51,11 @@ public class AcknowledgementBinder<T extends Acknowledgement> implements RabbitT
                 ackNack(false, multiple, reQueue);
             }
 
-            private void ackNack(boolean ack, boolean multiple, boolean requeue)  throws MessageAcknowledgementException {
-                new RabbitMessageCloseable(source, multiple, requeue).withAcknowledge(ack).close();
+            private void ackNack(boolean ack, boolean multiple, boolean requeue) throws MessageAcknowledgementException {
+                AcknowledgmentAction acknowledgmentAction = ack ? AcknowledgmentAction.ACK : AcknowledgmentAction.NACK;
+                try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(source, multiple, requeue)) {
+                    closeable.withAcknowledgmentAction(acknowledgmentAction);
+                }
             }
         };
         return () -> Optional.of((T) acknowledgement);

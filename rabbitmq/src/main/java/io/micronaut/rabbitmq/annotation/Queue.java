@@ -60,6 +60,12 @@ public @interface Queue {
     boolean exclusive() default false;
 
     /**
+     * @return Whether the consumer should consider messages acknowledged once delivered
+     * @since 3.4.0
+     */
+    boolean autoAcknowledgment() default false;
+
+    /**
      * @return The unacknowledged message limit
      */
     int prefetch() default 0;

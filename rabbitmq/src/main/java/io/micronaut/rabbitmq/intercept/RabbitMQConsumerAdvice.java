@@ -38,6 +38,7 @@ import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.rabbitmq.bind.AcknowledgmentAction;
 import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
@@ -123,8 +124,12 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
             boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
 
-            boolean hasAckArg = Arrays.stream(method.getArguments())
+            boolean hasAcknowledgementArg = Arrays.stream(method.getArguments())
                     .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
+
+            boolean autoAcknowledgment = !hasAcknowledgementArg && queueAnn.getRequiredValue("autoAcknowledgment", boolean.class);
+
+            boolean skipAckActions = autoAcknowledgment || hasAcknowledgementArg;
 
             Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
             int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
@@ -152,7 +157,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 try {
                     if (boundExecutable != null) {
                         try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue)
-                                .withAcknowledge(hasAckArg ? null : false)) {
+                                .withAcknowledgmentAction(skipAckActions ? AcknowledgmentAction.NONE : AcknowledgmentAction.NACK)) {
                             Object returnedValue = boundExecutable.invoke(bean);
 
                             String replyTo = message.getProperties().getReplyTo();
@@ -175,8 +180,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                 channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
                             }
 
-                            if (!hasAckArg) {
-                                closeable.withAcknowledge(true);
+                            if (!skipAckActions) {
+                                closeable.withAcknowledgmentAction(AcknowledgmentAction.ACK);
                             }
                         } catch (MessageAcknowledgementException e) {
                             throw e;
@@ -187,7 +192,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                     e, bean, state));
                         }
                     } else {
-                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledgmentAction(AcknowledgmentAction.NACK).close();
                     }
                 } catch (MessageAcknowledgementException e) {
                     handleException(new RabbitListenerException(e.getMessage(), e, bean, state));
@@ -199,7 +204,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     String consumerTag = methodTag + "[" + idx + "]";
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
                     consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
-                            exclusive, arguments, channelPool, prefetch, deliverCallback));
+                            exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
                 }
             } catch (Throwable e) {
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
@@ -322,9 +327,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         private final ChannelPool channelPool;
         private final Integer prefetch;
         private final DeliverCallback deliverCallback;
+        private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
+        private final boolean autoAcknowledgment;
         private com.rabbitmq.client.DefaultConsumer consumer;
         private boolean canceled = false;
-        private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
 
         /**
          * Create the consumer and register ({@code Channel.basicConsume}) it with a dedicated channel from the
@@ -332,8 +338,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
          *
          * @throws IOException in case no channel is available or the registration of the consumer fails
          */
-        RecoverableConsumerWrapper(String queue, String consumerTag, ExecutorService executorService, boolean exclusive,
-                Map<String, Object> arguments, ChannelPool channelPool, Integer prefetch, DeliverCallback deliverCallback)
+        RecoverableConsumerWrapper(String queue, String consumerTag, ExecutorService executorService,
+                                   boolean exclusive, Map<String, Object> arguments, ChannelPool channelPool,
+                                   Integer prefetch, DeliverCallback deliverCallback, boolean autoAcknowledgment)
                 throws IOException {
             this.queue = queue;
             this.consumerTag = consumerTag;
@@ -343,6 +350,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             this.channelPool = channelPool;
             this.prefetch = prefetch;
             this.deliverCallback = deliverCallback;
+            this.autoAcknowledgment = autoAcknowledgment;
 
             Channel channel = null;
             try {
@@ -507,7 +515,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 }
             };
 
-            channel.basicConsume(queue, false, consumerTag, false, exclusive, arguments, consumer);
+            channel.basicConsume(queue, autoAcknowledgment, consumerTag, false, exclusive, arguments, consumer);
             return consumer;
         }
     }
