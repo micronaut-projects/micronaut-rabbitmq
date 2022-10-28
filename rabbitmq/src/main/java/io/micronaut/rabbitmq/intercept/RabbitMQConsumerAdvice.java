@@ -127,7 +127,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             boolean hasAcknowledgementArg = Arrays.stream(method.getArguments())
                     .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
 
-            boolean autoAcknowledgment = hasAcknowledgementArg ? false : queueAnn.getRequiredValue("autoAcknowledgment", boolean.class);
+            boolean autoAcknowledgment = !hasAcknowledgementArg && queueAnn.getRequiredValue("autoAcknowledgment", boolean.class);
 
             boolean skipAckActions = autoAcknowledgment || hasAcknowledgementArg;
 

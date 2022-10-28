@@ -80,6 +80,8 @@ public class RabbitMessageCloseable implements AutoCloseable {
      * Set to false if the message should be rejected.
      * Set to null if the message should not be acknowledged or rejected.
      *
+     * @deprecated as of 3.4.0
+     *
      * @param acknowledge The acknowledge parameter.
      * @return The same instance
      */
