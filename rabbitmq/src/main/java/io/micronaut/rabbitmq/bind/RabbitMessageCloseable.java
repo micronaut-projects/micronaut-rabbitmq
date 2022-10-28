@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.bind;
 
 import com.rabbitmq.client.Channel;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 
@@ -35,7 +36,7 @@ public class RabbitMessageCloseable implements AutoCloseable {
     private final long deliveryTag;
     private final boolean multiple;
     private final boolean reQueue;
-    private AcknowledgmentAction acknowledgmentAction;
+    private AcknowledgmentAction acknowledgmentAction = AcknowledgmentAction.NONE;
 
     /**
      * Default constructor.
@@ -55,21 +56,23 @@ public class RabbitMessageCloseable implements AutoCloseable {
 
     @Override
     public void close() throws MessageAcknowledgementException {
-        if (AcknowledgmentAction.NONE == acknowledgmentAction) {
-            return;
-        }
-        if (AcknowledgmentAction.ACK == acknowledgmentAction) {
-            try {
-                channel.basicAck(deliveryTag, multiple);
-            } catch (IOException e) {
-                throw new MessageAcknowledgementException("An error occurred acknowledging a message", e);
-            }
-        } else {
-            try {
-                channel.basicNack(deliveryTag, multiple, reQueue);
-            } catch (IOException e) {
-                throw new MessageAcknowledgementException("An error occurred rejecting a message", e);
-            }
+        switch (acknowledgmentAction) {
+            case NONE:
+                break;
+            case ACK:
+                try {
+                    channel.basicAck(deliveryTag, multiple);
+                } catch (IOException e) {
+                    throw new MessageAcknowledgementException("An error occurred acknowledging a message", e);
+                }
+                break;
+            case NACK:
+                try {
+                    channel.basicNack(deliveryTag, multiple, reQueue);
+                } catch (IOException e) {
+                    throw new MessageAcknowledgementException("An error occurred rejecting a message", e);
+                }
+                break;
         }
     }
 
@@ -105,10 +108,12 @@ public class RabbitMessageCloseable implements AutoCloseable {
      * Set to {@link AcknowledgmentAction#NACK} if the message should be rejected.
      * Set to {@link AcknowledgmentAction#NONE} if the message should not be acknowledged or rejected.
      *
+     * @since 3.4.0
+     *
      * @param acknowledgmentAction The acknowledgment action parameter.
      * @return The same instance
      */
-    public RabbitMessageCloseable withAcknowledgmentAction(AcknowledgmentAction acknowledgmentAction) {
+    public RabbitMessageCloseable withAcknowledgmentAction(@NonNull AcknowledgmentAction acknowledgmentAction) {
         this.acknowledgmentAction = acknowledgmentAction;
         return this;
     }

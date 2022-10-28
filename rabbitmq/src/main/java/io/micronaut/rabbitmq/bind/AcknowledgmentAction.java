@@ -23,7 +23,18 @@ package io.micronaut.rabbitmq.bind;
  *  @since 3.4.0
  */
 public enum AcknowledgmentAction {
+    /**
+     * The action of acknowledging a message.
+     */
     ACK,
+
+    /**
+     * The action of rejecting a message.
+     */
     NACK,
+
+    /**
+     * The acknowledgment action is going to be skipped.
+     */
     NONE
 }

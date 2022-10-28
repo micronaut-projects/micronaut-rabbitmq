@@ -61,6 +61,7 @@ public @interface Queue {
 
     /**
      * @return Whether the consumer should consider messages acknowledged once delivered
+     * @since 3.4.0
      */
     boolean autoAcknowledgment() default false;
 
