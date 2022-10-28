@@ -57,7 +57,9 @@ public class AcknowledgementBinder<T extends Acknowledgement> implements RabbitT
                 try {
                     closeable = new RabbitMessageCloseable(source, multiple, requeue).withAcknowledgmentAction(acknowledgmentControl);
                 } finally {
-                    closeable.close();
+                    if (closeable != null) {
+                        closeable.close();
+                    }
                 }
             }
         };
