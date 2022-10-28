@@ -143,26 +143,30 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <th class="colLast" scope="col">Optional Element and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#autoAcknowledgment--">autoAcknowledgment</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#connection--">connection</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#exclusive--">exclusive</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#executor--">executor</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#numberOfConsumers--">numberOfConsumers</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#prefetch--">prefetch</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>
 <div class="block">Only applies to consumer methods that do not inject an
@@ -235,6 +239,28 @@ public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lan
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether the consumer is exclusive to the queue</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="autoAcknowledgment--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>autoAcknowledgment</h4>
+<pre>public abstract&nbsp;boolean&nbsp;autoAcknowledgment</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the consumer should consider messages acknowledged once delivered</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>3.4.0</dd>
 </dl>
 <dl>
 <dt>Default:</dt>

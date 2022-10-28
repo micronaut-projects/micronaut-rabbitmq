@@ -1705,6 +1705,9 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <li>
 <p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
 </li>
+<li>
+<p>In addition, for methods that have @Queue autoAcknowledgment option enabled, the message will be acknowledged once delivered.</p>
+</li>
 </ol>
 </div>
 <div class="sect2">
@@ -1713,7 +1716,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>reQueue</code> option is no longer considered when the method has a <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a> argument.</td>
+<td>The <code>reQueue</code> and <code>autoAcknowledgment</code> options are no longer considered when the method has a <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a> argument.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
