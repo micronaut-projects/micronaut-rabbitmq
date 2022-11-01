@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 class ProductListener {
     var threads = CopyOnWriteArraySet<String>()
 
-    @Queue(value = "product", numberOfConsumers = 5) // <1>
+    @Queue(value = "product", numberOfConcurrentConsumers = "5") // <1>
     fun receive(data: ByteArray?) {
         threads.add(Thread.currentThread().name) // <2>
         Thread.sleep(500)

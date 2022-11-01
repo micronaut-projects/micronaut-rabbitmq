@@ -19,12 +19,34 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
         when:
-        4.times { producer.go("abc") }
+        4.times { producer.go("someData") }
 
         then:
         waitFor {
             //size check because container is set, so 5 different threads are used.
             consumer.threads.size() == 4
+        }
+    }
+
+    @Override
+    protected void startContext(Map additionalConfig) {
+        additionalConfig['rabbitmq.simple-queue.number-of-consumers'] = 3
+        super.startContext(additionalConfig)
+    }
+
+    void "test multiple consumers using dynamic configuration"() {
+        startContext()
+
+        MyProducer producer = applicationContext.getBean(MyProducer)
+        MyNewConsumer consumer = applicationContext.getBean(MyNewConsumer)
+
+        when:
+        4.times { producer.go("someData") }
+
+        then:
+        waitFor {
+            //size check because container is set, so 5 different threads are used.
+            consumer.threads.size() == 3
         }
     }
 
@@ -42,7 +64,20 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
 
         @Queue(value = "simple", numberOfConsumers = 4)
-        void listen(@MessageBody String body) {
+        void listenOne(@MessageBody String body) {
+            threads << Thread.currentThread().name
+            sleep 500
+        }
+    }
+
+    @Requires(property = "spec.name", value = "MultipleConsumersSpec")
+    @RabbitListener
+    static class MyNewConsumer {
+
+        CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
+
+        @Queue(value = 'simple', numberOfConcurrentConsumers = '${rabbitmq.simple-queue.number-of-consumers}')
+        void listenTwo(@MessageBody String body) {
             threads << Thread.currentThread().name
             sleep 500
         }

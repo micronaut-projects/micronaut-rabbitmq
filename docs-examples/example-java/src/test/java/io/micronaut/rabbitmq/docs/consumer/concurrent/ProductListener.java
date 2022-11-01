@@ -15,7 +15,7 @@ public class ProductListener {
 
     CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>();
 
-    @Queue(value = "product", numberOfConsumers = 5) // <1>
+    @Queue(value = "product", numberOfConcurrentConsumers = "5") // <1>
     public void receive(byte[] data) {
         threads.add(Thread.currentThread().getName()); // <2>
         try {
