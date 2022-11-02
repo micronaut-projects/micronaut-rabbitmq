@@ -133,13 +133,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
 
             Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
 
-            int numberOfConsumers;
-            Optional<String> numberOfConcurrentConsumers = queueAnn.stringValue("numberOfConcurrentConsumers");
-            if (numberOfConcurrentConsumers.isPresent()) {
-                numberOfConsumers = Integer.valueOf(numberOfConcurrentConsumers.get());
-            } else {
-                numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
-            }
+            int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
 
             ChannelPool channelPool = getChannelPool(method);
             ExecutorService executorService = getExecutorService(method);

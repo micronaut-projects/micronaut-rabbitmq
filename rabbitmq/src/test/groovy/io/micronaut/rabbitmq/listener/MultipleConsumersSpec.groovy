@@ -76,7 +76,7 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
 
         CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
 
-        @Queue(value = 'simple', numberOfConcurrentConsumers = '${rabbitmq.simple-queue.number-of-consumers}')
+        @Queue(value = 'simple', numberOfConsumersValue = '${rabbitmq.simple-queue.number-of-consumers}')
         void listenTwo(@MessageBody String body) {
             threads << Thread.currentThread().name
             sleep 500
