@@ -3,11 +3,14 @@ plugins {
 }
 
 dependencies {
+    compileOnly mn.jsr305
+
     api mn.micronaut.messaging
     api mn.micronaut.inject
     api libs.amqp.client
 
     implementation mn.reactor
+    implementation libs.caffeine
 
     compileOnly mn.micronaut.management
     compileOnly libs.micronaut.micrometer.core
@@ -21,6 +24,7 @@ dependencies {
     testImplementation(libs.micronaut.micrometer.core) {
         exclude group: 'io.micronaut.reactor', module: 'micronaut-reactor'
     }
+    testRuntimeOnly mn.logback
 }
 
 test {

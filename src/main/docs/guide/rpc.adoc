@@ -32,6 +32,7 @@ IMPORTANT: RPC consumer methods must never return a reactive type. Because the r
 
 By default if an RPC call does not have a response within a given time frame, a TimeoutException will be thrown or emitted. To configure this value, see the following:
 
-include::{includedir}configurationProperties/io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig$RpcConfiguration.adoc[]
+include::{includedir}configurationProperties/io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig$DefaultRpcConfiguration.adoc[]
+include::{includedir}configurationProperties/io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig$DefaultRpcConfiguration.adoc[]
 
 
