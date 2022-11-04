@@ -163,10 +163,14 @@ public @interface <span class="memberNameLabel">Queue</span></pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#numberOfConsumers--">numberOfConsumers</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#numberOfConsumersValue--">numberOfConsumersValue</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#prefetch--">prefetch</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/rabbitmq/annotation/Queue.html#reQueue--">reQueue</a></span></code>
 <div class="block">Only applies to consumer methods that do not inject an
@@ -305,6 +309,30 @@ public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lan
 <dl>
 <dt>Default:</dt>
 <dd>1</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="numberOfConsumersValue--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>numberOfConsumersValue</h4>
+<pre>@AliasFor(member="numberOfConsumers")
+public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;numberOfConsumersValue</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of consumers used to consumer from a queue concurrently.
+ Allows for the configuration property placeholders.</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>3.4.0</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>"1"</dd>
 </dl>
 </li>
 </ul>
