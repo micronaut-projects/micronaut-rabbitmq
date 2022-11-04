@@ -132,6 +132,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             boolean skipAckActions = autoAcknowledgment || hasAcknowledgementArg;
 
             Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
+
             int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
 
             ChannelPool channelPool = getChannelPool(method);

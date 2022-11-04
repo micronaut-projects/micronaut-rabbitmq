@@ -76,6 +76,14 @@ public @interface Queue {
     int numberOfConsumers() default 1;
 
     /**
+     * @return The number of consumers used to consumer from a queue concurrently.
+     * Allows for the configuration property placeholders.
+     * @since 3.4.0
+     */
+    @AliasFor(member = "numberOfConsumers")
+    String numberOfConsumersValue() default "1";
+
+    /**
      * @see RabbitConnection#connection()
      * @return The connection to use
      */
