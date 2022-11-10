@@ -3,11 +3,12 @@ awaitility = '4.2.0'
 junit = '5.9.1'
 kotest = '5.3.2'
 kotlin = '1.7.20'
-rabbit = '5.16.0'
+managed-amqp-client = '5.16.0'
 testcontainers = '1.17.5'
 
 [libraries]
-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'rabbit' }
+managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
+
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
 junit-jupiter-api = { module = 'org.junit.jupiter:junit-jupiter-api', version.ref = 'junit' }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
