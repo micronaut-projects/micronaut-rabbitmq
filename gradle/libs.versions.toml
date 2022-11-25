@@ -1,7 +1,7 @@
 [versions]
 awaitility = '4.2.0'
 junit = '5.9.1'
-kotest = '5.3.2'
+kotest = '5.5.4'
 kotlin = '1.7.21'
 managed-amqp-client = '5.16.0'
 testcontainers = '1.17.6'
