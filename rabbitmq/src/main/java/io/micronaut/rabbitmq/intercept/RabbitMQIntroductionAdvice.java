@@ -66,6 +66,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link RabbitClient} advice annotation.
@@ -145,7 +146,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             MutableBasicProperties mutableProperties = new MutableBasicProperties();
 
-            Map<String, Object> headers = publisherState.getHeaders();
+            Map<String, Object> headers = publisherState.getHeaders()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
             publisherState.getProperties().forEach((name, value) -> {
                 setBasicProperty(mutableProperties, name, value);

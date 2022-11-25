@@ -21,14 +21,35 @@ class QueueAnnotationSpec extends AbstractRabbitMQTest {
         annotationValue.get().contains 'simple'
     }
 
+    void 'test that @Queue autoAcknowledgment flag is enabled'() {
+        given:
+        startContext()
+
+        def definition = applicationContext.getBeanDefinition(MyConsumer)
+
+        when:
+        def method = definition.getRequiredMethod('receiveAndAutoAck', String)
+        def annotationValue = method.getAnnotation(Queue.class)
+        def autoAcknowledgment = annotationValue.booleanValue("autoAcknowledgment")
+
+        then:
+        autoAcknowledgment.isPresent()
+        autoAcknowledgment.get() == Boolean.TRUE
+    }
+
     @Requires(property = 'spec.name', value = 'QueueAnnotationSpec')
     @RabbitListener
     static class MyConsumer {
 
         List<String> stuff = []
 
-        @Queue('simple')
+        @Queue(value = 'simple')
         void receive(String thing) {
+            stuff << thing
+        }
+
+        @Queue(value = 'simple', autoAcknowledgment = true)
+        void receiveAndAutoAck(String thing) {
             stuff << thing
         }
     }

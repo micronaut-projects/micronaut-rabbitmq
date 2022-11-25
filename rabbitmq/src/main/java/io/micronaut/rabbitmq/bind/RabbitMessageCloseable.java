@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.bind;
 
 import com.rabbitmq.client.Channel;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 
@@ -35,7 +36,7 @@ public class RabbitMessageCloseable implements AutoCloseable {
     private final long deliveryTag;
     private final boolean multiple;
     private final boolean reQueue;
-    private Boolean acknowledge = null;
+    private AcknowledgmentAction acknowledgmentAction = AcknowledgmentAction.NONE;
 
     /**
      * Default constructor.
@@ -55,20 +56,23 @@ public class RabbitMessageCloseable implements AutoCloseable {
 
     @Override
     public void close() throws MessageAcknowledgementException {
-        if (acknowledge != null) {
-            if (acknowledge) {
+        switch (acknowledgmentAction) {
+            case NONE:
+                break;
+            case ACK:
                 try {
                     channel.basicAck(deliveryTag, multiple);
                 } catch (IOException e) {
                     throw new MessageAcknowledgementException("An error occurred acknowledging a message", e);
                 }
-            } else {
+                break;
+            case NACK:
                 try {
                     channel.basicNack(deliveryTag, multiple, reQueue);
                 } catch (IOException e) {
                     throw new MessageAcknowledgementException("An error occurred rejecting a message", e);
                 }
-            }
+                break;
         }
     }
 
@@ -79,11 +83,38 @@ public class RabbitMessageCloseable implements AutoCloseable {
      * Set to false if the message should be rejected.
      * Set to null if the message should not be acknowledged or rejected.
      *
+     * @deprecated as of 3.4.0
+     *
      * @param acknowledge The acknowledge parameter.
      * @return The same instance
      */
+    @Deprecated
     public RabbitMessageCloseable withAcknowledge(@Nullable Boolean acknowledge) {
-        this.acknowledge = acknowledge;
+        if (acknowledge == null) {
+            acknowledgmentAction = AcknowledgmentAction.NONE;
+        } else if (Boolean.TRUE.equals(acknowledge)) {
+            acknowledgmentAction = AcknowledgmentAction.ACK;
+        } else {
+            acknowledgmentAction = AcknowledgmentAction.NACK;
+        }
+        return this;
+    }
+
+    /**
+     * Builder style sets whether the message acknowledgment action should be addressed and message should be acknowledged or rejected,
+     * or otherwise should acknowledgment action be skipped.
+     *
+     * Set to {@link AcknowledgmentAction#ACK} if the message should be acknowledged.
+     * Set to {@link AcknowledgmentAction#NACK} if the message should be rejected.
+     * Set to {@link AcknowledgmentAction#NONE} if the message should not be acknowledged or rejected.
+     *
+     * @since 3.4.0
+     *
+     * @param acknowledgmentAction The acknowledgment action parameter.
+     * @return The same instance
+     */
+    public RabbitMessageCloseable withAcknowledgmentAction(@NonNull AcknowledgmentAction acknowledgmentAction) {
+        this.acknowledgmentAction = acknowledgmentAction;
         return this;
     }
 }

@@ -2,12 +2,13 @@ There are three ways a message can be acknowledged, rejected, or not acknowledge
 
 . For methods that accept an argument of type api:configuration.rabbitmq.bind.RabbitAcknowledgement[], the message will only be acknowledged when the respective methods on that class are executed.
 . For methods that return any other type, including `void`, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.
+. In addition, for methods that have @Queue autoAcknowledgment option enabled, the message will be acknowledged once delivered.
 
 === Acknowledgement Type
 
 snippet::io.micronaut.rabbitmq.docs.consumer.acknowledge.type.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
 
-<1> The `reQueue` option is no longer considered when the method has a api:configuration.rabbitmq.bind.RabbitAcknowledgement[] argument.
+<1> The `reQueue` and `autoAcknowledgment` options are no longer considered when the method has a api:configuration.rabbitmq.bind.RabbitAcknowledgement[] argument.
 <2> The acknowledgement argument is injected into the method. That signifies that this library is no longer in control of acknowledgement in any way for this consumer.
 <3> The first message is rejected and re-queued.
 <4> The second and third messages are not acknowledged. The fourth message that is received is acknowledged along with the second and third messages because the `multiple` argument is `true`.

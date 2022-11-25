@@ -23,6 +23,7 @@ import io.micronaut.core.type.ReturnType;
 import io.micronaut.rabbitmq.reactive.ReactivePublisher;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -69,8 +70,8 @@ class StaticPublisherState {
         this.exchange = exchange;
         this.routingKey = routingKey;
         this.bodyArgument = bodyArgument;
-        this.headers = headers;
-        this.properties = properties;
+        this.headers = Collections.unmodifiableMap(headers);
+        this.properties = Collections.unmodifiableMap(properties);
         this.reactivePublisher = reactivePublisher;
         Class<?> javaReturnType = returnType.getType();
         this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);

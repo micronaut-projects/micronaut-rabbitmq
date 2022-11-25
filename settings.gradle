@@ -6,25 +6,22 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '6.0.1'
+    id 'io.micronaut.build.shared.settings' version '6.1.0'
 }
 
 rootProject.name = 'rabbitmq-parent'
 
+include 'rabbitmq-bom'
 include 'rabbitmq'
+
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-java'
 include 'docs-examples:example-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
-    }
-}
-
 micronautBuild {
+    // TODO remove
+    addSnapshotRepository()
     importMicronautCatalog()
 }
