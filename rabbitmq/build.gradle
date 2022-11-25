@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api mn.micronaut.messaging
     api mn.micronaut.inject
-    api libs.amqp.client
+    api libs.managed.amqp.client
 
     implementation mn.reactor
 
