@@ -5,15 +5,15 @@ plugins {
 
 dependencies {
     testCompileOnly mn.micronaut.inject.groovy
-    testCompileOnly mn.jsr305 // for "warning: unknown enum constant When.MAYBE"
+    testCompileOnly libs.jsr305 // for "warning: unknown enum constant When.MAYBE"
 
     testImplementation projects.rabbitmq
     testImplementation libs.testcontainers
     testImplementation mn.micronaut.inject
     testImplementation mn.reactor
-    testImplementation mn.spock
+    testImplementation mnTest.micronaut.test.spock
 
-    testRuntimeOnly mn.logback
+    testRuntimeOnly mn.logback.classic
 }
 
 tasks.withType(GroovyCompile) {

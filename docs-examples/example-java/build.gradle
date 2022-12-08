@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    testCompileOnly mn.jsr305 // for "warning: unknown enum constant When.MAYBE"
+    testCompileOnly libs.jsr305 // for "warning: unknown enum constant When.MAYBE"
     testImplementation projects.rabbitmq
 
     testAnnotationProcessor mn.micronaut.inject.java
@@ -13,7 +13,7 @@ dependencies {
     testImplementation libs.awaitility
     testImplementation libs.testcontainers
     testImplementation libs.junit.jupiter.api
-    testRuntimeOnly mn.logback
+    testRuntimeOnly mn.logback.classic
 }
 
 compileJava.options.compilerArgs += '-parameters'

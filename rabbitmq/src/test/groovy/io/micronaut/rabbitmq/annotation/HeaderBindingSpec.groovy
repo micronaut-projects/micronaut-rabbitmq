@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq.annotation
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class HeaderBindingSpec extends AbstractRabbitMQTest {
 
@@ -23,6 +24,7 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
         }
     }
 
+    @Serdeable
     static class Person {
         String name
     }

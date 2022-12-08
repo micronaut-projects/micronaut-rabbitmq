@@ -80,7 +80,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final Map<String, ChannelPool> channelPools;
     private final List<RecoverableConsumerWrapper> consumers = new CopyOnWriteArrayList<>();
 
@@ -98,7 +98,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
-                                  ConversionService<?> conversionService,
+                                  ConversionService conversionService,
                                   List<ChannelPool> channelPools) {
         this.beanContext = beanContext;
         this.binderRegistry = binderRegistry;

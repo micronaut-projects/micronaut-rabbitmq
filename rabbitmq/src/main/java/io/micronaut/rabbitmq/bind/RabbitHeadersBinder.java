@@ -29,14 +29,14 @@ import jakarta.inject.Singleton;
 @Singleton
 public class RabbitHeadersBinder implements RabbitAnnotatedArgumentBinder<RabbitHeaders> {
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
     /**
      * Default constructor.
      *
      * @param conversionService The conversion service to convert the body
      */
-    public RabbitHeadersBinder(ConversionService<?> conversionService) {
+    public RabbitHeadersBinder(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
