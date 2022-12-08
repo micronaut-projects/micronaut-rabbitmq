@@ -13,7 +13,7 @@ import jakarta.inject.Singleton
 @Requires(property = "spec.name", value = "DeliveryTagSpec")
 // tag::clazz[]
 @Singleton // <1>
-class DeliveryTagAnnotationBinder(private val conversionService: ConversionService<*>)// <3>
+class DeliveryTagAnnotationBinder(private val conversionService: ConversionService)// <3>
     : RabbitAnnotatedArgumentBinder<DeliveryTag> { // <2>
 
     override fun getAnnotationType(): Class<DeliveryTag> {

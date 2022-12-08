@@ -20,8 +20,8 @@ import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Delivery;
 import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.ShutdownSignalException;
 import com.rabbitmq.client.RecoverableChannel;
+import com.rabbitmq.client.ShutdownSignalException;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -47,11 +47,11 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -80,7 +80,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final Map<String, ChannelPool> channelPools;
     private final List<RecoverableConsumerWrapper> consumers = new CopyOnWriteArrayList<>();
 
@@ -98,7 +98,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
-                                  ConversionService<?> conversionService,
+                                  ConversionService conversionService,
                                   List<ChannelPool> channelPools) {
         this.beanContext = beanContext;
         this.binderRegistry = binderRegistry;

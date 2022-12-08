@@ -15,16 +15,13 @@
  */
 package io.micronaut.rabbitmq.serdes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.MediaType;
-import io.micronaut.jackson.databind.JacksonDatabindMapper;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.io.IOException;
@@ -46,23 +43,11 @@ public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
     private final JsonMapper jsonMapper;
 
     /**
-     * Legacy jackson constructor.
-     *
-     * @param objectMapper The jackson object mapper
-     * @deprecated Use {@link #JsonRabbitMessageSerDes(JsonMapper)} instead
-     */
-    @Deprecated
-    public JsonRabbitMessageSerDes(ObjectMapper objectMapper) {
-        this(new JacksonDatabindMapper(objectMapper));
-    }
-
-    /**
      * Default constructor.
      *
      * @param jsonMapper The json mapper
      * @since 3.2.0
      */
-    @Inject
     public JsonRabbitMessageSerDes(JsonMapper jsonMapper) {
         this.jsonMapper = jsonMapper;
     }

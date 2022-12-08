@@ -2,6 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class PropertyBindingSpec extends AbstractRabbitMQTest {
 
@@ -23,6 +24,7 @@ class PropertyBindingSpec extends AbstractRabbitMQTest {
         }
     }
 
+    @Serdeable
     static class Person {
         String name
     }

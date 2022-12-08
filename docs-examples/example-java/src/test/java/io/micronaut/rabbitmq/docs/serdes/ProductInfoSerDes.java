@@ -20,9 +20,9 @@ public class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // 
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
-    public ProductInfoSerDes(ConversionService<?> conversionService) { // <3>
+    public ProductInfoSerDes(ConversionService conversionService) { // <3>
         this.conversionService = conversionService;
     }
 

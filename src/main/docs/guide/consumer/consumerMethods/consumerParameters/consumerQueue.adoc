@@ -22,7 +22,7 @@ snippet::io.micronaut.rabbitmq.docs.consumer.executor.ProductListener[tags="impo
 
 <1> The executor is set on the queue annotation.
 
-Micronaut will look for an link:{jdkapi}/java/util/concurrent/ExecutorService.html[ExecutorService] bean with a named qualifier that matches the name set in the annotation. The bean can be provided manually or created automatically through configuration of an link:{apimicronaut}io/micronaut/scheduling/executor/ExecutorConfiguration[].
+Micronaut will look for an link:{jdkapi}/java.base/java/util/concurrent/ExecutorService.html[ExecutorService] bean with a named qualifier that matches the name set in the annotation. The bean can be provided manually or created automatically through configuration of an link:{apimicronaut}scheduling/executor/ExecutorConfiguration.html[ExecutorConfiguration].
 
 For example:
 
