@@ -15,12 +15,12 @@
  */
 package io.micronaut.rabbitmq.intercept;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.rabbitmq.client.AMQP;
 import io.micronaut.aop.InterceptedMethod;
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
-import io.micronaut.caffeine.cache.Cache;
-import io.micronaut.caffeine.cache.Caffeine;
 import io.micronaut.context.BeanContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.annotation.Bindable;
@@ -81,7 +81,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQIntroductionAdvice.class);
 
     private final BeanContext beanContext;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final RabbitMessageSerDesRegistry serDesRegistry;
     private final Scheduler scheduler;
     private final Map<String, BiConsumer<Object, MutableBasicProperties>> properties = new HashMap<>();
@@ -96,7 +96,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
      * @param executorService The executor to execute reactive operations on
      */
     public RabbitMQIntroductionAdvice(BeanContext beanContext,
-                                      ConversionService<?> conversionService,
+                                      ConversionService conversionService,
                                       RabbitMessageSerDesRegistry serDesRegistry,
                                       @Named(TaskExecutors.IO) ExecutorService executorService) {
         this.beanContext = beanContext;

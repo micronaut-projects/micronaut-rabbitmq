@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq.annotation
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class HeaderExchangeSpec extends AbstractRabbitMQTest {
 
@@ -29,9 +30,11 @@ class HeaderExchangeSpec extends AbstractRabbitMQTest {
         }
     }
 
+    @Serdeable
     static class Cat extends Animal {
         int lives
     }
+    @Serdeable
     static class Dog extends Animal {
         String size
     }

@@ -21,10 +21,10 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.RecoveryDelayHandler;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
