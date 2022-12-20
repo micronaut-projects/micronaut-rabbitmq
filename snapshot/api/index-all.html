@@ -427,6 +427,12 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
+<dt><a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize(com.rabbitmq.client.Channel)" class="member-name-link">initialize(Channel)</a> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html" title="class in io.micronaut.rabbitmq.connect">ChannelInitializer</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Override <a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize(com.rabbitmq.client.Channel,java.lang.String)"><code>ChannelInitializer.initialize(Channel, String)</code></a> instead</div>
+</div>
+</dd>
 <dt><a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize(com.rabbitmq.client.Channel,java.lang.String)" class="member-name-link">initialize(Channel, String)</a> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html" title="class in io.micronaut.rabbitmq.connect">ChannelInitializer</a></dt>
 <dd>
 <div class="block">Do any work with a channel.</div>
@@ -502,6 +508,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html" class="type-name-link" title="class in io.micronaut.rabbitmq.serdes">JsonRabbitMessageSerDes</a> - Class in <a href="io/micronaut/rabbitmq/serdes/package-summary.html">io.micronaut.rabbitmq.serdes</a></dt>
 <dd>
 <div class="block">Serializes and deserializes objects as JSON using Jackson.</div>
+</dd>
+<dt><a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html#%3Cinit%3E(com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">JsonRabbitMessageSerDes(ObjectMapper)</a> - Constructor for class io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html" title="class in io.micronaut.rabbitmq.serdes">JsonRabbitMessageSerDes</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html#%3Cinit%3E(io.micronaut.json.JsonMapper)"><code>JsonRabbitMessageSerDes(JsonMapper)</code></a> instead</div>
+</div>
 </dd>
 <dt><a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html#%3Cinit%3E(io.micronaut.json.JsonMapper)" class="member-name-link">JsonRabbitMessageSerDes(JsonMapper)</a> - Constructor for class io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html" title="class in io.micronaut.rabbitmq.serdes">JsonRabbitMessageSerDes</a></dt>
 <dd>
@@ -755,7 +767,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Converts RabbitMQ header values to the requested type.</div>
 </dd>
-<dt><a href="io/micronaut/rabbitmq/bind/RabbitHeaderConvertibleValues.html#%3Cinit%3E(java.util.Map,io.micronaut.core.convert.ConversionService)" class="member-name-link">RabbitHeaderConvertibleValues(Map&lt;String, Object&gt;, ConversionService)</a> - Constructor for class io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitHeaderConvertibleValues.html" title="class in io.micronaut.rabbitmq.bind">RabbitHeaderConvertibleValues</a></dt>
+<dt><a href="io/micronaut/rabbitmq/bind/RabbitHeaderConvertibleValues.html#%3Cinit%3E(java.util.Map,io.micronaut.core.convert.ConversionService)" class="member-name-link">RabbitHeaderConvertibleValues(Map&lt;String, Object&gt;, ConversionService&lt;?&gt;)</a> - Constructor for class io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitHeaderConvertibleValues.html" title="class in io.micronaut.rabbitmq.bind">RabbitHeaderConvertibleValues</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -768,7 +780,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Binds an argument of with the <a href="io/micronaut/rabbitmq/annotation/RabbitHeaders.html" title="annotation interface in io.micronaut.rabbitmq.annotation"><code>RabbitHeaders</code></a> annotation from the <a href="io/micronaut/rabbitmq/bind/RabbitConsumerState.html" title="class in io.micronaut.rabbitmq.bind"><code>RabbitConsumerState</code></a>.</div>
 </dd>
-<dt><a href="io/micronaut/rabbitmq/bind/RabbitHeadersBinder.html#%3Cinit%3E(io.micronaut.core.convert.ConversionService)" class="member-name-link">RabbitHeadersBinder(ConversionService)</a> - Constructor for class io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitHeadersBinder.html" title="class in io.micronaut.rabbitmq.bind">RabbitHeadersBinder</a></dt>
+<dt><a href="io/micronaut/rabbitmq/bind/RabbitHeadersBinder.html#%3Cinit%3E(io.micronaut.core.convert.ConversionService)" class="member-name-link">RabbitHeadersBinder(ConversionService&lt;?&gt;)</a> - Constructor for class io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitHeadersBinder.html" title="class in io.micronaut.rabbitmq.bind">RabbitHeadersBinder</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -827,7 +839,7 @@ loadScripts(document, 'script');</script>
  with <a href="io/micronaut/rabbitmq/annotation/RabbitListener.html" title="annotation interface in io.micronaut.rabbitmq.annotation"><code>RabbitListener</code></a> and create and subscribe the relevant methods
  as consumers to RabbitMQ queues.</div>
 </dd>
-<dt><a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)" class="member-name-link">RabbitMQConsumerAdvice(BeanContext, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List&lt;ChannelPool&gt;)</a> - Constructor for class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html" title="class in io.micronaut.rabbitmq.intercept">RabbitMQConsumerAdvice</a></dt>
+<dt><a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)" class="member-name-link">RabbitMQConsumerAdvice(BeanContext, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService&lt;?&gt;, List&lt;ChannelPool&gt;)</a> - Constructor for class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/RabbitMQConsumerAdvice.html" title="class in io.micronaut.rabbitmq.intercept">RabbitMQConsumerAdvice</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -847,7 +859,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Implementation of the <a href="io/micronaut/rabbitmq/annotation/RabbitClient.html" title="annotation interface in io.micronaut.rabbitmq.annotation"><code>RabbitClient</code></a> advice annotation.</div>
 </dd>
-<dt><a href="io/micronaut/rabbitmq/intercept/RabbitMQIntroductionAdvice.html#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.core.convert.ConversionService,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,java.util.concurrent.ExecutorService)" class="member-name-link">RabbitMQIntroductionAdvice(BeanContext, ConversionService, RabbitMessageSerDesRegistry, ExecutorService)</a> - Constructor for class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/RabbitMQIntroductionAdvice.html" title="class in io.micronaut.rabbitmq.intercept">RabbitMQIntroductionAdvice</a></dt>
+<dt><a href="io/micronaut/rabbitmq/intercept/RabbitMQIntroductionAdvice.html#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.core.convert.ConversionService,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,java.util.concurrent.ExecutorService)" class="member-name-link">RabbitMQIntroductionAdvice(BeanContext, ConversionService&lt;?&gt;, RabbitMessageSerDesRegistry, ExecutorService)</a> - Constructor for class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/RabbitMQIntroductionAdvice.html" title="class in io.micronaut.rabbitmq.intercept">RabbitMQIntroductionAdvice</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>

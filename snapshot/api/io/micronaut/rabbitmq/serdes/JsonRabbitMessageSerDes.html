@@ -122,8 +122,14 @@ implements <a href="RabbitMessageSerDes.html" title="interface in io.micronaut.r
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.json.JsonMapper)" class="member-name-link">JsonRabbitMessageSerDes</a><wbr>(io.micronaut.json.JsonMapper&nbsp;jsonMapper)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">JsonRabbitMessageSerDes</a><wbr>(com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(io.micronaut.json.JsonMapper)"><code>JsonRabbitMessageSerDes(JsonMapper)</code></a> instead</div>
+</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(io.micronaut.json.JsonMapper)" class="member-name-link">JsonRabbitMessageSerDes</a><wbr>(io.micronaut.json.JsonMapper&nbsp;jsonMapper)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Default constructor.</div>
 </div>
 </div>
@@ -194,9 +200,25 @@ implements <a href="RabbitMessageSerDes.html" title="interface in io.micronaut.r
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="&lt;init&gt;(com.fasterxml.jackson.databind.ObjectMapper)">
+<h3>JsonRabbitMessageSerDes</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">JsonRabbitMessageSerDes</span><wbr><span class="parameters">(com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(io.micronaut.json.JsonMapper)"><code>JsonRabbitMessageSerDes(JsonMapper)</code></a> instead</div>
+</div>
+<div class="block">Legacy jackson constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>objectMapper</code> - The jackson object mapper</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="&lt;init&gt;(io.micronaut.json.JsonMapper)">
 <h3>JsonRabbitMessageSerDes</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">JsonRabbitMessageSerDes</span><wbr><span class="parameters">(io.micronaut.json.JsonMapper&nbsp;jsonMapper)</span></div>
+<div class="member-signature"><span class="annotations">@Inject
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">JsonRabbitMessageSerDes</span><wbr><span class="parameters">(io.micronaut.json.JsonMapper&nbsp;jsonMapper)</span></div>
 <div class="block">Default constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
