@@ -21,5 +21,9 @@ include 'docs-examples:example-kotlin'
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
 micronautBuild {
+    // TODO remove
+    addSnapshotRepository()
     importMicronautCatalog()
+    importMicronautCatalog("micronaut-micrometer")
+    importMicronautCatalog("micronaut-serde")
 }
