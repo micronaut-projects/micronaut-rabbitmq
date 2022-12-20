@@ -1,3 +1,4 @@
 This library supports RPC through the usage of link:https://www.rabbitmq.com/direct-reply-to.html[direct reply-to]. Both blocking and non blocking variations are supported. To get started using this feature, publishing methods must have the `replyTo` property set to "amq.rabbitmq.reply-to". The "amq.rabbitmq.reply-to" queue always exists and does not need to be created.
 
 The following is an example direct reply to where the consumer is converting the body to upper case and replying with the converted string.
+

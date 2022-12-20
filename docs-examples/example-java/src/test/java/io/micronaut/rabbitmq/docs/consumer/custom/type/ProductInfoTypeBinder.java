@@ -21,9 +21,9 @@ import java.util.Optional;
 @Singleton // <1>
 public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder<ProductInfo> { //<2>
 
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
 
-    ProductInfoTypeBinder(ConversionService<?> conversionService) { //<3>
+    ProductInfoTypeBinder(ConversionService conversionService) { //<3>
         this.conversionService = conversionService;
     }
 

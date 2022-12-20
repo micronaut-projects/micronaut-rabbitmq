@@ -17,7 +17,7 @@ import java.util.Optional
 @Requires(property = "spec.name", value = "ProductInfoSpec")
 // tag::clazz[]
 @Singleton // <1>
-class ProductInfoTypeBinder constructor(private val conversionService: ConversionService<*>) //<3>
+class ProductInfoTypeBinder constructor(private val conversionService: ConversionService) //<3>
     : RabbitTypeArgumentBinder<ProductInfo> { // <2>
 
     override fun argumentType(): Argument<ProductInfo> {

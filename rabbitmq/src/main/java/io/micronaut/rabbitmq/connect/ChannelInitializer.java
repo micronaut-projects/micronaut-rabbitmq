@@ -37,23 +37,11 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
      * Do any work with a channel.
      *
      * @param channel The channel to use
-     * @throws IOException If any error occurs
-     * @deprecated Override {@link #initialize(Channel, String)} instead
-     */
-    @Deprecated
-    public void initialize(Channel channel) throws IOException {
-        //no-op
-    }
-
-    /**
-     * Do any work with a channel.
-     *
-     * @param channel The channel to use
      * @param name The name of the channel pool, like configured under `rabbitmq.servers`
      * @throws IOException If any error occurs
      */
     public void initialize(Channel channel, String name) throws IOException {
-        initialize(channel);
+        //no-op
     }
 
     @Override

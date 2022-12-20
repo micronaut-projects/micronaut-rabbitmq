@@ -1,0 +1,7 @@
+[
+  {
+    "type": "io.micronaut.rabbitmq.serdes.JsonRabbitMessageSerDes",
+    "member": "Constructor io.micronaut.rabbitmq.serdes.JsonRabbitMessageSerDes(com.fasterxml.jackson.databind.ObjectMapper)",
+    "reason": "Removed deprecated constructor for Micronaut 4.0.x"
+  }
+]

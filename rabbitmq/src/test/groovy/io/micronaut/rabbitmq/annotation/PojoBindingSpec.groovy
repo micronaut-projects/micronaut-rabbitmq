@@ -2,6 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class PojoBindingSpec extends AbstractRabbitMQTest {
 
@@ -38,6 +39,7 @@ class PojoBindingSpec extends AbstractRabbitMQTest {
         }
     }
 
+    @Serdeable
     static class Person {
         String name
     }
