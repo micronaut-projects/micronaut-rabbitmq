@@ -4,7 +4,7 @@ Since the publisher is cold, the message will not actually be published until th
 
 For example:
 
-snippet::io.micronaut.rabbitmq.docs.publisher.acknowledge.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.publisher.acknowledge.ProductClient[tags="imports,clazz", project-base="docs-examples/example"]
 
 <1> A `Publisher` can be returned. Any other reactive streams implementation type can also be returned given the required relevant dependency is in place
 <2> Java futures can also be returned
