@@ -1,6 +1,6 @@
 The "server side" in this case starts with the consumption of a message, and then a new message is published to the reply to queue.
 
-snippet::io.micronaut.rabbitmq.docs.rpc.ProductListener[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.rpc.ProductListener[tags="imports,clazz", project-base="docs-examples/example"]
 
 <1> The reply to property is injected. If the consumer will not always be participating in RPC this could be annotated with `@Nullable` to allow both use cases.
 <2> The channel is injected so it can be used. This could be replaced with a method call of another `@RabbitClient`.
