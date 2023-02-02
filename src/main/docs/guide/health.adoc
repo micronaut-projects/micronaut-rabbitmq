@@ -2,7 +2,7 @@ This library comes with a health indicator for applications that are using the `
 
 The information reported from the health indicator is under the `rabbitmq` key. The details will include everything that is reported from link:{apirabbit}client/Connection.html#getServerProperties()[Connection#getServerProperties]. For example:
 
-[source,yaml]
+[configuration]
 ----
 "rabbitmq": {
   "status": "UP",
@@ -21,9 +21,9 @@ The information reported from the health indicator is under the `rabbitmq` key. 
       "publisher_confirms": true,
       "consumer_cancel_notify": true
     },
-    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "information": "Licensed under the MPL.  See http://www.rabbitmq.com/",
     "version": "3.7.8",
-    "platform": "Erlang\/OTP 20.3.8.5"
+    "platform": "Erlang/OTP 20.3.8.5"
   }
 }
 ----
