@@ -962,7 +962,19 @@ It is also possible to disable the integration entirely with <code>rabbitmq.enab
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rabbitmq.servers.server-a.host=localhost
+rabbitmq.servers.server-a.port=5672
+rabbitmq.servers.server-a.consumer-executor=a-pool
+rabbitmq.servers.server-b.host=localhost
+rabbitmq.servers.server-b.port=5672
+rabbitmq.servers.server-b.consumer-executor=b-pool</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
     servers:
@@ -974,6 +986,80 @@ It is also possible to disable the integration entirely with <code>rabbitmq.enab
             host: localhost
             port: 5672
             consumer-executor: "b-pool"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[rabbitmq]
+  [rabbitmq.servers]
+    [rabbitmq.servers.server-a]
+      host="localhost"
+      port=5672
+      consumer-executor="a-pool"
+    [rabbitmq.servers.server-b]
+      host="localhost"
+      port=5672
+      consumer-executor="b-pool"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">rabbitmq {
+  servers {
+    serverA {
+      host = "localhost"
+      port = 5672
+      consumerExecutor = "a-pool"
+    }
+    serverB {
+      host = "localhost"
+      port = 5672
+      consumerExecutor = "b-pool"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  rabbitmq {
+    servers {
+      server-a {
+        host = "localhost"
+        port = 5672
+        consumer-executor = "a-pool"
+      }
+      server-b {
+        host = "localhost"
+        port = 5672
+        consumer-executor = "b-pool"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "rabbitmq": {
+    "servers": {
+      "server-a": {
+        "host": "localhost",
+        "port": 5672,
+        "consumer-executor": "a-pool"
+      },
+      "server-b": {
+        "host": "localhost",
+        "port": 5672,
+        "consumer-executor": "b-pool"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -994,7 +1080,17 @@ When the configuration option <code>rabbitmq.servers</code> is used, no other op
 <div class="paragraph">
 <p>RabbitMQ also supports a fail over connection strategy where the first server that connects successfully will be used among a list of servers. To use this option in Micronaut, simply supply a list of <code>host:port</code> addresses.</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rabbitmq.addresses[0]=localhost:12345
+rabbitmq.addresses[1]=localhost:12346
+rabbitmq.username=guest
+rabbitmq.password=guest</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
     addresses:
@@ -1002,6 +1098,50 @@ When the configuration option <code>rabbitmq.servers</code> is used, no other op
       - localhost:12346
     username: guest
     password: guest</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[rabbitmq]
+  addresses=[
+    "localhost:12345",
+    "localhost:12346"
+  ]
+  username="guest"
+  password="guest"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">rabbitmq {
+  addresses = ["localhost:12345", "localhost:12346"]
+  username = "guest"
+  password = "guest"
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  rabbitmq {
+    addresses = ["localhost:12345", "localhost:12346"]
+    username = "guest"
+    password = "guest"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "rabbitmq": {
+    "addresses": ["localhost:12345", "localhost:12346"],
+    "username": "guest",
+    "password": "guest"
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -2000,14 +2140,73 @@ class ProductListener {
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
 <div class="title">Configuring the <code>product-listener</code> thread pool</div>
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.executors.product-listener.type=fixed
+micronaut.executors.product-listener.nThreads=25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
     executors:
         product-listener:
             type: fixed
             nThreads: 25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.executors]
+    [micronaut.executors.product-listener]
+      type="fixed"
+      nThreads=25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  executors {
+    productListener {
+      type = "fixed"
+      nThreads = 25
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    executors {
+      product-listener {
+        type = "fixed"
+        nThreads = 25
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "executors": {
+      "product-listener": {
+        "type": "fixed",
+        "nThreads": 25
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -3168,14 +3367,73 @@ class ProductListener {
 <div class="paragraph">
 <p>For example:</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
 <div class="title">Configuring the <code>consumer</code> thread pool</div>
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.executors.consumer.type=fixed
+micronaut.executors.consumer.nThreads=25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
     executors:
         consumer:
             type: fixed
             nThreads: 25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.executors]
+    [micronaut.executors.consumer]
+      type="fixed"
+      nThreads=25</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  executors {
+    consumer {
+      type = "fixed"
+      nThreads = 25
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    executors {
+      consumer {
+        type = "fixed"
+        nThreads = 25
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "executors": {
+      "consumer": {
+        "type": "fixed",
+        "nThreads": 25
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -3888,7 +4146,29 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 <div class="paragraph">
 <p>The information reported from the health indicator is under the <code>rabbitmq</code> key. The details will include everything that is reported from <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Connection.html#getServerProperties()">Connection#getServerProperties</a>. For example:</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rabbitmq.status=UP
+rabbitmq.details.cluster_name=rabbit@a0378bc51148
+rabbitmq.details.product=RabbitMQ
+rabbitmq.details.copyright=Copyright (C) 2007-2018 Pivotal Software, Inc.
+rabbitmq.details.capabilities.consumer_priorities=true
+rabbitmq.details.capabilities.exchange_exchange_bindings=true
+rabbitmq.details.capabilities.connection.blocked=true
+rabbitmq.details.capabilities.authentication_failure_close=true
+rabbitmq.details.capabilities.per_consumer_qos=true
+rabbitmq.details.capabilities.basic.nack=true
+rabbitmq.details.capabilities.direct_reply_to=true
+rabbitmq.details.capabilities.publisher_confirms=true
+rabbitmq.details.capabilities.consumer_cancel_notify=true
+rabbitmq.details.information=Licensed under the MPL.  See http://www.rabbitmq.com/
+rabbitmq.details.version=3.7.8
+rabbitmq.details.platform=Erlang/OTP 20.3.8.5</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">"rabbitmq": {
   "status": "UP",
@@ -3907,11 +4187,118 @@ Because the <code>getOrder</code> method was not overridden, the default order o
       "publisher_confirms": true,
       "consumer_cancel_notify": true
     },
-    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "information": "Licensed under the MPL.  See http://www.rabbitmq.com/",
     "version": "3.7.8",
-    "platform": "Erlang\/OTP 20.3.8.5"
+    "platform": "Erlang/OTP 20.3.8.5"
   }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[rabbitmq]
+  status="UP"
+  [rabbitmq.details]
+    cluster_name="rabbit@a0378bc51148"
+    product="RabbitMQ"
+    copyright="Copyright (C) 2007-2018 Pivotal Software, Inc."
+    [rabbitmq.details.capabilities]
+      consumer_priorities=true
+      exchange_exchange_bindings=true
+      "connection.blocked"=true
+      authentication_failure_close=true
+      per_consumer_qos=true
+      "basic.nack"=true
+      direct_reply_to=true
+      publisher_confirms=true
+      consumer_cancel_notify=true
+    information="Licensed under the MPL.  See http://www.rabbitmq.com/"
+    version="3.7.8"
+    platform="Erlang/OTP 20.3.8.5"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">rabbitmq {
+  status = "UP"
+  details {
+    cluster_name = "rabbit@a0378bc51148"
+    product = "RabbitMQ"
+    copyright = "Copyright (C) 2007-2018 Pivotal Software, Inc."
+    capabilities {
+      consumer_priorities = true
+      exchange_exchange_bindings = true
+      connection.blocked = true
+      authentication_failure_close = true
+      per_consumer_qos = true
+      basic.nack = true
+      direct_reply_to = true
+      publisher_confirms = true
+      consumer_cancel_notify = true
+    }
+    information = "Licensed under the MPL.  See http://www.rabbitmq.com/"
+    version = "3.7.8"
+    platform = "Erlang/OTP 20.3.8.5"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  rabbitmq {
+    status = "UP"
+    details {
+      cluster_name = "rabbit@a0378bc51148"
+      product = "RabbitMQ"
+      copyright = "Copyright (C) 2007-2018 Pivotal Software, Inc."
+      capabilities {
+        consumer_priorities = true
+        exchange_exchange_bindings = true
+        "connection.blocked" = true
+        authentication_failure_close = true
+        per_consumer_qos = true
+        "basic.nack" = true
+        direct_reply_to = true
+        publisher_confirms = true
+        consumer_cancel_notify = true
+      }
+      information = "Licensed under the MPL.  See http://www.rabbitmq.com/"
+      version = "3.7.8"
+      platform = "Erlang/OTP 20.3.8.5"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "rabbitmq": {
+    "status": "UP",
+    "details": {
+      "cluster_name": "rabbit@a0378bc51148",
+      "product": "RabbitMQ",
+      "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
+      "capabilities": {
+        "consumer_priorities": true,
+        "exchange_exchange_bindings": true,
+        "connection.blocked": true,
+        "authentication_failure_close": true,
+        "per_consumer_qos": true,
+        "basic.nack": true,
+        "direct_reply_to": true,
+        "publisher_confirms": true,
+        "consumer_cancel_notify": true
+      },
+      "information": "Licensed under the MPL.  See http://www.rabbitmq.com/",
+      "version": "3.7.8",
+      "platform": "Erlang/OTP 20.3.8.5"
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -3942,7 +4329,16 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 <div class="paragraph">
 <p>The RabbitMQ metrics binder is configurable. For example:</p>
 </div>
-<div class="listingblock">
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.metrics.binders.rabbitmq.enabled=Boolean
+micronaut.metrics.binders.rabbitmq.tags=String[]
+micronaut.metrics.binders.rabbitmq.prefix=String</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
     metrics:
@@ -3951,6 +4347,68 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
                 enabled: Boolean
                 tags: String[]
                 prefix: String</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.metrics]
+    [micronaut.metrics.binders]
+      [micronaut.metrics.binders.rabbitmq]
+        enabled="Boolean"
+        tags="String[]"
+        prefix="String"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  metrics {
+    binders {
+      rabbitmq {
+        enabled = "Boolean"
+        tags = "String[]"
+        prefix = "String"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    metrics {
+      binders {
+        rabbitmq {
+          enabled = "Boolean"
+          tags = "String[]"
+          prefix = "String"
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "metrics": {
+      "binders": {
+        "rabbitmq": {
+          "enabled": "Boolean",
+          "tags": "String[]",
+          "prefix": "String"
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 
