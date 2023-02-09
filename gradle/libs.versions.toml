@@ -19,7 +19,6 @@ awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' 
 junit-jupiter-engine = { module = 'org.junit.jupiter:junit-jupiter-engine', version.ref = 'junit' }
 caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
-junit-jupiter-api = { module = 'org.junit.jupiter:junit-jupiter-api', version.ref = 'junit' }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
