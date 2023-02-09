@@ -1,5 +1,5 @@
 plugins {
-    id 'io.micronaut.build.internal.rabbitmq-module'
+    id 'io.micronaut.build.internal.rabbitmq-examples'
     id 'groovy'
 }
 
@@ -7,9 +7,6 @@ dependencies {
     testImplementation projects.rabbitmq
 
     testCompileOnly mn.micronaut.inject.groovy
-    testImplementation libs.testcontainers
-    testImplementation mn.micronaut.inject
-    testImplementation mn.reactor
     testImplementation mn.spock
 }
 

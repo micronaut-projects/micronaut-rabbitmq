@@ -1,0 +1,10 @@
+plugins {
+    id 'io.micronaut.build.internal.rabbitmq-base'
+}
+
+dependencies {
+    testImplementation mn.micronaut.inject
+    testImplementation projects.rabbitmq
+    testImplementation libs.testcontainers
+    testImplementation mn.reactor
+}
