@@ -16,6 +16,7 @@ micronaut-serde = "2.0.0-SNAPSHOT"
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
 
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
+junit-jupiter-engine = { module = 'org.junit.jupiter:junit-jupiter-engine', version.ref = 'junit' }
 caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
 junit-jupiter-api = { module = 'org.junit.jupiter:junit-jupiter-api', version.ref = 'junit' }
