@@ -4,8 +4,6 @@ plugins {
 }
 
 dependencies {
-    testImplementation projects.rabbitmq
-
     testCompileOnly mn.micronaut.inject.groovy
     testImplementation mn.spock
 }

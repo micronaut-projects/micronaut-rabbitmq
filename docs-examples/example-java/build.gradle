@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-    testImplementation projects.rabbitmq
-
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation libs.awaitility
     testImplementation mn.micronaut.test.junit5
