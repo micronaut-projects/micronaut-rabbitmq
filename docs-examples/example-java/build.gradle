@@ -1,17 +1,12 @@
 plugins {
-    id 'io.micronaut.build.internal.rabbitmq-module'
-    id 'java'
+    id 'io.micronaut.build.internal.rabbitmq-examples'
 }
 
 dependencies {
-    testImplementation projects.rabbitmq
-
     testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mn.micronaut.inject
-    testImplementation mn.reactor
     testImplementation libs.awaitility
-    testImplementation libs.testcontainers
-    testImplementation libs.junit.jupiter.api
+    testImplementation mn.micronaut.test.junit5
+    testImplementation libs.junit.jupiter.engine
 }
 
 compileJava.options.compilerArgs += '-parameters'
