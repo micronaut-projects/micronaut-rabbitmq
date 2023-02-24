@@ -71,7 +71,7 @@ public @interface Queue {
     int prefetch() default 0;
 
     /**
-     * @return The number of consumers used to consumer from a queue concurrently
+     * @return The number of consumers used to consume from a queue concurrently
      */
     int numberOfConsumers() default 1;
 
