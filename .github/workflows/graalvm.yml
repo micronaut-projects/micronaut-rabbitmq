@@ -42,8 +42,9 @@ jobs:
           version: ${{ matrix.graalvm }}
           java-version: ${{ matrix.java }}
           components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.3.3
+        uses: gradle/gradle-build-action@v2.4.0
       - name: Build with Gradle
         id: gradle
         run: |
@@ -55,6 +56,8 @@ jobs:
           fi
         env:
            TESTCONTAINERS_RYUK_DISABLED: true
+           GH_TOKEN_PUBLIC_REPOS_READONLY: ${{ secrets.GH_TOKEN_PUBLIC_REPOS_READONLY }}
+           GH_USERNAME: ${{ secrets.GH_USERNAME }}
            GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
            GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
            GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
@@ -73,7 +76,7 @@ jobs:
             })
       - name: Publish Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v3.7.0
+        uses: mikepenz/action-junit-report@v3.7.5
         with:
           check_name: GraalVM CE CI / Test Report (Java ${{ matrix.java }})
           report_paths: '**/build/test-results/test/TEST-*.xml'
