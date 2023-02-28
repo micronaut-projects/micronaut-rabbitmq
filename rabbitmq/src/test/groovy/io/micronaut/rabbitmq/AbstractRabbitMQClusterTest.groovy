@@ -22,7 +22,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
 
     private static final int AMQP_PORT = 5672
-    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("library/rabbitmq:3.8-management")
+    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("library/rabbitmq:3.11.9-management")
     private static final String CLUSTER_COOKIE = "test-cluster"
     private static final String RABBIT_CONFIG_PATH = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").path
     private static final String RABBIT_DEFINITIONS_PATH = ClassLoader.getSystemResource("rabbit/definitions.json").path
