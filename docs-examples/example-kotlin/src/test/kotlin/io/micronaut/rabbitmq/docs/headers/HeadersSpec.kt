@@ -4,7 +4,7 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -27,7 +27,7 @@ class HeadersSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     productListener.messageProperties.size shouldBe 4
                     productListener.messageProperties shouldContain "true|10|small"
                     productListener.messageProperties shouldContain "true|20|medium"

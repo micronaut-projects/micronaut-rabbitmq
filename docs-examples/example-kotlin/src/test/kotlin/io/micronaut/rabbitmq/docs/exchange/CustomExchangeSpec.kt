@@ -4,7 +4,7 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.collections.shouldExist
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -26,7 +26,7 @@ class CustomExchangeSpec: AbstractRabbitMQTest({
 
             then("the messages are received") {
                 val messages = listener.receivedAnimals
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     messages.size shouldBe  4
                     messages shouldExist({ animal: Animal ->
                         Cat::class.isInstance(animal) && animal.name == "Whiskers"

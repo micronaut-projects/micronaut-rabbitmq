@@ -3,7 +3,7 @@ package io.micronaut.rabbitmq.docs.consumer.concurrent
 import io.kotest.framework.concurrency.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -22,7 +22,7 @@ class ConcurrentSpec : AbstractRabbitMQTest({
             }
 
             then("The messages are received") {
-                eventually(Duration.seconds(5)) {
+                eventually(5.seconds) {
                     productListener.threads.size shouldBe 4
                 }
             }

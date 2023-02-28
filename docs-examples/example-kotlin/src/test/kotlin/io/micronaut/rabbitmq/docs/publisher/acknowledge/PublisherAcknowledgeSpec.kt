@@ -7,7 +7,7 @@ import kotlinx.coroutines.async
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -64,7 +64,7 @@ class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
 // end::producer[]
 
             then("The messages are published") {
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     errorCount.get() shouldBe 0
                     successCount.get() shouldBe 3
                 }
