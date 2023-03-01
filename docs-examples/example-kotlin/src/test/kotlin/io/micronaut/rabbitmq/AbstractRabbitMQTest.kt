@@ -7,7 +7,7 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 abstract class AbstractRabbitMQTest(body: BehaviorSpec.() -> Unit): BehaviorSpec(body) {
 
     companion object {
-        val rabbitContainer = KGenericContainer("library/rabbitmq:3.11.9-management")
+        val rabbitContainer = KGenericContainer("library/rabbitmq:3.11.9")
                 .withExposedPorts(5672)
                 .waitingFor(LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))!!
 
