@@ -368,13 +368,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
     private Map.Entry<String, Object> getNameAndValue(Argument argument, AnnotationValue<?> annotationValue, Map<String, Object> parameterValues) {
         String argumentName = argument.getName();
-        String name = annotationValue.get("name", String.class).orElse(annotationValue.getValue(String.class).orElse(argumentName));
-
-        // FIXME? AnnotationValue.get(CharSequence member, ArgumentConversionContext<T> conversionContext)
-        //  changed with a recent core 4.0.0-SNAPSHOT and now maps "" to keys where it didn't previously
-        //  so this is a defense against that, but is it correct, or is it a bug in core?
-        name = "".equals(name) ? argumentName : name;
-
+        String name = annotationValue.stringValue("name").orElse(annotationValue.stringValue().orElse(argumentName));
         Object value = parameterValues.get(argumentName);
 
         return new AbstractMap.SimpleEntry<>(name, value);
