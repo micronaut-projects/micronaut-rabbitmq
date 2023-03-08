@@ -8,14 +8,14 @@ class ProductInfo {
 
     private String size
     private Long count
-    private Boolean sealed
+    private Boolean productSealed
 
     ProductInfo(@Nullable String size, // <1>
                 @NonNull Long count, // <2>
-                @NonNull Boolean sealed) { // <3>
+                @NonNull Boolean productSealed) { // <3>
         this.size = size
         this.count = count
-        this.sealed = sealed
+        this.productSealed = productSealed
     }
 
     String getSize() {
@@ -27,7 +27,7 @@ class ProductInfo {
     }
 
     Boolean getSealed() {
-        sealed
+        productSealed
     }
 }
 // end::clazz[]

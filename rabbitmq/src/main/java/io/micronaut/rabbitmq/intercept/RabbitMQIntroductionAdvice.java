@@ -300,7 +300,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             Optional<String> routingKey = bindingAnn.flatMap(b -> b.getValue(String.class));
 
             String connection = method.findAnnotation(RabbitConnection.class)
-                    .flatMap(conn -> conn.get("connection", String.class))
+                    .flatMap(conn -> conn.stringValue("connection"))
                     .orElse(RabbitConnection.DEFAULT_CONNECTION);
 
             Argument<?> bodyArgument = findBodyArgument(method)
@@ -311,8 +311,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             List<AnnotationValue<MessageHeader>> headerAnnotations = method.getAnnotationValuesByType(MessageHeader.class);
             Collections.reverse(headerAnnotations); //set the values in the class first so methods can override
             headerAnnotations.forEach((header) -> {
-                String name = header.get("name", String.class).orElse(null);
-                String value = header.getValue(String.class).orElse(null);
+                String name = header.stringValue("name").orElse(null);
+                String value = header.stringValue().orElse(null);
 
                 if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
                     methodHeaders.put(name, value);
@@ -324,8 +324,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             List<AnnotationValue<RabbitProperty>> propertyAnnotations = method.getAnnotationValuesByType(RabbitProperty.class);
             Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
             propertyAnnotations.forEach((prop) -> {
-                String name = prop.get("name", String.class).orElse(null);
-                String value = prop.getValue(String.class).orElse(null);
+                String name = prop.stringValue("name").orElse(null);
+                String value = prop.stringValue().orElse(null);
 
                 if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
                     if (this.properties.containsKey(name)) {

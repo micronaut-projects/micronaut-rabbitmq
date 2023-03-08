@@ -35,10 +35,10 @@ class ProductInfoSerDes implements RabbitMessageSerDes<ProductInfo> { // <2>
             }
 
             Optional<Long> count = conversionService.convert(parts[1], Long)
-            Optional<Boolean> sealed = conversionService.convert(parts[2], Boolean)
+            Optional<Boolean> productSealed = conversionService.convert(parts[2], Boolean)
 
-            if (count.isPresent() && sealed.isPresent()) {
-                return new ProductInfo(size, count.get(), sealed.get())
+            if (count.isPresent() && productSealed.isPresent()) {
+                return new ProductInfo(size, count.get(), productSealed.get())
             }
         }
         null
