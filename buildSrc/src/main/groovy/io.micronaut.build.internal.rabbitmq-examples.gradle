@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    testImplementation projects.rabbitmq
+    testImplementation projects.micronautRabbitmq
 
     testImplementation mn.micronaut.inject
     testImplementation mn.reactor
