@@ -200,7 +200,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
             ReactivePublisher reactivePublisher = publisherState.getReactivePublisher();
-            InterceptedMethod interceptedMethod = InterceptedMethod.of(context);
+            InterceptedMethod interceptedMethod = InterceptedMethod.of(context, conversionService);
 
             try {
                 boolean replyToSet = StringUtils.isNotEmpty(properties.getReplyTo());
