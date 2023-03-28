@@ -18,10 +18,10 @@ class SimpleBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 3
-            consumer.messages[0] == true
-            consumer.messages[1] == false
-            consumer.messages[2] == null
+            assert consumer.messages.size() == 3
+            assert consumer.messages[0] == true
+            assert consumer.messages[1] == false
+            assert consumer.messages[2] == null
         }
     }
 
@@ -37,11 +37,11 @@ class SimpleBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 4
-            consumer.messages[0] == true
-            consumer.messages[1] == false
-            consumer.messages[2] == null
-            consumer.messages[3] == true
+            assert consumer.messages.size() == 4
+            assert consumer.messages[0] == true
+            assert consumer.messages[1] == false
+            assert consumer.messages[2] == null
+            assert consumer.messages[3] == true
         }
     }
 

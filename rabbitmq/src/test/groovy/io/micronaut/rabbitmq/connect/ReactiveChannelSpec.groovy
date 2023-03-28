@@ -144,8 +144,8 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            messageCount.get() == 75
-            integer.get() == 0
+            assert messageCount.get() == 75
+            assert integer.get() == 0
         }
 
         cleanup:

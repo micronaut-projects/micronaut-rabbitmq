@@ -26,9 +26,9 @@ class MissingHeaderSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.headers.size() == 0
-            consumer.errors.size() == 0
-            consumer.bodies.size() == 1
+            assert consumer.headers.size() == 0
+            assert consumer.errors.size() == 0
+            assert consumer.bodies.size() == 1
         }
     }
 

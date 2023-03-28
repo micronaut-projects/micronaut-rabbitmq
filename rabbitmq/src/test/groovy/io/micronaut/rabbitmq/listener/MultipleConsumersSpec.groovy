@@ -24,7 +24,7 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         then:
         waitFor {
             //size check because container is set, so 5 different threads are used.
-            consumer.threads.size() == 4
+            assert consumer.threads.size() == 4
         }
     }
 
@@ -46,7 +46,7 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         then:
         waitFor {
             //size check because container is set, so 5 different threads are used.
-            consumer.threads.size() == 3
+            assert consumer.threads.size() == 3
         }
     }
 
