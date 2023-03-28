@@ -16,7 +16,7 @@ testcontainers = '1.17.6'
 managed-amqp-client = '5.16.0'
 
 micronaut-micrometer = "5.0.0-M1"
-micronaut-serde = "2.0.0-SNAPSHOT"
+micronaut-serde = "2.0.0-M1"
 
 [libraries]
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
