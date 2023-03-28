@@ -54,7 +54,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
             .blockFirst(Duration.ofSeconds(10)) == null
 
         waitFor {
-            consumerAckd
+            assert consumerAckd
         }
 
         cleanup:
@@ -86,7 +86,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            messageCount.get() == 1
+            assert messageCount.get() == 1
         }
 
         when:
@@ -97,7 +97,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            messageCount.get() == 2
+            assert messageCount.get() == 2
         }
 
         cleanup:
