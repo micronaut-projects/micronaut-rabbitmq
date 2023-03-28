@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    kaptTest enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion")
+    kaptTest enforcedPlatform("io.micronaut:micronaut-core-bom:$micronautVersion")
     kaptTest mn.micronaut.inject.java
 
     testImplementation libs.kotest
