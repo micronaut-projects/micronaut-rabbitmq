@@ -9,7 +9,7 @@ class CustomExecutorSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
 
-    xgiven("A basic producer and consumer, disabled because it just waits indefinitely and never runs to completion") {
+    given("A basic producer and consumer") {
         val config = AbstractRabbitMQTest.getDefaultConfig(specName)
         config["micronaut.executors.product-listener.type"] = "FIXED"
 
@@ -31,7 +31,8 @@ class CustomExecutorSpec : AbstractRabbitMQTest({
             }
         }
 
-        Thread.sleep(200)
+        rabbitContainer.stop()
+
         ctx.stop()
     }
 })

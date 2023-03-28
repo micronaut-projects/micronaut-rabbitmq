@@ -1,15 +1,13 @@
 package io.micronaut.rabbitmq.docs.consumer.executor;
 
 import io.micronaut.rabbitmq.AbstractRabbitMQTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class CustomExecutorSpec extends AbstractRabbitMQTest {
+class CustomExecutorSpec extends AbstractRabbitMQTest {
 
     @Test
-    @Disabled("this just waits indefinitely and never runs to completion")
     void testProductClientAndListener() {
         startContext();
 
