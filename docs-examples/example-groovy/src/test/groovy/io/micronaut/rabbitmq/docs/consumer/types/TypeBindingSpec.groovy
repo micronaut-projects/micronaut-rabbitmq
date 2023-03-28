@@ -19,10 +19,10 @@ class TypeBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messages.size() == 3
-            productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/html]")
-            productListener.messages.contains("exchange: [], routingKey: [product], contentType: [application/json]")
-            productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/xml]")
+            assert productListener.messages.size() == 3
+            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/html]")
+            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [application/json]")
+            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/xml]")
         }
     }
 }

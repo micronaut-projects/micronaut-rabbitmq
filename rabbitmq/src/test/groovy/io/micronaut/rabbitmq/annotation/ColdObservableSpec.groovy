@@ -19,7 +19,7 @@ class ColdObservableSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 0
+            assert consumer.messages.size() == 0
         }
 
         when:
@@ -37,7 +37,7 @@ class ColdObservableSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
+            assert consumer.messages.size() == 1
         }
     }
 

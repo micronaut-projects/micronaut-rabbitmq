@@ -15,7 +15,7 @@ class ConcurrentSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.threads.size() == 4
+            assert productListener.threads.size() == 4
         }
     }
 }

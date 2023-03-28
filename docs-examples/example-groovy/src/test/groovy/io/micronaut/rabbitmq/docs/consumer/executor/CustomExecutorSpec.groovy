@@ -17,8 +17,8 @@ class CustomExecutorSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageLengths.size() == 1
-            productListener.messageLengths[0] == "custom-executor-test"
+            assert productListener.messageLengths.size() == 1
+            assert productListener.messageLengths[0] == "custom-executor-test"
         }
     }
 
