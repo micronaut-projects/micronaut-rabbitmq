@@ -1,0 +1,2234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>Micronaut RabbitMQ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+    <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <link rel="stylesheet" href="../css/highlight/agate.css">
+    <script src="../js/highlight.pack.js"></script>
+    <script src="../js/guide.js"></script>
+    <script src="../js/multi-language-sample.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../css/multi-language-sample.css"/>
+    <script src="../js/docs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script type="text/javascript">
+        function addJsClass(el) {
+            var classes = document.body.className.split(" ");
+            classes.push("js");
+            document.body.className = classes.join(" ");
+        }
+    </script>
+
+</head>
+
+<body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
+
+<div id="table-of-content-nav-link" class="desktop">
+    <a id="theme-switcher" title="Switch to dark theme" href="javascript:switchTheme(true)"><i class="fa fa-moon-o"></i></a>
+    <a title="Collapse/Open Table of contents" title="Hide Table of Contents" href="javascript:hideTableOfContents();" class="button">[ + ]</a>
+</div>
+
+<div id="main">
+    <div id="navigation" class="no-print">
+        <div class="navTitle">
+            <span id="logo"><a href="http://micronaut.io" title="Go to Micronaut Website"><img src="../img/micronaut-logo-white.svg" alt="Micronaut"/></a></span>
+        </div>
+        <div class="navLinks">
+            <ul>
+                    <li><div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
+                            <a href="../guide/index.html" class="button">Table of contents</a>
+                            <div id="nav-summary-childs" style="display:none;">
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#whatsNew"><strong>2</strong><span>Release History</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#cli"><strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#quickStart"><strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#config"><strong>5</strong><span>Configuring The Connection</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#producer"><strong>6</strong><span>RabbitMQ Producers</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#consumer"><strong>7</strong><span>RabbitMQ Consumers</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#rpc"><strong>8</strong><span>Directly Reply-To (RPC)</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#initialization"><strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#serdes"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#health"><strong>11</strong><span>RabbitMQ Health Indicator</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>12</strong><span>RabbitMQ Metrics</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+                                
+                            </div>
+                        </div>
+                    </li>
+
+                <li id="table-of-content-nav-link-mobile" class="mobile">
+                    <a title="Scroll to Table of contents" href="javascript:scrollToTop();" class="button">Toc</a>
+                </li>
+                <li class="desktop">
+                    <a title="Go to API documentation" href="../api/index.html" class="button">API Reference</a>
+                </li>
+                <li class="mobile">
+                    <a title="Go to API documentation" href="../api/index.html" class="button">API</a>
+                </li>
+                <li class="desktop">
+                    <a title="Go to Configuration Reference documentation" href="../guide/configurationreference.html" class="button">Configuration Reference</a>
+                </li>
+                <li class="mobile">
+                    <a title="Go to Configuration Reference documentation" href="../guide/configurationreference.html" class="button">Conf</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    
+    <div id="table-of-content">
+        <div class="toc-content">
+
+        <h2>Table of Contents</h2>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-introduction"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-whatsNew"><a href="#whatsNew"><strong>2</strong><span>Release History</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cli"><a href="#cli"><strong>3</strong><span>Using the Micronaut CLI</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-quickStart"><a href="#quickStart"><strong>4</strong><span>RabbitMQ Quick Start</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-config"><a href="#config"><strong>5</strong><span>Configuring The Connection</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-producer"><a href="#producer"><strong>6</strong><span>RabbitMQ Producers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-producerMethods"><a href="#producerMethods"><strong>6.1</strong><span>Defining @RabbitClient Methods</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerParameters"><a href="#producerParameters"><strong>6.1.1</strong><span>Publishing Parameters</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBinding"><a href="#producerBinding"><strong>6.1.1.1</strong><span>Binding (Routing Key)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerProperties"><a href="#producerProperties"><strong>6.1.1.2</strong><span>RabbitMQ Properties</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerHeaders"><a href="#producerHeaders"><strong>6.1.1.3</strong><span>Headers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-producerBody"><a href="#producerBody"><strong>6.1.1.4</strong><span>Message Body</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-producerAcknowledge"><a href="#producerAcknowledge"><strong>6.1.2</strong><span>Broker Acknowledgement</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-consumer"><a href="#consumer"><strong>7</strong><span>RabbitMQ Consumers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerMethods"><a href="#consumerMethods"><strong>7.1</strong><span>Defining @RabbitListener Methods</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerParameters"><a href="#consumerParameters"><strong>7.1.1</strong><span>Consumer Parameters</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerQueue"><a href="#consumerQueue"><strong>7.1.1.1</strong><span>Queue</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerProperties"><a href="#consumerProperties"><strong>7.1.1.2</strong><span>Properties</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerHeaders"><a href="#consumerHeaders"><strong>7.1.1.3</strong><span>Headers</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerTypes"><a href="#consumerTypes"><strong>7.1.1.4</strong><span>RabbitMQ Types</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerBody"><a href="#consumerBody"><strong>7.1.1.5</strong><span>Message Body</span></a></div>
+        
+        <div class="toc-item" style="margin-left:30px" id="toc-item-consumerCustom"><a href="#consumerCustom"><strong>7.1.1.6</strong><span>Custom Parameter Binding</span></a></div>
+        
+        <div class="toc-item" style="margin-left:20px" id="toc-item-consumerAcknowledge"><a href="#consumerAcknowledge"><strong>7.1.2</strong><span>Acknowledging Messages</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExceptions"><a href="#consumerExceptions"><strong>7.2</strong><span>Handling Consumer Exceptions</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>7.3</strong><span>Consumer Execution</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-rpc"><a href="#rpc"><strong>8</strong><span>Directly Reply-To (RPC)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcClientSide"><a href="#rpcClientSide"><strong>8.1</strong><span>Client Side</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcServerSide"><a href="#rpcServerSide"><strong>8.2</strong><span>Server Side</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-rpcConfiguration"><a href="#rpcConfiguration"><strong>8.3</strong><span>Configuration</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-initialization"><a href="#initialization"><strong>9</strong><span>Creating Queues/Exchanges</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-serdes"><a href="#serdes"><strong>10</strong><span>Message Serialization/Deserialization (SerDes)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-custom"><a href="#custom"><strong>10.1</strong><span>Custom SerDes</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-health"><a href="#health"><strong>11</strong><span>RabbitMQ Health Indicator</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>12</strong><span>RabbitMQ Metrics</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+        
+        </div>
+    </div>
+    
+    <div class="docs-content">
+    <div class="project">
+        <h1>Micronaut RabbitMQ</h1>
+        <p></p>
+        <p>Integration between Micronaut and RabbitMQ</p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/snapshot/guide/index.html'>SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide/index.html'>LATEST</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-rabbitmq/4.0.0-M1/guide/index.html'>4.0.0-M1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.4.1/guide/index.html'>3.4.1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.4.0/guide/index.html'>3.4.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.3.0/guide/index.html'>3.3.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.2.0/guide/index.html'>3.2.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.1.0/guide/index.html'>3.1.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.0.0/guide/index.html'>3.0.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.0.0-RC3/guide/index.html'>3.0.0-RC3</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.0.0-RC2/guide/index.html'>3.0.0-RC2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.0.0-RC1/guide/index.html'>3.0.0-RC1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/3.0.0-M1/guide/index.html'>3.0.0-M1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.5.0/guide/index.html'>2.5.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.4.0/guide/index.html'>2.4.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.3.2/guide/index.html'>2.3.2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.3.1/guide/index.html'>2.3.1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.3.0/guide/index.html'>2.3.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.2.2/guide/index.html'>2.2.2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.2.1/guide/index.html'>2.2.1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.0.0/guide/index.html'>2.0.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.0.0.RC1/guide/index.html'>2.0.0.RC1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/2.0.0.M1/guide/index.html'>2.0.0.M1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.2.0/guide/index.html'>1.2.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.3/guide/index.html'>1.1.3</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.2/guide/index.html'>1.1.2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.1/guide/index.html'>1.1.1</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0.M2/guide/index.html'>1.1.0.M2</option><option value='https://micronaut-projects.github.io/micronaut-rabbitmq/1.1.0.M1/guide/index.html'>1.1.0.M1</option></select> </p>
+    </div>
+    
+<h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/introduction.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This project includes integration between Micronaut and RabbitMQ. The standard <a href="https://www.rabbitmq.com/java-client.html">Java Client</a> is used to do the actual publishing and consuming.</p>
+</div>
+
+<h1 id="whatsNew"><a class="anchor" href="#whatsNew"></a>2 Release History</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/whatsNew.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>For this project, you can find a list of releases (with release notes) here:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/micronaut-projects/micronaut-rabbitmq/releases">https://github.com/micronaut-projects/micronaut-rabbitmq/releases</a></p>
+</div>
+
+<h1 id="cli"><a class="anchor" href="#cli"></a>3 Using the Micronaut CLI</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/cli.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To create a project with RabbitMQ support using the Micronaut CLI, supply the <code>rabbitmq</code> feature to the <code>features</code> flag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mn create-messaging-app my-rabbitmq-app --features rabbitmq</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will create a project with the minimum necessary configuration for RabbitMQ.</p>
+</div>
+<div class="paragraph">
+<p>As you&#8217;d expect, you can start the application with <code>./gradlew run</code> (for Gradle) or <code>./mvnw compile exec:exec</code> (Maven). The application will (with the default config) attempt to connect to RabbitMQ at <code><a href="http://localhost:5672" class="bare">http://localhost:5672</a></code>, and will continue to run without starting up an HTTP server. All communication to/from the service will take place via RabbitMQ producers and/or consumers.</p>
+</div>
+<div class="paragraph">
+<p>Within the new project, you can now run the RabbitMQ specific code generation commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mn create-rabbitmq-producer MessageProducer
+| Rendered template Producer.java to destination src/main/java/my/rabbitmq/app/MessageProducer.java
+
+$ mn create-rabbitmq-listener MessageListener
+| Rendered template Listener.java to destination src/main/java/my/rabbitmq/app/MessageListener.java</pre>
+</div>
+</div>
+
+<h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 RabbitMQ Quick Start</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/quickStart.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To add support for RabbitMQ to an existing project, you should first add the Micronaut RabbitMQ configuration to your build configuration. For example:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.rabbitmq:micronaut-rabbitmq")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.rabbitmq&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a RabbitMQ client that produces messages you can simply define an interface that is annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example the following is a trivial <code>@RabbitClient</code> interface:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation is used to designate this interface as a client</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation indicates which binding or routing key the message should be routed to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>send</code> method accepts single parameter which is the body of the message.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of <code>ProductClient</code> either by looking up the bean from the <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a> or by injecting the bean with <code>@Inject</code>:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Because the <code>send</code> method returns <code>void</code> this means the method will publish the message and return immediately without any acknowledgement from the broker.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_rabbitmq_consumer_with_rabbitlistener">Creating a RabbitMQ Consumer with @RabbitListener</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To listen to RabbitMQ messages you can use the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation to define a message listener.</p>
+</div>
+<div class="paragraph">
+<p>The following example will listen for messages published by the <code>ProductClient</code> in the previous section:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> is used to designate the bean as a message listener.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is used to indicate which queue to subscribe to.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>receive</code> method accepts a single parameter which is the body of the message.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+<h1 id="config"><a class="anchor" href="#config"></a>5 Configuring The Connection</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/config.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All properties on the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/ConnectionFactory.html">ConnectionFactory</a> are available to be modified, either through configuration or a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a>.</p>
+</div>
+<div class="paragraph">
+<p>The properties that can be converted from the string values in a configuration file can be configured directly.</p>
+</div>
+<a id="io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.SingleRabbitConnectionFactoryConfig">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html">SingleRabbitConnectionFactoryConfig</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.virtual-host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-channel-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-frame-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-heartbeat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.handshake-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.client-properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.sasl-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shared-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.heartbeat-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.thread-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.exception-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.automatic-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.metrics-collector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-refresh-service</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.nio-params</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.ssl-context-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-should-check-rpc-response-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.work-pool-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.error-on-write-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-recovery-triggering-condition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-retry-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovered-queue-name-supplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RecoveredQueueNameSupplier</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.traffic-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.consumer-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.confirm-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.html">ClusterRabbitConnectionFactoryConfig</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.virtual-host</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-channel-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-frame-max</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-heartbeat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.handshake-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.client-properties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.sasl-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shared-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.heartbeat-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.thread-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.exception-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.automatic-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.metrics-collector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-refresh-service</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.nio-params</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.ssl-context-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-should-check-rpc-response-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.work-pool-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.error-on-write-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-recovery-triggering-condition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-retry-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovered-queue-name-supplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RecoveredQueueNameSupplier</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.traffic-listener</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.addresses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.consumer-executor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.confirm-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Without any configuration the defaults in the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/ConnectionFactory.html">ConnectionFactory</a> will be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To configure things like the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/impl/CredentialsProvider.html">CredentialsProvider</a> a bean created event listener can be registered to intercept the creation of the connection factory.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is also possible to disable the integration entirely with <code>rabbitmq.enabled: false</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="_connections">Connections</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to configure multiple connections to the same server, different servers, or a single connection to one of a list of servers.</p>
+</div>
+<div class="paragraph">
+<p>One may want to configure multiple connections to the same server in order to have one or more sets of consumers to be executed on a different thread pool. Additionally, the below config could be used to connect to different servers with the same consumer executor by simply omitting the <code>consumer-executor</code> configuration option or supplying the same value.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
+    servers:
+        server-a:
+            host: localhost
+            port: 5672
+            consumer-executor: "a-pool"
+        server-b:
+            host: localhost
+            port: 5672
+            consumer-executor: "b-pool"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the connection is specified in the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation to be "server-b" for example, the "b-pool" executor service will be used to execute the consumers.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the configuration option <code>rabbitmq.servers</code> is used, no other options underneath <code>rabbitmq</code> are read; for example <code>rabbitmq.uri</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>RabbitMQ also supports a fail over connection strategy where the first server that connects successfully will be used among a list of servers. To use this option in Micronaut, simply supply a list of <code>host:port</code> addresses.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rabbitmq:
+    addresses:
+      - localhost:12345
+      - localhost:12346
+    username: guest
+    password: guest</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>addresses</code> option can also be used with the multiple server configuration.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+<h1 id="producer"><a class="anchor" href="#producer"></a>6 RabbitMQ Producers</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The example in the quick start presented a trivial definition of an interface that be implemented automatically for you using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.</p>
+</div>
+<div class="paragraph">
+<p>The implementation that powers <code>@RabbitClient</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ producers.</p>
+</div>
+<div class="sect1">
+<h2 id="_exchange">Exchange</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The exchange to publish messages to can be provided through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation. In this example, the client is publishing messages to a custom header exchange called <code>animals</code>.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The exchange name is provided through the <code>@RabbitClient</code> annotation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header value is used to route the message to a queue.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A helper method was created to provide the header value automatically.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Exchanges must already exist before you can publish messages to them.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+<h2 id="producerMethods"><a class="anchor" href="#producerMethods"></a>6.1 Defining @RabbitClient Methods</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All methods that publish messages to RabbitMQ must meet the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a>.</p>
+</li>
+<li>
+<p>The method must contain an argument representing the body of the message.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If a body argument cannot be found, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Unless a reactive type is returned from the publishing method, the action is blocking.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="producerParameters"><a class="anchor" href="#producerParameters"></a>6.1.1 Publishing Parameters</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All options are available to be set for publishing messages. The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicPublish(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)">basicPublish</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQIntroductionAdvice.html">RabbitMQIntroductionAdvice</a> to publish messages and all arguments can be set through annotations or method arguments.</p>
+</div>
+
+<h2 id="producerBinding"><a class="anchor" href="#producerBinding"></a>6.1.1.1 Binding (Routing Key)</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>If you need to specify the routing key of the message, apply the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The binding is static</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The binding must be set per execution</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_producer_connection">Producer Connection</h3>
+<div class="paragraph">
+<p>If multiple RabbitMQ servers have been configured, the name of the server can be set in the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Binding.html">@Binding</a> annotation to designate which connection should be used to publish messages.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The connection is set on the binding annotation.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>connection</code> option is also available to be set on the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitClient.html">@RabbitClient</a> annotation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h2 id="producerProperties"><a class="anchor" href="#producerProperties"></a>6.1.1.2 RabbitMQ Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>It is also supported to supply properties when publishing messages. Any of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a> can be set dynamically per execution or statically for all executions. Properties can be set using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html">@RabbitProperty</a> annotation.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Properties can be defined at the class level and will apply to all methods. If a property is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple properties on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Properties can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For method arguments, if the value is not supplied to the annotation, the argument name will be used as the property name. For example, <code>@RabbitProperty String userId</code> would result in the property <code>userId</code> being set on the properties object before publishing.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied value cannot be converted to the type defined in <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="producerHeaders"><a class="anchor" href="#producerHeaders"></a>6.1.1.3 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Headers can be set on the message with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/MessageHeader.html">@MessageHeader</a> annotation applied to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Headers can be defined at the class level and will apply to all methods. If a header is defined on the method with the same name as one on the class, the value on the method will be used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple annotations can be used to set multiple headers on the method or class level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Headers can be set per execution. The name is inferred from the argument if the annotation value is not set. The value passed to the method will always be used, even if null.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A <code>Map&lt;String, Object&gt;</code> argument annotated with <a href="../api/io/micronaut/rabbitmq/annotation/RabbitHeaders.html">@RabbitHeaders</a> can be used to pass a map of headers.</td>
+</tr>
+</table>
+</div>
+
+<h2 id="producerBody"><a class="anchor" href="#producerBody"></a>6.1.1.4 Message Body</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON serialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and serialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
+</div>
+
+<h2 id="producerAcknowledge"><a class="anchor" href="#producerAcknowledge"></a>6.1.2 Broker Acknowledgement</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Client methods support two return types, <code>void</code> and a reactive type. If the method returns <code>void</code>, the message will be published and the method will return without acknowledgement. If a reactive type is the return type, a "cold" publisher will be returned that can be subscribed to.</p>
+</div>
+<div class="paragraph">
+<p>Since the publisher is cold, the message will not actually be published until the stream is subscribed to.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>Publisher</code> can be returned. Any other reactive streams implementation type can also be returned given the required relevant dependency is in place</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Java futures can also be returned</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO thread pool.
+</td>
+</tr>
+</table>
+</div>
+
+<h1 id="consumer"><a class="anchor" href="#consumer"></a>7 RabbitMQ Consumers</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The example in the quick start presented a trivial definition of a class that listens for messages using the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation.</p>
+</div>
+<div class="paragraph">
+<p>The implementation that powers <code>@RabbitListener</code> (defined by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> class) is, however, very flexible and offers a range of options for defining RabbitMQ consumers.</p>
+</div>
+
+<h2 id="consumerMethods"><a class="anchor" href="#consumerMethods"></a>7.1 Defining @RabbitListener Methods</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>All methods that consume messages from RabbitMQ must meet the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method must reside in a class annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a>.</p>
+</li>
+<li>
+<p>The method must be annotated with <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In order for all of the functionality to work as designed in this guide your classes must be compiled with the parameters flag set to <code>true</code>. If your application was created with the Micronaut CLI, then that has already been configured for you.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="consumerParameters"><a class="anchor" href="#consumerParameters"></a>7.1.1 Consumer Parameters</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicConsume(java.lang.String,boolean,java.lang.String,boolean,boolean,java.util.Map,com.rabbitmq.client.Consumer)">basicConsume</a> method is used by the <a href="../api/io/micronaut/configuration/rabbitmq/intercept/RabbitMQConsumerAdvice.html">RabbitMQConsumerAdvice</a> to consume messages. Some of the options can be directly configured through annotations.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In order for the consumer method to be invoked, all arguments must be satisfied. To allow execution of the method with a null value, the argument <strong>must</strong> be declared as nullable. If the arguments cannot be satisfied, the message will be rejected.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="consumerQueue"><a class="anchor" href="#consumerQueue"></a>7.1.1.1 Queue</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>A <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation is required for a method to be a consumer of messages from RabbitMQ. Simply apply the annotation to the method and supply the name of the queue you would like to listen to.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Queues must already exist before you can listen to messages from them.
+</td>
+</tr>
+</table>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The queue annotation is set per method. Multiple methods may be defined with different queues in the same class.</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_other_options">Other Options</h3>
+<div class="paragraph">
+<p>If multiple RabbitMQ servers have been configured, the name of the server can be set in the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation to designate which connection should be used to listen for messages.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The connection is set on the queue annotation.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>connection</code> option is also available to be set on the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>By default all consumers are executed on the same "consumer" thread pool. If for some reason one or more consumers should be executed on a different thread pool, it can be specified on the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The executor is set on the queue annotation.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Micronaut will look for an <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html">ExecutorService</a> bean with a named qualifier that matches the name set in the annotation. The bean can be provided manually or created automatically through configuration of an <a href="https://docs.micronaut.io/latest/api/io/micronaut/scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the <code>product-listener</code> thread pool</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    executors:
+        product-listener:
+            type: fixed
+            nThreads: 25</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Due to the way the RabbitMQ Java client works, the initial callback for all consumers is still the thread pool configured in the connection (by default "consumer"), however the work is immediately shifted to the requested thread pool. The <code>executor</code> option is also available to be set on the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a> annotation.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation supports additional options for consuming messages including declaring the consumer as exclusive, whether to re-queue rejected messages, or set an unacknowledged message limit.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h2 id="consumerProperties"><a class="anchor" href="#consumerProperties"></a>7.1.1.2 Properties</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The arguments passed to <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Channel.html#basicConsume(java.lang.String,boolean,java.lang.String,boolean,boolean,java.util.Map,com.rabbitmq.client.Consumer)">basicConsume</a> can be configured through the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitProperty.html">@RabbitProperty</a> annotation.</p>
+</div>
+<div class="paragraph">
+<p>In addition, any method parameters can be annotated to bind to properties from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a> received with the message.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The property is sent as an argument to the Java client consume method. Properties could also be defined on the class level to apply to all consumers in the class. Note the type is required here if RabbitMQ expects something other than a <code>String</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The argument is bound from the <code>userId</code> property.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The property name to bind from is inferred from the argument name. This argument allows null values.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If the argument name matches one of the defined property names, it will be bound from that property.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If the annotation or argument name cannot be matched to a property name, an exception will be thrown. If the supplied type cannot be converted from the type defined in <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>, an exception will be thrown.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="consumerHeaders"><a class="anchor" href="#consumerHeaders"></a>7.1.1.3 Headers</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Headers can be retrieved with the <a href="https://docs.micronaut.io/latest/api/io/micronaut/messaging/annotation/MessageHeader.html">@MessageHeader</a> annotation applied to the arguments of the method.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The header name comes from the annotation and the value is retrieved and converted to a Boolean.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header name comes from the annotation and the value is retrieved and converted to a Long.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The header name comes from the argument name. This argument allows null values.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>All headers can be bound to a single <code>Map</code> argument with <a href="../api/io/micronaut/rabbitmq/annotation/RabbitHeaders.html">@RabbitHeaders</a>.</td>
+</tr>
+</table>
+</div>
+
+<h2 id="consumerTypes"><a class="anchor" href="#consumerTypes"></a>7.1.1.4 RabbitMQ Types</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Arguments can also be bound based on their type. Several types are supported by default and each type has a corresponding <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html">RabbitTypeArgumentBinder</a>. The argument binders are covered in detail in the section on <a href="#consumerCustom">Custom Parameter Binding</a>.</p>
+</div>
+<div class="paragraph">
+<p>There are only two types that are supported for retrieving data about the message. They are the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a> and <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Envelope.html">Envelope</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The argument is bound from the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a></td>
+</tr>
+</table>
+</div>
+
+<h2 id="consumerBody"><a class="anchor" href="#consumerBody"></a>7.1.1.5 Message Body</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Most examples up to this point have been using a <code>byte[]</code> as the body type for simplicity. This library supports most standard Java types and JSON deserialization (using Jackson) by default. The functionality is extensible and it is possible to add support for additional types and deserialization strategies. See the section on <a href="#serdes">Message Serialization/Deserialization</a> for more information.</p>
+</div>
+
+<h2 id="consumerCustom"><a class="anchor" href="#consumerCustom"></a>7.1.1.6 Custom Parameter Binding</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_default_binding_functionality">Default Binding Functionality</h3>
+<div class="paragraph">
+<p>Consumer argument binding is achieved through an <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/ArgumentBinderRegistry.html">ArgumentBinderRegistry</a>  that is specific for binding consumers from RabbitMQ messages. The class responsible for this is the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitBinderRegistry.html">RabbitBinderRegistry</a>.</p>
+</div>
+<div class="paragraph">
+<p>The registry supports argument binders that are used based on an annotation applied to the argument or the argument type. All argument binders must implement either <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAnnotatedArgumentBinder.html">RabbitAnnotatedArgumentBinder</a> or <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitTypeArgumentBinder.html">RabbitTypeArgumentBinder</a>. The exception to that rule is the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitDefaultBinder.html">RabbitDefaultBinder</a> which is used when no other binders support a given argument.</p>
+</div>
+<div class="paragraph">
+<p>When an argument needs bound, the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html">RabbitConsumerState</a> is used as the source of all of the available data. The binder registry follows a small sequence of steps to attempt to find a binder that supports the argument.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Search the annotation based binders for one that matches any annotation on the argument that is annotated with <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/annotation/Bindable.html">@Bindable</a>.</p>
+</li>
+<li>
+<p>Search the type based binders for one that matches or is a subclass of the argument type.</p>
+</li>
+<li>
+<p>Return the default binder.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The default binder checks if the argument name matches one of the <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/BasicProperties.html">BasicProperties</a>. If the name does not match, the body of the message is bound to the argument.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_binding">Custom Binding</h3>
+<div class="paragraph">
+<p>To inject your own argument binding behavior, it is as simple as registering a bean. The existing binder registry will inject it and include it in the normal processing.</p>
+</div>
+<div class="sect3">
+<h4 id="_annotation_binding">Annotation Binding</h4>
+<div class="paragraph">
+<p>A custom annotation can be created to bind consumer arguments. A custom binder can then be created to use that annotation and the <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitConsumerState.html">RabbitConsumerState</a> to supply a value for the argument. The value may in fact come from anywhere, however for the purposes of this documentation, the delivery tag in the envelope is used.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/bind/annotation/Bindable.html">@Bindable</a> annotation is required for the annotation to be considered for binding.</td>
+</tr>
+</table>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is made a bean by annotating with <code>@Singleton</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The custom annotation is used as the generic type for the interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected into the instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The delivery tag is retrieved from the message state.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The tag is converted to the argument type. For example this allows the argument to be a <code>String</code> even though the delivery tag is a <code>Long</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The annotation can now be used on the argument in a consumer method.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_binding">Type Binding</h4>
+<div class="paragraph">
+<p>A custom binder can be created to support any argument type. For example the following class could be created to bind values from the headers. This functionality could allow the work of retrieving and converting the headers to occur in a single place instead of multiple times in your code.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>size</code> argument is not required</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>count</code> argument is required</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>sealed</code> argument is required</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A type argument binder can then be created to create the <code>ProductInfo</code> instance to bind to your consumer method argument.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is made a bean by annotating with <code>@Singleton</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The custom type is used as the generic type for the interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected into the instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The headers are retrieved from the message state.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>productSize</code> header is retrieved, defaulting to null if the value was not found or could not be converted.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The <code>x-product-count</code> header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The <code>x-product-sealed</code> header is retrieved and converted with a new argument context that is used to retrieve conversion errors later.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>There are no conversion errors and the two required arguments are present, so the instance can be constructed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>There are conversion errors or one of the required arguments is not present so a custom <code>BindingResult</code> is returned that allows the conversion errors to be handled appropriately.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+<h2 id="consumerAcknowledge"><a class="anchor" href="#consumerAcknowledge"></a>7.1.2 Acknowledging Messages</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>There are three ways a message can be acknowledged, rejected, or not acknowledged.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>For methods that accept an argument of type <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a>, the message will only be acknowledged when the respective methods on that class are executed.</p>
+</li>
+<li>
+<p>For methods that return any other type, including <code>void</code>, the message will be acknowledged if the method does not throw an exception. If an exception is thrown, the message will be rejected.</p>
+</li>
+<li>
+<p>In addition, for methods that have @Queue autoAcknowledgment option enabled, the message will be acknowledged once delivered.</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_acknowledgement_type">Acknowledgement Type</h3>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>reQueue</code> and <code>autoAcknowledgment</code> options are no longer considered when the method has a <a href="../api/io/micronaut/configuration/rabbitmq/bind/RabbitAcknowledgement.html">RabbitAcknowledgement</a> argument.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The acknowledgement argument is injected into the method. That signifies that this library is no longer in control of acknowledgement in any way for this consumer.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The first message is rejected and re-queued.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The second and third messages are not acknowledged. The fourth message that is received is acknowledged along with the second and third messages because the <code>multiple</code> argument is <code>true</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h2 id="consumerExceptions"><a class="anchor" href="#consumerExceptions"></a>7.2 Handling Consumer Exceptions</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Exceptions can occur in a number of different ways. Possible problem areas include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Binding the message to the method arguments</p>
+</li>
+<li>
+<p>Exceptions thrown from the consumer methods</p>
+</li>
+<li>
+<p>Exceptions as a result of message acknowledgement</p>
+</li>
+<li>
+<p>Exceptions thrown attempting to add the consumer to the channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the consumer bean implements <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then exceptions will be sent to the method implementation.</p>
+</div>
+<div class="paragraph">
+<p>If the consumer bean does not implement <a href="../api/io/micronaut/configuration/rabbitmq/exception/RabbitListenerExceptionHandler.html">RabbitListenerExceptionHandler</a>, then the exceptions will be routed to the primary exception handler bean. To override the default exception handler, replace the <a href="../api/io/micronaut/configuration/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html">DefaultRabbitListenerExceptionHandler</a> with your own implementation that is designated as <code>@Primary</code>.</p>
+</div>
+
+<h2 id="consumerExecutor"><a class="anchor" href="#consumerExecutor"></a>7.3 Consumer Execution</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>RabbitMQ allows an <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html">ExecutorService</a> to be supplied for new connections. The service is used to execute consumers. A single connection is used for the entire application and it is configured to use the <code>consumer</code> named executor service. The executor can be configured through application configuration. See <a href="https://docs.micronaut.io/latest/api/io/micronaut/scheduling/executor/ExecutorConfiguration.html">ExecutorConfiguration</a> for the full list of options.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the <code>consumer</code> thread pool</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    executors:
+        consumer:
+            type: fixed
+            nThreads: 25</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If no configuration is supplied, a fixed thread pool with 2 times the amount of available processors is used.</p>
+</div>
+<div class="sect2">
+<h3 id="_concurrent_consumers">Concurrent Consumers</h3>
+<div class="paragraph">
+<p>By default a single consumer may not process multiple messages simultaneously. RabbitMQ waits to provide the consumer with a message until the previous message has been acknowledged. Starting in version 3.0.0, a new option has been added to the <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@Queue</a> annotation to set the number of consumers that should be registered to RabbitMQ for a single consumer method. This will allow for concurrent execution of the consumers.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.context.annotation.Requires;
+import io.micronaut.rabbitmq.annotation.Queue;
+import io.micronaut.rabbitmq.annotation.RabbitListener;
+
+import java.util.concurrent.CopyOnWriteArraySet;
+
+@RabbitListener
+public class ProductListener {
+
+    CopyOnWriteArraySet&lt;String&gt; threads = new CopyOnWriteArraySet&lt;&gt;();
+
+    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    public void receive(byte[] data) {
+        threads.add(Thread.currentThread().getName()); // <b class="conum">(2)</b>
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) { }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArraySet
+
+@RabbitListener
+class ProductListener {
+
+    CopyOnWriteArraySet&lt;String&gt; threads = new CopyOnWriteArraySet&lt;&gt;()
+
+    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        threads &lt;&lt; Thread.currentThread().name // <b class="conum">(2)</b>
+        sleep 500
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArraySet
+
+@RabbitListener
+class ProductListener {
+    var threads = CopyOnWriteArraySet&lt;String&gt;()
+
+    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    fun receive(data: ByteArray?) {
+        threads.add(Thread.currentThread().name) // <b class="conum">(2)</b>
+        Thread.sleep(500)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>numberOfConsumers</code> is set on the annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Multiple messages received in a short time window will result in the <code>threads</code> collection containing something like <code>[pool-2-thread-9, pool-2-thread-7, pool-2-thread-10, pool-2-thread-8, pool-2-thread-6]</code></td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+As with any other case of concurrent execution, operations on data in the instance of the consumer must be thread safe.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h1 id="rpc"><a class="anchor" href="#rpc"></a>8 Directly Reply-To (RPC)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This library supports RPC through the usage of <a href="https://www.rabbitmq.com/direct-reply-to.html">direct reply-to</a>. Both blocking and non blocking variations are supported. To get started using this feature, publishing methods must have the <code>replyTo</code> property set to "amq.rabbitmq.reply-to". The "amq.rabbitmq.reply-to" queue always exists and does not need to be created.</p>
+</div>
+<div class="paragraph">
+<p>The following is an example direct reply to where the consumer is converting the body to upper case and replying with the converted string.</p>
+</div>
+
+<h2 id="rpcClientSide"><a class="anchor" href="#rpcClientSide"></a>8.1 Client Side</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc/rpcClientSide.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The reply to property is set. This could be placed on individual methods.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The send method is blocking and will return when the response is received.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The sendReactive method returns a reactive type that will complete when the response is received. Reactive methods will be executed on the IO thread pool.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In order for the publisher to assume RPC should be used instead of just completing when the publish is confirmed, the data type must <strong>not</strong> be <code>Void</code>. In both cases above, the data type is <code>String</code>. In addition, the <code>replyTo</code> property must be set. Queues will not be auto created by specifying a value with <code>replyTo</code>. The "amq.rabbitmq.reply-to" queue is special and does not need creating.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="rpcServerSide"><a class="anchor" href="#rpcServerSide"></a>8.2 Server Side</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc/rpcServerSide.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The "server side" in this case starts with the consumption of a message, and then a new message is published to the reply to queue.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The reply to property is injected. If the consumer will not always be participating in RPC this could be annotated with <code>@Nullable</code> to allow both use cases.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The channel is injected so it can be used. This could be replaced with a method call of another <code>@RabbitClient</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The converted message is published to the <code>replyTo</code> binding.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the reply publish fails for any reason, the original message will be rejected.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+RPC consumer methods must never return a reactive type. Because the resulting publish needs to occur on the same thread and only a single item can be emitted, there is no value in doing so.
+</td>
+</tr>
+</table>
+</div>
+
+<h2 id="rpcConfiguration"><a class="anchor" href="#rpcConfiguration"></a>8.3 Configuration</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rpc/rpcConfiguration.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>By default, if an RPC call does not have a response within a <a href="https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide/configurationreference.html">given time frame</a>, a <code>TimeoutException</code> will be thrown or emitted.</p>
+</div>
+
+<h1 id="initialization"><a class="anchor" href="#initialization"></a>9 Creating Queues/Exchanges</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/initialization.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The purpose of this library is to consume and publish messages with RabbitMQ. Any setup of queues, exchanges, or the binding between them is <strong>not</strong> done automatically. If your requirements dictate that your application should be creating those entities, then a <a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/BeanCreatedEventListener.html">BeanCreatedEventListener</a> can be registered to intercept the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPool.html">ChannelPool</a> to perform operations with the Java API directly. A class has been provided that you can simply extend to receive a channel to do this work.</p>
+</div>
+<div class="paragraph">
+<p>For all of the examples in this documentation, an event listener has been registered to create the required queues, exchanges, and bindings necessary for the code to be tested.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is declared as a singleton so it will be registered with the context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The class extends an abstract class provided by this library</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The method is implemented that receives a channel and the connection name to do the initialization</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Declare a queue or perform any operations desired</td>
+</tr>
+</table>
+</div>
+
+<h1 id="serdes"><a class="anchor" href="#serdes"></a>10 Message Serialization/Deserialization (SerDes)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The serialization and deserialization of message bodies is handled through instances of <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. The ser-des (Serializer/Deserializer) is responsible for both serialization and deserialization of RabbitMQ message bodies into the message body types defined in your clients and consumers methods.</p>
+</div>
+<div class="paragraph">
+<p>The ser-des are managed by a <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDesRegistry.html">RabbitMessageSerDesRegistry</a>. All ser-des beans are injected in order into the registry and then searched for when serialization or deserialization is needed. The first ser-des that returns true for <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html#supports-java.lang.Class-">supports-java.lang.Class-</a> is returned and used.</p>
+</div>
+<div class="paragraph">
+<p>By default, standard Java lang types and JSON format (with Jackson) are supported. You can supply your own ser-des by simply registering a bean of type <a href="../api/io/micronaut/configuration/rabbitmq/serdes/RabbitMessageSerDes.html">RabbitMessageSerDes</a>. All ser-des implement the <a href="https://docs.micronaut.io/latest/api/io/micronaut/core/order/Ordered.html">Ordered</a> interface, so custom implementations can come before, after, or in between the default implementations.</p>
+</div>
+
+<h2 id="custom"><a class="anchor" href="#custom"></a>10.1 Custom SerDes</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/serdes/custom.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>A custom serializer/deserializer would be necessary to support custom data formats. In the section on <a href="#consumerCustom">Custom Consumer Binding</a> an example was demonstrated that allowed binding a <code>ProductInfo</code> type from the headers of the message. If instead that object should represent the body of the message with a custom data format, you could register your own serializer/deserializer to do so.</p>
+</div>
+<div class="paragraph">
+<p>In this example a simple data format of the string representation of the fields are concatenated together with a pipe character.</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class is declared as a singleton so it will be registered with the context</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The generic specifies what type we want to accept and return</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The conversion service is injected to convert the parts of the message to the required types</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The deserialize method takes the bytes from the message and constructs a <code>ProductInfo</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The serialize method takes the <code>ProductInfo</code> and returns the bytes to publish. A mutable version of the properties is also provided so properties such as the content type can be set before publishing.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The supports method ensures only the correct body types are processed by this ser-des</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Because the <code>getOrder</code> method was not overridden, the default order of 0 is used. All default ser-des have a lower precedent than the default order which means this ser-des will be checked before the others.
+</td>
+</tr>
+</table>
+</div>
+
+<h1 id="health"><a class="anchor" href="#health"></a>11 RabbitMQ Health Indicator</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/health.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This library comes with a health indicator for applications that are using the <code>management</code> module in Micronaut. See the <a href="https://docs.micronaut.io/latest/guide/index.html#healthEndpoint">Health Endpoint</a> documentation for more information about the endpoint itself.</p>
+</div>
+<div class="paragraph">
+<p>The information reported from the health indicator is under the <code>rabbitmq</code> key. The details will include everything that is reported from <a href="https://rabbitmq.github.io/rabbitmq-java-client/api/current/com/rabbitmq/client/Connection.html#getServerProperties()">Connection#getServerProperties</a>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">"rabbitmq": {
+  "status": "UP",
+  "details": {
+    "cluster_name": "rabbit@a0378bc51148",
+    "product": "RabbitMQ",
+    "copyright": "Copyright (C) 2007-2018 Pivotal Software, Inc.",
+    "capabilities": {
+      "consumer_priorities": true,
+      "exchange_exchange_bindings": true,
+      "connection.blocked": true,
+      "authentication_failure_close": true,
+      "per_consumer_qos": true,
+      "basic.nack": true,
+      "direct_reply_to": true,
+      "publisher_confirms": true,
+      "consumer_cancel_notify": true
+    },
+    "information": "Licensed under the MPL.  See http:\/\/www.rabbitmq.com\/",
+    "version": "3.7.8",
+    "platform": "Erlang\/OTP 20.3.8.5"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.rabbitmq.enabled: false</code>.
+</td>
+</tr>
+</table>
+</div>
+
+<h1 id="metrics"><a class="anchor" href="#metrics"></a>12 RabbitMQ Metrics</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/metrics.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The Java RabbitMQ client has built in support for Micrometer. If Micrometer is enabled in your application, metrics for RabbitMQ will be collected by default. For more details on how to integrate Micronaut with Micrometer, see the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide">documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The RabbitMQ metrics binder is configurable. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+    metrics:
+        binders:
+            rabbitmq:
+                enabled: Boolean
+                tags: String[]
+                prefix: String</code></pre>
+</div>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>13 Repository</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/repository.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>You can find the source code of this project in this repository:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/micronaut-projects/micronaut-rabbitmq">https://github.com/micronaut-projects/micronaut-rabbitmq</a></p>
+</div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
