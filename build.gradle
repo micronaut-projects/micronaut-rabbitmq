@@ -18,3 +18,8 @@ tasks.named('publishGuide') {
     dependsOn(prepareGuideHotfix)
     dependsOn(tasks.javadoc)
 }
+configurations.all {
+    resolutionStrategy {
+        preferProjectModules()
+    }
+}

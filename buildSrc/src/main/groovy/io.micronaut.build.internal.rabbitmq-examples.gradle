@@ -1,3 +1,13 @@
 plugins {
     id 'io.micronaut.build.internal.rabbitmq-base'
 }
+
+dependencies {
+    testImplementation projects.micronautRabbitmq
+
+    testImplementation mn.micronaut.inject
+    testImplementation mn.reactor
+    testImplementation mnSerde.micronaut.serde.support
+    testImplementation mnSerde.micronaut.serde.jackson
+    testImplementation libs.testcontainers
+}

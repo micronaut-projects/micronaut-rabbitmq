@@ -57,8 +57,8 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            errorCount.get() == 0
-            successCount.get() == 2
+            assert errorCount.get() == 0
+            assert successCount.get() == 2
         }
     }
 }

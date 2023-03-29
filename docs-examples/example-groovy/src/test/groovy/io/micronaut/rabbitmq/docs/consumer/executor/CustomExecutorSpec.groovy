@@ -17,13 +17,9 @@ class CustomExecutorSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageLengths.size() == 1
-            productListener.messageLengths[0] == "custom-executor-test"
+            assert productListener.messageLengths.size() == 1
+            assert productListener.messageLengths[0] == "custom-executor-test"
         }
-
-        cleanup:
-        // Finding that the context is closing the channel before ack is sent
-        sleep 200
     }
 
     protected Map<String, Object> getConfiguration() {

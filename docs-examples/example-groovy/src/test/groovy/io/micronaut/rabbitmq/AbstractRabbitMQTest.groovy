@@ -13,10 +13,6 @@ abstract class AbstractRabbitMQTest extends Specification {
                     .withExposedPorts(5672)
                     .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
 
-    static {
-        rabbitContainer.start()
-    }
-
     protected ApplicationContext applicationContext
     protected PollingConditions conditions = new PollingConditions(timeout: 5)
 
@@ -25,8 +21,10 @@ abstract class AbstractRabbitMQTest extends Specification {
     }
 
     protected Map<String, Object> getConfiguration() {
+        rabbitContainer.start()
+
         ["rabbitmq.port": rabbitContainer.getMappedPort(5672),
-         "spec.name": getClass().simpleName] as Map
+         "spec.name"    : getClass().simpleName] as Map
     }
 
     protected void waitFor(Closure<?> conditionEvaluator) {
@@ -34,6 +32,8 @@ abstract class AbstractRabbitMQTest extends Specification {
     }
 
     void cleanup() {
+        rabbitContainer.stop()
+
         applicationContext?.close()
     }
 }

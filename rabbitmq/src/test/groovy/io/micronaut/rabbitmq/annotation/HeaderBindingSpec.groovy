@@ -18,9 +18,9 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
-            consumer.messages.keySet()[0].name == "abc"
-            consumer.messages.values()[0] == "some header|static header"
+            assert consumer.messages.size() == 1
+            assert consumer.messages.keySet()[0].name == "abc"
+            assert consumer.messages.values()[0] == "some header|static header"
         }
     }
 

@@ -82,6 +82,6 @@ public class RabbitPropertyBinder implements RabbitAnnotatedArgumentBinder<Rabbi
     }
 
     private String getParameterName(ArgumentConversionContext<Object> context) {
-        return context.getAnnotationMetadata().getValue(RabbitProperty.class, String.class).orElse(context.getArgument().getName());
+        return context.getAnnotationMetadata().stringValue(RabbitProperty.class).orElse(context.getArgument().getName());
     }
 }

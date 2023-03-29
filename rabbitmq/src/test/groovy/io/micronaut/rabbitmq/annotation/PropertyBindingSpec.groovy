@@ -18,9 +18,9 @@ class PropertyBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
-            consumer.messages.keySet()[0].name == "abc"
-            consumer.messages.values()[0] == "application/json|guest"
+            assert consumer.messages.size() == 1
+            assert consumer.messages.keySet()[0].name == "abc"
+            assert consumer.messages.values()[0] == "application/json|guest"
         }
     }
 

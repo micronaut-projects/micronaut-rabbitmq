@@ -18,9 +18,9 @@ class BindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageLengths.size() == 2
-            productListener.messageLengths.contains(12)
-            productListener.messageLengths.contains(13)
+            assert productListener.messageLengths.size() == 2
+            assert productListener.messageLengths.contains(12)
+            assert productListener.messageLengths.contains(13)
         }
     }
 }

@@ -1,4 +1,10 @@
 [versions]
+micronaut-docs = '2.0.0'
+micronaut = '4.0.0-M1'
+micronaut-test = '4.0.0-M1'
+groovy = '4.0.10'
+spock = '2.3-groovy-4.0'
+
 awaitility = '4.2.0'
 caffeine = '3.1.1'
 jsr305 = "3.0.2"
@@ -9,16 +15,16 @@ rabbit = '5.15.0'
 testcontainers = '1.17.6'
 managed-amqp-client = '5.16.0'
 
-micronaut-micrometer = "4.6.1" # TODO update once 5.0.0-SNAPSHOT is out
-micronaut-serde = "2.0.0-SNAPSHOT"
+micronaut-micrometer = "5.0.0-M1"
+micronaut-serde = "2.0.0-M1"
 
 [libraries]
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
 
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
+junit-jupiter-engine = { module = 'org.junit.jupiter:junit-jupiter-engine', version.ref = 'junit' }
 caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
-junit-jupiter-api = { module = 'org.junit.jupiter:junit-jupiter-api', version.ref = 'junit' }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }

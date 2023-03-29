@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -131,7 +132,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
 
             boolean skipAckActions = autoAcknowledgment || hasAcknowledgementArg;
 
-            Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
+            OptionalInt optionalInt = queueAnn.intValue("prefetch");
+            Integer prefetch = optionalInt.isPresent() ? optionalInt.getAsInt() : null;
 
             int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
 
@@ -240,7 +242,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
         propertyAnnotations.forEach((prop) -> {
             String name = prop.getRequiredValue("name", String.class);
-            String value = prop.getValue(String.class).orElse(null);
+            String value = prop.stringValue().orElse(null);
             Class<?> type = prop.get("type", Class.class).orElse(null);
 
             if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {

@@ -17,8 +17,8 @@ class PojoBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
-            consumer.messages[0].name == "abc"
+            assert consumer.messages.size() == 1
+            assert consumer.messages[0].name == "abc"
         }
     }
 
@@ -33,9 +33,9 @@ class PojoBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 2
-            consumer.messages[0].name == "abc"
-            consumer.messages[1].name == "def"
+            assert consumer.messages.size() == 2
+            assert consumer.messages[0].name == "abc"
+            assert consumer.messages[1].name == "def"
         }
     }
 

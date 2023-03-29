@@ -20,10 +20,10 @@ class ProductListener {
 
     @Queue("product")
     void receive(byte[] data,
-                 @MessageHeader("x-product-sealed") Boolean sealed, // <1>
+                 @MessageHeader("x-product-sealed") Boolean productSealed, // <1>
                  @MessageHeader("x-product-count") Long count, // <2>
                  @Nullable @MessageHeader String productSize) { // <3>
-        messageProperties << sealed.toString() + "|" + count + "|" + productSize
+        messageProperties << productSealed.toString() + "|" + count + "|" + productSize
     }
 
     @Queue("product")

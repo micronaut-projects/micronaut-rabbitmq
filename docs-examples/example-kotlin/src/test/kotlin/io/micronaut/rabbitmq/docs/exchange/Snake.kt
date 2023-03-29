@@ -1,12 +1,6 @@
 package io.micronaut.rabbitmq.docs.exchange
 
-class Snake : Animal {
+import io.micronaut.serde.annotation.Serdeable
 
-    var isVenomous: Boolean = false
-
-    constructor(name: String, venomous: Boolean) : super(name) {
-        this.isVenomous = venomous
-    }
-
-    constructor() {}
-}
+@Serdeable
+class Snake(name: String? = null, venomous: Boolean = false) : Animal(name)

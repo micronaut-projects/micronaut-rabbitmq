@@ -3,10 +3,8 @@ package io.micronaut.rabbitmq.docs.consumer.executor
 import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalTime::class)
 class CustomExecutorSpec : AbstractRabbitMQTest({
 
     val specName = javaClass.simpleName
@@ -26,14 +24,15 @@ class CustomExecutorSpec : AbstractRabbitMQTest({
 // end::producer[]
 
             then("the message is consumed") {
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     productListener.messageLengths.size shouldBe 1
                     productListener.messageLengths[0] shouldBe "custom-executor-test"
                 }
             }
         }
 
-        Thread.sleep(200)
+        rabbitContainer.stop()
+
         ctx.stop()
     }
 })

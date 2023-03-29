@@ -1,5 +1,8 @@
 package io.micronaut.rabbitmq.docs.exchange;
 
+import io.micronaut.serde.annotation.Serdeable;
+
+@Serdeable
 public class Cat extends Animal {
 
     private int lives;

@@ -1,4 +1,21 @@
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
-    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }}
+
+dependencies {
+    compileOnly libs.jsr305 // for "warning: unknown enum constant When.MAYBE"
+
+    testRuntimeOnly mn.logback.classic
+}
+
+test {
+    useJUnitPlatform()
+
+    jvmArgs '-Duser.country=US'
+    jvmArgs '-Duser.language=en'
+    failFast = true
 }

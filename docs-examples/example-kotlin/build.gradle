@@ -5,17 +5,12 @@ plugins {
 }
 
 dependencies {
-    kaptTest enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion")
+    kaptTest enforcedPlatform("io.micronaut:micronaut-core-bom:$micronautVersion")
     kaptTest mn.micronaut.inject.java
 
-    testCompileOnly libs.jsr305 // for "warning: unknown enum constant When.MAYBE"
-    testImplementation projects.rabbitmq
     testImplementation libs.kotest
     testImplementation libs.kotlin.reflect
     testImplementation libs.kotlin.stdlib
-    testImplementation libs.testcontainers
-    testImplementation mn.reactor
-    testRuntimeOnly mn.logback.classic
 }
 
 test {

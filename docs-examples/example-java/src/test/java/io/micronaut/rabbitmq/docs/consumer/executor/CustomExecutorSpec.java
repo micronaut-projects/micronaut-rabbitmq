@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class CustomExecutorSpec extends AbstractRabbitMQTest {
+class CustomExecutorSpec extends AbstractRabbitMQTest {
 
     @Test
     void testProductClientAndListener() {

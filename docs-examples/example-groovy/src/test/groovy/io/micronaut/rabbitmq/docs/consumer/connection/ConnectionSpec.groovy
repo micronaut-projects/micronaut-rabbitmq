@@ -17,8 +17,8 @@ class ConnectionSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageLengths.size() == 1
-            productListener.messageLengths[0] == "connection-test"
+            assert productListener.messageLengths.size() == 1
+            assert productListener.messageLengths[0] == "connection-test"
         }
 
         cleanup:

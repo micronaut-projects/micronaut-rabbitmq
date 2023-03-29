@@ -19,10 +19,10 @@ class PropertiesSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageProperties.size() == 3
-            productListener.messageProperties.contains("guest|application/json|myApp")
-            productListener.messageProperties.contains("guest|text/html|myApp")
-            productListener.messageProperties.contains("guest|null|myApp")
+            assert productListener.messageProperties.size() == 3
+            assert productListener.messageProperties.contains("guest|application/json|myApp")
+            assert productListener.messageProperties.contains("guest|text/html|myApp")
+            assert productListener.messageProperties.contains("guest|null|myApp")
         }
     }
 }

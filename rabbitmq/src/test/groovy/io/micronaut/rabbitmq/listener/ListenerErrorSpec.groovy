@@ -29,8 +29,8 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.errors.size() == 3
-            consumer.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
+            assert consumer.errors.size() == 3
+            assert consumer.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
         }
     }
 
@@ -46,8 +46,8 @@ class ListenerErrorSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            handler.errors.size() == 3
-            handler.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
+            assert handler.errors.size() == 3
+            assert handler.errors.collect { it.cause.message } as Set == ["abc", "def", "ghi"] as Set
         }
     }
 

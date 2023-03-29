@@ -51,7 +51,7 @@ public class RabbitHeaderBinder implements RabbitAnnotatedArgumentBinder<Message
     @Override
     public BindingResult<Object> bind(ArgumentConversionContext<Object> context, RabbitConsumerState messageState) {
         String parameterName = context.getAnnotationMetadata()
-                .getValue(MessageHeader.class, String.class)
+                .stringValue(MessageHeader.class)
                 .orElse(context.getArgument().getName());
 
         Map<String, Object> rawHeaders = messageState.getProperties().getHeaders();

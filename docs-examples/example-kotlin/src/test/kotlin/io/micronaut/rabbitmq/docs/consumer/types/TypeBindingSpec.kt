@@ -4,7 +4,7 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -26,7 +26,7 @@ class TypeBindingSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     productListener.messages.size shouldBe 3
                     productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/html]"
                     productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [application/json]"
