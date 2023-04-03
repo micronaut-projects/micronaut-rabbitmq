@@ -13,7 +13,7 @@ kotest = '5.5.5'
 kotlin = '1.8.20'
 rabbit = '5.15.0'
 testcontainers = '1.17.6'
-managed-amqp-client = '5.16.0'
+managed-amqp-client = '5.17.0'
 
 micronaut-micrometer = "5.0.0-M1"
 micronaut-serde = "2.0.0-M1"
