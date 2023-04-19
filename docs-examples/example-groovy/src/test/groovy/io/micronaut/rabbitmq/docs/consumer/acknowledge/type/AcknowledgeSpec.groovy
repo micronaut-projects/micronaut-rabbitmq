@@ -20,7 +20,7 @@ productClient.send("message body".bytes)
 
         then:
         waitFor {
-            productListener.messageCount.get() == 5
+            assert productListener.messageCount.get() == 5
         }
     }
 }

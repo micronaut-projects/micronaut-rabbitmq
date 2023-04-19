@@ -21,21 +21,21 @@ class CustomExchangeSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            listener.receivedAnimals.size() == 4
+            assert listener.receivedAnimals.size() == 4
 
-            listener.receivedAnimals.find({ animal ->
+            assert listener.receivedAnimals.find({ animal ->
                 animal instanceof Cat && animal.name == "Whiskers" && ((Cat) animal).lives == 9
             }) != null
 
-            listener.receivedAnimals.find({ animal ->
+            assert listener.receivedAnimals.find({ animal ->
                 animal instanceof Cat && animal.name == "Mr. Bigglesworth" && ((Cat) animal).lives == 8
             }) != null
 
-            listener.receivedAnimals.find({ animal ->
+            assert listener.receivedAnimals.find({ animal ->
                 animal instanceof Snake && animal.name == "Buttercup" && !((Snake) animal).venomous
             }) != null
 
-            listener.receivedAnimals.find({ animal ->
+            assert listener.receivedAnimals.find({ animal ->
                 animal instanceof Snake && animal.name == "Monty the Python" && ((Snake) animal).venomous
             }) != null
         }

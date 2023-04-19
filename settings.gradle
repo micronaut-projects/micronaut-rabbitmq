@@ -6,25 +6,24 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '5.2.3'
+    id 'io.micronaut.build.shared.settings' version '6.4.1'
 }
 
 rootProject.name = 'rabbitmq-parent'
 
+include 'rabbitmq-bom'
 include 'rabbitmq'
+
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-java'
 include 'docs-examples:example-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-    versionCatalogs {
-        mn {
-            from "io.micronaut:micronaut-bom:${providers.gradleProperty('micronautVersion').get()}"
-        }
-    }
+micronautBuild {
+    addSnapshotRepository() // TODO remove
+    useStandardizedProjectNames=true
+    importMicronautCatalog()
+    importMicronautCatalog("micronaut-micrometer")
+    importMicronautCatalog("micronaut-serde")
 }

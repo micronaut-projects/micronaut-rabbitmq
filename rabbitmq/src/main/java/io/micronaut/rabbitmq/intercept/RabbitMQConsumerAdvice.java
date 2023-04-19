@@ -20,8 +20,8 @@ import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Delivery;
 import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.ShutdownSignalException;
 import com.rabbitmq.client.RecoverableChannel;
+import com.rabbitmq.client.ShutdownSignalException;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
@@ -38,6 +38,7 @@ import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
+import io.micronaut.rabbitmq.bind.AcknowledgmentAction;
 import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
@@ -46,11 +47,11 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,7 +81,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final Map<String, ChannelPool> channelPools;
     private final List<RecoverableConsumerWrapper> consumers = new CopyOnWriteArrayList<>();
 
@@ -97,7 +99,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
-                                  ConversionService<?> conversionService,
+                                  ConversionService conversionService,
                                   List<ChannelPool> channelPools) {
         this.beanContext = beanContext;
         this.binderRegistry = binderRegistry;
@@ -123,10 +125,16 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             boolean reQueue = queueAnn.getRequiredValue("reQueue", boolean.class);
             boolean exclusive = queueAnn.getRequiredValue("exclusive", boolean.class);
 
-            boolean hasAckArg = Arrays.stream(method.getArguments())
+            boolean hasAcknowledgementArg = Arrays.stream(method.getArguments())
                     .anyMatch(arg -> Acknowledgement.class.isAssignableFrom(arg.getType()));
 
-            Integer prefetch = queueAnn.get("prefetch", Integer.class).orElse(null);
+            boolean autoAcknowledgment = !hasAcknowledgementArg && queueAnn.getRequiredValue("autoAcknowledgment", boolean.class);
+
+            boolean skipAckActions = autoAcknowledgment || hasAcknowledgementArg;
+
+            OptionalInt optionalInt = queueAnn.intValue("prefetch");
+            Integer prefetch = optionalInt.isPresent() ? optionalInt.getAsInt() : null;
+
             int numberOfConsumers = queueAnn.intValue("numberOfConsumers").orElse(1);
 
             ChannelPool channelPool = getChannelPool(method);
@@ -152,7 +160,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 try {
                     if (boundExecutable != null) {
                         try (RabbitMessageCloseable closeable = new RabbitMessageCloseable(state, false, reQueue)
-                                .withAcknowledge(hasAckArg ? null : false)) {
+                                .withAcknowledgmentAction(skipAckActions ? AcknowledgmentAction.NONE : AcknowledgmentAction.NACK)) {
                             Object returnedValue = boundExecutable.invoke(bean);
 
                             String replyTo = message.getProperties().getReplyTo();
@@ -175,8 +183,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                 channel.basicPublish("", replyTo, replyProps.toBasicProperties(), converted);
                             }
 
-                            if (!hasAckArg) {
-                                closeable.withAcknowledge(true);
+                            if (!skipAckActions) {
+                                closeable.withAcknowledgmentAction(AcknowledgmentAction.ACK);
                             }
                         } catch (MessageAcknowledgementException e) {
                             throw e;
@@ -187,7 +195,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                                     e, bean, state));
                         }
                     } else {
-                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledge(false).close();
+                        new RabbitMessageCloseable(state, false, reQueue).withAcknowledgmentAction(AcknowledgmentAction.NACK).close();
                     }
                 } catch (MessageAcknowledgementException e) {
                     handleException(new RabbitListenerException(e.getMessage(), e, bean, state));
@@ -199,7 +207,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     String consumerTag = methodTag + "[" + idx + "]";
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
                     consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
-                            exclusive, arguments, channelPool, prefetch, deliverCallback));
+                            exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
                 }
             } catch (Throwable e) {
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
@@ -234,7 +242,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         Collections.reverse(propertyAnnotations); //set the values in the class first so methods can override
         propertyAnnotations.forEach((prop) -> {
             String name = prop.getRequiredValue("name", String.class);
-            String value = prop.getValue(String.class).orElse(null);
+            String value = prop.stringValue().orElse(null);
             Class<?> type = prop.get("type", Class.class).orElse(null);
 
             if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
@@ -322,9 +330,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         private final ChannelPool channelPool;
         private final Integer prefetch;
         private final DeliverCallback deliverCallback;
+        private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
+        private final boolean autoAcknowledgment;
         private com.rabbitmq.client.DefaultConsumer consumer;
         private boolean canceled = false;
-        private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
 
         /**
          * Create the consumer and register ({@code Channel.basicConsume}) it with a dedicated channel from the
@@ -332,8 +341,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
          *
          * @throws IOException in case no channel is available or the registration of the consumer fails
          */
-        RecoverableConsumerWrapper(String queue, String consumerTag, ExecutorService executorService, boolean exclusive,
-                Map<String, Object> arguments, ChannelPool channelPool, Integer prefetch, DeliverCallback deliverCallback)
+        RecoverableConsumerWrapper(String queue, String consumerTag, ExecutorService executorService,
+                                   boolean exclusive, Map<String, Object> arguments, ChannelPool channelPool,
+                                   Integer prefetch, DeliverCallback deliverCallback, boolean autoAcknowledgment)
                 throws IOException {
             this.queue = queue;
             this.consumerTag = consumerTag;
@@ -343,6 +353,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             this.channelPool = channelPool;
             this.prefetch = prefetch;
             this.deliverCallback = deliverCallback;
+            this.autoAcknowledgment = autoAcknowledgment;
 
             Channel channel = null;
             try {
@@ -486,7 +497,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     // memory and will call handleDelivery for these messages, even if they are re-queued by the broker.
                     // The client will be unable to acknowledge these messages. So it is safe to silently discard
                     // them, without bothering the callback handler.
-                    if (!getChannel().isOpen()) {
+                    // In addition, consuming of queued messages is stopped when the consumer is canceled.
+                    if (canceled || !getChannel().isOpen()) {
                         return;
                     }
                     handlingDeliveryCount.incrementAndGet();
@@ -506,7 +518,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 }
             };
 
-            channel.basicConsume(queue, false, consumerTag, false, exclusive, arguments, consumer);
+            channel.basicConsume(queue, autoAcknowledgment, consumerTag, false, exclusive, arguments, consumer);
             return consumer;
         }
     }

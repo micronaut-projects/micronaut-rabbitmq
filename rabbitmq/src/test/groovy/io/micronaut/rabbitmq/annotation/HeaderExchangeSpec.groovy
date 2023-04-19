@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq.annotation
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class HeaderExchangeSpec extends AbstractRabbitMQTest {
 
@@ -21,17 +22,19 @@ class HeaderExchangeSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 4
-            consumer.messages.find({ it.name == "Whiskers" }).lives == 9
-            consumer.messages.find({ it.name == "Chloe" }).size == "M"
-            consumer.messages.find({ it.name == "Mr. Bigglesworth" }).lives == 8
-            consumer.messages.find({ it.name == "Butch" }).size == "L"
+            assert consumer.messages.size() == 4
+            assert consumer.messages.find({ it.name == "Whiskers" }).lives == 9
+            assert consumer.messages.find({ it.name == "Chloe" }).size == "M"
+            assert consumer.messages.find({ it.name == "Mr. Bigglesworth" }).lives == 8
+            assert consumer.messages.find({ it.name == "Butch" }).size == "L"
         }
     }
 
+    @Serdeable
     static class Cat extends Animal {
         int lives
     }
+    @Serdeable
     static class Dog extends Animal {
         String size
     }

@@ -18,10 +18,6 @@ public abstract class AbstractRabbitMQTest {
             .withExposedPorts(5672)
             .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"));
 
-    static {
-        rabbitContainer.start();
-    }
-
     protected ApplicationContext applicationContext;
 
     protected void startContext() {
@@ -29,6 +25,8 @@ public abstract class AbstractRabbitMQTest {
     }
 
     protected Map<String, Object> getConfiguration() {
+        rabbitContainer.start();
+
         Map<String, Object> config = new HashMap<>();
         config.put("rabbitmq.port", rabbitContainer.getMappedPort(5672));
         config.put("spec.name", getClass().getSimpleName());
@@ -41,6 +39,8 @@ public abstract class AbstractRabbitMQTest {
 
     @AfterEach
     void cleanup() {
+        rabbitContainer.stop();
+
         if (applicationContext != null) {
             applicationContext.close();
         }

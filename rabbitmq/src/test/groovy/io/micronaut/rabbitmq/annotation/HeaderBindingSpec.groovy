@@ -3,6 +3,7 @@ package io.micronaut.rabbitmq.annotation
 import io.micronaut.context.annotation.Requires
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class HeaderBindingSpec extends AbstractRabbitMQTest {
 
@@ -17,12 +18,13 @@ class HeaderBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
-            consumer.messages.keySet()[0].name == "abc"
-            consumer.messages.values()[0] == "some header|static header"
+            assert consumer.messages.size() == 1
+            assert consumer.messages.keySet()[0].name == "abc"
+            assert consumer.messages.values()[0] == "some header|static header"
         }
     }
 
+    @Serdeable
     static class Person {
         String name
     }

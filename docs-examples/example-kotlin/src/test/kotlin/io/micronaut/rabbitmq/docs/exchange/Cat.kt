@@ -1,12 +1,6 @@
 package io.micronaut.rabbitmq.docs.exchange
 
-class Cat : Animal {
+import io.micronaut.serde.annotation.Serdeable
 
-    var lives: Int = 0
-
-    constructor(name: String, lives: Int) : super(name) {
-        this.lives = lives
-    }
-
-    constructor() {}
-}
+@Serdeable
+class Cat(name: String? = null, lives: Int = 0) : Animal(name)

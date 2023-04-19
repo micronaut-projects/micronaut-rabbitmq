@@ -37,7 +37,7 @@ import java.util.Set;
 public class RabbitHeaderConvertibleValues implements ConvertibleValues<Object> {
 
     private final Map<String, Object> headers;
-    private final ConversionService<?> conversionService;
+    private final ConversionService conversionService;
     private final List<ConversionError> conversionErrors = new ArrayList<>();
 
     /**
@@ -46,7 +46,7 @@ public class RabbitHeaderConvertibleValues implements ConvertibleValues<Object> 
      * @param headers The RabbitMQ headers
      * @param conversionService The conversion service
      */
-    public RabbitHeaderConvertibleValues(Map<String, Object> headers, ConversionService<?> conversionService) {
+    public RabbitHeaderConvertibleValues(Map<String, Object> headers, ConversionService conversionService) {
         this.headers = headers == null ? Collections.emptyMap() : headers;
         this.conversionService = conversionService;
     }

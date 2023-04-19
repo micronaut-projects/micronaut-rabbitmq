@@ -20,7 +20,7 @@ class TypeBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.get() == 4
+            assert consumer.messages.get() == 4
         }
     }
 

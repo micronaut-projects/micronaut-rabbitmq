@@ -1,7 +1,11 @@
 plugins {
     id 'io.micronaut.build.internal.docs'
-    id 'io.micronaut.build.internal.dependency-updates'
     id 'io.micronaut.build.internal.quality-reporting'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 def prepareGuideHotfix = tasks.register('prepareGuideHotfix') {
@@ -13,4 +17,9 @@ def prepareGuideHotfix = tasks.register('prepareGuideHotfix') {
 tasks.named('publishGuide') {
     dependsOn(prepareGuideHotfix)
     dependsOn(tasks.javadoc)
+}
+configurations.all {
+    resolutionStrategy {
+        preferProjectModules()
+    }
 }

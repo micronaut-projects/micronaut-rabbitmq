@@ -70,8 +70,8 @@ class ClientErrorSpec extends AbstractRabbitMQTest {
 
         then:
         conditions.eventually {
-            abc instanceof RabbitClientException
-            abc.message.contains("Timed out waiting for publisher confirm")
+            assert abc instanceof RabbitClientException
+            assert abc.message.contains("Timed out waiting for publisher confirm")
         }
     }
 

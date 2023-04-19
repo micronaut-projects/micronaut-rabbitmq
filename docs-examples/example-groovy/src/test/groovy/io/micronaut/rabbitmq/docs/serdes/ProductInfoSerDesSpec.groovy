@@ -19,10 +19,10 @@ class ProductInfoSerDesSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            listener.messages.size() == 3
-            listener.messages.find({ p -> p.size == "small" && p.count == 10L && p.sealed }) != null
-            listener.messages.find({ p -> p.size == "medium" && p.count == 20L && p.sealed }) != null
-            listener.messages.find({ p -> p.size == null && p.count == 30L && !p.sealed }) != null
+            assert listener.messages.size() == 3
+            assert listener.messages.find({ p -> p.size == "small" && p.count == 10L && p.sealed }) != null
+            assert listener.messages.find({ p -> p.size == "medium" && p.count == 20L && p.sealed }) != null
+            assert listener.messages.find({ p -> p.size == null && p.count == 30L && !p.sealed }) != null
         }
     }
 }

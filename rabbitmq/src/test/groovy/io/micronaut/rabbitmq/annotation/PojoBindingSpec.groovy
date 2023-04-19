@@ -2,6 +2,7 @@ package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.serde.annotation.Serdeable
 
 class PojoBindingSpec extends AbstractRabbitMQTest {
 
@@ -16,8 +17,8 @@ class PojoBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 1
-            consumer.messages[0].name == "abc"
+            assert consumer.messages.size() == 1
+            assert consumer.messages[0].name == "abc"
         }
     }
 
@@ -32,12 +33,13 @@ class PojoBindingSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.messages.size() == 2
-            consumer.messages[0].name == "abc"
-            consumer.messages[1].name == "def"
+            assert consumer.messages.size() == 2
+            assert consumer.messages[0].name == "abc"
+            assert consumer.messages[1].name == "def"
         }
     }
 
+    @Serdeable
     static class Person {
         String name
     }

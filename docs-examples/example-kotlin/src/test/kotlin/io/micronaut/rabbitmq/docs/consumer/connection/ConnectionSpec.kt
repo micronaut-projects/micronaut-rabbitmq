@@ -3,7 +3,7 @@ package io.micronaut.rabbitmq.docs.consumer.connection
 import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -26,7 +26,7 @@ class ConnectionSpec : AbstractRabbitMQTest({
 // end::producer[]
 
             then("the message is consumed") {
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     productListener.messageLengths.size shouldBe 1
                     productListener.messageLengths[0] shouldBe "connection-test"
                 }

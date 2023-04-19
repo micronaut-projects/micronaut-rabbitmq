@@ -12,19 +12,42 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 class MultipleConsumersSpec extends AbstractRabbitMQTest {
 
+    private static final int FOUR_CONSUMERS = 4
+    private static final int THREE_CONSUMERS = 3
+
     void "test multiple consumers"() {
         startContext()
 
         MyProducer producer = applicationContext.getBean(MyProducer)
         MyConsumer consumer = applicationContext.getBean(MyConsumer)
 
-        when:
-        4.times { producer.go("abc") }
+        when: 'we send a load of messages'
+        100.times { producer.go("someData") }
 
         then:
         waitFor {
-            //size check because container is set, so 5 different threads are used.
-            consumer.threads.size() == 4
+            assert consumer.threads.size() == FOUR_CONSUMERS
+        }
+    }
+
+    @Override
+    protected void startContext(Map additionalConfig) {
+        additionalConfig['rabbitmq.simple-queue.number-of-consumers'] = THREE_CONSUMERS
+        super.startContext(additionalConfig)
+    }
+
+    void "test multiple consumers using dynamic configuration"() {
+        startContext()
+
+        MyProducer producer = applicationContext.getBean(MyProducer)
+        MyNewConsumer consumer = applicationContext.getBean(MyNewConsumer)
+
+        when: 'we send a load of messages'
+        100.times { producer.go("someData") }
+
+        then:
+        waitFor {
+            assert consumer.threads.size() == THREE_CONSUMERS
         }
     }
 
@@ -42,7 +65,20 @@ class MultipleConsumersSpec extends AbstractRabbitMQTest {
         CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
 
         @Queue(value = "simple", numberOfConsumers = "4")
-        void listen(@MessageBody String body) {
+        void listenOne(@MessageBody String body) {
+            threads << Thread.currentThread().name
+            sleep 500
+        }
+    }
+
+    @Requires(property = "spec.name", value = "MultipleConsumersSpec")
+    @RabbitListener
+    static class MyNewConsumer {
+
+        CopyOnWriteArraySet<String> threads = new CopyOnWriteArraySet<>()
+
+        @Queue(value = 'simple', numberOfConsumersValue = '${rabbitmq.simple-queue.number-of-consumers}')
+        void listenTwo(@MessageBody String body) {
             threads << Thread.currentThread().name
             sleep 500
         }

@@ -19,11 +19,11 @@ class HeadersSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messageProperties.size() == 4
-            productListener.messageProperties.contains("true|10|small")
-            productListener.messageProperties.contains("true|20|medium")
-            productListener.messageProperties.contains("true|30|null")
-            productListener.messageProperties.contains("true|40|large")
+            assert productListener.messageProperties.size() == 4
+            assert productListener.messageProperties.contains("true|10|small")
+            assert productListener.messageProperties.contains("true|20|medium")
+            assert productListener.messageProperties.contains("true|30|null")
+            assert productListener.messageProperties.contains("true|40|large")
         }
     }
 }

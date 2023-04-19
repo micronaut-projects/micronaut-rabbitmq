@@ -1,0 +1,1 @@
+By default, if an RPC call does not have a response within a https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide/configurationreference.html[given time frame], a `TimeoutException` will be thrown or emitted.

@@ -17,6 +17,8 @@ import spock.util.concurrent.PollingConditions
 
 import java.time.Duration
 
+import static org.testcontainers.utility.MountableFile.forHostPath
+
 abstract class AbstractRabbitMQClusterTest extends Specification {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
@@ -93,8 +95,8 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     private static configureContainer(GenericContainer mqContainer, String hostname, int nodePort) {
         mqContainer
                 .withEnv("RABBITMQ_ERLANG_COOKIE", CLUSTER_COOKIE)
-                .withFileSystemBind(RABBIT_CONFIG_PATH, "/etc/rabbitmq/rabbitmq.conf", BindMode.READ_ONLY)
-                .withFileSystemBind(RABBIT_DEFINITIONS_PATH, "/etc/rabbitmq/definitions.json", BindMode.READ_ONLY)
+                .withCopyFileToContainer(forHostPath(RABBIT_CONFIG_PATH), "/etc/rabbitmq/rabbitmq.conf")
+                .withCopyFileToContainer(forHostPath(RABBIT_DEFINITIONS_PATH), "/etc/rabbitmq/definitions.json")
                 .withNetwork(mqClusterNet)
                 .withLogConsumer(new Slf4jLogConsumer(log).withPrefix(hostname))
                 .withCreateContainerCmdModifier(cmd -> cmd

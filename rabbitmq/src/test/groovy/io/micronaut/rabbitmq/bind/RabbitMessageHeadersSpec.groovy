@@ -22,7 +22,7 @@ class RabbitMessageHeadersSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            consumer.headers == [weight: "2lbs", color: "black"]
+            assert consumer.headers == [weight: "2lbs", color: "black"]
         }
     }
 

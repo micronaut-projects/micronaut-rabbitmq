@@ -4,7 +4,7 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -26,7 +26,7 @@ class PropertiesSpec : AbstractRabbitMQTest({
             then("the messages are received") {
                 val productListener = ctx.getBean(ProductListener::class.java)
 
-                eventually(Duration.seconds(10)) {
+                eventually(10.seconds) {
                     productListener.messageProperties.size shouldBe 3
                     productListener.messageProperties shouldContain "guest|application/json|myApp"
                     productListener.messageProperties shouldContain "guest|text/html|myApp"

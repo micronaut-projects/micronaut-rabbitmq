@@ -203,8 +203,8 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         int targetConCount = consumer.consumedMessages.size() + 10
 
         new PollingConditions(timeout: 60).eventually {
-            publishedMessages.size() > targetPubCount
-            consumer.consumedMessages.size() > targetConCount
+            assert publishedMessages.size() > targetPubCount
+            assert consumer.consumedMessages.size() > targetConCount
         }
     }
 

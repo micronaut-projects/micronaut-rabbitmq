@@ -19,7 +19,7 @@ class DeliveryTagSpec extends AbstractRabbitMQTest {
 
         then:
         waitFor {
-            productListener.messages.size() == 3
+            assert productListener.messages.size() == 3
         }
     }
 }

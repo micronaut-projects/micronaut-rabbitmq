@@ -1,19 +1,16 @@
 plugins {
-    id 'io.micronaut.build.internal.rabbitmq-module'
+    id 'io.micronaut.build.internal.rabbitmq-examples'
     alias libs.plugins.kotlin.jvm
     alias libs.plugins.kotlin.kapt
 }
 
 dependencies {
-    kaptTest enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion")
+    kaptTest enforcedPlatform("io.micronaut:micronaut-core-bom:$micronautVersion")
     kaptTest mn.micronaut.inject.java
 
-    testImplementation projects.rabbitmq
     testImplementation libs.kotest
     testImplementation libs.kotlin.reflect
     testImplementation libs.kotlin.stdlib
-    testImplementation libs.testcontainers
-    testImplementation mn.reactor
 }
 
 test {
@@ -24,7 +21,7 @@ test {
 
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
         javaParameters = true
     }
 }
