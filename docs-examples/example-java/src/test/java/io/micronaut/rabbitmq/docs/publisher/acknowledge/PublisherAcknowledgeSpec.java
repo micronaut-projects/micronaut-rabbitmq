@@ -1,5 +1,6 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
@@ -13,6 +14,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 @MicronautTest
+@Property(name = "spec.name", value = "PublisherAcknowledgeSpec")
 class PublisherAcknowledgeSpec {
 
     @Test

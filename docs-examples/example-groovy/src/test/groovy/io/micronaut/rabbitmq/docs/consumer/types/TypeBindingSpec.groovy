@@ -1,28 +1,36 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class TypeBindingSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+
+@MicronautTest
+@Property(name = "spec.name", value = "TypeBindingSpec")
+class TypeBindingSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test publishing and receiving rabbitmq types"() {
-        startContext()
-
         when:
 // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient)
         productClient.send("body".bytes, "text/html")
         productClient.send("body2".bytes, "application/json")
         productClient.send("body3".bytes, "text/xml")
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messages.size() == 3
+        }
 
         then:
-        waitFor {
-            assert productListener.messages.size() == 3
-            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/html]")
-            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [application/json]")
-            assert productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/xml]")
-        }
+        productListener.messages.size() == 3
+        productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/html]")
+        productListener.messages.contains("exchange: [], routingKey: [product], contentType: [application/json]")
+        productListener.messages.contains("exchange: [], routingKey: [product], contentType: [text/xml]")
     }
 }

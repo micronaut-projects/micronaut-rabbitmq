@@ -5,24 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
 }
 
-dependencies {
-    kaptTest enforcedPlatform("io.micronaut:micronaut-core-bom:$micronautVersion")
-    kaptTest mn.micronaut.inject.java
-
-    testImplementation libs.kotest
-    testImplementation libs.kotlin.reflect
-    testImplementation libs.kotlin.stdlib
+micronaut {
+    testRuntime "kotest5"
 }
 
-test {
-    systemProperties['junit.jupiter.execution.parallel.enabled'] = true
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-    forkEvery = 1
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = '17'
-        javaParameters = true
-    }
-}

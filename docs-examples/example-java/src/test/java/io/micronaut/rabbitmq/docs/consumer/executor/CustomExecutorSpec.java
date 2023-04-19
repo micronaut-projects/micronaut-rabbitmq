@@ -1,5 +1,6 @@
 package io.micronaut.rabbitmq.docs.consumer.executor;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,10 @@ import java.util.Map;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-@MicronautTest
-class CustomExecutorSpec implements TestPropertyProvider {
+@MicronautTest(rebuildContext = true)
+@Property(name = "spec.name", value = "CustomExecutorSpec")
+@Property(name = "micronaut.executors.product-listener.type", value = "FIXED")
+class CustomExecutorSpec {
 
     @Test
     void testProductClientAndListener(ProductClient productClient, ProductListener productListener) {
@@ -24,12 +27,5 @@ productClient.send("custom-executor-test".getBytes());
                 productListener.messageLengths.size() == 1 &&
                 productListener.messageLengths.get(0).equals("custom-executor-test")
         );
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        Map<String, String> config = new HashMap<>();
-        config.put("micronaut.executors.product-listener.type", "FIXED");
-        return config;
     }
 }

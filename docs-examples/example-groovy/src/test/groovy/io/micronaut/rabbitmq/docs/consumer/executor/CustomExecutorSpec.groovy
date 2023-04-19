@@ -1,28 +1,33 @@
 package io.micronaut.rabbitmq.docs.consumer.executor
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class CustomExecutorSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+@MicronautTest(rebuildContext = true)
+@Property(name = "spec.name", value = "CustomExecutorSpec")
+@Property(name = "micronaut.executors.product-listener.type", value = "FIXED")
+class CustomExecutorSpec extends Specification {
+
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test product client and listener"() {
-        startContext()
-
         when:
 // tag::producer[]
-        def productClient = applicationContext.getBean(ProductClient)
         productClient.send("custom-executor-test".bytes)
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messageLengths.size() == 1
+        }
 
         then:
-        waitFor {
-            assert productListener.messageLengths.size() == 1
-            assert productListener.messageLengths[0] == "custom-executor-test"
-        }
-    }
-
-    protected Map<String, Object> getConfiguration() {
-        super.configuration + ["micronaut.executors.product-listener.type": "FIXED"]
+        productListener.messageLengths.size() == 1
+        productListener.messageLengths[0] == "custom-executor-test"
     }
 }

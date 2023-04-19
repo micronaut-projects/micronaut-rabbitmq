@@ -1,5 +1,6 @@
 package io.micronaut.rabbitmq.docs.rpc;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -7,7 +8,8 @@ import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
-public class RpcUppercaseSpec {
+@Property(name = "spec.name", value = "RpcUppercaseSpec")
+class RpcUppercaseSpec {
 
     @Test
     void testProductClientAndListener(ProductClient productClient) {

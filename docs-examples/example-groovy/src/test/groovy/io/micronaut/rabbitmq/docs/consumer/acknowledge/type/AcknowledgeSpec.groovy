@@ -1,26 +1,35 @@
 package io.micronaut.rabbitmq.docs.consumer.acknowledge.type
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class AcknowledgeSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+@MicronautTest
+@Property(name = "spec.name", value = "AcknowledgeSpec")
+class AcknowledgeSpec extends Specification {
+
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test acking with an acknowledgement argument"() {
-        startContext()
 
         when:
 // tag::producer[]
-ProductClient productClient = applicationContext.getBean(ProductClient)
 productClient.send("message body".bytes)
 productClient.send("message body".bytes)
 productClient.send("message body".bytes)
 productClient.send("message body".bytes)
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messageCount.get() == 5
+        }
 
         then:
-        waitFor {
-            assert productListener.messageCount.get() == 5
-        }
+        productListener.messageCount.get() == 5
     }
 }

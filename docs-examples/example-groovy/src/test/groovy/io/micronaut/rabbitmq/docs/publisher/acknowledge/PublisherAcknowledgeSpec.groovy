@@ -1,24 +1,30 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
+import spock.lang.Specification
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
 
-class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
 
+@MicronautTest
+@Property(name = "spec.name", value = "PublisherAcknowledgeSpec")
+class PublisherAcknowledgeSpec extends Specification {
+    @Inject ProductClient productClient
     void "test publisher acknowledgement"() {
         given:
-        startContext()
         AtomicInteger successCount = new AtomicInteger(0)
         AtomicInteger errorCount = new AtomicInteger(0)
 
         when:
         // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient)
         Publisher<Void> publisher = productClient.sendPublisher("publisher body".bytes)
         CompletableFuture<Void> future = productClient.sendFuture("future body".bytes)
 
@@ -54,11 +60,12 @@ class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
             }
         }
 // end::producer[]
+        await().atMost(10, SECONDS).until {
+            successCount.get() == 2
+        }
 
         then:
-        waitFor {
-            assert errorCount.get() == 0
-            assert successCount.get() == 2
-        }
+        errorCount.get() == 0
+        successCount.get() == 2
     }
 }

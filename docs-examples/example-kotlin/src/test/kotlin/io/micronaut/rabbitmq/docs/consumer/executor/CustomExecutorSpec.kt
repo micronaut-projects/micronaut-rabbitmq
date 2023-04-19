@@ -1,38 +1,35 @@
 package io.micronaut.rabbitmq.docs.consumer.executor
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import jakarta.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-class CustomExecutorSpec : AbstractRabbitMQTest({
+@MicronautTest(rebuildContext = true)
+@Property(name = "micronaut.executors.product-listener.type", value = "FIXED")
+@Property(name = "spec.name", value = "CustomExecutorSpec")
+class CustomExecutorSpec : AnnotationSpec() {
+    @Inject
+    lateinit var productClient: ProductClient
 
-    val specName = javaClass.simpleName
+    @Inject
+    lateinit var productListener: ProductListener
 
-    given("A basic producer and consumer") {
-        val config = AbstractRabbitMQTest.getDefaultConfig(specName)
-        config["micronaut.executors.product-listener.type"] = "FIXED"
+    @Test
+    suspend fun testBasicConsumerAndProducer() {
 
-        val ctx = startContext(config)
-
-        `when`("the message is published") {
-            val productListener = ctx.getBean(ProductListener::class.java)
 
 // tag::producer[]
-            val productClient = ctx.getBean(ProductClient::class.java)
-            productClient.send("custom-executor-test".toByteArray())
+        productClient.send("custom-executor-test".toByteArray())
 // end::producer[]
 
-            then("the message is consumed") {
-                eventually(10.seconds) {
-                    productListener.messageLengths.size shouldBe 1
-                    productListener.messageLengths[0] shouldBe "custom-executor-test"
-                }
-            }
+        eventually(10.seconds) {
+            productListener.messageLengths.size shouldBe 1
+            productListener.messageLengths[0] shouldBe "custom-executor-test"
         }
-
-        rabbitContainer.stop()
-
-        ctx.stop()
     }
-})
+}

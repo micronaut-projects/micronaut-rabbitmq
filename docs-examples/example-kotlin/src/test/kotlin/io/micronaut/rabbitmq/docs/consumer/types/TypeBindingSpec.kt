@@ -1,25 +1,25 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class TypeBindingSpec : AbstractRabbitMQTest({
+@MicronautTest
+@Property(name = "spec.name", value = "TypeBindingSpec")
+class TypeBindingSpec(productClient: ProductClient, productListener: ProductListener) : BehaviorSpec({
 
     val specName = javaClass.simpleName
 
     given("A basic producer and consumer") {
-        val ctx = startContext(specName)
 
         `when`("The messages are published") {
-            val productListener = ctx.getBean(ProductListener::class.java)
 
             // tag::producer[]
-            val productClient = ctx.getBean(ProductClient::class.java)
             productClient.send("body".toByteArray(), "text/html")
             productClient.send("body2".toByteArray(), "application/json")
             productClient.send("body3".toByteArray(), "text/xml")
@@ -34,7 +34,5 @@ class TypeBindingSpec : AbstractRabbitMQTest({
                 }
             }
         }
-
-        ctx.stop()
     }
 })

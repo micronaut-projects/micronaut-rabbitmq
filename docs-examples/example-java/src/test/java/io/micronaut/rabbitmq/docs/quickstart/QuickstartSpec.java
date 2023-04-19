@@ -1,5 +1,6 @@
 package io.micronaut.rabbitmq.docs.quickstart;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 @MicronautTest
-public class QuickstartSpec {
+@Property(name = "spec.name", value = "QuickstartSpec")
+class QuickstartSpec {
 
     @Test
     void testProductClientAndListener(ProductClient productClient, ProductListener productListener) {

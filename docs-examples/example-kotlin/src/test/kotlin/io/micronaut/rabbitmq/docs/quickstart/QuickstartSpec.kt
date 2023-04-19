@@ -1,24 +1,21 @@
 package io.micronaut.rabbitmq.docs.quickstart
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class QuickstartSpec: AbstractRabbitMQTest({
-
-    val specName = javaClass.simpleName
+@MicronautTest
+@Property(name = "spec.name", value = "QuickstartSpec")
+class QuickstartSpec(productClient: ProductClient, productListener: ProductListener): BehaviorSpec({
 
     given("A basic producer and consumer") {
-        val ctx = startContext(specName)
-
         `when`("the message is published") {
-            val productListener = ctx.getBean(ProductListener::class.java)
 
 // tag::producer[]
-val productClient = ctx.getBean(ProductClient::class.java)
 productClient.send("quickstart".toByteArray())
 // end::producer[]
 
@@ -29,8 +26,5 @@ productClient.send("quickstart".toByteArray())
                 }
             }
         }
-
-        Thread.sleep(1000)
-        ctx.stop()
     }
 })

@@ -1,26 +1,33 @@
 package io.micronaut.rabbitmq.docs.parameters
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class BindingSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+
+@MicronautTest
+@Property(name = "spec.name", value = "BindingSpec")
+class BindingSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test dynamic binding"() {
-        startContext()
-
         when:
 // tag::producer[]
-        def productClient = applicationContext.getBean(ProductClient)
         productClient.send("message body".bytes)
         productClient.send("product", "message body2".bytes)
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
-
-        then:
-        waitFor {
-            assert productListener.messageLengths.size() == 2
-            assert productListener.messageLengths.contains(12)
-            assert productListener.messageLengths.contains(13)
+        await().atMost(10, SECONDS).until {
+            productListener.messageLengths.size() == 2
         }
+        then:
+        productListener.messageLengths.size() == 2
+        productListener.messageLengths.contains(12)
+        productListener.messageLengths.contains(13)
     }
 }

@@ -1,25 +1,32 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class DeliveryTagSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+@MicronautTest
+@Property(name = "spec.name", value = "DeliveryTagSpec")
+class DeliveryTagSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test using a custom annotation binder"() {
-        startContext()
 
         when:
 // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient)
         productClient.send("body".bytes)
         productClient.send("body2".bytes)
         productClient.send("body3".bytes)
 // end::producer[]
-
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messages.size() == 3
+        }
 
         then:
-        waitFor {
-            assert productListener.messages.size() == 3
-        }
+        productListener.messages.size() == 3
     }
 }

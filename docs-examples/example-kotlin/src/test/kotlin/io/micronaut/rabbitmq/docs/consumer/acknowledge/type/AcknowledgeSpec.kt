@@ -1,24 +1,22 @@
 package io.micronaut.rabbitmq.docs.consumer.acknowledge.type
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class AcknowledgeSpec : AbstractRabbitMQTest({
+@MicronautTest
+@Property(name = "spec.name", value = "AcknowledgeSpec")
+class AcknowledgeSpec(productClient: ProductClient, productListener: ProductListener) : BehaviorSpec({
 
     val specName = javaClass.simpleName
 
     given("An acknowledgement argument") {
-        val ctx = startContext(specName)
-
         `when`("The messages are published") {
-            val productListener = ctx.getBean(ProductListener::class.java)
 
             // tag::producer[]
-            val productClient = ctx.getBean(ProductClient::class.java)
             productClient.send("body".toByteArray())
             productClient.send("body".toByteArray())
             productClient.send("body".toByteArray())
@@ -26,12 +24,10 @@ class AcknowledgeSpec : AbstractRabbitMQTest({
             // end::producer[]
 
             then("The messages are received") {
-                    eventually(10.seconds) {
+                eventually(10.seconds) {
                     productListener.messageCount.get() shouldBe 5
                 }
             }
         }
-
-        ctx.stop()
     }
 })
