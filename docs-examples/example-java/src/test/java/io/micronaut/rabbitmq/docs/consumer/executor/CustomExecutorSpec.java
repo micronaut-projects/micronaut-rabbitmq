@@ -1,31 +1,34 @@
 package io.micronaut.rabbitmq.docs.consumer.executor;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
-class CustomExecutorSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class CustomExecutorSpec implements TestPropertyProvider {
 
     @Test
-    void testProductClientAndListener() {
-        startContext();
+    void testProductClientAndListener(ProductClient productClient, ProductListener productListener) {
 
 // tag::producer[]
-ProductClient productClient = applicationContext.getBean(ProductClient.class);
 productClient.send("custom-executor-test".getBytes());
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
-
-        waitFor(() ->
+        await().atMost(60, SECONDS).until(() ->
                 productListener.messageLengths.size() == 1 &&
                 productListener.messageLengths.get(0).equals("custom-executor-test")
         );
     }
 
-    protected Map<String, Object> getConfiguration() {
-        Map<String, Object> config = super.getConfiguration();
+    @Override
+    public Map<String, String> getProperties() {
+        Map<String, String> config = new HashMap<>();
         config.put("micronaut.executors.product-listener.type", "FIXED");
         return config;
     }

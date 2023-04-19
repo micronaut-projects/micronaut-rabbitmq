@@ -1,6 +1,6 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -9,17 +9,19 @@ import org.reactivestreams.Subscription;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PublisherAcknowledgeSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class PublisherAcknowledgeSpec {
 
     @Test
-    void testPublisherAcknowledgement() {
-        startContext();
+    void testPublisherAcknowledgement(ProductClient productClient) {
 
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
 
 // tag::producer[]
-ProductClient productClient = applicationContext.getBean(ProductClient.class);
 Publisher<Void> publisher = productClient.sendPublisher("publisher body".getBytes());
 CompletableFuture<Void> future = productClient.sendFuture("future body".getBytes());
 
@@ -54,7 +56,7 @@ future.whenComplete((v, t) -> {
 });
 // end::producer[]
 
-        waitFor(() ->
+        await().atMost(60, SECONDS).until(() ->
                 errorCount.get() == 0 &&
                 successCount.get() == 2
         );

@@ -1,23 +1,23 @@
 package io.micronaut.rabbitmq.docs.parameters;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
-public class BindingSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+public class BindingSpec {
 
     @Test
-    void testDynamicBinding() {
-        startContext();
-
+    void testDynamicBinding(ProductClient productClient, ProductListener productListener) {
 // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient.class);
         productClient.send("message body".getBytes());
         productClient.send("product", "message body2".getBytes());
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
-        waitFor(() ->
+        await().atMost(60, SECONDS).until(() ->
                 productListener.messageLengths.size() == 2 &&
                 productListener.messageLengths.contains(12) &&
                 productListener.messageLengths.contains(13)

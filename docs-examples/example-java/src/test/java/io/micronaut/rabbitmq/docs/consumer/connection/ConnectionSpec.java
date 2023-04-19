@@ -1,32 +1,35 @@
 package io.micronaut.rabbitmq.docs.consumer.connection;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class ConnectionSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class ConnectionSpec {
 
     @Test
-    void testProductClientAndListener() {
-        startContext();
+    void testProductClientAndListener(ProductClient productClient, ProductListener productListener) {
 
 // tag::producer[]
-ProductClient productClient = applicationContext.getBean(ProductClient.class);
 productClient.send("connection-test".getBytes());
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
-
-        waitFor(() ->
+        await().atMost(10, SECONDS).until(() ->
                 productListener.messageLengths.size() == 1 &&
                 productListener.messageLengths.get(0).equals("connection-test")
         );
     }
-
-    protected Map<String, Object> getConfiguration() {
-        Map<String, Object> config = super.getConfiguration();
-        config.put("rabbitmq.servers.product-cluster.port", config.remove("rabbitmq.port"));
-        return config;
-    }
+// TODO
+//    @Override
+//    public Map<String, String> getProperties() {
+//        Map<String, String> config = new HashMap<>();
+//        config.put("rabbitmq.servers.product-cluster.port", config.remove("rabbitmq.port"));
+//        return config;
+//    }
 }

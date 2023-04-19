@@ -1,23 +1,23 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
-public class DeliveryTagSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class DeliveryTagSpec {
 
     @Test
-    void testUsingACustomAnnotationBinder() {
-        startContext();
-
+    void testUsingACustomAnnotationBinder(ProductClient productClient, ProductListener productListener) {
 // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient.class);
         productClient.send("body".getBytes());
         productClient.send("body2".getBytes());
         productClient.send("body3".getBytes());
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
-        waitFor(() -> productListener.messages.size() == 3);
+        await().atMost(60, SECONDS).until(() -> productListener.messages.size() == 3);
     }
 }

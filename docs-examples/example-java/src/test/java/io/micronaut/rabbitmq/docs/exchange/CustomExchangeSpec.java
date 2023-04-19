@@ -1,23 +1,23 @@
 package io.micronaut.rabbitmq.docs.exchange;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
-public class CustomExchangeSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class CustomExchangeSpec {
 
     @Test
-    void testUsingACustomExchange() {
-        startContext();
-
-        AnimalClient client = applicationContext.getBean(AnimalClient.class);
-        AnimalListener listener = applicationContext.getBean(AnimalListener.class);
+    void testUsingACustomExchange(AnimalClient client, AnimalListener listener) {
 
         client.send(new Cat("Whiskers", 9));
         client.send(new Cat("Mr. Bigglesworth", 8));
         client.send(new Snake("Buttercup", false));
         client.send(new Snake("Monty the Python", true));
 
-        waitFor(() ->
+        await().atMost(60, SECONDS).until(() ->
                 listener.receivedAnimals.size() == 4 &&
                 listener.receivedAnimals.stream()
                         .filter(Cat.class::isInstance)

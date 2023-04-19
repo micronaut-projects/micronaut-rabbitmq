@@ -1,21 +1,22 @@
 package io.micronaut.rabbitmq.docs.consumer.concurrent;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
-public class ConcurrentSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+class ConcurrentSpec {
 
     @Test
-    void testConcurrentConsumers() {
-        startContext();
+    void testConcurrentConsumers(ProductClient productClient, ProductListener productListener) {
 
-        ProductClient productClient = applicationContext.getBean(ProductClient.class);
         for (int i = 0; i < 4; i++) {
             productClient.send("body".getBytes());
         }
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
 
-        waitFor(() -> productListener.threads.size() == 4);
+        await().atMost(60, SECONDS).until(() -> productListener.threads.size() == 4);
     }
 }
