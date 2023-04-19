@@ -70,6 +70,9 @@ public class RabbitConnectionFactory {
         }
     }
 
+    /**
+     * Closes active connections.
+     */
     @PreDestroy
     void shutdownConnections() {
         try {
