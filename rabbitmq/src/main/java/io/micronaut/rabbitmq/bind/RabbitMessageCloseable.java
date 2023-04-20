@@ -58,6 +58,7 @@ public class RabbitMessageCloseable implements AutoCloseable {
     public void close() throws MessageAcknowledgementException {
         switch (acknowledgmentAction) {
             case NONE:
+            default:
                 break;
             case ACK:
                 try {

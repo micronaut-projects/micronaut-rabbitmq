@@ -1,28 +1,34 @@
 package io.micronaut.rabbitmq.docs.properties
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class PropertiesSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+@MicronautTest
+@Property(name = "spec.name", value = "PropertiesSpec")
+class PropertiesSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test sending and receiving properties"() {
-        startContext()
-
         when:
 // tag::producer[]
-        ProductClient productClient = applicationContext.getBean(ProductClient)
         productClient.send("body".bytes)
         productClient.send("guest", "text/html", "body2".bytes)
         productClient.send("guest", null, "body3".bytes)
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messageProperties.size() == 3
+        }
 
         then:
-        waitFor {
-            assert productListener.messageProperties.size() == 3
-            assert productListener.messageProperties.contains("guest|application/json|myApp")
-            assert productListener.messageProperties.contains("guest|text/html|myApp")
-            assert productListener.messageProperties.contains("guest|null|myApp")
-        }
+        productListener.messageProperties.contains("guest|application/json|myApp")
+        productListener.messageProperties.contains("guest|text/html|myApp")
+        productListener.messageProperties.contains("guest|null|myApp")
     }
 }

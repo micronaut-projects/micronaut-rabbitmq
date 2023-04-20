@@ -69,8 +69,7 @@ public class RabbitBinderRegistry implements ArgumentBinderRegistry<RabbitConsum
     }
 
     @Override
-    public <T> Optional<ArgumentBinder<T, RabbitConsumerState>> findArgumentBinder(Argument<T> argument, RabbitConsumerState source) {
-
+    public <T> Optional<ArgumentBinder<T, RabbitConsumerState>> findArgumentBinder(Argument<T> argument) {
         Optional<Class<? extends Annotation>> opt = argument.getAnnotationMetadata().getAnnotationTypeByStereotype(Bindable.class);
         if (opt.isPresent()) {
             Class<? extends Annotation> annotationType = opt.get();

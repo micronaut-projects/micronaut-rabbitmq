@@ -1,21 +1,30 @@
 package io.micronaut.rabbitmq.docs.consumer.concurrent
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class ConcurrentSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+
+@MicronautTest
+@Property(name = "spec.name", value = "ConcurrentSpec")
+class ConcurrentSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test concurrent consumers"() {
-        startContext()
 
         when:
-        ProductClient productClient = applicationContext.getBean(ProductClient)
         4.times { productClient.send("body".bytes) }
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.threads.size() == 4
+        }
 
         then:
-        waitFor {
-            assert productListener.threads.size() == 4
-        }
+        productListener.threads.size() == 4
     }
 }

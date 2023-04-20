@@ -1,32 +1,43 @@
 package io.micronaut.rabbitmq.docs.consumer.connection;
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest;
-import org.junit.jupiter.api.Test;
-
+import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 
-public class ConnectionSpec extends AbstractRabbitMQTest {
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import io.micronaut.testresources.client.TestResourcesClientFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
+@MicronautTest
+@Property(name = "spec.name", value = "ConnectionSpec")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ConnectionSpec implements TestPropertyProvider {
 
     @Test
-    void testProductClientAndListener() {
-        startContext();
+    void testProductClientAndListener(ProductClient productClient, ProductListener productListener) {
 
 // tag::producer[]
-ProductClient productClient = applicationContext.getBean(ProductClient.class);
 productClient.send("connection-test".getBytes());
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener.class);
-
-        waitFor(() ->
+        await().atMost(10, SECONDS).until(() ->
                 productListener.messageLengths.size() == 1 &&
                 productListener.messageLengths.get(0).equals("connection-test")
         );
     }
 
-    protected Map<String, Object> getConfiguration() {
-        Map<String, Object> config = super.getConfiguration();
-        config.put("rabbitmq.servers.product-cluster.port", config.remove("rabbitmq.port"));
-        return config;
+    @Override
+    public Map<String, String> getProperties() {
+        var client = TestResourcesClientFactory.fromSystemProperties().get();
+        var rabbitURI = client.resolve("rabbitmq.uri", Map.of(), Map.of());
+        return rabbitURI
+            .map(uri -> Map.of("rabbitmq.servers.product-cluster.port", String.valueOf(URI.create(uri).getPort())))
+            .orElse(Collections.emptyMap());
     }
 }

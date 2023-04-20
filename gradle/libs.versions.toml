@@ -1,7 +1,9 @@
 [versions]
 micronaut-docs = '2.0.0'
-micronaut = '4.0.0-M1'
+micronaut = '4.0.0-M2'
+micronaut-platform = '4.0.0-M1'
 micronaut-test = '4.0.0-M1'
+micronaut-gradle-plugin = "4.0.0-M1"
 groovy = '4.0.10'
 spock = '2.3-groovy-4.0'
 
@@ -34,7 +36,8 @@ testcontainers-spock = { module = 'org.testcontainers:spock', version.ref = 'tes
 
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
+gradle-micronaut = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronaut-gradle-plugin" }
+gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+gradle-kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
+gradle-kotlin-noarg = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
 
-[plugins]
-kotlin-jvm = { id = 'org.jetbrains.kotlin.jvm', version.ref = 'kotlin' }
-kotlin-kapt = { id = 'org.jetbrains.kotlin.kapt', version.ref = 'kotlin' }

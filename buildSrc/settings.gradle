@@ -1,3 +1,4 @@
+rootProject.name = 'rabbitmq-parent'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {

@@ -1,25 +1,24 @@
 package io.micronaut.rabbitmq.docs.serdes
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldExist
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class ProductInfoSerDesSpec: AbstractRabbitMQTest({
+@MicronautTest
+@Property(name = "spec.name", value = "ProductInfoSerDesSpec")
+class ProductInfoSerDesSpec(productClient: ProductClient, listener: ProductListener): BehaviorSpec({
 
     val specName = javaClass.simpleName
 
     given("A basic producer and consumer") {
-        val ctx = startContext(specName)
-
         `when`("the message is published") {
-            val listener = ctx.getBean(ProductListener::class.java)
 
 // tag::producer[]
-            val productClient = ctx.getBean(ProductClient::class.java)
             productClient.send(ProductInfo("small", 10L, true))
             productClient.send(ProductInfo("medium", 20L, true))
             productClient.send(ProductInfo(null, 30L, false))
@@ -34,7 +33,5 @@ class ProductInfoSerDesSpec: AbstractRabbitMQTest({
                 }
             }
         }
-
-        ctx.stop()
     }
 })

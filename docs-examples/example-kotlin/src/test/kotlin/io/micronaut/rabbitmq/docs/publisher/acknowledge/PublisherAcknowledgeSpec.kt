@@ -1,28 +1,26 @@
 package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
 import io.kotest.assertions.timing.eventually
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlinx.coroutines.async
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
-
-    val specName = javaClass.simpleName
+@MicronautTest
+@Property(name = "spec.name", value = "PublisherAcknowledgeSpec")
+class PublisherAcknowledgeSpec(productClient: ProductClient) : BehaviorSpec({
 
     given("Publisher acknowledgement") {
-        val ctx = startContext(specName)
         val successCount = AtomicInteger(0)
         val errorCount = AtomicInteger(0)
 
         `when`("The messages are published") {
             // tag::producer[]
-            val productClient = ctx.getBean(ProductClient::class.java)
             val publisher = productClient.sendPublisher("publisher body".toByteArray())
             val future = productClient.sendFuture("future body".toByteArray())
             val deferred = async {
@@ -70,7 +68,5 @@ class PublisherAcknowledgeSpec : AbstractRabbitMQTest({
                 }
             }
         }
-
-        ctx.stop()
     }
 })

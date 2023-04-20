@@ -1,25 +1,33 @@
 package io.micronaut.rabbitmq.docs.quickstart
 
-import io.micronaut.rabbitmq.AbstractRabbitMQTest
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
 
-class QuickstartSpec extends AbstractRabbitMQTest {
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
+
+
+@MicronautTest
+@Property(name = "spec.name", value = "QuickstartSpec")
+class QuickstartSpec extends Specification {
+    @Inject ProductClient productClient
+    @Inject ProductListener productListener
 
     void "test product client and listener"() {
-        startContext()
-
         when:
 // tag::producer[]
-def productClient = applicationContext.getBean(ProductClient)
 productClient.send("quickstart".bytes)
 // end::producer[]
 
-        ProductListener productListener = applicationContext.getBean(ProductListener)
+        await().atMost(10, SECONDS).until {
+            productListener.messageLengths.size() == 1
+        }
 
         then:
-        waitFor {
-            assert productListener.messageLengths.size() == 1
-            assert productListener.messageLengths[0] == "quickstart"
-        }
+        productListener.messageLengths.size() == 1
+        productListener.messageLengths[0] == "quickstart"
 
         cleanup:
         // Finding that the context is closing the channel before ack is sent
