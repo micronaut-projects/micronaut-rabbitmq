@@ -1,6 +1,6 @@
 If you need to specify the routing key of the message, apply the ann:configuration.rabbitmq.annotation.Binding[] annotation to the method or an argument of the method. Apply the annotation to the method itself if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.
 
-snippet::io.micronaut.rabbitmq.docs.parameters.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.parameters.ProductClient[tags="imports,clazz", project-base="docs-examples/example"]
 
 <1> The binding is static
 <2> The binding must be set per execution
@@ -9,7 +9,7 @@ snippet::io.micronaut.rabbitmq.docs.parameters.ProductClient[tags="imports,clazz
 
 If multiple RabbitMQ servers have been configured, the name of the server can be set in the ann:configuration.rabbitmq.annotation.Binding[] annotation to designate which connection should be used to publish messages.
 
-snippet::io.micronaut.rabbitmq.docs.consumer.connection.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.consumer.connection.ProductClient[tags="imports,clazz", project-base="docs-examples/example"]
 
 <1> The connection is set on the binding annotation.
 
