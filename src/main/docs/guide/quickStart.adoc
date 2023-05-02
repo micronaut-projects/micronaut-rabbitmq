@@ -17,7 +17,7 @@ snippet::io.micronaut.rabbitmq.docs.quickstart.ProductClient[tags="imports,clazz
 
 At compile time Micronaut will produce an implementation of the above interface. You can retrieve an instance of `ProductClient` either by looking up the bean from the link:{apimicronaut}context/ApplicationContext.html[ApplicationContext] or by injecting the bean with `@Inject`:
 
-snippet::io.micronaut.rabbitmq.docs.quickstart.QuickstartSpec[tags="producer"] project-base="docs-examples/example"]
+snippet::io.micronaut.rabbitmq.docs.quickstart.QuickstartSpec[tags="producer", project-base="docs-examples/example"]
 
 NOTE: Because the `send` method returns `void` this means the method will publish the message and return immediately without any acknowledgement from the broker.
 
