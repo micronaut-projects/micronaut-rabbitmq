@@ -1816,7 +1816,7 @@ public class ProductListener {
 
     CopyOnWriteArraySet&lt;String&gt; threads = new CopyOnWriteArraySet&lt;&gt;();
 
-    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    @Queue(value = "product", numberOfConsumers = "5") // <b class="conum">(1)</b>
     public void receive(byte[] data) {
         threads.add(Thread.currentThread().getName()); // <b class="conum">(2)</b>
         try {
@@ -1839,7 +1839,7 @@ class ProductListener {
 
     CopyOnWriteArraySet&lt;String&gt; threads = new CopyOnWriteArraySet&lt;&gt;()
 
-    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    @Queue(value = "product", numberOfConsumers = "5") // <b class="conum">(1)</b>
     void receive(byte[] data) {
         threads &lt;&lt; Thread.currentThread().name // <b class="conum">(2)</b>
         sleep 500
@@ -1859,7 +1859,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 class ProductListener {
     var threads = CopyOnWriteArraySet&lt;String&gt;()
 
-    @Queue(value = "product", numberOfConsumers = 5) // <b class="conum">(1)</b>
+    @Queue(value = "product", numberOfConsumers = "5") // <b class="conum">(1)</b>
     fun receive(data: ByteArray?) {
         threads.add(Thread.currentThread().name) // <b class="conum">(2)</b>
         Thread.sleep(500)
