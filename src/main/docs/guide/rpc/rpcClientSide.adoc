@@ -1,6 +1,6 @@
 The "client side" in this case starts by publishing a message. A consumer somewhere will then receive the message and reply with a new value.
 
-snippet::io.micronaut.rabbitmq.docs.rpc.ProductClient[tags="imports,clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.rpc.ProductClient[tags="imports,clazz", project-base="docs-examples/example"]
 
 <1> The reply to property is set. This could be placed on individual methods.
 <2> The send method is blocking and will return when the response is received.

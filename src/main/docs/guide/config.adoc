@@ -11,7 +11,7 @@ NOTE: Without any configuration the defaults in the link:{apirabbit}client/Conne
 
 To configure things like the link:{apirabbit}client/impl/CredentialsProvider.html[CredentialsProvider] a bean created event listener can be registered to intercept the creation of the connection factory.
 
-snippet::io.micronaut.rabbitmq.docs.config.ConnectionFactoryInterceptor[] project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.docs.config.ConnectionFactoryInterceptor[project-base="docs-examples/example"]
 
 TIP: It is also possible to disable the integration entirely with `rabbitmq.enabled: false`
 

@@ -2,7 +2,7 @@ The purpose of this library is to consume and publish messages with RabbitMQ. An
 
 For all of the examples in this documentation, an event listener has been registered to create the required queues, exchanges, and bindings necessary for the code to be tested.
 
-snippet::io.micronaut.rabbitmq.ChannelPoolListener[tags="clazz", project-base="docs-examples/example]
+snippet::io.micronaut.rabbitmq.ChannelPoolListener[tags="clazz", project-base="docs-examples/example"]
 
 <1> The class is declared as a singleton so it will be registered with the context
 <2> The class extends an abstract class provided by this library

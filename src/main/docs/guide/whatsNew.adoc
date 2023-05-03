@@ -1,3 +1,19 @@
 For this project, you can find a list of releases (with release notes) here:
 
 https://github.com/{githubSlug}/releases[https://github.com/{githubSlug}/releases]
+
+=== Upgrading to Micronaut RabbitMQ 4.0
+
+Micronaut RabbitMQ 4.0 is a significant major version which includes a number of changes you will need to consider when upgrading.
+
+=== Micronaut 4, AMQP Java Client 5, & Java 17 baseline
+
+Micronaut RabbitMQ 4.0 requires the following minimum set of dependencies:
+
+* Java 17 or above
+* AMQP Java Client 5 or above
+* Micronaut 4 or above
+
+=== `@Queue` annotation member `numberOfConsumers` is now a `String`
+
+Previous versions of Micronaut RabbitMQ used an `int` for the `numberOfConsumers` setting of the `@Queue` annotation. In order to allow this value to be changed via external configuration using an expression such as `@Queue(numberOfConsumers = "$\{configured-number-of-consumers}")`, the type of `numberOfConsumers` has been changed to `String`.
