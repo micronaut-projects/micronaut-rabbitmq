@@ -2,3 +2,9 @@ plugins {
     id 'io.micronaut.build.internal.rabbitmq-examples'
     id 'org.graalvm.buildtools.native'
 }
+
+graalvmNative {
+    metadataRepository {
+        enabled = true
+    }
+}
