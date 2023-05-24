@@ -1,10 +1,10 @@
 [versions]
 micronaut-docs = '2.0.0'
-micronaut = '4.0.0-M2'
-micronaut-platform = '4.0.0-M1'
-micronaut-test = '4.0.0-M1'
-micronaut-gradle-plugin = "4.0.0-M1"
-groovy = '4.0.10'
+micronaut = "4.0.0-M5"
+micronaut-platform = "4.0.0-M1"
+micronaut-test = "4.0.0-M4"
+micronaut-gradle-plugin = "4.0.0-M4"
+groovy = "4.0.12"
 spock = '2.3-groovy-4.0'
 
 awaitility = '4.2.0'
@@ -18,7 +18,7 @@ testcontainers = '1.18.1'
 managed-amqp-client = '5.17.0'
 
 micronaut-micrometer = "5.0.0-M1"
-micronaut-serde = "2.0.0-M1"
+micronaut-serde = "2.0.0-M8"
 
 micronaut-logging = "1.0.0-M2"
 [libraries]
