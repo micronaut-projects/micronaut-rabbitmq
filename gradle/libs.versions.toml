@@ -21,6 +21,9 @@ micronaut-micrometer = "5.0.0-M1"
 micronaut-serde = "2.0.0-M1"
 
 [libraries]
+# Core
+micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
 
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
