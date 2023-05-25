@@ -26,7 +26,7 @@ dependencies {
     testImplementation(mnMicrometer.micronaut.micrometer.core) {
         exclude group: 'io.micronaut.reactor', module: 'micronaut-reactor'
     }
-    testRuntimeOnly mn.logback.classic
+    testRuntimeOnly mnLogging.logback.classic
 }
 
 test {
