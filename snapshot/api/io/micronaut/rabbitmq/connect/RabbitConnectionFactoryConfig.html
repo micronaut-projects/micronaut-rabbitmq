@@ -174,12 +174,12 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRpc()" class="member-name-link">getRpc</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAddresses(java.util.List)" class="member-name-link">setAddresses</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;com.rabbitmq.client.Address&gt;&nbsp;addresses)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAddresses(java.util.List)" class="member-name-link">setAddresses</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;com.rabbitmq.client.Address&gt;&nbsp;addresses)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the addresses to be passed to <code>ConnectionFactory.newConnection(List)</code>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setChannelPool(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.ChannelPoolConfiguration)" class="member-name-link">setChannelPool</a><wbr>(<a href="RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a>&nbsp;channelPool)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setChannelPool(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.ChannelPoolConfiguration)" class="member-name-link">setChannelPool</a><wbr>(@NonNull <a href="RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a>&nbsp;channelPool)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the channel pool configuration.</div>
 </div>
@@ -187,12 +187,12 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfirmTimeout(java.time.Duration)" class="member-name-link">setConfirmTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;confirmTimeout)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConsumerExecutor(java.lang.String)" class="member-name-link">setConsumerExecutor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;consumerExecutor)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConsumerExecutor(java.lang.String)" class="member-name-link">setConsumerExecutor</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;consumerExecutor)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the name of which executor service consumers should be executed on.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRpc(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.RpcConfiguration)" class="member-name-link">setRpc</a><wbr>(<a href="RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.RpcConfiguration</a>&nbsp;rpc)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRpc(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.RpcConfiguration)" class="member-name-link">setRpc</a><wbr>(@NonNull <a href="RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.RpcConfiguration</a>&nbsp;rpc)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the RPC configuration.</div>
 </div>
@@ -260,7 +260,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setRpc(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.RpcConfiguration)">
 <h3>setRpc</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setRpc</span><wbr><span class="parameters">(@NonNull
- <a href="RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.RpcConfiguration</a>&nbsp;rpc)</span></div>
+ @NonNull <a href="RabbitConnectionFactoryConfig.RpcConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.RpcConfiguration</a>&nbsp;rpc)</span></div>
 <div class="block">Sets the RPC configuration.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -282,7 +282,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setChannelPool(io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig.ChannelPoolConfiguration)">
 <h3>setChannelPool</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setChannelPool</span><wbr><span class="parameters">(@NonNull
- <a href="RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a>&nbsp;channelPool)</span></div>
+ @NonNull <a href="RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a>&nbsp;channelPool)</span></div>
 <div class="block">Sets the channel pool configuration.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -304,7 +304,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setAddresses(java.util.List)">
 <h3>setAddresses</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAddresses</span><wbr><span class="parameters">(@Nullable
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;com.rabbitmq.client.Address&gt;&nbsp;addresses)</span></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;com.rabbitmq.client.Address&gt;&nbsp;addresses)</span></div>
 <div class="block">Sets the addresses to be passed to <code>ConnectionFactory.newConnection(List)</code>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -326,7 +326,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setConsumerExecutor(java.lang.String)">
 <h3>setConsumerExecutor</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setConsumerExecutor</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;consumerExecutor)</span></div>
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;consumerExecutor)</span></div>
 <div class="block">Sets the name of which executor service consumers should be executed on. Default "consumer".</div>
 <dl class="notes">
 <dt>Parameters:</dt>

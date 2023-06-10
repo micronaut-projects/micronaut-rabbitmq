@@ -101,7 +101,7 @@ loadScripts(document, 'script');</script>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
  com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
- byte[]&nbsp;body)</code></div>
+ @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default constructor.</div>
 </div>
@@ -119,7 +119,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>byte[]</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@io.micronaut.core.annotation.Nullable byte[]</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBody()" class="member-name-link">getBody</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -155,7 +155,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
  com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
  @Nullable
- byte[]&nbsp;body)</span></div>
+ @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</span></div>
 <div class="block">Default constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -208,7 +208,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getBody()">
 <h3>getBody</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">getBody</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@io.micronaut.core.annotation.Nullable byte[]</span>&nbsp;<span class="element-name">getBody</span>()</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The message body</dd>
