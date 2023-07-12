@@ -17,7 +17,7 @@ rabbit = '5.15.0'
 testcontainers = '1.18.1'
 managed-amqp-client = '5.17.0'
 
-micronaut-micrometer = "5.0.0-M6"
+micronaut-micrometer = "5.0.0"
 micronaut-serde = "2.0.0-M13"
 
 micronaut-logging = "1.0.0-M6"
