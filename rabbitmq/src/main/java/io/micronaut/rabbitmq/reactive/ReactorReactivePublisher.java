@@ -136,6 +136,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 channel.basicPublish(
                         publishState.getExchange(),
                         publishState.getRoutingKey(),
+                        publishState.getMandatory(),
                         publishState.getProperties(),
                         publishState.getBody()
                 );
@@ -168,6 +169,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 channel.basicPublish(
                         publishState.getExchange(),
                         publishState.getRoutingKey(),
+                        publishState.getMandatory(),
                         properties,
                         publishState.getBody()
                 );
@@ -197,6 +199,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 channel.basicPublish(
                         publishState.getExchange(),
                         publishState.getRoutingKey(),
+                        publishState.getMandatory(),
                         publishState.getProperties(),
                         publishState.getBody()
                 );
