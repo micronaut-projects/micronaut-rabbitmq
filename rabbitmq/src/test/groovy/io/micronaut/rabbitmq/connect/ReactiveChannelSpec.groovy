@@ -46,7 +46,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         ReactorReactivePublisher reactiveChannel = new ReactorReactivePublisher(channelPool, new SingleRabbitConnectionFactoryConfig())
         List<Mono> monos = ["abc", "def", "ghi", "jkl"].collect {
-            Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), it.bytes)))
+            Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", false, new AMQP.BasicProperties.Builder().build(), it.bytes)))
         }
 
         then:
@@ -81,7 +81,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), "abc".bytes))
+                .publish(new RabbitPublishState("", "abc", false, new AMQP.BasicProperties.Builder().build(), "abc".bytes))
                 .subscribe()
 
         then:
@@ -91,7 +91,7 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
 
         when:
         reactiveChannel
-                .publish(new RabbitPublishState("", "abc", new AMQP.BasicProperties.Builder().build(), "def".bytes))
+                .publish(new RabbitPublishState("", "abc", false, new AMQP.BasicProperties.Builder().build(), "def".bytes))
                 .subscribe()
 
 
@@ -126,14 +126,14 @@ class ReactiveChannelSpec extends AbstractRabbitMQTest {
         when:
         List<Mono> monos = []
         50.times {
-            monos.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+            monos.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", false, null, "abc".bytes))).doOnSuccess({ t ->
                 integer.decrementAndGet()
             }))
         }
 
         List<Mono> monos2 = []
         25.times {
-            monos2.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", null, "abc".bytes))).doOnSuccess({ t ->
+            monos2.add(Mono.from(reactiveChannel.publish(new RabbitPublishState("", "abc", false, null, "abc".bytes))).doOnSuccess({ t ->
                 integer.decrementAndGet()
             }))
         }
