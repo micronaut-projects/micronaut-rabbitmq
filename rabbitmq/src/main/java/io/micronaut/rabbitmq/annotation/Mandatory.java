@@ -23,9 +23,9 @@ import java.lang.annotation.*;
  * Used to specify how the server should react if the message cannot be routed to a queue.
  *
  * <p>If this flag is {@code true}, the server will return an unroutable message with a Return method.
- * If this flag is {@code false}, the server silently drops the message.
+ * If this flag is {@code false}, the server silently drops the message.</p>
  *
- * <p>Can be applied to a parameter for a dynamic value per execution.
+ * <p>Can be applied to a parameter for a dynamic value per execution.</p>
  *
  * @since 4.1.0
  */
