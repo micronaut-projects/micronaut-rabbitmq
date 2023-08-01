@@ -18,7 +18,7 @@ testcontainers = '1.18.3'
 managed-amqp-client = '5.17.0'
 
 micronaut-micrometer = "5.0.1"
-micronaut-serde = "2.0.1"
+micronaut-serde = "2.1.1"
 
 micronaut-logging = "1.0.0"
 [libraries]
