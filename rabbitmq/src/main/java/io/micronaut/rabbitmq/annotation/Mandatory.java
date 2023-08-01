@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.annotation;
 
 import io.micronaut.core.bind.annotation.Bindable;
+import io.micronaut.core.util.StringUtils;
 
 import java.lang.annotation.*;
 
@@ -39,5 +40,5 @@ public @interface Mandatory {
     /**
      * @return Whether the "mandatory" flag should be set or not.
      */
-    String value() default "true";
+    String value() default StringUtils.TRUE;
 }

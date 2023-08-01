@@ -417,7 +417,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .map(argumentValues::get)
                 .filter(Objects::nonNull)
                 .map(Object::toString)
-                .map("true"::equalsIgnoreCase)
+                .map(StringUtils.TRUE::equalsIgnoreCase)
                 .findFirst();
     }
 
