@@ -11,8 +11,8 @@ dependencies {
     api(mn.micronaut.inject)
     api(libs.managed.amqp.client)
 
-    implementation(mnSerde.micronaut.serde.support)
-    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mn.micronaut.json.core)
+
     implementation(mn.micronaut.retry)
     implementation(mn.reactor)
     implementation(libs.caffeine)
@@ -20,6 +20,7 @@ dependencies {
     compileOnly(mn.micronaut.management)
     compileOnly(mnMicrometer.micronaut.micrometer.core)
 
+    testImplementation(mnSerde.micronaut.serde.jackson)
     testImplementation(libs.testcontainers.spock)
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.micronaut.inject.java)
