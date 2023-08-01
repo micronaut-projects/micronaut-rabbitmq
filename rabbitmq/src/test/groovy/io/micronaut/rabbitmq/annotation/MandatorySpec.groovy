@@ -1,6 +1,7 @@
 package io.micronaut.rabbitmq.annotation
 
 import io.micronaut.context.annotation.Requires
+import io.micronaut.core.util.StringUtils
 import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.connect.ChannelPoolListener
 import org.reactivestreams.Publisher
@@ -39,6 +40,7 @@ class MandatorySpec extends AbstractRabbitMQTest {
 
     void "test mandatory annotation applied to methods and method parameters"() {
         startContext()
+        MandatorySender1 mandatorySender1 = applicationContext.getBean(MandatorySender1)
         MandatorySender3 mandatorySender3 = applicationContext.getBean(MandatorySender3)
         ParametricSender parametricSender = applicationContext.getBean(ParametricSender)
         ChannelPoolListener listener = applicationContext.getBean(ChannelPoolListener)
@@ -46,6 +48,7 @@ class MandatorySpec extends AbstractRabbitMQTest {
         when:
         mandatorySender3.send("this message will be returned")
         parametricSender.send(false, "this message will NOT be returned")
+        mandatorySender1.sendNotMandatory("this message will not be returned either")
         parametricSender.send(true, "this message will be returned too")
 
         then:
@@ -83,6 +86,10 @@ class MandatorySpec extends AbstractRabbitMQTest {
     static interface MandatorySender1 {
         @Binding("no-such-queue")
         void send(String message)
+
+        @Mandatory(StringUtils.FALSE)
+        @Binding("no-such-queue")
+        void sendNotMandatory(String message)
     }
 
     @Requires(property = "spec.name", value = "MandatorySpec")
