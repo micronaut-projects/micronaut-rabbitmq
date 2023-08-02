@@ -15,6 +15,7 @@
  */
 package io.micronaut.rabbitmq.serdes;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.serialize.exceptions.SerializationException;
 import io.micronaut.core.type.Argument;
@@ -32,6 +33,7 @@ import java.io.IOException;
  * @author James Kleeh
  * @since 1.1.0
  */
+@Requires(bean = JsonMapper.class)
 @Singleton
 public class JsonRabbitMessageSerDes implements RabbitMessageSerDes<Object> {
 
