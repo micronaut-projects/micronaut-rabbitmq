@@ -36,6 +36,10 @@ class MandatorySpec extends AbstractRabbitMQTest {
         listener.returns[1].replyText == 'NO_ROUTE'
         listener.returns[1].routingKey == 'no-such-queue'
         listener.returns[1].body == 'this message will be returned too'.bytes
+
+        and:
+        listener.returns.stream().noneMatch(it -> it.body == 'this message will NOT be returned'.bytes)
+        listener.returns.stream().noneMatch(it -> it.body == 'this message will not be returned either'.bytes)
     }
 
     void "test mandatory annotation applied to methods and method parameters"() {
@@ -63,6 +67,10 @@ class MandatorySpec extends AbstractRabbitMQTest {
         listener.returns[1].replyText == 'NO_ROUTE'
         listener.returns[1].routingKey == 'no-such-queue'
         listener.returns[1].body == 'this message will be returned too'.bytes
+
+        and:
+        listener.returns.stream().noneMatch(it -> it.body == 'this message will NOT be returned'.bytes)
+        listener.returns.stream().noneMatch(it -> it.body == 'this message will not be returned either'.bytes)
     }
 
     @Requires(property = "spec.name", value = "MandatorySpec")
