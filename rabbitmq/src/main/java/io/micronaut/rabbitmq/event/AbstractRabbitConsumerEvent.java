@@ -15,8 +15,6 @@
  */
 package io.micronaut.rabbitmq.event;
 
-import io.micronaut.inject.MethodReference;
-
 /**
  * Abstract class for RabbitMQ consumer events.
  *
@@ -24,7 +22,7 @@ import io.micronaut.inject.MethodReference;
  */
 public abstract class AbstractRabbitConsumerEvent extends AbstractRabbitEvent<Object> {
 
-    private final MethodReference<?, ?> method;
+    private final String method;
     private final String queue;
 
     /**
@@ -34,7 +32,7 @@ public abstract class AbstractRabbitConsumerEvent extends AbstractRabbitEvent<Ob
      * @param method The consumer method
      * @param queue  The name of the queue the consumer subscribes to
      */
-    protected AbstractRabbitConsumerEvent(Object bean, MethodReference<?, ?> method, String queue) {
+    protected AbstractRabbitConsumerEvent(Object bean, String method, String queue) {
         super(bean);
         this.method = method;
         this.queue = queue;
@@ -50,7 +48,7 @@ public abstract class AbstractRabbitConsumerEvent extends AbstractRabbitEvent<Ob
     /**
      * @return The consumer method.
      */
-    public MethodReference<?, ?> getMethod() {
+    public String getMethod() {
         return method;
     }
 }

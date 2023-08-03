@@ -15,8 +15,6 @@
  */
 package io.micronaut.rabbitmq.event;
 
-import io.micronaut.inject.MethodReference;
-
 /**
  * An event fired before a RabbitMQ consumer subscribes to a queue.
  *
@@ -31,7 +29,7 @@ public class RabbitConsumerStarting extends AbstractRabbitConsumerEvent {
      * @param method The consumer method
      * @param queue  The name of the queue the consumer subscribes to
      */
-    public RabbitConsumerStarting(Object bean, MethodReference<?, ?> method, String queue) {
+    public RabbitConsumerStarting(Object bean, String method, String queue) {
         super(bean, method, queue);
     }
 }

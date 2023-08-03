@@ -210,14 +210,14 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             };
 
             try {
-                eventPublisher.publishEvent(new RabbitConsumerStarting(bean, method, queue));
+                eventPublisher.publishEvent(new RabbitConsumerStarting(bean, method.getMethodName(), queue));
                 for (int idx = 0; idx < numberOfConsumers; idx++) {
                     String consumerTag = methodTag + "[" + idx + "]";
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
                     consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
                             exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
                 }
-                eventPublisher.publishEvent(new RabbitConsumerStarted(bean, method, queue));
+                eventPublisher.publishEvent(new RabbitConsumerStarted(bean, method.getMethodName(), queue));
             } catch (Throwable e) {
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
             }

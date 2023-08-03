@@ -22,30 +22,30 @@ class RabbitListenerEventsSpec extends AbstractRabbitMQTest {
         and: "received one event consumer1/starting"
         MyConsumer1 consumer1 = applicationContext.getBean(MyConsumer1)
         starting.events.grep { it.source == consumer1 }.size() == 1
-        starting.events.any { it.source == consumer1 && it.method.name == 'consumeMessage' && it.queue == 'abc' }
+        starting.events.any { it.source == consumer1 && it.method == 'consumeMessage' && it.queue == 'abc' }
 
         and: "received one event consumer2/starting"
         MyConsumer2 consumer2 = applicationContext.getBean(MyConsumer2)
         starting.events.grep { it.source == consumer2 }.size() == 1
-        starting.events.any { it.source == consumer2 && it.method.name == 'receiveMessage' && it.queue == 'my-queue' }
+        starting.events.any { it.source == consumer2 && it.method == 'receiveMessage' && it.queue == 'my-queue' }
 
         and: "received two events consumer3/starting, one per listener method"
         MyConsumer3 consumer3 = applicationContext.getBean(MyConsumer3)
         starting.events.grep { it.source == consumer3 }.size() == 2
-        starting.events.any { it.source == consumer3 && it.method.name == 'method1' && it.queue == 'simple' }
-        starting.events.any { it.source == consumer3 && it.method.name == 'method2' && it.queue == 'simple' }
+        starting.events.any { it.source == consumer3 && it.method == 'method1' && it.queue == 'simple' }
+        starting.events.any { it.source == consumer3 && it.method == 'method2' && it.queue == 'simple' }
 
         and: "received one event consumer1/started"
         started.events.grep { it.source == consumer1 }.size() == 1
-        started.events.any { it.source == consumer1 && it.method.name == 'consumeMessage' && it.queue == 'abc' }
+        started.events.any { it.source == consumer1 && it.method == 'consumeMessage' && it.queue == 'abc' }
 
         and: "received no event consumer2/started, because 'my-queue' does not exist"
         started.events.grep { it.source == consumer2 }.size() == 0
 
         and: "received two events consumer3/started, one per listener method"
         started.events.grep { it.source == consumer3 }.size() == 2
-        started.events.any { it.source == consumer3 && it.method.name == 'method1' && it.queue == 'simple' }
-        started.events.any { it.source == consumer3 && it.method.name == 'method2' && it.queue == 'simple' }
+        started.events.any { it.source == consumer3 && it.method == 'method1' && it.queue == 'simple' }
+        started.events.any { it.source == consumer3 && it.method == 'method2' && it.queue == 'simple' }
     }
 
     static abstract class MyRabbitEventListener<T extends AbstractRabbitEvent> implements ApplicationEventListener<T> {

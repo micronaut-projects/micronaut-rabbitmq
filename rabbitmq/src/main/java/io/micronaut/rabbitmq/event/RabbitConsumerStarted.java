@@ -15,8 +15,6 @@
  */
 package io.micronaut.rabbitmq.event;
 
-import io.micronaut.inject.MethodReference;
-
 /**
  * An event fired after a {@link io.micronaut.rabbitmq.annotation.RabbitListener} subscribes to a queue.
  *
@@ -31,7 +29,7 @@ public class RabbitConsumerStarted extends AbstractRabbitConsumerEvent {
      * @param method The consumer method
      * @param queue  The name of the queue the consumer subscribes to
      */
-    public RabbitConsumerStarted(Object bean, MethodReference<?, ?> method, String queue) {
+    public RabbitConsumerStarted(Object bean, String method, String queue) {
         super(bean, method, queue);
     }
 }
