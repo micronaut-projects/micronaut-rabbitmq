@@ -23,6 +23,7 @@ import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.RecoverableChannel;
 import com.rabbitmq.client.ShutdownSignalException;
 import io.micronaut.context.BeanContext;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.context.processor.ExecutableMethodProcessor;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.BoundExecutable;
@@ -43,6 +44,8 @@ import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.rabbitmq.connect.ChannelPool;
+import io.micronaut.rabbitmq.event.RabbitConsumerStarted;
+import io.micronaut.rabbitmq.event.RabbitConsumerStarting;
 import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
@@ -78,6 +81,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQConsumerAdvice.class);
 
     private final BeanContext beanContext;
+    private final ApplicationEventPublisher eventPublisher;
     private final RabbitBinderRegistry binderRegistry;
     private final RabbitListenerExceptionHandler exceptionHandler;
     private final RabbitMessageSerDesRegistry serDesRegistry;
@@ -90,18 +94,21 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      *
      * @param beanContext       The bean context
      * @param binderRegistry    The registry to bind arguments to the method
+     * @param eventPublisher    The application event publisher
      * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
      * @param channelPools      The channel pools to retrieve channels
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
+                                  ApplicationEventPublisher eventPublisher,
                                   RabbitBinderRegistry binderRegistry,
                                   RabbitListenerExceptionHandler exceptionHandler,
                                   RabbitMessageSerDesRegistry serDesRegistry,
                                   ConversionService conversionService,
                                   List<ChannelPool> channelPools) {
         this.beanContext = beanContext;
+        this.eventPublisher = eventPublisher;
         this.binderRegistry = binderRegistry;
         this.exceptionHandler = exceptionHandler;
         this.serDesRegistry = serDesRegistry;
@@ -203,12 +210,14 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             };
 
             try {
+                eventPublisher.publishEvent(new RabbitConsumerStarting(bean, method, queue));
                 for (int idx = 0; idx < numberOfConsumers; idx++) {
                     String consumerTag = methodTag + "[" + idx + "]";
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
                     consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
                             exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
                 }
+                eventPublisher.publishEvent(new RabbitConsumerStarted(bean, method, queue));
             } catch (Throwable e) {
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
             }
