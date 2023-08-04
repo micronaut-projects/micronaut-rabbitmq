@@ -5,18 +5,19 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.rabbitmq.event.RabbitConsumerStarting;
 import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // end::imports[]
 
 @Requires(property = "spec.name", value = "RabbitListenerEventsSpec")
 // tag::clazz[]
 @Singleton
 public class MyStartingEventListener implements ApplicationEventListener<RabbitConsumerStarting> {
+  private static final Logger LOG = LoggerFactory.getLogger(MyStartingEventListener.class);
   @Override
   public void onApplicationEvent(RabbitConsumerStarting event) {
-    System.out.println(new StringBuilder()
-        .append("RabbitMQ consumer: " + event.getSource())
-        .append(" (method: " + event.getMethod() + ")")
-        .append(" is subscribing to: " + event.getQueue()));
+    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
+      event.getSource(), event.getMethod(), event.getQueue());
   }
 }
 // end::clazz[]
