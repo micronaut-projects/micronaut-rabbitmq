@@ -29,6 +29,7 @@ import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.bind.BoundExecutable;
 import io.micronaut.core.bind.DefaultExecutableBinder;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
@@ -101,6 +102,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
      * @param channelPools      The channel pools to retrieve channels
+     * @since 4.1.0
      */
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ApplicationEventPublisher<RabbitConsumerStarting> startingPublisher,
@@ -121,6 +123,37 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         for (ChannelPool cp: channelPools) {
             this.channelPools.put(cp.getName(), cp);
         }
+    }
+
+    /**
+     * Deprecated constructor.
+     *
+     * @param beanContext       The bean context
+     * @param binderRegistry    The registry to bind arguments to the method
+     * @param exceptionHandler  The exception handler to use if the consumer isn't a handler
+     * @param serDesRegistry    The serialization/deserialization registry
+     * @param conversionService The service to convert consume argument values
+     * @param channelPools      The channel pools to retrieve channels
+     * @deprecated
+     */
+    @Deprecated(since = "4.1.0", forRemoval = true)
+    public RabbitMQConsumerAdvice(BeanContext beanContext,
+        RabbitBinderRegistry binderRegistry,
+        RabbitListenerExceptionHandler exceptionHandler,
+        RabbitMessageSerDesRegistry serDesRegistry,
+        ConversionService conversionService,
+        List<ChannelPool> channelPools) {
+        this(
+            beanContext,
+            beanContext.findBean(Argument.of((Class<ApplicationEventPublisher<RabbitConsumerStarting>>) ((Class) ApplicationEventPublisher.class),
+                Argument.of(RabbitConsumerStarting.class))).orElseThrow(),
+            beanContext.findBean(Argument.of((Class<ApplicationEventPublisher<RabbitConsumerStarted>>) ((Class) ApplicationEventPublisher.class),
+                Argument.of(RabbitConsumerStarted.class))).orElseThrow(),
+            binderRegistry,
+            exceptionHandler,
+            serDesRegistry,
+            conversionService,
+            channelPools);
     }
 
     @Override
