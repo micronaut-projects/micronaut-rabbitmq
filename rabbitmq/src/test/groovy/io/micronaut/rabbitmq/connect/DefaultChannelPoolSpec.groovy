@@ -1,7 +1,6 @@
 package io.micronaut.rabbitmq.connect
 
 import com.rabbitmq.client.Address
-import com.rabbitmq.client.Channel
 import com.rabbitmq.client.DefaultSocketConfigurator
 import com.rabbitmq.client.impl.AMQConnection
 import com.rabbitmq.client.impl.ConnectionParams
@@ -27,10 +26,11 @@ class DefaultChannelPoolSpec extends Specification {
         DefaultChannelPool pool = new DefaultChannelPool("pool-name", connection, new SingleRabbitConnectionFactoryConfig())
 
         and: "try to obtain a channel from the pool"
-        Channel channel = pool.getChannel()
+        pool.getChannel()
 
-        then: "returned channel is null (no infinite loop)"
-        channel == null
+        then: "IO exception is thrown (no infinite loop)"
+        IOException e = thrown()
+        e.message == "Failed to create a new channel"
 
         cleanup: "stop the dummy server"
         server.interrupt()
