@@ -52,6 +52,7 @@ import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
 import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      * @param channelPools      The channel pools to retrieve channels
      * @since 4.1.0
      */
+    @Inject
     public RabbitMQConsumerAdvice(BeanContext beanContext,
                                   ApplicationEventPublisher<RabbitConsumerStarting> startingPublisher,
                                   ApplicationEventPublisher<RabbitConsumerStarted> startedPublisher,
