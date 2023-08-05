@@ -82,6 +82,10 @@ public class DefaultChannelPool implements AutoCloseable, ChannelPool {
             channel = channels.poll();
             if (channel == null) {
                 channel = createChannel();
+                // Check that the channel was actually created to avoid infinite loop
+                if (channel == null) {
+                    throw new IOException("Failed to create a new channel");
+                }
             } else if (!channel.isOpen()) {
                 channel = null;
                 totalChannels.decrementAndGet();
