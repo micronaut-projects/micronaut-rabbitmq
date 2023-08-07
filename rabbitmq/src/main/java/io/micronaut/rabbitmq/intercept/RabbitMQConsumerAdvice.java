@@ -136,7 +136,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
      * @param serDesRegistry    The serialization/deserialization registry
      * @param conversionService The service to convert consume argument values
      * @param channelPools      The channel pools to retrieve channels
-     * @deprecated
+     * @deprecated Use @{link {@link RabbitMQConsumerAdvice#RabbitMQConsumerAdvice(BeanContext, ApplicationEventPublisher, ApplicationEventPublisher, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List)}}
      */
     @Deprecated(since = "4.1.0", forRemoval = true)
     public RabbitMQConsumerAdvice(BeanContext beanContext,
