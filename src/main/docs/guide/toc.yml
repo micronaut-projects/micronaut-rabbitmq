@@ -29,6 +29,7 @@ consumer:
     consumerAcknowledge: Acknowledging Messages
   consumerExceptions: Handling Consumer Exceptions
   consumerExecutor: Consumer Execution
+  consumerEvents: Consumer Events
 rpc:
   title: Directly Reply-To (RPC)
   rpcClientSide: Client Side

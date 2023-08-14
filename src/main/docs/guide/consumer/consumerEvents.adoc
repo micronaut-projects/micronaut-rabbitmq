@@ -1,0 +1,26 @@
+
+Micronaut sends application events whenever a RabbitMQ consumer subscribes to a queue.
+
+- api:io.micronaut.rabbitmq.event.RabbitConsumerStarting[]: It is fired before a consumer subscribes to a queue.
+- api:io.micronaut.rabbitmq.event.RabbitConsumerStarted[]: It is fired after a consumer subscribes to a queue.
+
+[NOTE]
+====
+These events contain the following information:
+
+- `source`: The bean annotated as ann:configuration.rabbitmq.annotation.RabbitListener[].
+- `method`: The consumer method.
+- `queue`: The name of the queue the consumer subscribes to.
+====
+
+.Handling `RabbitConsumerStarting` events
+
+To take any actions right before consumers try to subscribe to a queue, listen to application event api:io.micronaut.rabbitmq.event.RabbitConsumerStarting[]:
+
+snippet::io.micronaut.rabbitmq.docs.event.MyStartingEventListener[tags="imports,clazz", project-base="docs-examples/example"]
+
+.Handling `RabbitConsumerStarted` events
+
+To take any actions right after consumers are subscribed to a queue, listen to application event api:io.micronaut.rabbitmq.event.RabbitConsumerStarted[]:
+
+snippet::io.micronaut.rabbitmq.docs.event.MyStartedEventListener[tags="imports,clazz", project-base="docs-examples/example"]
