@@ -147,10 +147,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         List<ChannelPool> channelPools) {
         this(
             beanContext,
-            beanContext.findBean(Argument.of((Class<ApplicationEventPublisher<RabbitConsumerStarting>>) ((Class) ApplicationEventPublisher.class),
-                Argument.of(RabbitConsumerStarting.class))).orElseThrow(),
-            beanContext.findBean(Argument.of((Class<ApplicationEventPublisher<RabbitConsumerStarted>>) ((Class) ApplicationEventPublisher.class),
-                Argument.of(RabbitConsumerStarted.class))).orElseThrow(),
+            beanContext.getBean(Argument.of(ApplicationEventPublisher.class, RabbitConsumerStarting.class)),
+            beanContext.getBean(Argument.of(ApplicationEventPublisher.class, RabbitConsumerStarted.class)),
             binderRegistry,
             exceptionHandler,
             serDesRegistry,
