@@ -149,6 +149,8 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-consumerExecutor"><a href="#consumerExecutor"><strong>7.3</strong><span>Consumer Execution</span></a></div>
         
+        <div class="toc-item" style="margin-left:10px" id="toc-item-consumerEvents"><a href="#consumerEvents"><strong>7.4</strong><span>Consumer Events</span></a></div>
+        
         <div class="toc-item" style="margin-left:0px" id="toc-item-rpc"><a href="#rpc"><strong>8</strong><span>Directly Reply-To (RPC)</span></a></div>
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-rpcClientSide"><a href="#rpcClientSide"><strong>8.1</strong><span>Client Side</span></a></div>
@@ -3395,6 +3397,174 @@ As with any other case of concurrent execution, operations on data in the instan
 </td>
 </tr>
 </table>
+</div>
+</div>
+
+<h2 id="consumerEvents"><a class="anchor" href="#consumerEvents"></a>7.4 Consumer Events</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/consumer/consumerEvents.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Micronaut sends application events whenever a RabbitMQ consumer subscribes to a queue.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../api/io/micronaut/rabbitmq/event/RabbitConsumerStarting.html">RabbitConsumerStarting</a>: It is fired before a consumer subscribes to a queue.</p>
+</li>
+<li>
+<p><a href="../api/io/micronaut/rabbitmq/event/RabbitConsumerStarted.html">RabbitConsumerStarted</a>: It is fired after a consumer subscribes to a queue.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These events contain the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>source</code>: The bean annotated as <a href="../api/io/micronaut/configuration/rabbitmq/annotation/RabbitListener.html">@RabbitListener</a>.</p>
+</li>
+<li>
+<p><code>method</code>: The consumer method.</p>
+</li>
+<li>
+<p><code>queue</code>: The name of the queue the consumer subscribes to.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<div class="title">Handling <code>RabbitConsumerStarting</code> events</div>
+<p>To take any actions right before consumers try to subscribe to a queue, listen to application event <a href="../api/io/micronaut/rabbitmq/event/RabbitConsumerStarting.html">RabbitConsumerStarting</a>:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.context.event.ApplicationEventListener;
+import io.micronaut.rabbitmq.event.RabbitConsumerStarting;
+import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Singleton
+public class MyStartingEventListener implements ApplicationEventListener&lt;RabbitConsumerStarting&gt; {
+  private static final Logger LOG = LoggerFactory.getLogger(MyStartingEventListener.class);
+  @Override
+  public void onApplicationEvent(RabbitConsumerStarting event) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
+      event.getSource(), event.getMethod(), event.getQueue());
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarting
+import jakarta.inject.Singleton
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartingEventListener implements ApplicationEventListener&lt;RabbitConsumerStarting&gt; {
+  private static final Logger LOG = LoggerFactory.getLogger(MyStartingEventListener.class)
+  @Override
+  void onApplicationEvent(RabbitConsumerStarting event) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
+      event.source, event.method, event.queue);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarting
+import jakarta.inject.Singleton
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartingEventListener : ApplicationEventListener&lt;RabbitConsumerStarting&gt; {
+  private val LOG = LoggerFactory.getLogger(javaClass)
+  override fun onApplicationEvent(event: RabbitConsumerStarting) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
+      event.source, event.method, event.queue)
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Handling <code>RabbitConsumerStarted</code> events</div>
+<p>To take any actions right after consumers are subscribed to a queue, listen to application event <a href="../api/io/micronaut/rabbitmq/event/RabbitConsumerStarted.html">RabbitConsumerStarted</a>:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.context.event.ApplicationEventListener;
+import io.micronaut.rabbitmq.event.RabbitConsumerStarted;
+import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Singleton
+public class MyStartedEventListener implements ApplicationEventListener&lt;RabbitConsumerStarted&gt; {
+  private static final Logger LOG = LoggerFactory.getLogger(MyStartingEventListener.class);
+  @Override
+  public void onApplicationEvent(RabbitConsumerStarted event) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) just subscribed to: {}",
+      event.getSource(), event.getMethod(), event.getQueue());
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarted
+import jakarta.inject.Singleton
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartedEventListener implements ApplicationEventListener&lt;RabbitConsumerStarted&gt; {
+  private static final Logger LOG = LoggerFactory.getLogger(MyStartingEventListener.class)
+  @Override
+  void onApplicationEvent(RabbitConsumerStarted event) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) just subscribed to: {}",
+      event.source, event.method, event.queue);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarted
+import jakarta.inject.Singleton
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartedEventListener : ApplicationEventListener&lt;RabbitConsumerStarted&gt; {
+  private val LOG = LoggerFactory.getLogger(javaClass)
+  override fun onApplicationEvent(event: RabbitConsumerStarted) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) just subscribed to: {}",
+      event.source, event.method, event.queue)
+  }
+}</code></pre>
 </div>
 </div>
 

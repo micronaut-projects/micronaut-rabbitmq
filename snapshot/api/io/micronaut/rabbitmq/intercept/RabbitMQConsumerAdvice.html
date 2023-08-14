@@ -104,7 +104,9 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)" class="member-name-link">RabbitMQConsumerAdvice</a><wbr>(io.micronaut.context.BeanContext&nbsp;beanContext,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)" class="member-name-link">RabbitMQConsumerAdvice</a><wbr>(io.micronaut.context.BeanContext&nbsp;beanContext,
+ io.micronaut.context.event.ApplicationEventPublisher&lt;<a href="../event/RabbitConsumerStarting.html" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarting</a>&gt;&nbsp;startingPublisher,
+ io.micronaut.context.event.ApplicationEventPublisher&lt;<a href="../event/RabbitConsumerStarted.html" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarted</a>&gt;&nbsp;startedPublisher,
  <a href="../bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
  <a href="../exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
  <a href="../serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
@@ -112,6 +114,17 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default constructor.</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)" class="member-name-link">RabbitMQConsumerAdvice</a><wbr>(io.micronaut.context.BeanContext&nbsp;beanContext,
+ <a href="../bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
+ <a href="../exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
+ <a href="../serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
+ io.micronaut.core.convert.ConversionService&nbsp;conversionService,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use @{link <a href="#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)"><code>RabbitMQConsumerAdvice(BeanContext, ApplicationEventPublisher, ApplicationEventPublisher, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List)</code></a>}</div>
+</div>
 </div>
 </div>
 </section>
@@ -152,15 +165,48 @@ implements io.micronaut.context.processor.ExecutableMethodProcessor&lt;<a href="
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.context.BeanContext,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)">
 <h3>RabbitMQConsumerAdvice</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">RabbitMQConsumerAdvice</span><wbr><span class="parameters">(io.micronaut.context.BeanContext&nbsp;beanContext,
+<div class="member-signature"><span class="annotations">@Inject
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">RabbitMQConsumerAdvice</span><wbr><span class="parameters">(io.micronaut.context.BeanContext&nbsp;beanContext,
+ io.micronaut.context.event.ApplicationEventPublisher&lt;<a href="../event/RabbitConsumerStarting.html" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarting</a>&gt;&nbsp;startingPublisher,
+ io.micronaut.context.event.ApplicationEventPublisher&lt;<a href="../event/RabbitConsumerStarted.html" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarted</a>&gt;&nbsp;startedPublisher,
  <a href="../bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
  <a href="../exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
  <a href="../serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
  io.micronaut.core.convert.ConversionService&nbsp;conversionService,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</span></div>
 <div class="block">Default constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>beanContext</code> - The bean context</dd>
+<dd><code>binderRegistry</code> - The registry to bind arguments to the method</dd>
+<dd><code>startingPublisher</code> - The RabbitConsumerStarting event publisher</dd>
+<dd><code>startedPublisher</code> - The RabbitConsumerStarted event publisher</dd>
+<dd><code>exceptionHandler</code> - The exception handler to use if the consumer isn't a handler</dd>
+<dd><code>serDesRegistry</code> - The serialization/deserialization registry</dd>
+<dd><code>conversionService</code> - The service to convert consume argument values</dd>
+<dd><code>channelPools</code> - The channel pools to retrieve channels</dd>
+<dt>Since:</dt>
+<dd>4.1.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)">
+<h3>RabbitMQConsumerAdvice</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.1.0",
+            <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">RabbitMQConsumerAdvice</span><wbr><span class="parameters">(io.micronaut.context.BeanContext&nbsp;beanContext,
+ <a href="../bind/RabbitBinderRegistry.html" title="class in io.micronaut.rabbitmq.bind">RabbitBinderRegistry</a>&nbsp;binderRegistry,
+ <a href="../exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>&nbsp;exceptionHandler,
+ <a href="../serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>&nbsp;serDesRegistry,
+ io.micronaut.core.convert.ConversionService&nbsp;conversionService,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;&nbsp;channelPools)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use @{link <a href="#%3Cinit%3E(io.micronaut.context.BeanContext,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)"><code>RabbitMQConsumerAdvice(BeanContext, ApplicationEventPublisher, ApplicationEventPublisher, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List)</code></a>}</div>
+</div>
+<div class="block">Deprecated constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>beanContext</code> - The bean context</dd>

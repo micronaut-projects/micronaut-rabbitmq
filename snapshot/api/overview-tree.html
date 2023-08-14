@@ -54,6 +54,7 @@ loadScripts(document, 'script');</script>
 <li><a href="io/micronaut/rabbitmq/annotation/package-tree.html">io.micronaut.rabbitmq.annotation</a>, </li>
 <li><a href="io/micronaut/rabbitmq/bind/package-tree.html">io.micronaut.rabbitmq.bind</a>, </li>
 <li><a href="io/micronaut/rabbitmq/connect/package-tree.html">io.micronaut.rabbitmq.connect</a>, </li>
+<li><a href="io/micronaut/rabbitmq/event/package-tree.html">io.micronaut.rabbitmq.event</a>, </li>
 <li><a href="io/micronaut/rabbitmq/exception/package-tree.html">io.micronaut.rabbitmq.exception</a>, </li>
 <li><a href="io/micronaut/rabbitmq/executor/package-tree.html">io.micronaut.rabbitmq.executor</a>, </li>
 <li><a href="io/micronaut/rabbitmq/health/package-tree.html">io.micronaut.rabbitmq.health</a>, </li>
@@ -93,6 +94,24 @@ loadScripts(document, 'script');</script>
 <li class="circle">io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/DefaultChannelPool.html" class="type-name-link" title="class in io.micronaut.rabbitmq.connect">DefaultChannelPool</a> (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>, io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>)</li>
 <li class="circle">io.micronaut.rabbitmq.exception.<a href="io/micronaut/rabbitmq/exception/DefaultRabbitListenerExceptionHandler.html" class="type-name-link" title="class in io.micronaut.rabbitmq.exception">DefaultRabbitListenerExceptionHandler</a> (implements io.micronaut.rabbitmq.exception.<a href="io/micronaut/rabbitmq/exception/RabbitListenerExceptionHandler.html" title="interface in io.micronaut.rabbitmq.exception">RabbitListenerExceptionHandler</a>)</li>
 <li class="circle">io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/DefaultRabbitMessageSerDesRegistry.html" class="type-name-link" title="class in io.micronaut.rabbitmq.serdes">DefaultRabbitMessageSerDesRegistry</a> (implements io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a>)</li>
+<li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/EventObject.html" class="type-name-link external-link" title="class or interface in java.util">EventObject</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
+<ul>
+<li class="circle">io.micronaut.context.event.ApplicationEvent
+<ul>
+<li class="circle">io.micronaut.rabbitmq.event.<a href="io/micronaut/rabbitmq/event/AbstractRabbitEvent.html" class="type-name-link" title="class in io.micronaut.rabbitmq.event">AbstractRabbitEvent</a>&lt;T&gt;
+<ul>
+<li class="circle">io.micronaut.rabbitmq.event.<a href="io/micronaut/rabbitmq/event/AbstractRabbitConsumerEvent.html" class="type-name-link" title="class in io.micronaut.rabbitmq.event">AbstractRabbitConsumerEvent</a>
+<ul>
+<li class="circle">io.micronaut.rabbitmq.event.<a href="io/micronaut/rabbitmq/event/RabbitConsumerStarted.html" class="type-name-link" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarted</a></li>
+<li class="circle">io.micronaut.rabbitmq.event.<a href="io/micronaut/rabbitmq/event/RabbitConsumerStarting.html" class="type-name-link" title="class in io.micronaut.rabbitmq.event">RabbitConsumerStarting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" class="type-name-link" title="class in io.micronaut.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a> (implements io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;T&gt;)</li>
 <li class="circle">io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/JsonRabbitMessageSerDes.html" class="type-name-link" title="class in io.micronaut.rabbitmq.serdes">JsonRabbitMessageSerDes</a> (implements io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/RabbitMessageSerDes.html" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDes</a>&lt;T&gt;)</li>
 <li class="circle">io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html" class="type-name-link" title="class in io.micronaut.rabbitmq.intercept">MutableBasicProperties</a> (implements com.rabbitmq.client.BasicProperties)</li>
