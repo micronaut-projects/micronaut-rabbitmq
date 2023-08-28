@@ -16,6 +16,7 @@
 package io.micronaut.rabbitmq.connect;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,6 +30,7 @@ import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.inject.qualifiers.Qualifiers;
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnectionManager;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -55,18 +57,29 @@ public class RabbitConnectionFactory {
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,
                           BeanContext beanContext) {
         try {
-            ExecutorService executorService = beanContext.getBean(ExecutorService.class, Qualifiers.byName(connectionFactory.getConsumerExecutor()));
-            Optional<List<Address>> addresses = connectionFactory.getAddresses();
-            Connection connection;
-            if (addresses.isPresent()) {
-                connection = connectionFactory.newConnection(executorService, addresses.get());
-            } else {
-                connection = connectionFactory.newConnection(executorService);
-            }
+            Connection connection = newConnection(connectionFactory, beanContext);
             activeConnections.add(new ActiveConnection(connection, connectionFactory));
             return connection;
         } catch (IOException | TimeoutException e) {
             throw new BeanInstantiationException("Error creating connection to RabbitMQ", e);
+        }
+    }
+
+    private Connection newConnection(RabbitConnectionFactoryConfig factory, BeanContext context) throws IOException, TimeoutException {
+        ExecutorService executorService = context.getBean(ExecutorService.class, Qualifiers.byName(factory.getConsumerExecutor()));
+        Optional<List<Address>> addresses = factory.getAddresses();
+        try {
+            if (addresses.isPresent()) {
+                return factory.newConnection(executorService, addresses.get());
+            }
+            return factory.newConnection(executorService);
+        } catch (ConnectException e) {
+            // Check if automatic recovery is enabled
+            if (factory.isAutomaticRecoveryEnabled()) {
+                // Create a "temporarily down" connection that may be up eventually
+                return context.getBean(TemporarilyDownConnectionManager.class).newConnection(executorService);
+            }
+            throw e;
         }
     }
 

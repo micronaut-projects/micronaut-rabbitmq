@@ -18,6 +18,7 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Channel;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,11 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
         } catch (Throwable e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error("Initialization of the channel has failed due to error", e);
+            }
+            // Check if the connection is just temporarily down
+            if (e instanceof TemporarilyDownException temp) {
+                // We will try to initialize the channel again when it's eventually up
+                temp.getConnection().addEventuallyUpListener(c -> initialize(c.createChannel(), pool.getName()));
             }
         } finally {
             if (channel != null) {
