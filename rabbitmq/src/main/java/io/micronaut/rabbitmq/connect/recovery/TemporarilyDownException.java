@@ -21,6 +21,7 @@ package io.micronaut.rabbitmq.connect.recovery;
  * @author Guillermo Calvo
  * @since 4.1.0
  */
+@FunctionalInterface
 public interface TemporarilyDownException {
 
     String ERROR_MESSAGE = "Connection is not ready yet";
