@@ -51,13 +51,28 @@ public class RabbitConnectionFactory {
      * @param connectionFactory The factory to create the connection
      * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection
+     * @deprecated Use {@link RabbitConnectionFactory#connection(RabbitConnectionFactoryConfig, TemporarilyDownConnectionManager, BeanContext)}
+     */
+    @Deprecated(since = "4.2.0", forRemoval = true)
+    Connection connection(RabbitConnectionFactoryConfig connectionFactory,
+                          BeanContext beanContext) {
+        return connection(connectionFactory, beanContext.getBean(TemporarilyDownConnectionManager.class), beanContext);
+    }
+
+    /**
+     * @param connectionFactory The factory to create the connection
+     * @param temporarilyDownConnectionManager The temporarily down connection manager
+     * @param beanContext The bean context to dynamically retrieve the executor service
+     * @return The connection
+     * @since 4.2.0
      */
     @Singleton
     @EachBean(RabbitConnectionFactoryConfig.class)
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,
+                          TemporarilyDownConnectionManager temporarilyDownConnectionManager,
                           BeanContext beanContext) {
         try {
-            Connection connection = newConnection(connectionFactory, beanContext);
+            Connection connection = newConnection(connectionFactory, temporarilyDownConnectionManager, beanContext);
             activeConnections.add(new ActiveConnection(connection, connectionFactory));
             return connection;
         } catch (IOException | TimeoutException e) {
@@ -65,7 +80,7 @@ public class RabbitConnectionFactory {
         }
     }
 
-    private Connection newConnection(RabbitConnectionFactoryConfig factory, BeanContext context) throws IOException, TimeoutException {
+    private Connection newConnection(RabbitConnectionFactoryConfig factory, TemporarilyDownConnectionManager temporarilyDownConnectionManager, BeanContext context) throws IOException, TimeoutException {
         ExecutorService executorService = context.getBean(ExecutorService.class, Qualifiers.byName(factory.getConsumerExecutor()));
         Optional<List<Address>> addresses = factory.getAddresses();
         try {
@@ -77,7 +92,7 @@ public class RabbitConnectionFactory {
             // Check if automatic recovery is enabled
             if (factory.isAutomaticRecoveryEnabled()) {
                 // Create a "temporarily down" connection that may be up eventually
-                return context.getBean(TemporarilyDownConnectionManager.class).newConnection(executorService);
+                return temporarilyDownConnectionManager.newConnection(executorService);
             }
             throw e;
         }
