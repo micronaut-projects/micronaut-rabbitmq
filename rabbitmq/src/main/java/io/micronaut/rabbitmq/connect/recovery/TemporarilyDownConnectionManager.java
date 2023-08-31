@@ -38,12 +38,7 @@ public class TemporarilyDownConnectionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(TemporarilyDownConnectionManager.class);
 
-    private final RabbitConnectionFactoryConfig factory;
     private final List<TemporarilyDownAutorecoveringConnection> connections = synchronizedList(new ArrayList<>());
-
-    TemporarilyDownConnectionManager(RabbitConnectionFactoryConfig factory) {
-        this.factory = factory;
-    }
 
     /**
      * Creates a new temporarily down RabbitMQ connection.
@@ -51,7 +46,7 @@ public class TemporarilyDownConnectionManager {
      * @param executor The executor service.
      * @return a new {@link TemporarilyDownConnection}
      */
-    public TemporarilyDownConnection newConnection(ExecutorService executor) {
+    public TemporarilyDownConnection newConnection(RabbitConnectionFactoryConfig factory, ExecutorService executor) {
         LOG.info("Creating a new temporarily down connection");
         final TemporarilyDownAutorecoveringConnection connection = new TemporarilyDownAutorecoveringConnection(factory, executor);
         this.connections.add(connection);

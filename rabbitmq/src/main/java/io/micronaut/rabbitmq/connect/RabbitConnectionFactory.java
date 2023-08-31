@@ -92,7 +92,7 @@ public class RabbitConnectionFactory {
             // Check if automatic recovery is enabled
             if (factory.isAutomaticRecoveryEnabled()) {
                 // Create a "temporarily down" connection that may be up eventually
-                return temporarilyDownConnectionManager.newConnection(executorService);
+                return temporarilyDownConnectionManager.newConnection(factory, executorService);
             }
             throw e;
         }
