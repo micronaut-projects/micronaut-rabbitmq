@@ -67,7 +67,7 @@ class TemporarilyDownConsumersSpec extends Specification {
 
         then: "a temporarily down exception is thrown"
         var exception = thrown(RabbitClientException)
-        exception.message == 'Failed to publish a message with exchange: [] and routing key [eventually-up]'
+        exception.message == 'Failed to publish a message with exchange: [] routing key [eventually-up] and mandatory flag [false]'
         exception.cause.message == 'Failed to retrieve a channel from the pool'
         exception.cause.cause.message == 'Connection is not ready yet'
 
