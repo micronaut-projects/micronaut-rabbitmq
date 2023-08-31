@@ -43,6 +43,7 @@ public class TemporarilyDownConnectionManager {
     /**
      * Creates a new temporarily down RabbitMQ connection.
      *
+     * @param factory The factory to create the connection.
      * @param executor The executor service.
      * @return a new {@link TemporarilyDownConnection}
      */
