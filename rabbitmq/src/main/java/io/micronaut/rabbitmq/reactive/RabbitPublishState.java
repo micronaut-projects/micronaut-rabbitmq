@@ -30,6 +30,7 @@ public class RabbitPublishState {
 
     private final String exchange;
     private final String routingKey;
+    private final boolean mandatory;
     private final AMQP.BasicProperties properties;
     private final byte[] body;
 
@@ -38,16 +39,36 @@ public class RabbitPublishState {
      *
      * @param exchange The exchange
      * @param routingKey The routing key
+     * @param mandatory The "mandatory" flag
      * @param properties The properties
      * @param body The body
+     * @since 4.1.0
      */
     public RabbitPublishState(String exchange, String routingKey,
+                              boolean mandatory,
                               AMQP.BasicProperties properties,
                               @Nullable byte[] body) {
         this.exchange = exchange;
         this.routingKey = routingKey;
+        this.mandatory = mandatory;
         this.properties = properties;
         this.body = body;
+    }
+
+    /**
+     * Deprecated constructor.
+     *
+     * @param exchange The exchange
+     * @param routingKey The routing key
+     * @param properties The properties
+     * @param body The body
+     * @deprecated Use {@link RabbitPublishState#RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])}
+     */
+    @Deprecated(since = "4.1.0", forRemoval = true)
+    public RabbitPublishState(String exchange, String routingKey,
+                              AMQP.BasicProperties properties,
+                              @Nullable byte[] body) {
+        this(exchange, routingKey, false, properties, body);
     }
 
     /**
@@ -62,6 +83,14 @@ public class RabbitPublishState {
      */
     public String getRoutingKey() {
         return routingKey;
+    }
+
+    /**
+     * @return The "mandatory" flag
+     * @since 4.1.0
+     */
+    public boolean getMandatory() {
+        return mandatory;
     }
 
     /**

@@ -38,6 +38,7 @@ class StaticPublisherState {
 
     private final String exchange;
     private final String routingKey;
+    private final Boolean mandatory;
     private final Argument bodyArgument;
     private final Map<String, Object> headers;
     private final Map<String, String> properties;
@@ -52,6 +53,7 @@ class StaticPublisherState {
      *
      * @param exchange The exchange to publish to
      * @param routingKey The routing key
+     * @param mandatory The "mandatory" flag
      * @param bodyArgument The argument representing the body
      * @param headers The static headers
      * @param properties The static properties
@@ -61,6 +63,7 @@ class StaticPublisherState {
      */
     StaticPublisherState(String exchange,
                          @Nullable String routingKey,
+                         @Nullable Boolean mandatory,
                          Argument bodyArgument,
                          Map<String, Object> headers,
                          Map<String, String> properties,
@@ -69,6 +72,7 @@ class StaticPublisherState {
                          ReactivePublisher reactivePublisher) {
         this.exchange = exchange;
         this.routingKey = routingKey;
+        this.mandatory = mandatory;
         this.bodyArgument = bodyArgument;
         this.headers = Collections.unmodifiableMap(headers);
         this.properties = Collections.unmodifiableMap(properties);
@@ -97,6 +101,14 @@ class StaticPublisherState {
      */
     Optional<String> getRoutingKey() {
         return Optional.ofNullable(routingKey);
+    }
+
+    /**
+     * @return The optional "mandatory" flag
+     * @since 4.1.0
+     */
+    Optional<Boolean> getMandatory() {
+        return Optional.ofNullable(mandatory);
     }
 
     /**

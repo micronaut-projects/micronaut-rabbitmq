@@ -32,6 +32,7 @@ import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.messaging.annotation.MessageBody;
 import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Binding;
+import io.micronaut.rabbitmq.annotation.Mandatory;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 import io.micronaut.rabbitmq.annotation.RabbitConnection;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
@@ -141,7 +142,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             StaticPublisherState publisherState = getPublisherState(context);
 
             String exchange = publisherState.getExchange();
-            String routingKey = publisherState.getRoutingKey().orElse(findRoutingKey(context).orElse(""));
+            String routingKey = publisherState.getRoutingKey().or(() -> findRoutingKey(context)).orElse("");
+            boolean mandatory = publisherState.getMandatory().or(() -> findMandatoryFlag(context)).orElse(false);
             Argument bodyArgument = publisherState.getBodyArgument();
 
             MutableBasicProperties mutableProperties = new MutableBasicProperties();
@@ -195,10 +197,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
             AMQP.BasicProperties properties = mutableProperties.toBasicProperties();
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Sending a message to exchange [{}] with binding [{}] and properties [{}]", exchange, routingKey, properties);
+                LOG.debug("Sending a message to exchange [{}] with binding [{}] mandatory flag [{}] and properties [{}]", exchange, routingKey, mandatory, properties);
             }
 
-            RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, properties, converted);
+            RabbitPublishState publishState = new RabbitPublishState(exchange, routingKey, mandatory, properties, converted);
             ReactivePublisher reactivePublisher = publisherState.getReactivePublisher();
             InterceptedMethod interceptedMethod = InterceptedMethod.of(context, conversionService);
 
@@ -275,7 +277,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         try {
                             return interceptedMethod.handleResult(reactive.block());
                         } catch (Throwable throwable) {
-                            throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] and routing key [%s]", exchange, routingKey), throwable, Collections.singletonList(publishState));
+                            throw new RabbitClientException(String.format("Failed to publish a message with exchange: [%s] routing key [%s] and mandatory flag [%s]", exchange, routingKey, mandatory), throwable, Collections.singletonList(publishState));
                         }
                     default:
                         return interceptedMethod.unsupported();
@@ -296,8 +298,10 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             String exchange = client.getValue(String.class).orElse("");
             Optional<AnnotationValue<Binding>> bindingAnn = method.findAnnotation(Binding.class);
+            Optional<AnnotationValue<Mandatory>> mandatoryAnn = method.findAnnotation(Mandatory.class);
 
             Optional<String> routingKey = bindingAnn.flatMap(b -> b.getValue(String.class));
+            Optional<Boolean> mandatory = mandatoryAnn.flatMap(m -> m.getValue(Boolean.class));
 
             String connection = method.findAnnotation(RabbitConnection.class)
                     .flatMap(conn -> conn.stringValue("connection"))
@@ -347,6 +351,7 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
 
             return new StaticPublisherState(exchange,
                     routingKey.orElse(null),
+                    mandatory.orElse(null),
                     bodyArgument,
                     methodHeaders,
                     methodProperties,
@@ -401,6 +406,18 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                 .map(argumentValues::get)
                 .filter(Objects::nonNull)
                 .map(Object::toString)
+                .findFirst();
+    }
+
+    private Optional<Boolean> findMandatoryFlag(MethodInvocationContext<Object, Object> method) {
+        Map<String, Object> argumentValues = method.getParameterValueMap();
+        return Arrays.stream(method.getArguments())
+                .filter(arg -> arg.getAnnotationMetadata().hasAnnotation(Mandatory.class))
+                .map(Argument::getName)
+                .map(argumentValues::get)
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .map(StringUtils.TRUE::equalsIgnoreCase)
                 .findFirst();
     }
 
