@@ -379,6 +379,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html#getLongSerDes()" class="member-name-link">getLongSerDes()</a> - Method in class io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/JavaLangRabbitMessageSerDes.html" title="class in io.micronaut.rabbitmq.serdes">JavaLangRabbitMessageSerDes</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html#getMandatory()" class="member-name-link">getMandatory()</a> - Method in class io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html#getMaxIdleChannels()" class="member-name-link">getMaxIdleChannels()</a> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html#getMessageId()" class="member-name-link">getMessageId()</a> - Method in class io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html" title="class in io.micronaut.rabbitmq.intercept">MutableBasicProperties</a></dt>
@@ -534,6 +536,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:M">M</h2>
 <dl class="index">
+<dt><a href="io/micronaut/rabbitmq/annotation/Mandatory.html" class="type-name-link" title="annotation interface in io.micronaut.rabbitmq.annotation">Mandatory</a> - Annotation Interface in <a href="io/micronaut/rabbitmq/annotation/package-summary.html">io.micronaut.rabbitmq.annotation</a></dt>
+<dd>
+<div class="block">Used to specify how the server should react if the message cannot be routed to a queue.</div>
+</dd>
 <dt><a href="io/micronaut/rabbitmq/intercept/MutableBasicProperties.html" class="type-name-link" title="class in io.micronaut.rabbitmq.intercept">MutableBasicProperties</a> - Class in <a href="io/micronaut/rabbitmq/intercept/package-summary.html">io.micronaut.rabbitmq.intercept</a></dt>
 <dd>
 <div class="block">A class that stores the basic properties in a mutable state.</div>
@@ -917,9 +923,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Stores the state of a RabbitMQ message to be published.</div>
 </dd>
-<dt><a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html#%3Cinit%3E(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState(String, String, AMQP.BasicProperties, byte[])</a> - Constructor for class io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dt><a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html#%3Cinit%3E(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])</a> - Constructor for class io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.rabbitmq.reactive">RabbitPublishState</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
+</dd>
+<dt><a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html#%3Cinit%3E(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState(String, String, AMQP.BasicProperties, byte[])</a> - Constructor for class io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html" title="class in io.micronaut.rabbitmq.reactive">RabbitPublishState</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html#%3Cinit%3E(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)"><code>RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])</code></a></div>
+</div>
 </dd>
 <dt><a href="io/micronaut/rabbitmq/bind/RabbitTypeArgumentBinder.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.bind">RabbitTypeArgumentBinder</a>&lt;<a href="io/micronaut/rabbitmq/bind/RabbitTypeArgumentBinder.html" title="type parameter in RabbitTypeArgumentBinder">T</a>&gt; - Interface in <a href="io/micronaut/rabbitmq/bind/package-summary.html">io.micronaut.rabbitmq.bind</a></dt>
 <dd>
@@ -1107,6 +1119,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Should always be supplied when the annotation is applied to a method.</div>
 </dd>
+<dt><a href="io/micronaut/rabbitmq/annotation/Mandatory.html#value()" class="member-name-link">value()</a> - Element in annotation interface io.micronaut.rabbitmq.annotation.<a href="io/micronaut/rabbitmq/annotation/Mandatory.html" title="annotation interface in io.micronaut.rabbitmq.annotation">Mandatory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/annotation/Queue.html#value()" class="member-name-link">value()</a> - Element in annotation interface io.micronaut.rabbitmq.annotation.<a href="io/micronaut/rabbitmq/annotation/Queue.html" title="annotation interface in io.micronaut.rabbitmq.annotation">Queue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/annotation/RabbitClient.html#value()" class="member-name-link">value()</a> - Element in annotation interface io.micronaut.rabbitmq.annotation.<a href="io/micronaut/rabbitmq/annotation/RabbitClient.html" title="annotation interface in io.micronaut.rabbitmq.annotation">RabbitClient</a></dt>

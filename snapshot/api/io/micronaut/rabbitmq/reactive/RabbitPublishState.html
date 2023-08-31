@@ -98,12 +98,22 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
+ boolean&nbsp;mandatory,
  com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
  @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default constructor.</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)" class="member-name-link">RabbitPublishState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
+ com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
+ @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)"><code>RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])</code></a></div>
+</div>
 </div>
 </div>
 </section>
@@ -125,12 +135,15 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExchange()" class="member-name-link">getExchange</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.rabbitmq.client.AMQP.BasicProperties</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getProperties()" class="member-name-link">getProperties</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMandatory()" class="member-name-link">getMandatory</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRoutingKey()" class="member-name-link">getRoutingKey</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.rabbitmq.client.AMQP.BasicProperties</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getProperties()" class="member-name-link">getProperties</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRoutingKey()" class="member-name-link">getRoutingKey</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -149,14 +162,41 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte[])">
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte[])">
 <h3>RabbitPublishState</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">RabbitPublishState</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
+ boolean&nbsp;mandatory,
  com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
  @Nullable
  @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</span></div>
 <div class="block">Default constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exchange</code> - The exchange</dd>
+<dd><code>routingKey</code> - The routing key</dd>
+<dd><code>mandatory</code> - The "mandatory" flag</dd>
+<dd><code>properties</code> - The properties</dd>
+<dd><code>body</code> - The body</dd>
+<dt>Since:</dt>
+<dd>4.1.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP.BasicProperties,byte[])">
+<h3>RabbitPublishState</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.1.0",
+            <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">RabbitPublishState</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exchange,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;routingKey,
+ com.rabbitmq.client.AMQP.BasicProperties&nbsp;properties,
+ @Nullable
+ @io.micronaut.core.annotation.Nullable byte[]&nbsp;body)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,boolean,com.rabbitmq.client.AMQP.BasicProperties,byte%5B%5D)"><code>RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])</code></a></div>
+</div>
+<div class="block">Deprecated constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>exchange</code> - The exchange</dd>
@@ -191,6 +231,18 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The routing key</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getMandatory()">
+<h3>getMandatory</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">getMandatory</span>()</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The "mandatory" flag</dd>
+<dt>Since:</dt>
+<dd>4.1.0</dd>
 </dl>
 </section>
 </li>
