@@ -96,6 +96,7 @@ public class RabbitConnectionFactory implements BeanPreDestroyEventListener<Exec
     public ExecutorService onPreDestroy(@NonNull BeanPreDestroyEvent<ExecutorService> event) {
         activeConnections.stream().filter(activeConnection ->
             activeConnection.executorService() == event.getBean()).forEach(ActiveConnection::tryClose);
+        activeConnections.removeIf(activeConnection -> !activeConnection.connection().isOpen());
         return event.getBean();
     }
 
