@@ -22,6 +22,7 @@ import com.rabbitmq.client.impl.SocketFrameHandlerFactory;
 import com.rabbitmq.client.impl.nio.NioParams;
 import com.rabbitmq.client.impl.nio.SocketChannelFrameHandlerFactory;
 import com.rabbitmq.client.impl.recovery.AutorecoveringConnection;
+import com.rabbitmq.client.observation.ObservationCollector;
 import io.micronaut.rabbitmq.connect.RabbitConnectionFactoryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,8 @@ class TemporarilyDownAutorecoveringConnection extends AutorecoveringConnection i
             factory.params(executor),
             getFrameHandlerFactory(factory, executor),
             getAddressResolver(factory),
-            getMetricsCollector(factory)
+            getMetricsCollector(factory),
+            ObservationCollector.NO_OP
         );
     }
 
