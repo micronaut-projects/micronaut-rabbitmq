@@ -15,24 +15,27 @@
  */
 package io.micronaut.rabbitmq.connect;
 
+import com.rabbitmq.client.Address;
+import com.rabbitmq.client.Connection;
+import io.micronaut.context.BeanContext;
+import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.event.BeanPreDestroyEvent;
+import io.micronaut.context.event.BeanPreDestroyEventListener;
+import io.micronaut.context.exceptions.BeanInstantiationException;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.inject.qualifiers.Qualifiers;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
-
-import com.rabbitmq.client.Address;
-import com.rabbitmq.client.Connection;
-import io.micronaut.context.BeanContext;
-import io.micronaut.context.annotation.EachBean;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.inject.qualifiers.Qualifiers;
-import jakarta.annotation.PreDestroy;
-import jakarta.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A factory for creating a connection to RabbitMQ.
@@ -41,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 @Factory
-public class RabbitConnectionFactory {
+public class RabbitConnectionFactory implements BeanPreDestroyEventListener<ExecutorService> {
     private static final Logger LOG = LoggerFactory.getLogger(RabbitConnectionFactory.class);
     private final ConcurrentLinkedQueue<ActiveConnection> activeConnections = new ConcurrentLinkedQueue<>();
 
@@ -63,7 +66,7 @@ public class RabbitConnectionFactory {
             } else {
                 connection = connectionFactory.newConnection(executorService);
             }
-            activeConnections.add(new ActiveConnection(connection, connectionFactory));
+            activeConnections.add(new ActiveConnection(connection, connectionFactory, executorService));
             return connection;
         } catch (IOException | TimeoutException e) {
             throw new BeanInstantiationException("Error creating connection to RabbitMQ", e);
@@ -76,22 +79,39 @@ public class RabbitConnectionFactory {
     @PreDestroy
     void shutdownConnections() {
         try {
-            for (ActiveConnection activeConnection : activeConnections) {
-                Connection connection = activeConnection.connection();
-                if (connection.isOpen()) {
-                    try {
-                        connection.close(activeConnection.connectionFactory().getShutdownTimeout());
-                    } catch (Exception e) {
-                        LOG.warn("Error closing RabbitMQ connection: " + e.getMessage(), e);
-                    }
-                }
-            }
+            activeConnections.forEach(ActiveConnection::tryClose);
         } finally {
             this.activeConnections.clear();
         }
     }
 
+    /**
+     * Closes active connections associated with the {@link ExecutorService} prior to its removal.
+     *
+     * @param event The bean created event
+     * @return The unmodified {@link ExecutorService} bean
+     */
+    @Override
+    @NonNull
+    public ExecutorService onPreDestroy(@NonNull BeanPreDestroyEvent<ExecutorService> event) {
+        activeConnections.stream().filter(activeConnection ->
+            activeConnection.executorService() == event.getBean()).forEach(ActiveConnection::tryClose);
+        activeConnections.removeIf(activeConnection -> !activeConnection.connection().isOpen());
+        return event.getBean();
+    }
+
     private record ActiveConnection(Connection connection,
-                                    RabbitConnectionFactoryConfig connectionFactory) {
+                                    RabbitConnectionFactoryConfig connectionFactory, ExecutorService executorService) {
+
+        private void tryClose() {
+            Connection connection = connection();
+            if (connection.isOpen()) {
+                try {
+                    connection.close(connectionFactory().getShutdownTimeout());
+                } catch (Exception e) {
+                    LOG.warn("Error closing RabbitMQ connection: " + e.getMessage(), e);
+                }
+            }
+        }
     }
 }
