@@ -1,0 +1,19 @@
+You can set the https://www.rabbitmq.com/amqp-0-9-1-reference.html#basic.publish.mandatory[`mandatory` flag] by applying the ann:configuration.rabbitmq.annotation.Mandatory[] annotation to a method, to an argument of a method, or to the producer itself.
+
+Apply the annotation to the producer or to a producer method if the value is static for every execution. Apply the annotation to an argument of the method if the value should be set per execution.
+
+snippet::io.micronaut.rabbitmq.docs.parameters.MandatoryProductClient[tags="imports,clazz", project-base="docs-examples/example"]
+
+<1> The binding is static
+<2> The binding must be set per execution!
+
+The `mandatory` flag tells the server how to react if the message cannot be routed to a queue. If this flag is `true`, the server will return an unroutable message with a Return method. If this flag is `false`, the server silently drops the message (this is the default behavior).
+
+Unroutable messages can be handled by adding a `ReturnListener` to the channel.
+
+snippet::io.micronaut.rabbitmq.docs.parameters.MyReturnListener[tags="imports,clazz", project-base="docs-examples/example"]
+
+<1> Add the return listener to the channel
+<2> Implement custom logic here
+
+TIP: You can find more details about this mechanism https://www.rabbitmq.com/publishers.html#unroutable[here].

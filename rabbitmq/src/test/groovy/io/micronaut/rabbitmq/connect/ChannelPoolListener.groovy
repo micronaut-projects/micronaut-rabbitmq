@@ -1,10 +1,13 @@
 package io.micronaut.rabbitmq.connect
 
 import com.rabbitmq.client.Channel
+import com.rabbitmq.client.Return
 import jakarta.inject.Singleton
 
 @Singleton
 class ChannelPoolListener extends ChannelInitializer {
+
+    List<Return> returns = []
 
     @Override
     void initialize(Channel channel, String name) throws IOException {
@@ -22,6 +25,8 @@ class ChannelPoolListener extends ChannelInitializer {
         channel.queueDeclare("product", false, false, false, [:])
         channel.queueDeclare("rpc", false, false, false, [:])
         channel.queueDeclare("eventually-up", false, false, false, [:])
+        channel.queueDeclare("shutdown-default", false, false, false, [:])
+        channel.queueDeclare("shutdown-custom", false, false, false, [:])
 
         channel.exchangeDeclare("animals", "headers", false)
         channel.queueDeclare("dogs", false, false, false, null)
@@ -29,5 +34,7 @@ class ChannelPoolListener extends ChannelInitializer {
         channel.queueBind("cats", "animals", "", ["x-match": "all", animalType: "Cat"])
 
         channel.queueBind("dogs", "animals", "", ["x-match": "all", animalType: "Dog"])
+
+        channel.addReturnListener(r -> returns << r)
     }
 }

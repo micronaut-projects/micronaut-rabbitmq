@@ -10,6 +10,7 @@ producer:
     producerParameters:
       title: Publishing Parameters
       producerBinding: Binding (Routing Key)
+      producerMandatory: Mandatory Flag
       producerProperties: RabbitMQ Properties
       producerHeaders: Headers
       producerBody: Message Body
