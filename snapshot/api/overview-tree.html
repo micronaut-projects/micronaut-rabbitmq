@@ -54,6 +54,7 @@ loadScripts(document, 'script');</script>
 <li><a href="io/micronaut/rabbitmq/annotation/package-tree.html">io.micronaut.rabbitmq.annotation</a>, </li>
 <li><a href="io/micronaut/rabbitmq/bind/package-tree.html">io.micronaut.rabbitmq.bind</a>, </li>
 <li><a href="io/micronaut/rabbitmq/connect/package-tree.html">io.micronaut.rabbitmq.connect</a>, </li>
+<li><a href="io/micronaut/rabbitmq/connect/recovery/package-tree.html">io.micronaut.rabbitmq.connect.recovery</a>, </li>
 <li><a href="io/micronaut/rabbitmq/event/package-tree.html">io.micronaut.rabbitmq.event</a>, </li>
 <li><a href="io/micronaut/rabbitmq/exception/package-tree.html">io.micronaut.rabbitmq.exception</a>, </li>
 <li><a href="io/micronaut/rabbitmq/executor/package-tree.html">io.micronaut.rabbitmq.executor</a>, </li>
@@ -146,6 +147,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitPropertyBinder.html" class="type-name-link" title="class in io.micronaut.rabbitmq.bind">RabbitPropertyBinder</a> (implements io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitAnnotatedArgumentBinder.html" title="interface in io.micronaut.rabbitmq.bind">RabbitAnnotatedArgumentBinder</a>&lt;A&gt;)</li>
 <li class="circle">io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/RabbitPublishState.html" class="type-name-link" title="class in io.micronaut.rabbitmq.reactive">RabbitPublishState</a></li>
 <li class="circle">io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/ReactorReactivePublisher.html" class="type-name-link" title="class in io.micronaut.rabbitmq.reactive">ReactorReactivePublisher</a> (implements io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/ReactivePublisher.html" title="interface in io.micronaut.rabbitmq.reactive">ReactivePublisher</a>)</li>
+<li class="circle">io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnectionManager.html" class="type-name-link" title="class in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownConnectionManager</a></li>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" class="type-name-link external-link" title="class or interface in java.lang">Throwable</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" class="type-name-link external-link" title="class or interface in java.lang">Exception</a>
@@ -204,6 +206,19 @@ loadScripts(document, 'script');</script>
 </li>
 </ul>
 </li>
+<li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/AutoCloseable.html" class="type-name-link external-link" title="class or interface in java.lang">AutoCloseable</a>
+<ul>
+<li class="circle">java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Closeable.html" class="type-name-link external-link" title="class or interface in java.io">Closeable</a>
+<ul>
+<li class="circle">com.rabbitmq.client.Connection (also extends com.rabbitmq.client.ShutdownNotifier)
+<ul>
+<li class="circle">io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnection.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownConnection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">com.rabbitmq.client.Consumer
 <ul>
 <li class="circle">io.micronaut.rabbitmq.intercept.<a href="io/micronaut/rabbitmq/intercept/DefaultConsumer.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.intercept">DefaultConsumer</a></li>
@@ -226,6 +241,17 @@ loadScripts(document, 'script');</script>
 </li>
 <li class="circle">io.micronaut.rabbitmq.serdes.<a href="io/micronaut/rabbitmq/serdes/RabbitMessageSerDesRegistry.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.serdes">RabbitMessageSerDesRegistry</a></li>
 <li class="circle">io.micronaut.rabbitmq.reactive.<a href="io/micronaut/rabbitmq/reactive/ReactivePublisher.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.reactive">ReactivePublisher</a></li>
+<li class="circle">com.rabbitmq.client.ShutdownNotifier
+<ul>
+<li class="circle">com.rabbitmq.client.Connection (also extends java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a>)
+<ul>
+<li class="circle">io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnection.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownConnection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnection.EventuallyUpListener.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownConnection.EventuallyUpListener</a></li>
+<li class="circle">io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownException.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownException</a></li>
 </ul>
 </section>
 <section class="hierarchy">

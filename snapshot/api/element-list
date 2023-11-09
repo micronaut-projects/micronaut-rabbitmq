@@ -1,6 +1,7 @@
 io.micronaut.rabbitmq.annotation
 io.micronaut.rabbitmq.bind
 io.micronaut.rabbitmq.connect
+io.micronaut.rabbitmq.connect.recovery
 io.micronaut.rabbitmq.event
 io.micronaut.rabbitmq.exception
 io.micronaut.rabbitmq.executor
