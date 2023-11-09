@@ -24,6 +24,7 @@ class ChannelPoolListener extends ChannelInitializer {
         channel.queueDeclare("boolean", false, false, false, [:])
         channel.queueDeclare("product", false, false, false, [:])
         channel.queueDeclare("rpc", false, false, false, [:])
+        channel.queueDeclare("eventually-up", false, false, false, [:])
         channel.queueDeclare("shutdown-default", false, false, false, [:])
         channel.queueDeclare("shutdown-custom", false, false, false, [:])
 

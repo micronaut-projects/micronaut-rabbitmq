@@ -25,12 +25,14 @@ import io.micronaut.context.event.BeanPreDestroyEventListener;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.inject.qualifiers.Qualifiers;
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnectionManager;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -52,24 +54,50 @@ public class RabbitConnectionFactory implements BeanPreDestroyEventListener<Exec
      * @param connectionFactory The factory to create the connection
      * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection
+     * @deprecated Use {@link RabbitConnectionFactory#connection(RabbitConnectionFactoryConfig, TemporarilyDownConnectionManager, BeanContext)}
+     */
+    @Deprecated(since = "4.2.0", forRemoval = true)
+    Connection connection(RabbitConnectionFactoryConfig connectionFactory,
+                          BeanContext beanContext) {
+        return connection(connectionFactory, beanContext.getBean(TemporarilyDownConnectionManager.class), beanContext);
+    }
+
+    /**
+     * @param connectionFactory The factory to create the connection
+     * @param temporarilyDownConnectionManager The temporarily down connection manager
+     * @param beanContext The bean context to dynamically retrieve the executor service
+     * @return The connection
+     * @since 4.2.0
      */
     @Singleton
     @EachBean(RabbitConnectionFactoryConfig.class)
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,
+                          TemporarilyDownConnectionManager temporarilyDownConnectionManager,
                           BeanContext beanContext) {
         try {
             ExecutorService executorService = beanContext.getBean(ExecutorService.class, Qualifiers.byName(connectionFactory.getConsumerExecutor()));
-            Optional<List<Address>> addresses = connectionFactory.getAddresses();
-            Connection connection;
-            if (addresses.isPresent()) {
-                connection = connectionFactory.newConnection(executorService, addresses.get());
-            } else {
-                connection = connectionFactory.newConnection(executorService);
-            }
+            Connection connection = newConnection(connectionFactory, temporarilyDownConnectionManager, executorService);
             activeConnections.add(new ActiveConnection(connection, connectionFactory, executorService));
             return connection;
         } catch (IOException | TimeoutException e) {
             throw new BeanInstantiationException("Error creating connection to RabbitMQ", e);
+        }
+    }
+
+    private Connection newConnection(RabbitConnectionFactoryConfig factory, TemporarilyDownConnectionManager temporarilyDownConnectionManager, ExecutorService executorService) throws IOException, TimeoutException {
+        Optional<List<Address>> addresses = factory.getAddresses();
+        try {
+            if (addresses.isPresent()) {
+                return factory.newConnection(executorService, addresses.get());
+            }
+            return factory.newConnection(executorService);
+        } catch (ConnectException e) {
+            // Check if automatic recovery is enabled
+            if (factory.isAutomaticRecoveryEnabled()) {
+                // Create a "temporarily down" connection that may be up eventually
+                return temporarilyDownConnectionManager.newConnection(factory, executorService);
+            }
+            throw e;
         }
     }
 

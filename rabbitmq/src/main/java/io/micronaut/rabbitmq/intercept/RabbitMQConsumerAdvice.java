@@ -45,6 +45,8 @@ import io.micronaut.rabbitmq.bind.RabbitBinderRegistry;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 import io.micronaut.rabbitmq.bind.RabbitMessageCloseable;
 import io.micronaut.rabbitmq.connect.ChannelPool;
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnection.EventuallyUpListener;
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownException;
 import io.micronaut.rabbitmq.event.RabbitConsumerStarted;
 import io.micronaut.rabbitmq.event.RabbitConsumerStarting;
 import io.micronaut.rabbitmq.exception.RabbitListenerException;
@@ -246,8 +248,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 }
             };
 
-            try {
-                startingEventPublisher.publishEvent(new RabbitConsumerStarting(bean, method.getMethodName(), queue));
+            final EventuallyUpListener registerConsumersAndPublishEvent = c -> {
                 for (int idx = 0; idx < numberOfConsumers; idx++) {
                     String consumerTag = methodTag + "[" + idx + "]";
                     LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
@@ -255,8 +256,18 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                             exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
                 }
                 startedEventPublisher.publishEvent(new RabbitConsumerStarted(bean, method.getMethodName(), queue));
+            };
+
+            try {
+                startingEventPublisher.publishEvent(new RabbitConsumerStarting(bean, method.getMethodName(), queue));
+                registerConsumersAndPublishEvent.onConnectionInitialized(null);
             } catch (Throwable e) {
                 handleException(new RabbitListenerException("An error occurred subscribing to a queue", e, bean, null));
+                // Check if the connection is just temporarily down
+                if (e instanceof TemporarilyDownException temp) {
+                    // We will try to register consumers again when it's eventually up
+                    temp.getConnection().addEventuallyUpListener(registerConsumersAndPublishEvent);
+                }
             }
         }
     }
