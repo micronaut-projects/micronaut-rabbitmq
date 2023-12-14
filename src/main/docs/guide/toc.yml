@@ -42,4 +42,5 @@ serdes:
   custom: Custom SerDes
 health: RabbitMQ Health Indicator
 metrics: RabbitMQ Metrics
+rabbitmqGuides: Guides
 repository: Repository
