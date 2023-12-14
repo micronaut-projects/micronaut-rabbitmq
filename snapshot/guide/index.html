@@ -68,7 +68,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#metrics"><strong>12</strong><span>RabbitMQ Metrics</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#rabbitmqGuides"><strong>13</strong><span>Guides</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -171,7 +173,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-metrics"><a href="#metrics"><strong>12</strong><span>RabbitMQ Metrics</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-rabbitmqGuides"><a href="#rabbitmqGuides"><strong>13</strong><span>Guides</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -278,6 +282,18 @@
 $ mn create-rabbitmq-listener MessageListener
 | Rendered template Listener.java to destination src/main/java/my/rabbitmq/app/MessageListener.java</pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq.html">RabbitMQ and the Micronaut Framework - Event-driven Applications</a> to learn more.
+</td>
+</tr>
+</table>
 </div>
 
 <h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 RabbitMQ Quick Start</h1>
@@ -4009,6 +4025,18 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 <div class="paragraph">
 <p>By default, if an RPC call does not have a response within a <a href="https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide/configurationreference.html">given time frame</a>, a <code>TimeoutException</code> will be thrown or emitted.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq-rpc.html">RabbitMQ RPC and the Micronaut Framework</a> to learn more.
+</td>
+</tr>
+</table>
+</div>
 
 <h1 id="initialization"><a class="anchor" href="#initialization"></a>9 Creating Queues/Exchanges</h1>
 
@@ -4463,7 +4491,23 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>13 Repository</h1>
+<h1 id="rabbitmqGuides"><a class="anchor" href="#rabbitmqGuides"></a>13 Guides</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/rabbitmqGuides.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>See the following list of guides to learn more about working with RabbitMQ in the Micronaut Framework:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://guides.micronaut.io/latest/tag-rabbitmq.html" class="bare">https://guides.micronaut.io/latest/tag-rabbitmq.html</a></p>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>14 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/master/src/main/docs/guide/repository.adoc"'>
