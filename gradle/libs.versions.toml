@@ -20,7 +20,7 @@ managed-amqp-client = '5.20.0'
 micronaut-micrometer = "5.0.1"
 micronaut-serde = "2.3.2"
 
-micronaut-logging = "1.1.2"
+micronaut-logging = "1.2.1"
 [libraries]
 micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Core
