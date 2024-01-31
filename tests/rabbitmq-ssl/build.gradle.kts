@@ -6,8 +6,12 @@ plugins {
 
 dependencies {
     testImplementation(projects.micronautRabbitmq)
-    testImplementation(libs.testcontainers.spock)
+
+    testImplementation(mnSerde.micronaut.serde.support)
+    testImplementation(mnSerde.micronaut.serde.jackson)
     testImplementation(mn.micronaut.management)
     testImplementation(mn.reactor)
 
+    testImplementation(libs.testcontainers.spock)
+    testImplementation(libs.awaitility)
 }
