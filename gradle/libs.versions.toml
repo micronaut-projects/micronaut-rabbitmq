@@ -1,16 +1,16 @@
 [versions]
 micronaut-docs = '2.0.0'
-micronaut = "4.2.3"
+micronaut = "4.3.9"
 micronaut-platform = "4.0.0-RC1"
 micronaut-test = "4.0.0"
-micronaut-gradle-plugin = "4.2.1"
+micronaut-gradle-plugin = "4.3.3"
 groovy = "4.0.13"
 spock = '2.3-groovy-4.0'
 
 awaitility = '4.2.0'
 caffeine = '3.1.8'
 jsr305 = "3.0.2"
-junit = '5.10.1'
+junit = '5.10.2'
 kotest = '5.8.0'
 kotlin = '1.9.22'
 rabbit = '5.15.0'
@@ -20,7 +20,7 @@ managed-amqp-client = '5.20.0'
 micronaut-micrometer = "5.4.0"
 micronaut-serde = "2.8.1"
 
-micronaut-logging = "1.2.2"
+micronaut-logging = "1.2.3"
 [libraries]
 micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 # Core
