@@ -4,10 +4,9 @@ import com.github.dockerjava.api.model.HealthCheck
 import io.micronaut.context.ApplicationContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testcontainers.containers.BindMode
-import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.InternetProtocol
 import org.testcontainers.containers.Network
+import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.AbstractWaitStrategy
 import org.testcontainers.containers.wait.strategy.Wait
@@ -34,9 +33,9 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
 
     static final String EXCHANGE = "test-exchange"
     static final String QUEUE = "test-durable-queue"
-    static final GenericContainer NODE1_CONT = new GenericContainer<>(RABBIT_IMAGE)
-    static final GenericContainer NODE2_CONT = new GenericContainer<>(RABBIT_IMAGE)
-    static final GenericContainer NODE3_CONT = new GenericContainer<>(RABBIT_IMAGE)
+    static final RabbitMQContainer NODE1_CONT = new RabbitMQContainer(RABBIT_IMAGE)
+    static final RabbitMQContainer NODE2_CONT = new RabbitMQContainer(RABBIT_IMAGE)
+    static final RabbitMQContainer NODE3_CONT = new RabbitMQContainer(RABBIT_IMAGE)
     static int node1Port
     static int node2Port
     static int node3Port
@@ -92,7 +91,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
         }
     }
 
-    private static configureContainer(GenericContainer mqContainer, String hostname, int nodePort) {
+    private static configureContainer(RabbitMQContainer mqContainer, String hostname, int nodePort) {
         mqContainer
                 .withEnv("RABBITMQ_ERLANG_COOKIE", CLUSTER_COOKIE)
                 .withCopyFileToContainer(forHostPath(RABBIT_CONFIG_PATH), "/etc/rabbitmq/rabbitmq.conf")
@@ -113,7 +112,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
         addPortBinding(mqContainer, nodePort, AMQP_PORT)
     }
 
-    private static addPortBinding(GenericContainer cont, int hostPort, int contPort) {
+    private static addPortBinding(RabbitMQContainer cont, int hostPort, int contPort) {
         cont.portBindings << String.format("%d:%d/%s",
                 hostPort, contPort, InternetProtocol.TCP.toDockerNotation())
     }

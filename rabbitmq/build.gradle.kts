@@ -22,6 +22,7 @@ dependencies {
 
     testImplementation(mnSerde.micronaut.serde.jackson)
     testImplementation(mnTestResources.testcontainers.core)
+    testImplementation(mnTestResources.testcontainers.rabbitmq)
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.micronaut.inject.java)
     testImplementation(mn.micronaut.management)
