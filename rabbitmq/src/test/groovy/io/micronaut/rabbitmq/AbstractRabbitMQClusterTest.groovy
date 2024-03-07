@@ -4,7 +4,6 @@ import com.github.dockerjava.api.model.HealthCheck
 import io.micronaut.context.ApplicationContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testcontainers.containers.InternetProtocol
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -23,7 +22,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
 
     private static final int AMQP_PORT = 5672
-    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("library/rabbitmq:3.8-management")
+    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("rabbitmq:3.8-management")
     private static final String CLUSTER_COOKIE = "test-cluster"
     private static final String RABBIT_CONFIG_PATH = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").path
     private static final String RABBIT_DEFINITIONS_PATH = ClassLoader.getSystemResource("rabbit/definitions.json").path
@@ -41,24 +40,30 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     static int node3Port
 
     static {
-        getNodePorts()
         log.info("rabbit.conf path: {}", RABBIT_CONFIG_PATH)
         log.info("rabbit definitions path: {}", RABBIT_DEFINITIONS_PATH)
-        log.info("rabbit node ports: {}, {}, {}", node1Port, node2Port, node3Port)
 
-        configureContainer(NODE1_CONT, "rabbitmq1", node1Port)
+        configureContainer(NODE1_CONT, "rabbitmq1")
         // first node must boot up completely so that the other nodes can join the new cluster
         NODE1_CONT.waitingFor(Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(1)))
         NODE1_CONT.start()
+        node1Port = NODE1_CONT.getMappedPort(AMQP_PORT)
+
         log.info("first node startup complete")
 
-        configureContainer(NODE2_CONT, "rabbitmq2", node2Port)
-        configureContainer(NODE3_CONT, "rabbitmq3", node3Port)
+        configureContainer(NODE2_CONT, "rabbitmq2")
+        configureContainer(NODE3_CONT, "rabbitmq3")
         // node 2 and 3 may start up in parallel as they can join the already existing cluster
         NODE2_CONT.waitingFor(new DoNotWaitStrategy())
         NODE3_CONT.waitingFor(new DoNotWaitStrategy())
         NODE2_CONT.start()
         NODE3_CONT.start()
+
+        node2Port = NODE2_CONT.getMappedPort(AMQP_PORT)
+        node3Port = NODE3_CONT.getMappedPort(AMQP_PORT)
+
+        log.info("rabbit node ports: {}, {}, {}", node1Port, node2Port, node3Port)
+
         new PollingConditions(timeout: 60).eventually {
             assert NODE2_CONT.isHealthy()
             assert NODE3_CONT.isHealthy()
@@ -81,17 +86,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
         applicationContext?.close()
     }
 
-    private static getNodePorts() {
-        try (ServerSocket s1 = new ServerSocket(0)
-             ServerSocket s2 = new ServerSocket(0)
-             ServerSocket s3 = new ServerSocket(0)) {
-            node1Port = s1.localPort
-            node2Port = s2.localPort
-            node3Port = s3.localPort
-        }
-    }
-
-    private static configureContainer(RabbitMQContainer mqContainer, String hostname, int nodePort) {
+    private static configureContainer(RabbitMQContainer mqContainer, String hostname) {
         mqContainer
                 .withEnv("RABBITMQ_ERLANG_COOKIE", CLUSTER_COOKIE)
                 .withCopyFileToContainer(forHostPath(RABBIT_CONFIG_PATH), "/etc/rabbitmq/rabbitmq.conf")
@@ -106,15 +101,6 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
                                 .withInterval(Duration.ofSeconds(5).toNanos())
                                 .withRetries(10)
                                 .withTimeout(Duration.ofSeconds(5).toNanos())))
-        // Use fixed port binding, because the dynamic port binding would use different port on each container start.
-        // These changing ports would make any reconnect attempt impossible, as the client assumes that the broker
-        // address does not change.
-        addPortBinding(mqContainer, nodePort, AMQP_PORT)
-    }
-
-    private static addPortBinding(RabbitMQContainer cont, int hostPort, int contPort) {
-        cont.portBindings << String.format("%d:%d/%s",
-                hostPort, contPort, InternetProtocol.TCP.toDockerNotation())
     }
 
     private static class DoNotWaitStrategy extends AbstractWaitStrategy {

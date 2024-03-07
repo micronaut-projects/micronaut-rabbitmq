@@ -1,6 +1,5 @@
 package io.micronaut.rabbitmq.listener
 
-import com.github.dockerjava.api.DockerClient
 import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.AlreadyClosedException
 import com.rabbitmq.client.ConnectionFactory
@@ -16,7 +15,6 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.GenericContainer
 import spock.lang.Shared
 import spock.util.concurrent.PollingConditions
@@ -32,8 +30,6 @@ import static org.hamcrest.Matchers.equalTo
 class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
-
-    private static final DockerClient DOCKER_CLIENT = DockerClientFactory.lazyClient()
 
     @Shared
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
@@ -219,10 +215,8 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static restartContainer(GenericContainer container) throws InterruptedException {
         log.info("stopping container: {}", container.containerId)
-        DOCKER_CLIENT.stopContainerCmd(container.containerId).exec()
-
-        log.info("re-starting container: {}", container.containerId)
-        DOCKER_CLIENT.startContainerCmd(container.containerId).exec()
+        container.execInContainer("rabbitmqctl", "stop_app")
+        container.execInContainer("rabbitmqctl", "start_app")
 
         new PollingConditions(timeout: 60).eventually {
             container.isHealthy()
