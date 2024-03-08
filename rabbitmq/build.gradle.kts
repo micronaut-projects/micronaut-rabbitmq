@@ -21,7 +21,8 @@ dependencies {
     compileOnly(mnMicrometer.micronaut.micrometer.core)
 
     testImplementation(mnSerde.micronaut.serde.jackson)
-    testImplementation(libs.testcontainers.spock)
+    testImplementation(mnTestResources.testcontainers.core)
+    testImplementation(mnTestResources.testcontainers.rabbitmq)
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.micronaut.inject.java)
     testImplementation(mn.micronaut.management)
