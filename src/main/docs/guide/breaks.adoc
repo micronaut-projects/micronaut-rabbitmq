@@ -1,0 +1,17 @@
+This section documents breaking changes between Micronaut RabbitMq versions:
+
+=== Micronaut RabbitMq 5.0.0
+
+==== Deprecations
+
+- The method `io.micronaut.rabbitmq.bind.withAcknowledge(Boolean)` deprecated previously has been removed.
+`withAcknowledgmentAction(AcknowledgmentAction)` is used instead.
+
+- The Factory method `io.micronaut.rabbitmq.connect.RabbitConnectionFactory.connection(RabbitConnectionFactoryConfig, BeanContext)` deprecated previously has been removed.
+`connection(RabbitConnectionFactoryConfig, TemporarilyDownConnectionManager, BeanContext)` is used instead.
+
+- The Singleton constructor `io.micronaut.rabbitmq.intercept.RabbitMQConsumerAdvice(BeanContext, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List<ChannelPool>` deprecated previously has been removed.
+`RabbitMQConsumerAdvice(BeanContext, ApplicationEventPublisher, ApplicationEventPublisher, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List)` is used instead.
+
+- The constructor `io.micronaut.rabbitmq.reactive.RabbitPublishState(String, String, AMQP.BasicProperties, byte[])` deprecated previously has been removed.
+Use `RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])` instead.

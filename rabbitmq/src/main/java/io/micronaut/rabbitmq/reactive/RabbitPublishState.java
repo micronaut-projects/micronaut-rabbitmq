@@ -56,22 +56,6 @@ public class RabbitPublishState {
     }
 
     /**
-     * Deprecated constructor.
-     *
-     * @param exchange The exchange
-     * @param routingKey The routing key
-     * @param properties The properties
-     * @param body The body
-     * @deprecated Use {@link RabbitPublishState#RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])}
-     */
-    @Deprecated(since = "4.1.0", forRemoval = true)
-    public RabbitPublishState(String exchange, String routingKey,
-                              AMQP.BasicProperties properties,
-                              @Nullable byte[] body) {
-        this(exchange, routingKey, false, properties, body);
-    }
-
-    /**
      * @return The exchange to publish the message to
      */
     public String getExchange() {
