@@ -4,7 +4,7 @@ This section documents breaking changes between Micronaut RabbitMq versions:
 
 ==== Deprecations
 
-- The method `io.micronaut.rabbitmq.bind.withAcknowledge(Boolean)` deprecated previously has been removed.
+- The method `io.micronaut.rabbitmq.bind.RabbitMessageCloseable.withAcknowledge(Boolean)` deprecated previously has been removed.
 `withAcknowledgmentAction(AcknowledgmentAction)` is used instead.
 
 - The Factory method `io.micronaut.rabbitmq.connect.RabbitConnectionFactory.connection(RabbitConnectionFactoryConfig, BeanContext)` deprecated previously has been removed.
