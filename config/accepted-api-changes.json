@@ -3,5 +3,15 @@
     "type": "io.micronaut.rabbitmq.serdes.JsonRabbitMessageSerDes",
     "member": "Constructor io.micronaut.rabbitmq.serdes.JsonRabbitMessageSerDes(com.fasterxml.jackson.databind.ObjectMapper)",
     "reason": "Removed deprecated constructor for Micronaut 4.0.x"
+  },
+  {
+    "type": "io.micronaut.rabbitmq.intercept.RabbitMQConsumerAdvice",
+    "member": "Constructor io.micronaut.rabbitmq.intercept.RabbitMQConsumerAdvice(io.micronaut.context.BeanContext,io.micronaut.rabbitmq.bind.RabbitBinderRegistry,io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler,io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry,io.micronaut.core.convert.ConversionService,java.util.List)",
+    "reason": "Removed deprecated code for Micronaut Framework 5"
+  },
+  {
+    "type": "io.micronaut.rabbitmq.reactive.RabbitPublishState",
+    "member": "Constructor io.micronaut.rabbitmq.reactive.RabbitPublishState(java.lang.String,java.lang.String,com.rabbitmq.client.AMQP$BasicProperties,byte[])",
+    "reason": "Removed deprecated code for Micronaut Framework 5"
   }
 ]

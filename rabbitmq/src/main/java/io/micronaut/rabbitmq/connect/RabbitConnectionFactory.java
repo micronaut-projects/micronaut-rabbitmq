@@ -52,18 +52,6 @@ public class RabbitConnectionFactory implements BeanPreDestroyEventListener<Exec
 
     /**
      * @param connectionFactory The factory to create the connection
-     * @param beanContext The bean context to dynamically retrieve the executor service
-     * @return The connection
-     * @deprecated Use {@link RabbitConnectionFactory#connection(RabbitConnectionFactoryConfig, TemporarilyDownConnectionManager, BeanContext)}
-     */
-    @Deprecated(since = "4.2.0", forRemoval = true)
-    Connection connection(RabbitConnectionFactoryConfig connectionFactory,
-                          BeanContext beanContext) {
-        return connection(connectionFactory, beanContext.getBean(TemporarilyDownConnectionManager.class), beanContext);
-    }
-
-    /**
-     * @param connectionFactory The factory to create the connection
      * @param temporarilyDownConnectionManager The temporarily down connection manager
      * @param beanContext The bean context to dynamically retrieve the executor service
      * @return The connection

@@ -43,4 +43,5 @@ serdes:
 health: RabbitMQ Health Indicator
 metrics: RabbitMQ Metrics
 rabbitmqGuides: Guides
+breaks: Breaking Changes
 repository: Repository

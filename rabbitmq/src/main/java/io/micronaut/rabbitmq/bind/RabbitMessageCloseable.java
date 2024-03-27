@@ -17,7 +17,6 @@ package io.micronaut.rabbitmq.bind;
 
 import com.rabbitmq.client.Channel;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.messaging.exceptions.MessageAcknowledgementException;
 
 import java.io.IOException;
@@ -75,30 +74,6 @@ public class RabbitMessageCloseable implements AutoCloseable {
                 }
                 break;
         }
-    }
-
-    /**
-     * Builder style sets whether the message should be acknowledged.
-     *
-     * Set to true if the message should be acknowledged.
-     * Set to false if the message should be rejected.
-     * Set to null if the message should not be acknowledged or rejected.
-     *
-     * @deprecated as of 3.4.0
-     *
-     * @param acknowledge The acknowledge parameter.
-     * @return The same instance
-     */
-    @Deprecated
-    public RabbitMessageCloseable withAcknowledge(@Nullable Boolean acknowledge) {
-        if (acknowledge == null) {
-            acknowledgmentAction = AcknowledgmentAction.NONE;
-        } else if (Boolean.TRUE.equals(acknowledge)) {
-            acknowledgmentAction = AcknowledgmentAction.ACK;
-        } else {
-            acknowledgmentAction = AcknowledgmentAction.NACK;
-        }
-        return this;
     }
 
     /**
