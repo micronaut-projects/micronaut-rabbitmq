@@ -18,8 +18,8 @@ managed-amqp-client = '5.20.0'
 
 micronaut-logging = "1.2.3"
 micronaut-micrometer = "5.4.0"
+micronaut-test-resources = "2.4.0"
 micronaut-serde = "2.8.2"
-micronaut-test-resources = "2.3.3"
 
 [libraries]
 # Core
