@@ -1,6 +1,5 @@
 package io.micronaut.rabbitmq.listener
 
-import com.github.dockerjava.api.DockerClient
 import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.AlreadyClosedException
 import com.rabbitmq.client.ConnectionFactory
@@ -16,7 +15,6 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.GenericContainer
 import spock.lang.Shared
 import spock.util.concurrent.PollingConditions
@@ -33,8 +31,6 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
 
-    private static final DockerClient DOCKER_CLIENT = DockerClientFactory.lazyClient()
-
     @Shared
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
 
@@ -44,7 +40,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
     @Shared
     private boolean enablePublisher = false
 
-    void setupSpec() {
+    def setupSpec() {
         /*
          * The current Micronaut publisher implementation has a flaw in detecting unroutable drop/return messages
          * in a Rabbit cluster setup. It considers the messages as published even if the broker did not enqueue it.
@@ -104,7 +100,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         awaitPublishConsumeOfMessages(consumer)
 
         when:
-        restartContainer(NODE1_CONT)
+        restartContainer(node1)
 
         then:
         awaitPublishConsumeOfMessages(consumer)
@@ -118,7 +114,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         awaitPublishConsumeOfMessages(consumer)
 
         when:
-        restartContainer(NODE1_CONT)
+        restartContainer(node1)
 
         then:
         awaitPublishConsumeOfMessages(consumer)
@@ -132,7 +128,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         awaitPublishConsumeOfMessages(consumer)
 
         when:
-        restartContainer(NODE2_CONT)
+        restartContainer(node2)
 
         then:
         awaitPublishConsumeOfMessages(consumer)
@@ -146,7 +142,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         awaitPublishConsumeOfMessages(consumer)
 
         when:
-        restartContainer(NODE2_CONT)
+        restartContainer(node2)
 
         then:
         awaitPublishConsumeOfMessages(consumer)
@@ -219,40 +215,38 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static restartContainer(GenericContainer container) throws InterruptedException {
         log.info("stopping container: {}", container.containerId)
-        DOCKER_CLIENT.stopContainerCmd(container.containerId).exec()
-
-        log.info("re-starting container: {}", container.containerId)
-        DOCKER_CLIENT.startContainerCmd(container.containerId).exec()
+        container.execInContainer("rabbitmqctl", "stop_app")
+        container.execInContainer("rabbitmqctl", "start_app")
 
         new PollingConditions(timeout: 60).eventually {
             container.isHealthy()
         }
         log.info("started container: {}", container.containerId)
     }
-}
 
-abstract class TestConsumer implements RabbitListenerExceptionHandler {
+    static abstract class TestConsumer implements RabbitListenerExceptionHandler {
 
-    static final Logger log = LoggerFactory.getLogger(TestConsumer)
+        static final Logger log = LoggerFactory.getLogger(TestConsumer)
 
-    final Set<String> consumedMessages = new LinkedHashSet<>()
+        final Set<String> consumedMessages = new LinkedHashSet<>()
 
-    RabbitListenerException lastException
+        RabbitListenerException lastException
 
-    @Queue(AbstractRabbitMQClusterTest.QUEUE)
-    void handleMessage(@MessageBody String body) {
-        consumedMessages << body
-        log.info("{} received: {}", consumedMessages.size(), body)
-    }
+        @Queue(AbstractRabbitMQClusterTest.QUEUE)
+        void handleMessage(@MessageBody String body) {
+            consumedMessages << body
+            log.info("{} received: {}", consumedMessages.size(), body)
+        }
 
-    @Override
-    void handle(RabbitListenerException e) {
-        lastException = e
-        String msg = e.messageState
-                .map(RabbitConsumerState::getBody)
-                .map(String::new)
-                .orElse("<<no message>>")
-        consumedMessages.remove(msg)
-        log.warn("{} failed to consume: {}", consumedMessages.size(), msg, e)
+        @Override
+        void handle(RabbitListenerException e) {
+            lastException = e
+            String msg = e.messageState
+                    .map(RabbitConsumerState::getBody)
+                    .map(String::new)
+                    .orElse("<<no message>>")
+            consumedMessages.remove(msg)
+            log.warn("{} failed to consume: {}", consumedMessages.size(), msg, e)
+        }
     }
 }
