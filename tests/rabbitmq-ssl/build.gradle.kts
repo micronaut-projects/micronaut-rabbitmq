@@ -12,6 +12,13 @@ dependencies {
     testImplementation(mn.micronaut.management)
     testImplementation(mn.reactor)
 
-    testImplementation(libs.testcontainers.spock)
+    testImplementation(mnTest.micronaut.test.spock)
+    testImplementation(mnTestResources.testcontainers.core)
+    testImplementation(mnTestResources.testcontainers.rabbitmq)
     testImplementation(libs.awaitility)
+}
+
+micronaut {
+    version(libs.versions.micronaut.platform.get())
+    testRuntime("junit5")
 }
