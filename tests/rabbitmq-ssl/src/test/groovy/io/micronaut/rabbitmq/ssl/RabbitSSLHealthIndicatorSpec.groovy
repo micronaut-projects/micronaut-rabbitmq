@@ -1,6 +1,7 @@
 package io.micronaut.rabbitmq.ssl
 
 import io.micronaut.context.ApplicationContext
+import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthResult
 import io.micronaut.rabbitmq.health.RabbitMQHealthIndicator
 import reactor.core.publisher.Mono
@@ -16,7 +17,7 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
-        result.status == io.micronaut.health.HealthStatus.UP
+        result.status == HealthStatus.UP
         ((Map<String, Object>) result.details).version.toString().startsWith("3.8")
     }
 
@@ -32,7 +33,7 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
-        result.status == io.micronaut.health.HealthStatus.UP
+        result.status == HealthStatus.UP
         Map<String, List> details = result.details
         details.get("connections")[0].get("version").toString().startsWith("3.8")
         details.get("connections")[1].get("version").toString().startsWith("3.8")
@@ -48,7 +49,7 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         HealthResult result = Mono.from(healthIndicator.result).block()
 
         then:
-        result.status == io.micronaut.health.HealthStatus.DOWN
+        result.status == HealthStatus.DOWN
         ((Map) result.details).get("error").toString().contains("RabbitMQ connection is not open")
 
         cleanup:
