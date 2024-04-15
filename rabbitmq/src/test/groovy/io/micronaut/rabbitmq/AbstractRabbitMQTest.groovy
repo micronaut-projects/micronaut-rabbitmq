@@ -8,8 +8,10 @@ import spock.util.concurrent.PollingConditions
 
 abstract class AbstractRabbitMQTest extends Specification {
 
+    public static String RABBIT_CONTAINER_VERSION = "3.13.1"
+
     static GenericContainer rabbitContainer =
-            new GenericContainer("library/rabbitmq:3.7")
+            new GenericContainer("rabbitmq:" + RABBIT_CONTAINER_VERSION)
                     .withExposedPorts(5672)
                     .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
 
