@@ -107,7 +107,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
 
         mqContainer
                 .withEnv("RABBITMQ_ERLANG_COOKIE", "test-cluster")
-                .withCopyFileToContainer(forHostPath(rabbitConfigPath), "/etc/rabbitmq/rabbitmq.conf")
+                .withRabbitMQConfigSysctl(forHostPath(rabbitConfigPath))
                 .withCopyFileToContainer(forHostPath(rabbitDefinitionsPath), "/etc/rabbitmq/definitions.json")
                 .withNetwork(mqClusterNet)
                 .withLogConsumer(new Slf4jLogConsumer(log).withPrefix(hostname))
