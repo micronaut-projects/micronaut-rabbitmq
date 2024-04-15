@@ -31,6 +31,9 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
 
+    static final String EXCHANGE = "test-exchange"
+    static final String QUEUE = "test-durable-queue"
+
     @Shared
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
 
@@ -42,7 +45,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     def setupSpec() {
         /*
-         * The current Micronaut publisher implementation has a flaw in detecting unroutable drop/return messages
+         * The current Micronaut publisher implementation has a flaw in detecting non-routable drop/return messages
          * in a Rabbit cluster setup. It considers the messages as published even if the broker did not enqueue it.
          * So for this test a simple custom publisher is used that detects unpublished messages.
          */
@@ -232,7 +235,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
         RabbitListenerException lastException
 
-        @Queue(AbstractRabbitMQClusterTest.QUEUE)
+        @Queue(QUEUE)
         void handleMessage(@MessageBody String body) {
             consumedMessages << body
             log.info("{} received: {}", consumedMessages.size(), body)
