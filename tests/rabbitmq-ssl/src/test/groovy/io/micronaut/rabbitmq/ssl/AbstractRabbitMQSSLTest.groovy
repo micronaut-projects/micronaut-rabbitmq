@@ -4,9 +4,9 @@ import com.rabbitmq.client.ConnectionFactory
 import io.micronaut.context.ApplicationContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
-import org.testcontainers.utility.DockerImageName
+import org.testcontainers.containers.RabbitMQContainer
+import spock.lang.AutoCleanup
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -20,14 +20,14 @@ abstract class AbstractRabbitMQSSLTest extends Specification {
 
     private static final int AMQP_PORT = 5672
     private static final int AMQPS_PORT = 5671
-    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("library/rabbitmq:3.8")
 
-    static GenericContainer rabbitContainer =
-            new GenericContainer(RABBIT_IMAGE)
-                    .withExposedPorts(AMQP_PORT)
-                    .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
+    public static final String RABBIT_CONTAINER_VERSION = "3.13.1"
 
-    static {
+    @Shared
+    @AutoCleanup
+    RabbitMQContainer rabbitContainer = new RabbitMQContainer("rabbitmq:" + RABBIT_CONTAINER_VERSION)
+
+    def setupSpec() {
         rabbitContainer.start()
     }
 
@@ -36,7 +36,7 @@ abstract class AbstractRabbitMQSSLTest extends Specification {
 
     protected void startContext(Map additionalConfig = [:]) {
         applicationContext = ApplicationContext.run(
-                ["rabbitmq.port": rabbitContainer.getMappedPort(AMQP_PORT),
+                ["rabbitmq.port": rabbitContainer.getMappedPort(AMQPS_PORT),
                  "spec.name": getClass().simpleName] << additionalConfig, "test")
     }
 

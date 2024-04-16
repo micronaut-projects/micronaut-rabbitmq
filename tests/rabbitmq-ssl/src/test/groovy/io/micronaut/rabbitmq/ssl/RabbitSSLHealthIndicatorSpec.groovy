@@ -15,10 +15,11 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
         HealthResult result = Mono.from(healthIndicator.result).block()
+        def details = result.details
 
         then:
         result.status == HealthStatus.UP
-        ((Map<String, Object>) result.details).version.toString().startsWith("3.8")
+        details.version.toString() == RABBIT_CONTAINER_VERSION
     }
 
     void "test rabbitmq health indicator with 2 connections"() {
@@ -31,12 +32,12 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         when:
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
         HealthResult result = Mono.from(healthIndicator.result).block()
+        def details = result.details
 
         then:
         result.status == HealthStatus.UP
-        Map<String, List> details = result.details
-        details.get("connections")[0].get("version").toString().startsWith("3.8")
-        details.get("connections")[1].get("version").toString().startsWith("3.8")
+        details.get("connections")[0].get("version").toString() == RABBIT_CONTAINER_VERSION
+        details.get("connections")[1].get("version").toString() == RABBIT_CONTAINER_VERSION
     }
 
     void "test rabbitmq health indicator shows down"() {
@@ -47,10 +48,11 @@ class RabbitSSLHealthIndicatorSpec extends AbstractRabbitMQSSLTest {
         RabbitMQHealthIndicator healthIndicator = applicationContext.getBean(RabbitMQHealthIndicator)
         rabbitContainer.stop()
         HealthResult result = Mono.from(healthIndicator.result).block()
+        def details = result.details
 
         then:
         result.status == HealthStatus.DOWN
-        ((Map) result.details).get("error").toString().contains("RabbitMQ connection is not open")
+        details.get("error").toString().contains("RabbitMQ connection is not open")
 
         cleanup:
         rabbitContainer.start()
