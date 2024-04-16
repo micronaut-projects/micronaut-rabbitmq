@@ -24,7 +24,7 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
 
     private static final int AMQP_PORT = 5672
-    private static final String DOCKER_IMAGE_NAME = "rabbitmq:3.13.1-management"
+    private static final String DOCKER_IMAGE_NAME = "rabbitmq:$AbstractRabbitMQTest.RABBIT_CONTAINER_VERSION-management"
 
     protected ApplicationContext applicationContext
 
