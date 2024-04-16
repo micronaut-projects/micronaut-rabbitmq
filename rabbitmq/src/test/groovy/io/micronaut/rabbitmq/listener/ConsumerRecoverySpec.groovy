@@ -75,12 +75,17 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
                     ch.basicPublish(EXCHANGE, "", true,
                             new AMQP.BasicProperties.Builder().deliveryMode(2).build(),
                             msg.bytes)
+                    // Since rabbit 3.9.x this does not seem to throw an exception in these tests
                     if (ch.waitForConfirms(1000)) {
-                        log.info("publish ack")
+                        log.info("publish ack {}", msg)
+                    } else {
+                        // If the message is not confirmed, it is considered not published
+                        publishedMessages.remove(msg)
+                        log.warn("publish nack {}", msg)
                     }
                 } catch (IOException | RuntimeException | InterruptedException | TimeoutException e) {
                     publishedMessages.remove(msg)
-                    log.error("failed to publish: {}", e.message)
+                    log.error("failed to publish {}: {}", msg, e.message)
                 }
             }, 500, 500, MILLISECONDS))
     }
