@@ -24,15 +24,9 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     private static final Logger log = LoggerFactory.getLogger(AbstractRabbitMQClusterTest)
 
     private static final int AMQP_PORT = 5672
-    private static final DockerImageName RABBIT_IMAGE = DockerImageName.parse("rabbitmq:3.8-management")
-    private static final String CLUSTER_COOKIE = "test-cluster"
-    private static final String RABBIT_CONFIG_PATH = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").path
-    private static final String RABBIT_DEFINITIONS_PATH = ClassLoader.getSystemResource("rabbit/definitions.json").path
+    private static final String DOCKER_IMAGE_NAME = "rabbitmq:$AbstractRabbitMQTest.RABBIT_CONTAINER_VERSION-management"
 
     protected ApplicationContext applicationContext
-
-    static final String EXCHANGE = "test-exchange"
-    static final String QUEUE = "test-durable-queue"
 
     @Shared
     @AutoCleanup
@@ -40,20 +34,17 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
 
     @Shared
     @AutoCleanup
-    RabbitMQContainer node1 = new RabbitMQContainer(RABBIT_IMAGE)
+    RabbitMQContainer node1 = new RabbitMQContainer(DockerImageName.parse(DOCKER_IMAGE_NAME))
 
     @Shared
     @AutoCleanup
-    RabbitMQContainer node2 = new RabbitMQContainer(RABBIT_IMAGE)
+    RabbitMQContainer node2 = new RabbitMQContainer(DockerImageName.parse(DOCKER_IMAGE_NAME))
 
     @Shared
     @AutoCleanup
-    RabbitMQContainer node3 = new RabbitMQContainer(RABBIT_IMAGE)
+    RabbitMQContainer node3 = new RabbitMQContainer(DockerImageName.parse(DOCKER_IMAGE_NAME))
 
     def setupSpec() {
-        log.info("rabbit.conf path: {}", RABBIT_CONFIG_PATH)
-        log.info("rabbit definitions path: {}", RABBIT_DEFINITIONS_PATH)
-
         configureContainer(node1, "rabbitmq1")
                 .waitingFor(Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(1)))
                 .start()
@@ -95,7 +86,8 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
                 "spec.name"                  : getClass().simpleName,
                 "rabbitmq.servers.node1.port": node1Port,
                 "rabbitmq.servers.node2.port": node2Port,
-                "rabbitmq.servers.node3.port": node3Port] << additionalConfig
+                "rabbitmq.servers.node3.port": node3Port
+        ] << additionalConfig
 
         log.info("context properties: {}", properties)
         applicationContext = ApplicationContext.run(properties, "test")
@@ -106,10 +98,16 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     }
 
     private configureContainer(RabbitMQContainer mqContainer, String hostname) {
+        String rabbitConfigPath = ClassLoader.getSystemResource("rabbit/rabbitmq.conf").path
+        log.info("rabbit.conf path: {}", rabbitConfigPath)
+
+        String rabbitDefinitionsPath = ClassLoader.getSystemResource("rabbit/definitions.json").path
+        log.info("rabbit definitions.json path: {}", rabbitDefinitionsPath)
+
         mqContainer
-                .withEnv("RABBITMQ_ERLANG_COOKIE", CLUSTER_COOKIE)
-                .withCopyFileToContainer(forHostPath(RABBIT_CONFIG_PATH), "/etc/rabbitmq/rabbitmq.conf")
-                .withCopyFileToContainer(forHostPath(RABBIT_DEFINITIONS_PATH), "/etc/rabbitmq/definitions.json")
+                .withEnv("RABBITMQ_ERLANG_COOKIE", "test-cluster")
+                .withRabbitMQConfigSysctl(forHostPath(rabbitConfigPath))
+                .withCopyFileToContainer(forHostPath(rabbitDefinitionsPath), "/etc/rabbitmq/definitions.json")
                 .withNetwork(mqClusterNet)
                 .withLogConsumer(new Slf4jLogConsumer(log).withPrefix(hostname))
                 .withCreateContainerCmdModifier(cmd -> cmd
