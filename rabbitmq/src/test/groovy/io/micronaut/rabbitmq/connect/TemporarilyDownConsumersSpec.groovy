@@ -5,18 +5,17 @@ import com.rabbitmq.client.ShutdownListener
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.socket.SocketUtils
+import io.micronaut.rabbitmq.AbstractRabbitMQTest
 import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownException
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownIOException
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownRuntimeException
 import io.micronaut.rabbitmq.exception.RabbitClientException
 import io.micronaut.rabbitmq.exception.RabbitListenerException
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler
-import org.testcontainers.containers.FixedHostPortGenericContainer
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
+import org.testcontainers.containers.RabbitMQContainer
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -25,10 +24,12 @@ class TemporarilyDownConsumersSpec extends Specification {
     static PollingConditions conditions = new PollingConditions(timeout: 10)
 
     void "test temporarily down consumer"() {
+        given:
         int port = SocketUtils.findAvailableTcpPort()
-        FixedHostPortGenericContainer rabbitmq = new FixedHostPortGenericContainer("library/rabbitmq:3.7")
-                .withFixedExposedPort(port,5672)
-                .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
+        RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:" + AbstractRabbitMQTest.RABBIT_CONTAINER_VERSION).tap {
+            portBindings = ["$port:5672".toString()]
+        }
+
         ApplicationContext applicationContext = ApplicationContext.run(["rabbitmq.port": port, "spec.name": "TemporarilyDownConsumersSpec"], "test")
 
         when: "consumer is instantiated when the server is down"
@@ -56,23 +57,24 @@ class TemporarilyDownConsumersSpec extends Specification {
     }
 
     void "test temporarily down producer"() {
+        given:
         int port = SocketUtils.findAvailableTcpPort()
-        FixedHostPortGenericContainer rabbitmq = new FixedHostPortGenericContainer("library/rabbitmq:3.7")
-                .withFixedExposedPort(port,5672)
-                .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server startup complete.*"))
+        RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:" + AbstractRabbitMQTest.RABBIT_CONTAINER_VERSION).tap {
+            portBindings = ["$port:5672".toString()]
+        }
         ApplicationContext applicationContext = ApplicationContext.run(["rabbitmq.port": port, "spec.name": "TemporarilyDownConsumersSpec"], "test")
 
         when: "producer publishes a message when the server is down"
         applicationContext.getBean(MyProducer).send("hello")
 
         then: "a temporarily down exception is thrown"
-        var exception = thrown(RabbitClientException)
+        def exception = thrown(RabbitClientException)
         exception.message == 'Failed to publish a message with exchange: [] routing key [eventually-up] and mandatory flag [false]'
         exception.cause.message == 'Failed to retrieve a channel from the pool'
         exception.cause.cause.message == 'Connection is not ready yet'
 
         when: "the temporarily down connection is retrieved from the exception"
-        var connection = ((TemporarilyDownException) exception.cause.cause).connection
+        def connection = exception.cause.cause.connection
         then: "the connection is still down"
         connection.stillDown
 
@@ -240,7 +242,7 @@ class TemporarilyDownConsumersSpec extends Specification {
         then: "details can be retrieved from connection"
         connection.check()
         wasNotified
-        connection.stillDown == false
+        !connection.stillDown
         connection.address.hostName == 'localhost'
         connection.port == port
         connection.channelMax == 2047
@@ -278,7 +280,7 @@ class TemporarilyDownConsumersSpec extends Specification {
         when: "close connection"
         connection.close(-1, 'testing')
         then: "we can retrieve details"
-        connection.open == false
+        !connection.open
         connection.closeReason.reason.replyText == 'testing'
 
         when: "abort connection"
@@ -297,6 +299,7 @@ class TemporarilyDownConsumersSpec extends Specification {
     @Requires(property = "spec.name", value = "TemporarilyDownConsumersSpec")
     @RabbitClient
     static interface MyProducer {
+
         @Binding("eventually-up")
         void send(String message)
     }
