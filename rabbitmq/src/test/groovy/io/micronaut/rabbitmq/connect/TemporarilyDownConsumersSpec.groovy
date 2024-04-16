@@ -21,7 +21,7 @@ import spock.util.concurrent.PollingConditions
 
 class TemporarilyDownConsumersSpec extends Specification {
 
-    static PollingConditions conditions = new PollingConditions(timeout: 10)
+    PollingConditions conditions = new PollingConditions(timeout: 10)
 
     void "test temporarily down consumer"() {
         given:
