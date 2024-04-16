@@ -24,12 +24,13 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeoutException
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.Matchers.equalTo
 
 class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerRecoverySpec)
+
+    static final String EXCHANGE = "test-exchange"
+    static final String QUEUE = "test-durable-queue"
 
     @Shared
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
@@ -42,7 +43,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
     def setupSpec() {
         /*
-         * The current Micronaut publisher implementation has a flaw in detecting unroutable drop/return messages
+         * The current Micronaut publisher implementation has a flaw in detecting non-routable drop/return messages
          * in a Rabbit cluster setup. It considers the messages as published even if the broker did not enqueue it.
          * So for this test a simple custom publisher is used that detects unpublished messages.
          */
@@ -74,12 +75,17 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
                     ch.basicPublish(EXCHANGE, "", true,
                             new AMQP.BasicProperties.Builder().deliveryMode(2).build(),
                             msg.bytes)
+                    // Since rabbit 3.9.x this does not seem to throw an exception in these tests
                     if (ch.waitForConfirms(1000)) {
-                        log.info("publish ack")
+                        log.info("publish ack {}", msg)
+                    } else {
+                        // If the message is not confirmed, it is considered not published
+                        publishedMessages.remove(msg)
+                        log.warn("publish nack {}", msg)
                     }
                 } catch (IOException | RuntimeException | InterruptedException | TimeoutException e) {
                     publishedMessages.remove(msg)
-                    log.error("failed to publish: {}", e.message)
+                    log.error("failed to publish {}: {}", msg, e.message)
                 }
             }, 500, 500, MILLISECONDS))
     }
@@ -208,8 +214,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         enablePublisher = false
 
         new PollingConditions(timeout: 60).eventually {
-            assertThat "all published messages must be consumed",
-                    publishedMessages, equalTo(consumer.consumedMessages)
+            assert publishedMessages == consumer.consumedMessages
         }
     }
 
@@ -219,7 +224,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         container.execInContainer("rabbitmqctl", "start_app")
 
         new PollingConditions(timeout: 60).eventually {
-            container.isHealthy()
+            assert container.isHealthy()
         }
         log.info("started container: {}", container.containerId)
     }
@@ -232,7 +237,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
         RabbitListenerException lastException
 
-        @Queue(AbstractRabbitMQClusterTest.QUEUE)
+        @Queue(QUEUE)
         void handleMessage(@MessageBody String body) {
             consumedMessages << body
             log.info("{} received: {}", consumedMessages.size(), body)

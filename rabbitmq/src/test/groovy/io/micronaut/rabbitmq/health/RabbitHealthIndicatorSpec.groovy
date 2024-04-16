@@ -20,7 +20,7 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
 
         then:
         result.status == UP
-        ((Map<String, Object>) result.details).version.toString().startsWith("3.7")
+        ((Map<String, Object>) result.details).version.toString() == RABBIT_CONTAINER_VERSION
     }
 
     void "test rabbitmq health indicator with 2 connections"() {
@@ -37,8 +37,8 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
         then:
         result.status == UP
         Map<String, List> details = result.details
-        details.get("connections")[0].get("version").toString().startsWith("3.7")
-        details.get("connections")[1].get("version").toString().startsWith("3.7")
+        details.get("connections")[0].get("version").toString() == RABBIT_CONTAINER_VERSION
+        details.get("connections")[1].get("version").toString() == RABBIT_CONTAINER_VERSION
     }
 
     void "test rabbitmq health indicator shows down"() {
