@@ -24,8 +24,6 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeoutException
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.Matchers.equalTo
 
 class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
@@ -211,8 +209,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         enablePublisher = false
 
         new PollingConditions(timeout: 60).eventually {
-            assertThat "all published messages must be consumed",
-                    publishedMessages, equalTo(consumer.consumedMessages)
+            assert publishedMessages == consumer.consumedMessages
         }
     }
 
