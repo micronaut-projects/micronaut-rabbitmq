@@ -219,7 +219,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
         container.execInContainer("rabbitmqctl", "start_app")
 
         new PollingConditions(timeout: 60).eventually {
-            container.isHealthy()
+            assert container.isHealthy()
         }
         log.info("started container: {}", container.containerId)
     }
