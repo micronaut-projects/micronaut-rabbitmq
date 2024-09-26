@@ -17,15 +17,10 @@ rabbit = '5.15.0'
 managed-amqp-client = '5.21.0'
 
 micronaut-logging = "1.4.0"
-<<<<<<< HEAD
+
 micronaut-micrometer = "5.9.1"
-micronaut-test-resources = "2.5.4"
-micronaut-serde = "2.12.0"
-=======
-micronaut-micrometer = "5.8.0"
 micronaut-test-resources = "2.6.2"
-micronaut-serde = "2.11.0"
->>>>>>> 7b8ff51f (fix(deps): update dependency io.micronaut.testresources:micronaut-test-resources-bom to v2.6.2)
+micronaut-serde = "2.12.0"
 
 [libraries]
 # Core
