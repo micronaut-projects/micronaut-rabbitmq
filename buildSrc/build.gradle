@@ -11,4 +11,5 @@ dependencies {
     implementation libs.gradle.kotlin
     implementation libs.gradle.kotlin.allopen
     implementation libs.gradle.kotlin.noarg
+    implementation(libs.sonatype.scan)
 }
