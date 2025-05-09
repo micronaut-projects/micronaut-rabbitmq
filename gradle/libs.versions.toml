@@ -21,7 +21,7 @@ micronaut-logging = "1.4.0"
 micronaut-micrometer = "5.9.3"
 
 micronaut-test-resources = "2.7.3"
-micronaut-serde = "2.14.0"
+micronaut-serde = "2.14.1"
 
 sonatype-scan = "3.0.0"
 [libraries]
