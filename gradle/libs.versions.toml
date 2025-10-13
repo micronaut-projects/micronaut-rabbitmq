@@ -16,7 +16,7 @@ kotlin = '1.9.25'
 rabbit = '5.15.0'
 managed-amqp-client = '5.26.0'
 
-micronaut-logging = "1.4.0"
+micronaut-logging = "1.7.1"
 
 micronaut-micrometer = "5.13.0"
 
