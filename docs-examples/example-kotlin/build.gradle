@@ -9,8 +9,3 @@ micronaut {
     testRuntime "kotest5"
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}

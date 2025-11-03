@@ -1,9 +1,9 @@
 [versions]
 micronaut-docs = '3.0.0'
-micronaut = "4.4.0"
+micronaut = "4.10.7"
 micronaut-platform = "4.3.4"
-micronaut-test = "4.2.1"
-micronaut-gradle-plugin = "4.3.6"
+micronaut-test = "4.10.1"
+micronaut-gradle-plugin = "4.6.0"
 groovy = "4.0.18"
 spock = '2.3-groovy-4.0'
 
@@ -12,7 +12,7 @@ caffeine = '3.1.8'
 jsr305 = "3.0.2"
 junit = '5.10.2'
 kotest = '5.8.1'
-kotlin = '1.9.25'
+kotlin = '2.2.20'
 rabbit = '5.15.0'
 managed-amqp-client = '5.21.0'
 
