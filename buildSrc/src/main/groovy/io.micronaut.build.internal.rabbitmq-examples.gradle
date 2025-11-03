@@ -2,12 +2,6 @@ plugins {
     id 'io.micronaut.build.internal.rabbitmq-base'
     id "io.micronaut.minimal.application"
     id "io.micronaut.test-resources"
-    id 'java-library'
-    id "io.micronaut.build.internal.kotlin-base"
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
