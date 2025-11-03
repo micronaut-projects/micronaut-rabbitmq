@@ -11,7 +11,6 @@ dependencies {
     testImplementation mnSerde.micronaut.serde.jackson
     testImplementation libs.awaitility
     testImplementation 'io.micronaut.testresources:micronaut-test-resources-client'
-    testRuntimeOnly(mnTest.junit.platform.suite)
 }
 configurations.all {
     resolutionStrategy.dependencySubstitution {
