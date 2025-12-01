@@ -3,7 +3,7 @@ package io.micronaut.rabbitmq.rpc
 import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.Channel
 import io.micronaut.context.annotation.Requires
-import io.micronaut.core.annotation.Nullable
+import org.jspecify.annotations.Nullable
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 

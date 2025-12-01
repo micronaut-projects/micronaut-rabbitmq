@@ -16,7 +16,7 @@
 package io.micronaut.rabbitmq.reactive;
 
 import com.rabbitmq.client.AMQP;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Stores the state of a RabbitMQ message to be published.
