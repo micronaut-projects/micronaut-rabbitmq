@@ -18,7 +18,7 @@ package io.micronaut.rabbitmq.bind;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Stores the state of a RabbitMQ message to be consumed.

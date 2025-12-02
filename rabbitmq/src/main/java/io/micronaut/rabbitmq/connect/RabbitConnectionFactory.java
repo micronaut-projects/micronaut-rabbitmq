@@ -23,7 +23,7 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.event.BeanPreDestroyEvent;
 import io.micronaut.context.event.BeanPreDestroyEventListener;
 import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnectionManager;
 import jakarta.annotation.PreDestroy;

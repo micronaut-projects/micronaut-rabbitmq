@@ -18,8 +18,8 @@ package io.micronaut.rabbitmq.connect;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.ConnectionFactory;
 import io.micronaut.context.annotation.Parameter;
-import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.scheduling.TaskExecutors;
 
 import java.time.Duration;

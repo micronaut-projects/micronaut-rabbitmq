@@ -15,7 +15,7 @@
  */
 package io.micronaut.rabbitmq.exception;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.messaging.exceptions.MessageListenerException;
 import io.micronaut.rabbitmq.bind.RabbitConsumerState;
 

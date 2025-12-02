@@ -2,7 +2,7 @@ package io.micronaut.rabbitmq.docs.headers
 
 import io.micronaut.context.annotation.Requires
 // tag::imports[]
-import io.micronaut.core.annotation.Nullable
+import org.jspecify.annotations.Nullable
 import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
