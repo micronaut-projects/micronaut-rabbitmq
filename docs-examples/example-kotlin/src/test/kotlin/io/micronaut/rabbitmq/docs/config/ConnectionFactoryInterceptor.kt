@@ -9,8 +9,8 @@ import jakarta.inject.Singleton
 @Singleton
 class ConnectionFactoryInterceptor: BeanCreatedEventListener<ConnectionFactory> {
 
-    override fun onCreated(event: BeanCreatedEvent<ConnectionFactory>?): ConnectionFactory {
-        val connectionFactory = event!!.bean
+    override fun onCreated(event: BeanCreatedEvent<ConnectionFactory>): ConnectionFactory {
+        val connectionFactory = event.bean
         connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
         return connectionFactory
     }
