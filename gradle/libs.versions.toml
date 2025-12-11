@@ -32,15 +32,8 @@ junit-jupiter-engine = { module = 'org.junit.jupiter:junit-jupiter-engine', vers
 caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
-kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
-kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
-
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-test-resources = { module = "io.micronaut.testresources:micronaut-test-resources-bom", version.ref = "micronaut-test-resources" }
-
 gradle-micronaut = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronaut-gradle-plugin" }
-gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-gradle-kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
-gradle-kotlin-noarg = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
 
