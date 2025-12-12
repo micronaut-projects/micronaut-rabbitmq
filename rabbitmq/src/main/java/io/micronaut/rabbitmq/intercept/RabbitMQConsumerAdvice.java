@@ -127,7 +127,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     }
 
     @Override
-    public void process(BeanDefinition<?> beanDefinition, ExecutableMethod<?, ?> method) {
+    public <B> void process(BeanDefinition<B> beanDefinition, ExecutableMethod<B, ?> method) {
 
         AnnotationValue<Queue> queueAnn = method.getAnnotation(Queue.class);
 

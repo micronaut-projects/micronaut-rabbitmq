@@ -63,8 +63,7 @@ public class RabbitConsumerState {
     /**
      * @return The properties
      */
-    @NonNull
-    public AMQP.BasicProperties getProperties() {
+    public AMQP.@NonNull BasicProperties getProperties() {
         return properties;
     }
 
