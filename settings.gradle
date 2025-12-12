@@ -25,5 +25,4 @@ micronautBuild {
     importMicronautCatalog()
     importMicronautCatalog("micronaut-micrometer")
     importMicronautCatalog("micronaut-serde")
-    importMicronautCatalog("micronaut-test-resources")
 }

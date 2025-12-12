@@ -3,7 +3,6 @@ package io.micronaut.rabbitmq.docs.consumer.connection
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
-import io.micronaut.testresources.client.TestResourcesClientFactory
 import jakarta.inject.Inject
 import spock.lang.Specification
 
@@ -36,14 +35,5 @@ class ConnectionSpec extends Specification implements TestPropertyProvider {
         cleanup:
         // Finding that the context is closing the channel before ack is sent
         sleep 200
-    }
-
-    @Override
-    Map<String, String> getProperties() {
-        var client = TestResourcesClientFactory.fromSystemProperties().get();
-        var rabbitURI = client.resolve("rabbitmq.uri", Map.of(), Map.of());
-        return rabbitURI
-                .map(uri -> Map.of("rabbitmq.servers.product-cluster.port", String.valueOf(URI.create(uri).getPort())))
-                .orElse(Collections.emptyMap());
     }
 }
