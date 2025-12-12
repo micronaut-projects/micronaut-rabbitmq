@@ -4,12 +4,11 @@ import io.kotest.assertions.timing.eventually
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
-import io.micronaut.testresources.client.TestResourcesClientFactory
 import jakarta.inject.Inject
 import java.net.URI
-import java.util.Map
 import kotlin.time.Duration.Companion.seconds
 
 @MicronautTest
@@ -32,16 +31,11 @@ class ConnectionSpec
         }
     }
 
-    override fun getProperties(): MutableMap<String, String> {
-        val client = TestResourcesClientFactory.fromSystemProperties().get()
-        val rabbitURI = client.resolve("rabbitmq.uri", Map.of(), Map.of())
-        return rabbitURI
-            .map { uri: String ->
-                Map.of(
-                    "rabbitmq.servers.product-cluster.port",
-                    URI.create(uri).port.toString()
-                )
-            }
-            .orElse(emptyMap())
+    override fun getProperties(): Map<String, String> {
+        val m: MutableMap<String, String> = HashMap(RabbitMQ.getProperties())
+        val uri: String = m["rabbitmq.uri"]!!
+        val port = URI.create(uri).port.toString()
+        m["rabbitmq.servers.product-cluster.port"] = port
+        return m
     }
 }

@@ -1,33 +1,39 @@
 package io.micronaut.rabbitmq.docs.consumer.custom.annotation
 
 import io.kotest.assertions.timing.eventually
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 @MicronautTest
 @Property(name = "spec.name", value = "DeliveryTagSpec")
-class DeliveryTagSpec(productClient: ProductClient, productListener: ProductListener) : BehaviorSpec({
+class DeliveryTagSpec : TestPropertyProvider, AnnotationSpec() {
 
-    val specName = javaClass.simpleName
+    override fun getProperties(): Map<String, String> {
+        return RabbitMQ.getProperties()
+    }
 
-    given("Using a custom annotation binder") {
+    @Inject
+    lateinit var productClient: ProductClient
 
-        `when`("The messages are published") {
-            // tag::producer[]
-            productClient.send("body".toByteArray())
-            productClient.send("body2".toByteArray())
-            productClient.send("body3".toByteArray())
-            // end::producer[]
+    @Inject
+    lateinit var productListener: ProductListener
 
-            then("The messages are received") {
-                eventually(10.seconds) {
-                    productListener.messages.size shouldBe 3
-                }
-            }
+    @Test
+    suspend fun testUsingCustomAnnotationBinder() {
+        // tag::producer[]
+        productClient.send("body".toByteArray())
+        productClient.send("body2".toByteArray())
+        productClient.send("body3".toByteArray())
+        // end::producer[]
+
+        eventually(10.seconds) {
+            productListener.messages.size shouldBe 3
         }
     }
-})
+}
