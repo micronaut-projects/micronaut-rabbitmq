@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    testImplementation(project(":test-suite-utils"))
     testImplementation projects.micronautRabbitmq
     testImplementation mn.reactor
     testImplementation mnSerde.micronaut.serde.support

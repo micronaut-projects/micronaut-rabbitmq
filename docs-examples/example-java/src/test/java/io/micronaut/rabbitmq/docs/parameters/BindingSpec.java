@@ -2,14 +2,23 @@ package io.micronaut.rabbitmq.docs.parameters;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ;
+import java.util.Map;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 @MicronautTest
 @Property(name = "spec.name", value = "BindingSpec")
-class BindingSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BindingSpec implements TestPropertyProvider {
+    @Override
+    public Map<String, String> getProperties() {
+        return RabbitMQ.getProperties();
+    }
 
     @Test
     void testDynamicBinding(ProductClient productClient, ProductListener productListener) {

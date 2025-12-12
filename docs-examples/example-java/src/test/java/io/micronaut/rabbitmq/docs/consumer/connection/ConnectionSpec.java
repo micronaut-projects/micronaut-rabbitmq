@@ -1,13 +1,13 @@
 package io.micronaut.rabbitmq.docs.consumer.connection;
 
 import java.net.URI;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.micronaut.context.annotation.Property;
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import io.micronaut.testresources.client.TestResourcesClientFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -34,10 +34,10 @@ productClient.send("connection-test".getBytes());
 
     @Override
     public Map<String, String> getProperties() {
-        var client = TestResourcesClientFactory.fromSystemProperties().get();
-        var rabbitURI = client.resolve("rabbitmq.uri", Map.of(), Map.of());
-        return rabbitURI
-            .map(uri -> Map.of("rabbitmq.servers.product-cluster.port", String.valueOf(URI.create(uri).getPort())))
-            .orElse(Collections.emptyMap());
+        Map<String, String> m = new HashMap<>(RabbitMQ.getProperties());
+        String uri = m.get("rabbitmq.uri");
+        String port = String.valueOf(URI.create(uri).getPort());
+        m.put("rabbitmq.servers.product-cluster.port", port);
+        return m;
     }
 }

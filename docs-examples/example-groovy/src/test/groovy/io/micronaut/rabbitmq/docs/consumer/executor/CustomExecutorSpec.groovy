@@ -2,16 +2,22 @@ package io.micronaut.rabbitmq.docs.consumer.executor
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
 import jakarta.inject.Inject
 import spock.lang.Specification
 
 import static java.util.concurrent.TimeUnit.SECONDS
 import static org.awaitility.Awaitility.await
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 @MicronautTest(rebuildContext = true)
 @Property(name = "spec.name", value = "CustomExecutorSpec")
 @Property(name = "micronaut.executors.product-listener.type", value = "FIXED")
-class CustomExecutorSpec extends Specification {
+class CustomExecutorSpec extends Specification implements TestPropertyProvider {
+    @Override
+    Map<String, String> getProperties() {
+        RabbitMQ.getProperties();
+    }
 
     @Inject ProductClient productClient
     @Inject ProductListener productListener
