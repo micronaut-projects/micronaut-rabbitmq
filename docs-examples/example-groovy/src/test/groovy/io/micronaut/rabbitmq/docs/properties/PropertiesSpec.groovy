@@ -2,15 +2,22 @@ package io.micronaut.rabbitmq.docs.properties
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
 import jakarta.inject.Inject
 import spock.lang.Specification
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 import static java.util.concurrent.TimeUnit.SECONDS
 import static org.awaitility.Awaitility.await
 
 @MicronautTest
 @Property(name = "spec.name", value = "PropertiesSpec")
-class PropertiesSpec extends Specification {
+class PropertiesSpec extends Specification implements TestPropertyProvider {
+    @Override
+    Map<String, String> getProperties() {
+        RabbitMQ.getProperties();
+    }
+
     @Inject ProductClient productClient
     @Inject ProductListener productListener
 

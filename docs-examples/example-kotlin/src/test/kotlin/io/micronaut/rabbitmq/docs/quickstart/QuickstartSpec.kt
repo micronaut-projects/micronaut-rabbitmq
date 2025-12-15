@@ -1,30 +1,39 @@
 package io.micronaut.rabbitmq.docs.quickstart
 
 import io.kotest.assertions.timing.eventually
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 @MicronautTest
 @Property(name = "spec.name", value = "QuickstartSpec")
-class QuickstartSpec(productClient: ProductClient, productListener: ProductListener): BehaviorSpec({
+class QuickstartSpec : TestPropertyProvider, AnnotationSpec() {
 
-    given("A basic producer and consumer") {
-        `when`("the message is published") {
+    override fun getProperties(): Map<String, String> {
+        return RabbitMQ.getProperties()
+    }
+
+    @Inject
+    lateinit var productClient: ProductClient
+
+    @Inject
+    lateinit var productListener: ProductListener
+
+    @Test
+    suspend fun testBasicProducerAndConsumer() {
 
 // tag::producer[]
 productClient.send("quickstart".toByteArray())
 // end::producer[]
 
-            then("the message is consumed") {
-                eventually(10.seconds) {
-                    productListener.messageLengths.size shouldBe 1
-                    productListener.messageLengths[0] shouldBe "quickstart"
-                }
-            }
+        eventually(10.seconds) {
+            productListener.messageLengths.size shouldBe 1
+            productListener.messageLengths[0] shouldBe "quickstart"
         }
     }
-})
+}

@@ -1,16 +1,15 @@
 plugins {
     id 'io.micronaut.build.internal.rabbitmq-base'
     id "io.micronaut.minimal.application"
-    id "io.micronaut.test-resources"
 }
 
 dependencies {
+    testImplementation(project(":test-suite-utils"))
     testImplementation projects.micronautRabbitmq
     testImplementation mn.reactor
     testImplementation mnSerde.micronaut.serde.support
     testImplementation mnSerde.micronaut.serde.jackson
     testImplementation libs.awaitility
-    testImplementation 'io.micronaut.testresources:micronaut-test-resources-client'
 }
 configurations.all {
     resolutionStrategy.dependencySubstitution {
@@ -20,8 +19,4 @@ configurations.all {
 micronaut {
     version libs.versions.micronaut.platform.get()
     testRuntime "junit5"
-    testResources {
-        clientTimeout = 300
-        additionalModules.add(RABBITMQ)
-    }
 }

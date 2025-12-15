@@ -1,29 +1,37 @@
 package io.micronaut.rabbitmq.docs.consumer.concurrent
 
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.framework.concurrency.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 @MicronautTest
 @Property(name = "spec.name", value = "ConcurrentSpec")
-class ConcurrentSpec(productClient: ProductClient, productListener: ProductListener) : BehaviorSpec({
+class ConcurrentSpec : TestPropertyProvider, AnnotationSpec() {
 
-    val specName = javaClass.simpleName
+    override fun getProperties(): Map<String, String> {
+        return RabbitMQ.getProperties()
+    }
 
-    given("A basic producer and consumer") {
-        `when`("The messages are published") {
-            for (i in 0..3) {
-                productClient.send("body".toByteArray())
-            }
+    @Inject
+    lateinit var productClient: ProductClient
 
-            then("The messages are received") {
-                eventually(5.seconds) {
-                    productListener.threads.size shouldBe 4
-                }
-            }
+    @Inject
+    lateinit var productListener: ProductListener
+
+    @Test
+    suspend fun testBasicProducerAndConsumer() {
+        for (i in 0..3) {
+            productClient.send("body".toByteArray())
+        }
+
+        eventually(5.seconds) {
+            productListener.threads.size shouldBe 4
         }
     }
-})
+}

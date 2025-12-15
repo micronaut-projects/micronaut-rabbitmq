@@ -2,20 +2,29 @@ package io.micronaut.rabbitmq.docs.publisher.acknowledge;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ;
 
 @MicronautTest
 @Property(name = "spec.name", value = "PublisherAcknowledgeSpec")
-class PublisherAcknowledgeSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class PublisherAcknowledgeSpec implements TestPropertyProvider {
+    @Override
+    public Map<String, String> getProperties() {
+        return RabbitMQ.getProperties();
+    }
 
     @Test
     void testPublisherAcknowledgement(ProductClient productClient) {

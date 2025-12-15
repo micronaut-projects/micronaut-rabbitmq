@@ -2,8 +2,10 @@ package io.micronaut.rabbitmq.docs.headers;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.TestInstance;
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +14,12 @@ import static org.awaitility.Awaitility.await;
 
 @MicronautTest
 @Property(name = "spec.name", value = "HeadersSpec")
-class HeadersSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class HeadersSpec implements TestPropertyProvider {
+    @Override
+    public Map<String, String> getProperties() {
+        return RabbitMQ.getProperties();
+    }
 
     @Test
     void testPublishingAndReceivingHeaders(ProductClient productClient, ProductListener productListener) {

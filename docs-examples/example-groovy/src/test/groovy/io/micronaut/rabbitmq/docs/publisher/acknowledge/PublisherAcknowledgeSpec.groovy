@@ -2,11 +2,13 @@ package io.micronaut.rabbitmq.docs.publisher.acknowledge
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
 import jakarta.inject.Inject
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import spock.lang.Specification
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,7 +18,12 @@ import static org.awaitility.Awaitility.await
 
 @MicronautTest
 @Property(name = "spec.name", value = "PublisherAcknowledgeSpec")
-class PublisherAcknowledgeSpec extends Specification {
+class PublisherAcknowledgeSpec extends Specification implements TestPropertyProvider {
+    @Override
+    Map<String, String> getProperties() {
+        RabbitMQ.getProperties()
+    }
+
     @Inject ProductClient productClient
     void "test publisher acknowledgement"() {
         given:

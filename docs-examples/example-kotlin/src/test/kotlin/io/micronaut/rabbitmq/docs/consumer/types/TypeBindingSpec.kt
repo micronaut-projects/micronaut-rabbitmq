@@ -1,38 +1,44 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
 import io.kotest.assertions.timing.eventually
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
+import io.micronaut.rabbitmq.testcontainers.RabbitMQ
 
 @MicronautTest
 @Property(name = "spec.name", value = "TypeBindingSpec")
-class TypeBindingSpec(productClient: ProductClient, productListener: ProductListener) : BehaviorSpec({
+class TypeBindingSpec : TestPropertyProvider, AnnotationSpec() {
 
-    val specName = javaClass.simpleName
+    override fun getProperties(): Map<String, String> {
+        return RabbitMQ.getProperties()
+    }
 
-    given("A basic producer and consumer") {
+    @Inject
+    lateinit var productClient: ProductClient
 
-        `when`("The messages are published") {
+    @Inject
+    lateinit var productListener: ProductListener
 
-            // tag::producer[]
-            productClient.send("body".toByteArray(), "text/html")
-            productClient.send("body2".toByteArray(), "application/json")
-            productClient.send("body3".toByteArray(), "text/xml")
-            // end::producer[]
+    @Test
+    suspend fun testBasicProducerAndConsumer() {
 
-            then("The messages are received") {
-                eventually(10.seconds) {
-                    productListener.messages.size shouldBe 3
-                    productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/html]"
-                    productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [application/json]"
-                    productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/xml]"
-                }
-            }
+        // tag::producer[]
+        productClient.send("body".toByteArray(), "text/html")
+        productClient.send("body2".toByteArray(), "application/json")
+        productClient.send("body3".toByteArray(), "text/xml")
+        // end::producer[]
+
+        eventually(10.seconds) {
+            productListener.messages.size shouldBe 3
+            productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/html]"
+            productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [application/json]"
+            productListener.messages shouldContain "exchange: [], routingKey: [product], contentType: [text/xml]"
         }
     }
-})
+}
