@@ -15,7 +15,7 @@ dependencies {
 
     implementation(mn.micronaut.retry)
     implementation(mn.reactor)
-    implementation(libs.caffeine)
+    implementation(mnCache.caffeine)
 
     compileOnly(mn.micronaut.management)
     compileOnly(mnMicrometer.micronaut.micrometer.core)
