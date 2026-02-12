@@ -1,18 +1,17 @@
 [versions]
-micronaut = "5.0.0-M3"
+micronaut = "5.0.0-M10"
 micronaut-platform = "4.10.4"
 micronaut-test = "5.0.0-M2"
-micronaut-gradle-plugin = "4.6.1"
+micronaut-gradle-plugin = "4.6.2"
 
 awaitility = '4.3.0'
-caffeine = '3.2.3'
 jsr305 = "3.0.2"
 kotest = '5.9.1'
 rabbit = '5.15.0'
 managed-amqp-client = '5.28.0'
 
 micronaut-micrometer = "5.13.2"
-micronaut-serde = "3.0.0-M1"
+micronaut-serde = "3.0.0-M2"
 micronaut-cache = "6.0.0-M1"
 
 [libraries]
