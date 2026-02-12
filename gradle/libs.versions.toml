@@ -17,11 +17,8 @@ micronaut-cache = "6.0.0-M1"
 [libraries]
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
-
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
-
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
-caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
