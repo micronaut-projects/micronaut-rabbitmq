@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(platform(libs.micronaut.test))
     testImplementation(project(":test-suite-utils"))
     testImplementation projects.micronautRabbitmq
     testImplementation mn.reactor
