@@ -1,30 +1,27 @@
 [versions]
 micronaut = "5.0.0-M13"
-micronaut-platform = "4.10.4"
-micronaut-test = "5.0.0-M2"
+micronaut-platform = "4.10.8"
+micronaut-test = "5.0.0-M6"
 micronaut-gradle-plugin = "4.6.2"
 
 awaitility = '4.3.0'
-caffeine = '3.1.8'
 jsr305 = "3.0.2"
 kotest = '5.9.1'
 rabbit = '5.15.0'
 managed-amqp-client = '5.28.0'
-
-micronaut-micrometer = "5.13.2"
+micronaut-micrometer = "6.0.1-M1"
 micronaut-serde = "3.0.0-M2"
+micronaut-cache = "6.0.0-M2"
 
 [libraries]
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
-
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
-
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
-caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'caffeine' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
 kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
+micronaut-cache = { module = "io.micronaut.cache:micronaut-cache-bom", version.ref = "micronaut-cache" }
 gradle-micronaut = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronaut-gradle-plugin" }
 testcontainers-rabbitmq = { module = "org.testcontainers:testcontainers-rabbitmq" }
