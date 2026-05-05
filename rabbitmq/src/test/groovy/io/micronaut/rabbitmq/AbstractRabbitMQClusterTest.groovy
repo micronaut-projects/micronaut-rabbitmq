@@ -93,8 +93,11 @@ abstract class AbstractRabbitMQClusterTest extends Specification {
     protected void startContext(Map additionalConfig = [:]) {
         Map<String, Object> properties = [
                 "spec.name"                  : getClass().simpleName,
+                "rabbitmq.servers.node1.host": node1.host,
                 "rabbitmq.servers.node1.port": node1Port,
+                "rabbitmq.servers.node2.host": node2.host,
                 "rabbitmq.servers.node2.port": node2Port,
+                "rabbitmq.servers.node3.host": node3.host,
                 "rabbitmq.servers.node3.port": node3Port] << additionalConfig
 
         log.info("context properties: {}", properties)

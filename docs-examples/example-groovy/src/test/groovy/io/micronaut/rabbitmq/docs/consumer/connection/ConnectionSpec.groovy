@@ -42,7 +42,10 @@ class ConnectionSpec extends Specification implements TestPropertyProvider {
     public Map<String, String> getProperties() {
         Map<String, String> m = new HashMap<>(RabbitMQ.getProperties());
         String uri = m.get("rabbitmq.uri");
+        String host = URI.create(uri).getHost();
         String port = String.valueOf(URI.create(uri).getPort());
+        m.put("rabbitmq.servers.product-cluster.uri", uri);
+        m.put("rabbitmq.servers.product-cluster.host", host);
         m.put("rabbitmq.servers.product-cluster.port", port);
         return m;
     }

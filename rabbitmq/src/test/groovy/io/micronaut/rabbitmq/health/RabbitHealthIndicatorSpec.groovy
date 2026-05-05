@@ -26,7 +26,9 @@ class RabbitHealthIndicatorSpec extends AbstractRabbitMQTest {
     void "test rabbitmq health indicator with 2 connections"() {
         given:
         applicationContext = ApplicationContext.run([
+                "rabbitmq.servers.one.host": rabbitContainer.host,
                 "rabbitmq.servers.one.port": rabbitContainer.getMappedPort(5672),
+                "rabbitmq.servers.two.host": rabbitContainer.host,
                 "rabbitmq.servers.two.port": rabbitContainer.getMappedPort(5672)
         ], "test")
 

@@ -3,15 +3,14 @@ package io.micronaut.rabbitmq.testcontainers;
 import org.testcontainers.rabbitmq.RabbitMQContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.net.URI;
 import java.util.Map;
 
 public class RabbitMQ {
-    private static final String IMAGE_NAME = "rabbitmq";
+    private static final String IMAGE_NAME = "rabbitmq:3.13-management";
     private static RabbitMQContainer container;
 
     public static Map<String, String> getProperties() {
-        if (container == null) {
+        if (container == null || !container.isRunning()) {
             container = new RabbitMQContainer(DockerImageName.parse(IMAGE_NAME));
             container.start();
             do {

@@ -34,7 +34,10 @@ class ConnectionSpec
     override fun getProperties(): Map<String, String> {
         val m: MutableMap<String, String> = HashMap(RabbitMQ.getProperties())
         val uri: String = m["rabbitmq.uri"]!!
+        val host = URI.create(uri).host
         val port = URI.create(uri).port.toString()
+        m["rabbitmq.servers.product-cluster.uri"] = uri
+        m["rabbitmq.servers.product-cluster.host"] = host
         m["rabbitmq.servers.product-cluster.port"] = port
         return m
     }
