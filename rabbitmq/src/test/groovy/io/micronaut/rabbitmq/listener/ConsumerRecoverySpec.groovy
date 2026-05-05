@@ -35,10 +35,10 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor()
 
     @Shared
-    private Set<String> publishedMessages = new LinkedHashSet<>()
+    private Set<String> publishedMessages = Collections.synchronizedSet(new LinkedHashSet<>())
 
     @Shared
-    private boolean enablePublisher = false
+    private volatile boolean enablePublisher = false
 
     def setupSpec() {
         /*
@@ -46,7 +46,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
          * in a Rabbit cluster setup. It considers the messages as published even if the broker did not enqueue it.
          * So for this test a simple custom publisher is used that detects unpublished messages.
          */
-        ConnectionFactory connectionFactory = new ConnectionFactory(port: node3Port)
+        ConnectionFactory connectionFactory = new ConnectionFactory(host: node3.host, port: node3Port)
         connectionFactory.newConnection().openChannel().map(ch -> {
                 try {
                     ch.confirmSelect()
@@ -195,12 +195,12 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
     }
 
     private void awaitPublishConsumeOfMessages(TestConsumer consumer) {
-        int targetPubCount = publishedMessages.size() + 10
-        int targetConCount = consumer.consumedMessages.size() + 10
+        int targetPubCount = snapshot(publishedMessages).size() + 10
+        int targetConCount = snapshot(consumer.consumedMessages).size() + 10
 
         new PollingConditions(timeout: 60).eventually {
-            assert publishedMessages.size() > targetPubCount
-            assert consumer.consumedMessages.size() > targetConCount
+            assert snapshot(publishedMessages).size() > targetPubCount
+            assert snapshot(consumer.consumedMessages).size() > targetConCount
         }
     }
 
@@ -209,7 +209,13 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
         new PollingConditions(timeout: 60).eventually {
             assertThat "all published messages must be consumed",
-                    publishedMessages, equalTo(consumer.consumedMessages)
+                    snapshot(publishedMessages), equalTo(snapshot(consumer.consumedMessages))
+        }
+    }
+
+    private static Set<String> snapshot(Set<String> messages) {
+        synchronized (messages) {
+            return new LinkedHashSet<>(messages)
         }
     }
 
@@ -228,7 +234,7 @@ class ConsumerRecoverySpec extends AbstractRabbitMQClusterTest {
 
         static final Logger log = LoggerFactory.getLogger(TestConsumer)
 
-        final Set<String> consumedMessages = new LinkedHashSet<>()
+        final Set<String> consumedMessages = Collections.synchronizedSet(new LinkedHashSet<>())
 
         RabbitListenerException lastException
 

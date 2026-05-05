@@ -25,10 +25,10 @@ class MultipleServersSpec extends Specification {
         rabbit2.start()
         ApplicationContext context = ApplicationContext.run(
                 ["spec.name": getClass().simpleName,
-                 "rabbitmq.servers.one.uri": "amqp://localhost:${rabbit1.getMappedPort(5672)}",
+                 "rabbitmq.servers.one.uri": "amqp://${rabbit1.host}:${rabbit1.getMappedPort(5672)}",
                  "rabbitmq.servers.one.channel-pool.max-idle-channels": "10",
                  "rabbitmq.servers.one.rpc.timeout": "10s",
-                 "rabbitmq.servers.two.uri": "amqp://localhost:${rabbit2.getMappedPort(5672)}",
+                 "rabbitmq.servers.two.uri": "amqp://${rabbit2.host}:${rabbit2.getMappedPort(5672)}",
                  "rabbitmq.servers.two.channel-pool.max-idle-channels": "20",
                  "rabbitmq.servers.two.rpc.timeout": "20s"])
 

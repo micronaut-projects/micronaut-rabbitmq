@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -79,7 +80,7 @@ public class RabbitConnectionFactory implements BeanPreDestroyEventListener<Exec
                 return factory.newConnection(executorService, addresses.get());
             }
             return factory.newConnection(executorService);
-        } catch (ConnectException e) {
+        } catch (ConnectException | SocketTimeoutException e) {
             // Check if automatic recovery is enabled
             if (factory.isAutomaticRecoveryEnabled()) {
                 // Create a "temporarily down" connection that may be up eventually
