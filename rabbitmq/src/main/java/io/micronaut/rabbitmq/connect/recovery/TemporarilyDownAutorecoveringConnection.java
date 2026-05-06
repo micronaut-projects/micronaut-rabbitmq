@@ -15,7 +15,20 @@
  */
 package io.micronaut.rabbitmq.connect.recovery;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Address;
+import com.rabbitmq.client.AddressResolver;
+import com.rabbitmq.client.BlockedCallback;
+import com.rabbitmq.client.BlockedListener;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DnsRecordIpAddressResolver;
+import com.rabbitmq.client.ExceptionHandler;
+import com.rabbitmq.client.ListAddressResolver;
+import com.rabbitmq.client.MetricsCollector;
+import com.rabbitmq.client.NoOpMetricsCollector;
+import com.rabbitmq.client.ShutdownListener;
+import com.rabbitmq.client.ShutdownSignalException;
+import com.rabbitmq.client.SslContextFactory;
+import com.rabbitmq.client.UnblockedCallback;
 import com.rabbitmq.client.impl.ConnectionParams;
 import com.rabbitmq.client.impl.FrameHandlerFactory;
 import com.rabbitmq.client.impl.SocketFrameHandlerFactory;
