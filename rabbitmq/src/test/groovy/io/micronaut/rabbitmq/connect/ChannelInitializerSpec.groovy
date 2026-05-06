@@ -64,6 +64,33 @@ class ChannelInitializerSpec extends Specification {
         1 * pool.returnChannel(channel)
     }
 
+    void "initializer errors are rethrown"() {
+        given:
+        Channel channel = Mock()
+        ChannelPool pool = Mock() {
+            getName() >> "default"
+            getChannel() >> channel
+        }
+        BeanCreatedEvent<ChannelPool> event = Stub() {
+            getBean() >> pool
+        }
+        Error failure = new AssertionError("fatal")
+        ChannelInitializer initializer = new ChannelInitializer() {
+            @Override
+            void initialize(Channel ch, String name) throws IOException {
+                throw failure
+            }
+        }
+
+        when:
+        initializer.onCreated(event)
+
+        then:
+        Error e = thrown()
+        e.is(failure)
+        1 * pool.returnChannel(channel)
+    }
+
     private static class TemporarilyDownInitializationException extends IOException implements TemporarilyDownException {
 
         private final TemporarilyDownConnection connection

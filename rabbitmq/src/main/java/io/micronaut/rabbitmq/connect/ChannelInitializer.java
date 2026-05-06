@@ -61,11 +61,12 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
             if (e instanceof TemporarilyDownException temp) {
                 // We will try to initialize the channel again when it's eventually up
                 temp.getConnection().addEventuallyUpListener(c -> initialize(c.createChannel(), pool.getName()));
-            } else if (e instanceof Error error) {
-                throw error;
-            } else {
-                throw new BeanInstantiationException("Initialization of the channel has failed", e);
+                return pool;
             }
+            if (e instanceof Error error) {
+                throw error;
+            }
+            throw new BeanInstantiationException("Initialization of the channel has failed", e);
         } finally {
             if (channel != null) {
                 pool.returnChannel(channel);
