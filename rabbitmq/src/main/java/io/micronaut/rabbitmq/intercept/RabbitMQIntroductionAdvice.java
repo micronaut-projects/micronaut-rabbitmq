@@ -228,7 +228,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Publish is an RPC call. Publisher will complete when a response is received.", context);
                         }
-                        reactive = reactive.subscribeOn(scheduler);
+                        reactive = reactive.subscribeOn(scheduler)
+                                .publishOn(scheduler);
                     }
                 } else {
                     if (interceptedMethod.resultType() == InterceptedMethod.ResultType.SYNCHRONOUS) {
@@ -241,7 +242,8 @@ public class RabbitMQIntroductionAdvice implements MethodInterceptor<Object, Obj
                             LOG.debug("Sending the message with publisher confirms.", context);
                         }
                         reactive = Mono.from(reactivePublisher.publishAndConfirm(publishState))
-                                .subscribeOn(scheduler);
+                                .subscribeOn(scheduler)
+                                .publishOn(scheduler);
                     }
                 }
 

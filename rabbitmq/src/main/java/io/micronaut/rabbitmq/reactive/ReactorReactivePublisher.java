@@ -130,7 +130,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
      * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
     protected Mono<Object> publishInternal(Channel channel, RabbitPublishState publishState) {
-        return Mono.create(subscriber -> {
+        return returnChannelOnTerminate(channel, Mono.create(subscriber -> {
             Disposable listener = createListener(channel, subscriber, publishState);
             try {
                 channel.basicPublish(
@@ -144,7 +144,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 listener.dispose();
                 subscriber.error(e);
             }
-        }).doFinally(signalType -> returnChannel(channel));
+        }));
     }
 
     /**
@@ -159,7 +159,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
      * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
     protected Mono<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
-        return Mono.<RabbitConsumerState>create(subscriber -> {
+        return returnChannelOnTerminate(channel, Mono.<RabbitConsumerState>create(subscriber -> {
             Disposable listener = null;
             try {
                 String correlationId = UUID.randomUUID().toString();
@@ -179,7 +179,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 }
                 subscriber.error(new MessagingClientException("Failed to publish the message", e));
             }
-        }).doFinally(signalType -> returnChannel(channel));
+        }));
     }
 
     /**
@@ -194,7 +194,7 @@ public class ReactorReactivePublisher implements ReactivePublisher {
      * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
     protected Mono<Object> publishInternalNoConfirm(Channel channel, RabbitPublishState publishState) {
-        return Mono.create(subscriber -> {
+        return returnChannelOnTerminate(channel, Mono.create(subscriber -> {
             try {
                 channel.basicPublish(
                         publishState.getExchange(),
@@ -208,7 +208,22 @@ public class ReactorReactivePublisher implements ReactivePublisher {
             } catch (IOException e) {
                 subscriber.error(new MessagingClientException("Failed to publish the message", e));
             }
-        }).doFinally(signalType -> returnChannel(channel));
+        }));
+    }
+
+    private <T> Mono<T> returnChannelOnTerminate(Channel channel, Mono<T> publisher) {
+        AtomicBoolean returned = new AtomicBoolean();
+        return publisher
+                .doOnTerminate(returnChannelOnce(channel, returned))
+                .doOnCancel(returnChannelOnce(channel, returned));
+    }
+
+    private Runnable returnChannelOnce(Channel channel, AtomicBoolean returned) {
+        return () -> {
+            if (returned.compareAndSet(false, true)) {
+                returnChannel(channel);
+            }
+        };
     }
 
     /**
@@ -269,12 +284,12 @@ public class ReactorReactivePublisher implements ReactivePublisher {
             }
 
             private void ackNack(long deliveryTag, boolean multiple, boolean ack) {
+                dispose.accept(this);
                 if (ack) {
                     emitter.success();
                 } else {
                     emitter.error(new RabbitClientException("Message could not be delivered to the broker", Collections.singletonList(publishState)));
                 }
-                dispose.accept(this);
             }
         };
 
