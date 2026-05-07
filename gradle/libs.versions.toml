@@ -6,7 +6,6 @@ micronaut-gradle-plugin = "5.0.0-M1"
 
 awaitility = '4.3.0'
 jsr305 = "3.0.2"
-kotest = '5.9.1'
 rabbit = '5.15.0'
 managed-amqp-client = '5.30.0'
 micronaut-micrometer = "6.0.1-M1"
@@ -19,7 +18,6 @@ micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'mi
 managed-amqp-client = { module = 'com.rabbitmq:amqp-client', version.ref = 'managed-amqp-client' }
 awaitility = { module = 'org.awaitility:awaitility', version.ref = 'awaitility' }
 jsr305 = {group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
-kotest = { module = 'io.kotest:kotest-runner-junit5', version.ref = 'kotest' }
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-cache = { module = "io.micronaut.cache:micronaut-cache-bom", version.ref = "micronaut-cache" }
