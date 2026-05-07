@@ -6,7 +6,6 @@ micronaut-gradle-plugin = "5.0.0-M1"
 
 awaitility = '4.3.0'
 jsr305 = "3.0.2"
-rabbit = '5.15.0'
 managed-amqp-client = '5.30.0'
 micronaut-micrometer = "6.0.1-M1"
 micronaut-serde = "3.0.0-RC2"
