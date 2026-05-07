@@ -1,6 +1,6 @@
 package io.micronaut.rabbitmq.docs.consumer.types
 
-import io.kotest.assertions.timing.eventually
+import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe

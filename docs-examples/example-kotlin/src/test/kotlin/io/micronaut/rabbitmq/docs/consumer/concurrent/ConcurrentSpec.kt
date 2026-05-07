@@ -1,7 +1,7 @@
 package io.micronaut.rabbitmq.docs.consumer.concurrent
 
+import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.framework.concurrency.eventually
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
