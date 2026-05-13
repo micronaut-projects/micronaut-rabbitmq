@@ -6,6 +6,7 @@ io.micronaut.rabbitmq.event
 io.micronaut.rabbitmq.exception
 io.micronaut.rabbitmq.executor
 io.micronaut.rabbitmq.health
+io.micronaut.rabbitmq.info
 io.micronaut.rabbitmq.intercept
 io.micronaut.rabbitmq.metrics
 io.micronaut.rabbitmq.reactive
