@@ -15,7 +15,7 @@
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" href="../css/multi-language-sample.css"/>
     <script src="../js/docs.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script type="text/javascript">
         function addJsClass(el) {
             var classes = document.body.className.split(" ");
@@ -23,7 +23,9 @@
             document.body.className = classes.join(" ");
         }
     </script>
-
+    <style type="text/css">
+        .lang-java { display: block }; .lang-python { display: block }; .lang-kotlin { display: block }; .lang-groovy { display: block }; 
+    </style>
 </head>
 
 <body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
@@ -70,7 +72,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#rabbitmqGuides"><strong>13</strong><span>Guides</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#breaks"><strong>14</strong><span>Breaking Changes</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -175,7 +179,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-rabbitmqGuides"><a href="#rabbitmqGuides"><strong>13</strong><span>Guides</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-breaks"><a href="#breaks"><strong>14</strong><span>Breaking Changes</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -185,13 +191,13 @@
         <h1>Micronaut RabbitMQ</h1>
         <p></p>
         <p>Integration between Micronaut and RabbitMQ</p>
-        <p><strong>Version:</strong> 4.8.0 </p>
+        <p><strong>Version:</strong> 5.0.0 </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -204,7 +210,7 @@
 <h1 id="whatsNew"><a class="anchor" href="#whatsNew"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/whatsNew.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/whatsNew.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -251,7 +257,7 @@
 <h1 id="cli"><a class="anchor" href="#cli"></a>3 Using the Micronaut CLI</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/cli.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/cli.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -299,7 +305,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq
 <h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 RabbitMQ Quick Start</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/quickStart.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/quickStart.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -322,7 +328,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq
     &lt;artifactId&gt;micronaut-rabbitmq&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="sect1">
 <h2 id="_creating_a_rabbitmq_producer_with_rabbitclient">Creating a RabbitMQ Producer with @RabbitClient</h2>
@@ -348,19 +355,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-
-@RabbitClient // <b class="conum">(1)</b>
-interface ProductClient {
-
-    @Binding("product") // <b class="conum">(2)</b>
-    void send(byte[] data) // <b class="conum">(3)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -369,6 +363,19 @@ interface ProductClient {
 
     @Binding("product") // <b class="conum">(2)</b>
     fun send(data: ByteArray)  // <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+
+@RabbitClient // <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product") // <b class="conum">(2)</b>
+    void send(byte[] data) // <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -398,12 +405,12 @@ interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">productClient.send("quickstart".bytes)</code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">productClient.send("quickstart".toByteArray())</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">productClient.send("quickstart".toByteArray())</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">productClient.send("quickstart".bytes)</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -453,25 +460,6 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-import java.util.concurrent.CopyOnWriteArrayList
-
-@RabbitListener // <b class="conum">(1)</b>
-class ProductListener {
-
-    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
-
-    @Queue("product") // <b class="conum">(2)</b>
-    void receive(byte[] data) { // <b class="conum">(3)</b>
-        messageLengths &lt;&lt; new String(data)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
@@ -486,6 +474,25 @@ class ProductListener {
         val string = String(data)
         messageLengths.add(string)
         println("Kotlin received ${data.size} bytes from RabbitMQ: ${string}")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
+
+@RabbitListener // <b class="conum">(1)</b>
+class ProductListener {
+
+    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
+
+    @Queue("product") // <b class="conum">(2)</b>
+    void receive(byte[] data) { // <b class="conum">(3)</b>
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -512,7 +519,7 @@ class ProductListener {
 <h1 id="config"><a class="anchor" href="#config"></a>5 Configuring The Connection</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/config.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/config.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -528,15 +535,17 @@ class ProductListener {
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/SingleRabbitConnectionFactoryConfig.html">SingleRabbitConnectionFactoryConfig</a></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 </tr>
 </thead>
 <tbody>
@@ -544,225 +553,270 @@ class ProductListener {
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.port</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-provider</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.virtual-host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.uri</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.net.URI</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-channel-max</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-frame-max</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.requested-heartbeat</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.handshake-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.client-properties</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.sasl-config</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.socket-configurator</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shared-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.shutdown-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.heartbeat-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.thread-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.exception-handler</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.automatic-recovery-enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.metrics-collector</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.observation-collector</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.observation.ObservationCollector</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.credentials-refresh-service</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.network-recovery-interval</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovery-delay-handler</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.nio-params</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-rpc-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.max-inbound-message-body-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.ssl-context-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.channel-should-check-rpc-response-type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.work-pool-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.error-on-write-listener</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-filter</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.connection-recovery-triggering-condition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.topology-recovery-retry-handler</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.recovered-queue-name-supplier</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RecoveredQueueNameSupplier</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.traffic-listener</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.addresses</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the addresses to be passed to {@link ConnectionFactory#newConnection(List)}.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.consumer-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of which executor service consumers should be executed on. Default {@value #DEFAULT_CONSUMER_EXECUTOR}.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.confirm-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How long to wait for a publisher confirm</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -771,15 +825,17 @@ class ProductListener {
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/rabbitmq/connect/ClusterRabbitConnectionFactoryConfig.html">ClusterRabbitConnectionFactoryConfig</a></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
 </tr>
 </thead>
 <tbody>
@@ -787,225 +843,270 @@ class ProductListener {
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.port</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.username</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-provider</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsProvider</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.virtual-host</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.uri</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.net.URI</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-channel-max</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-frame-max</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.requested-heartbeat</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.handshake-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.client-properties</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.sasl-config</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SaslConfig</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">javax.net.SocketFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.socket-configurator</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SocketConfigurator</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shared-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.shutdown-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.heartbeat-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ScheduledExecutorService</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.thread-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ThreadFactory</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.exception-handler</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ExceptionHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.automatic-recovery-enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.concurrent.ExecutorService</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.metrics-collector</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.MetricsCollector</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.observation-collector</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.observation.ObservationCollector</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.credentials-refresh-service</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.CredentialsRefreshService</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.network-recovery-interval</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovery-delay-handler</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.nio-params</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.nio.NioParams</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-rpc-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.max-inbound-message-body-size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.network-recovery-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovery-delay-handler</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.RecoveryDelayHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-rpc-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.ssl-context-factory</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.SslContextFactory</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.channel-should-check-rpc-response-type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.work-pool-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.error-on-write-listener</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.ErrorOnWriteListener</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-filter</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.TopologyRecoveryFilter</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.connection-recovery-triggering-condition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.function.Predicate</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.topology-recovery-retry-handler</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RetryHandler</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.recovered-queue-name-supplier</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.impl.recovery.RecoveredQueueNameSupplier</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.traffic-listener</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.TrafficListener</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.addresses</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the addresses to be passed to {@link ConnectionFactory#newConnection(List)}.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.consumer-executor</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of which executor service consumers should be executed on. Default {@value #DEFAULT_CONSUMER_EXECUTOR}.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.confirm-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How long to wait for a publisher confirm</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -1049,6 +1150,27 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.rabbitmq.docs.config
+
+import com.rabbitmq.client.ConnectionFactory
+import com.rabbitmq.client.impl.DefaultCredentialsProvider
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+import jakarta.inject.Singleton
+
+@Singleton
+class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
+
+    override fun onCreated(event: BeanCreatedEvent&lt;ConnectionFactory&gt;): ConnectionFactory {
+        val connectionFactory = event.bean
+        connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
+        return connectionFactory
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.rabbitmq.docs.config
 
 import com.rabbitmq.client.ConnectionFactory
@@ -1065,27 +1187,6 @@ class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt;Connec
         def connectionFactory = event.bean
         connectionFactory.credentialsProvider = new DefaultCredentialsProvider("guest", "guest")
         connectionFactory
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.rabbitmq.docs.config
-
-import com.rabbitmq.client.ConnectionFactory
-import com.rabbitmq.client.impl.DefaultCredentialsProvider
-import io.micronaut.context.event.BeanCreatedEvent
-import io.micronaut.context.event.BeanCreatedEventListener
-import jakarta.inject.Singleton
-
-@Singleton
-class ConnectionFactoryInterceptor: BeanCreatedEventListener&lt;ConnectionFactory&gt; {
-
-    override fun onCreated(event: BeanCreatedEvent&lt;ConnectionFactory&gt;?): ConnectionFactory {
-        val connectionFactory = event!!.bean
-        connectionFactory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
-        return connectionFactory
     }
 }</code></pre>
 </div>
@@ -1174,7 +1275,7 @@ The <code>addresses</code> option can also be used with the multiple server conf
 <h1 id="producer"><a class="anchor" href="#producer"></a>6 RabbitMQ Producers</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1210,22 +1311,6 @@ public interface AnimalClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
-import io.micronaut.rabbitmq.annotation.RabbitClient
-
-@RabbitClient("animals") // <b class="conum">(1)</b>
-abstract class AnimalClient {
-
-    abstract void send(@MessageHeader String animalType, Animal animal) // <b class="conum">(2)</b>
-
-    void send(Animal animal) { // <b class="conum">(3)</b>
-        send(animal.getClass().simpleName, animal)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -1236,6 +1321,22 @@ abstract class AnimalClient {
 
     fun send(animal: Animal) { //<b class="conum">(3)</b>
         send(animal.javaClass.simpleName, animal)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
+import io.micronaut.rabbitmq.annotation.RabbitClient
+
+@RabbitClient("animals") // <b class="conum">(1)</b>
+abstract class AnimalClient {
+
+    abstract void send(@MessageHeader String animalType, Animal animal) // <b class="conum">(2)</b>
+
+    void send(Animal animal) { // <b class="conum">(3)</b>
+        send(animal.getClass().simpleName, animal)
     }
 }</code></pre>
 </div>
@@ -1274,7 +1375,7 @@ Exchanges must already exist before you can publish messages to them.
 <h2 id="producerMethods"><a class="anchor" href="#producerMethods"></a>6.1 Defining @RabbitClient Methods</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1333,7 +1434,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 <h2 id="producerParameters"><a class="anchor" href="#producerParameters"></a>6.1.1 Publishing Parameters</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1346,7 +1447,7 @@ Unless a reactive type is returned from the publishing method, the action is blo
 <h2 id="producerBinding"><a class="anchor" href="#producerBinding"></a>6.1.1.1 Binding (Routing Key)</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerBinding.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1372,21 +1473,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-
-@RabbitClient
-interface ProductClient {
-
-    @Binding("product") // <b class="conum">(1)</b>
-    void send(byte[] data)
-
-    void send(@Binding String binding, byte[] data) // <b class="conum">(2)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -1397,6 +1483,21 @@ interface ProductClient {
     fun send(data: ByteArray)
 
     fun send(@Binding binding: String, data: ByteArray)  // <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product") // <b class="conum">(1)</b>
+    void send(byte[] data)
+
+    void send(@Binding String binding, byte[] data) // <b class="conum">(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -1432,19 +1533,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-
-@RabbitClient // <b class="conum">(1)</b>
-interface ProductClient {
-
-    @Binding(value = "product", connection = "product-cluster") // <b class="conum">(2)</b>
-    void send(byte[] data) // <b class="conum">(3)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -1453,6 +1541,19 @@ interface ProductClient {
 
     @Binding(value = "product", connection = "product-cluster") // <b class="conum">(2)</b>
     fun send(data: ByteArray)  // <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+
+@RabbitClient // <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding(value = "product", connection = "product-cluster") // <b class="conum">(2)</b>
+    void send(byte[] data) // <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1481,7 +1582,7 @@ The <code>connection</code> option is also available to be set on the <a href=".
 <h2 id="producerMandatory"><a class="anchor" href="#producerMandatory"></a>6.1.1.2 Mandatory Flag</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerMandatory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerMandatory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1513,24 +1614,6 @@ public interface MandatoryProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.Mandatory
-import io.micronaut.rabbitmq.annotation.RabbitClient
-
-@RabbitClient
-interface MandatoryProductClient {
-
-    @Binding("product")
-    @Mandatory // <b class="conum">(1)</b>
-    void send(byte[] data)
-
-    @Binding("product")
-    void send(@Mandatory boolean mandatory, byte[] data) // <b class="conum">(2)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Mandatory
 import io.micronaut.rabbitmq.annotation.RabbitClient
@@ -1544,6 +1627,24 @@ interface MandatoryProductClient {
 
     @Binding("product")
     fun send(@Mandatory mandatory: Boolean, data: ByteArray) // <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.Mandatory
+import io.micronaut.rabbitmq.annotation.RabbitClient
+
+@RabbitClient
+interface MandatoryProductClient {
+
+    @Binding("product")
+    @Mandatory // <b class="conum">(1)</b>
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@Mandatory boolean mandatory, byte[] data) // <b class="conum">(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -1599,36 +1700,6 @@ class MyReturnListener extends ChannelInitializer implements ReturnListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.rabbitmq.client.AMQP
-import com.rabbitmq.client.Channel
-import com.rabbitmq.client.ReturnListener
-import io.micronaut.rabbitmq.connect.ChannelInitializer
-import jakarta.inject.Singleton
-
-@Singleton
-class MyReturnListener extends ChannelInitializer implements ReturnListener {
-
-    @Override
-    void initialize(Channel channel, String name) throws IOException {
-        channel.addReturnListener(this) // <b class="conum">(1)</b>
-    }
-
-    @Override
-    void handleReturn(
-            int replyCode,
-            String replyText,
-            String exchange,
-            String routingKey,
-            AMQP.BasicProperties properties,
-            byte[] body
-    ) throws IOException {
-        // <b class="conum">(2)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.ReturnListener
@@ -1653,6 +1724,36 @@ internal class MyReturnListener : ChannelInitializer(), ReturnListener {
         properties: AMQP.BasicProperties,
         body: ByteArray
     ) {
+        // <b class="conum">(2)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.rabbitmq.client.AMQP
+import com.rabbitmq.client.Channel
+import com.rabbitmq.client.ReturnListener
+import io.micronaut.rabbitmq.connect.ChannelInitializer
+import jakarta.inject.Singleton
+
+@Singleton
+class MyReturnListener extends ChannelInitializer implements ReturnListener {
+
+    @Override
+    void initialize(Channel channel, String name) throws IOException {
+        channel.addReturnListener(this) // <b class="conum">(1)</b>
+    }
+
+    @Override
+    void handleReturn(
+            int replyCode,
+            String replyText,
+            String exchange,
+            String routingKey,
+            AMQP.BasicProperties properties,
+            byte[] body
+    ) throws IOException {
         // <b class="conum">(2)</b>
     }
 }</code></pre>
@@ -1686,7 +1787,7 @@ You can find more details about this mechanism <a href="https://www.rabbitmq.com
 <h2 id="producerProperties"><a class="anchor" href="#producerProperties"></a>6.1.1.3 RabbitMQ Properties</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerProperties.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1718,26 +1819,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.rabbitmq.annotation.RabbitProperty
-
-@RabbitClient
-@RabbitProperty(name = "appId", value = "myApp") // <b class="conum">(1)</b>
-interface ProductClient {
-
-    @Binding("product")
-    @RabbitProperty(name = "contentType", value = "application/json") // <b class="conum">(2)</b>
-    @RabbitProperty(name = "userId", value = "guest")
-    void send(byte[] data)
-
-    @Binding("product")
-    void send(@RabbitProperty("userId") String user, @RabbitProperty String contentType, byte[] data) // <b class="conum">(3)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperties
@@ -1756,6 +1837,26 @@ interface ProductClient {
 
     @Binding("product")
     fun send(@RabbitProperty("userId") user: String, @RabbitProperty contentType: String?, data: ByteArray)  // <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperty
+
+@RabbitClient
+@RabbitProperty(name = "appId", value = "myApp") // <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product")
+    @RabbitProperty(name = "contentType", value = "application/json") // <b class="conum">(2)</b>
+    @RabbitProperty(name = "userId", value = "guest")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@RabbitProperty("userId") String user, @RabbitProperty String contentType, byte[] data) // <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1794,7 +1895,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <h2 id="producerHeaders"><a class="anchor" href="#producerHeaders"></a>6.1.1.4 Headers</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerHeaders.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1835,34 +1936,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
-import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.rabbitmq.annotation.RabbitHeaders
-
-@RabbitClient
-@MessageHeader(name = "x-product-sealed", value = "true") // <b class="conum">(1)</b>
-@MessageHeader(name = "productSize", value = "large")
-interface ProductClient {
-
-    @Binding("product")
-    @MessageHeader(name = "x-product-count", value = "10") // <b class="conum">(2)</b>
-    @MessageHeader(name = "productSize", value = "small")
-    void send(byte[] data)
-
-    @Binding("product")
-    void send(@MessageHeader String productSize, // <b class="conum">(3)</b>
-              @MessageHeader("x-product-count") Long count,
-              byte[] data)
-
-    @Binding("product")
-    void send(@RabbitHeaders Map&lt;String, Object&gt; headers, // <b class="conum">(4)</b>
-              byte[] data)
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.messaging.annotation.MessageHeaders
 import io.micronaut.rabbitmq.annotation.Binding
@@ -1894,6 +1967,34 @@ interface ProductClient {
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.messaging.annotation.MessageHeader
+import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitHeaders
+
+@RabbitClient
+@MessageHeader(name = "x-product-sealed", value = "true") // <b class="conum">(1)</b>
+@MessageHeader(name = "productSize", value = "large")
+interface ProductClient {
+
+    @Binding("product")
+    @MessageHeader(name = "x-product-count", value = "10") // <b class="conum">(2)</b>
+    @MessageHeader(name = "productSize", value = "small")
+    void send(byte[] data)
+
+    @Binding("product")
+    void send(@MessageHeader String productSize, // <b class="conum">(3)</b>
+              @MessageHeader("x-product-count") Long count,
+              byte[] data)
+
+    @Binding("product")
+    void send(@RabbitHeaders Map&lt;String, Object&gt; headers, // <b class="conum">(4)</b>
+              byte[] data)
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -1918,7 +2019,7 @@ interface ProductClient {
 <h2 id="producerBody"><a class="anchor" href="#producerBody"></a>6.1.1.5 Message Body</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerParameters/producerBody.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1931,7 +2032,7 @@ interface ProductClient {
 <h2 id="producerAcknowledge"><a class="anchor" href="#producerAcknowledge"></a>6.1.2 Broker Acknowledgement</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/producer/producerMethods/producerAcknowledge.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1967,25 +2068,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-import org.reactivestreams.Publisher
-
-import java.util.concurrent.CompletableFuture
-
-@RabbitClient
-interface ProductClient {
-
-    @Binding("product")
-    Publisher&lt;Void&gt; sendPublisher(byte[] data) // <b class="conum">(1)</b>
-
-    @Binding("product")
-    CompletableFuture&lt;Void&gt; sendFuture(byte[] data) // <b class="conum">(2)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import org.reactivestreams.Publisher
@@ -2003,6 +2085,25 @@ interface ProductClient {
 
     @Binding("product")
     suspend fun sendSuspend(data: ByteArray) //suspend methods work too!
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import org.reactivestreams.Publisher
+
+import java.util.concurrent.CompletableFuture
+
+@RabbitClient
+interface ProductClient {
+
+    @Binding("product")
+    Publisher&lt;Void&gt; sendPublisher(byte[] data) // <b class="conum">(1)</b>
+
+    @Binding("product")
+    CompletableFuture&lt;Void&gt; sendFuture(byte[] data) // <b class="conum">(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -2034,7 +2135,7 @@ RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO
 <h1 id="consumer"><a class="anchor" href="#consumer"></a>7 RabbitMQ Consumers</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2050,7 +2151,7 @@ RxJava 1 is not supported. Publisher acknowledgements will be executed on the IO
 <h2 id="consumerMethods"><a class="anchor" href="#consumerMethods"></a>7.1 Defining @RabbitListener Methods</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2085,7 +2186,7 @@ In order for all of the functionality to work as designed in this guide your cla
 <h2 id="consumerParameters"><a class="anchor" href="#consumerParameters"></a>7.1.1 Consumer Parameters</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2110,7 +2211,7 @@ In order for the consumer method to be invoked, all arguments must be satisfied.
 <h2 id="consumerQueue"><a class="anchor" href="#consumerQueue"></a>7.1.1.1 Queue</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerQueue.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2154,6 +2255,24 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product") // <b class="conum">(1)</b>
+    fun receive(data: ByteArray) {
+        messageLengths.add(data.size)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
@@ -2167,24 +2286,6 @@ class ProductListener {
     @Queue("product") // <b class="conum">(1)</b>
     void receive(byte[] data) {
         messageLengths &lt;&lt; data.length
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-import java.util.Collections
-
-@RabbitListener
-class ProductListener {
-
-    val messageLengths: MutableList&lt;Int&gt; = Collections.synchronizedList(ArrayList())
-
-    @Queue("product") // <b class="conum">(1)</b>
-    fun receive(data: ByteArray) {
-        messageLengths.add(data.size)
     }
 }</code></pre>
 </div>
@@ -2226,23 +2327,6 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-@RabbitListener
-class ProductListener {
-
-    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
-
-    @Queue(value = "product", connection = "product-cluster") // <b class="conum">(1)</b>
-    void receive(byte[] data) {
-        messageLengths &lt;&lt; new String(data)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
@@ -2256,6 +2340,23 @@ class ProductListener {
     fun receive(data: ByteArray) {
         messageLengths.add(String(data))
         println("Java received " + data.size + " bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+@RabbitListener
+class ProductListener {
+
+    List&lt;String&gt; messageLengths = Collections.synchronizedList([])
+
+    @Queue(value = "product", connection = "product-cluster") // <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -2307,25 +2408,6 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-import java.util.concurrent.CopyOnWriteArrayList
-
-@RabbitListener
-class ProductListener {
-
-    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
-
-    @Queue(value = "product", executor = "product-listener") // <b class="conum">(1)</b>
-    void receive(byte[] data) {
-        messageLengths &lt;&lt; new String(data)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
@@ -2339,6 +2421,25 @@ class ProductListener {
     fun receive(data: ByteArray) {
         messageLengths.add(String(data))
         println("Kotlin received " + data.size + " bytes from RabbitMQ")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
+
+@RabbitListener
+class ProductListener {
+
+    CopyOnWriteArrayList&lt;String&gt; messageLengths = []
+
+    @Queue(value = "product", executor = "product-listener") // <b class="conum">(1)</b>
+    void receive(byte[] data) {
+        messageLengths &lt;&lt; new String(data)
     }
 }</code></pre>
 </div>
@@ -2396,7 +2497,7 @@ The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@
 <h2 id="consumerProperties"><a class="anchor" href="#consumerProperties"></a>7.1.1.2 Properties</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerProperties.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2410,7 +2511,7 @@ The <a href="../api/io/micronaut/configuration/rabbitmq/annotation/Queue.html">@
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.core.annotation.Nullable;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.jspecify.annotations.Nullable;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitListener;
 import io.micronaut.rabbitmq.annotation.RabbitProperty;
@@ -2437,7 +2538,30 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.annotation.Nullable
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.annotation.RabbitProperty
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messageProperties: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    @RabbitProperty(name = "x-priority", value = "10", type = Integer::class) // <b class="conum">(1)</b>
+    fun receive(data: ByteArray,
+                @RabbitProperty("userId") user: String, // <b class="conum">(2)</b>
+                @RabbitProperty contentType: String?, // <b class="conum">(3)</b>
+                appId: String) { // <b class="conum">(4)</b>
+        messageProperties.add("$user|$contentType|$appId")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import org.jspecify.annotations.Nullable
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.annotation.RabbitProperty
@@ -2456,29 +2580,6 @@ class ProductListener {
                  @Nullable @RabbitProperty String contentType, // <b class="conum">(3)</b>
                  String appId) { // <b class="conum">(4)</b>
         messageProperties &lt;&lt; user + "|" + contentType + "|" + appId
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.rabbitmq.annotation.RabbitProperty
-import java.util.Collections
-
-@RabbitListener
-class ProductListener {
-
-    val messageProperties: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
-
-    @Queue("product")
-    @RabbitProperty(name = "x-priority", value = "10", type = Integer::class) // <b class="conum">(1)</b>
-    fun receive(data: ByteArray,
-                @RabbitProperty("userId") user: String, // <b class="conum">(2)</b>
-                @RabbitProperty contentType: String?, // <b class="conum">(3)</b>
-                appId: String) { // <b class="conum">(4)</b>
-        messageProperties.add("$user|$contentType|$appId")
     }
 }</code></pre>
 </div>
@@ -2519,7 +2620,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 <h2 id="consumerHeaders"><a class="anchor" href="#consumerHeaders"></a>7.1.1.3 Headers</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerHeaders.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2530,7 +2631,7 @@ If the annotation or argument name cannot be matched to a property name, an exce
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.core.annotation.Nullable;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.jspecify.annotations.Nullable;
 import io.micronaut.messaging.annotation.MessageHeader;
 import io.micronaut.rabbitmq.annotation.Queue;
 import io.micronaut.rabbitmq.annotation.RabbitHeaders;
@@ -2568,40 +2669,6 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.annotation.Nullable
-import io.micronaut.messaging.annotation.MessageHeader
-import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitHeaders
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-import java.util.concurrent.CopyOnWriteArrayList
-
-@RabbitListener
-class ProductListener {
-
-    CopyOnWriteArrayList&lt;String&gt; messageProperties = []
-
-    @Queue("product")
-    void receive(byte[] data,
-                 @MessageHeader("x-product-sealed") Boolean productSealed, // <b class="conum">(1)</b>
-                 @MessageHeader("x-product-count") Long count, // <b class="conum">(2)</b>
-                 @Nullable @MessageHeader String productSize) { // <b class="conum">(3)</b>
-        messageProperties &lt;&lt; productSealed.toString() + "|" + count + "|" + productSize
-    }
-
-    @Queue("product")
-    void receive(byte[] data,
-                 @RabbitHeaders Map&lt;String, Object&gt; headers) { // <b class="conum">(4)</b>
-        messageProperties &lt;&lt;
-                headers["x-product-sealed"].toString() + "|" +
-                headers["x-product-count"] + "|" +
-                headers["productSize"]?.toString()
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
@@ -2633,6 +2700,40 @@ class ProductListener {
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import org.jspecify.annotations.Nullable
+import io.micronaut.messaging.annotation.MessageHeader
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitHeaders
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArrayList
+
+@RabbitListener
+class ProductListener {
+
+    CopyOnWriteArrayList&lt;String&gt; messageProperties = []
+
+    @Queue("product")
+    void receive(byte[] data,
+                 @MessageHeader("x-product-sealed") Boolean productSealed, // <b class="conum">(1)</b>
+                 @MessageHeader("x-product-count") Long count, // <b class="conum">(2)</b>
+                 @Nullable @MessageHeader String productSize) { // <b class="conum">(3)</b>
+        messageProperties &lt;&lt; productSealed.toString() + "|" + count + "|" + productSize
+    }
+
+    @Queue("product")
+    void receive(byte[] data,
+                 @RabbitHeaders Map&lt;String, Object&gt; headers) { // <b class="conum">(4)</b>
+        messageProperties &lt;&lt;
+                headers["x-product-sealed"].toString() + "|" +
+                headers["x-product-count"] + "|" +
+                headers["productSize"]?.toString()
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -2657,7 +2758,7 @@ class ProductListener {
 <h2 id="consumerTypes"><a class="anchor" href="#consumerTypes"></a>7.1.1.4 RabbitMQ Types</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerTypes.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2699,6 +2800,30 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.BasicProperties
+import com.rabbitmq.client.Channel
+import com.rabbitmq.client.Envelope
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messages: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
+
+    @Queue("product")
+    fun receive(data: ByteArray,
+                envelope: Envelope, // <b class="conum">(1)</b>
+                basicProperties: BasicProperties, // <b class="conum">(2)</b>
+                channel: Channel) { // <b class="conum">(3)</b>
+        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.rabbitmq.client.BasicProperties
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Envelope
@@ -2722,30 +2847,6 @@ class ProductListener {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.BasicProperties
-import com.rabbitmq.client.Channel
-import com.rabbitmq.client.Envelope
-import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-import java.util.Collections
-
-@RabbitListener
-class ProductListener {
-
-    val messages: MutableList&lt;String&gt; = Collections.synchronizedList(ArrayList())
-
-    @Queue("product")
-    fun receive(data: ByteArray,
-                envelope: Envelope, // <b class="conum">(1)</b>
-                basicProperties: BasicProperties, // <b class="conum">(2)</b>
-                channel: Channel) { // <b class="conum">(3)</b>
-        messages.add("exchange: [${envelope.exchange}], routingKey: [${envelope.routingKey}], contentType: [${basicProperties.contentType}]")
-    }
-}</code></pre>
-</div>
-</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -2762,7 +2863,7 @@ class ProductListener {
 <h2 id="consumerBody"><a class="anchor" href="#consumerBody"></a>7.1.1.5 Message Body</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerBody.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2775,7 +2876,7 @@ class ProductListener {
 <h2 id="consumerCustom"><a class="anchor" href="#consumerCustom"></a>7.1.1.6 Custom Parameter Binding</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerParameters/consumerCustom.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2839,6 +2940,17 @@ public @interface DeliveryTag {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.annotation.Bindable
+
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Bindable // <b class="conum">(1)</b>
+annotation class DeliveryTag</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.bind.annotation.Bindable
 
 import java.lang.annotation.Documented
@@ -2853,17 +2965,6 @@ import java.lang.annotation.Target
 @Bindable // <b class="conum">(1)</b>
 @interface DeliveryTag {
 }</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.annotation.Bindable
-
-@MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.VALUE_PARAMETER)
-@Bindable // <b class="conum">(1)</b>
-annotation class DeliveryTag</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2906,6 +3007,30 @@ public class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinde
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.ArgumentBinder
+import io.micronaut.core.convert.ArgumentConversionContext
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder
+import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import jakarta.inject.Singleton
+
+@Singleton // <b class="conum">(1)</b>
+class DeliveryTagAnnotationBinder(private val conversionService: ConversionService)// <b class="conum">(3)</b>
+    : RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { // <b class="conum">(2)</b>
+
+    override fun getAnnotationType(): Class&lt;DeliveryTag&gt; {
+        return DeliveryTag::class.java
+    }
+
+    override fun bind(context: ArgumentConversionContext&lt;Any&gt;, source: RabbitConsumerState): ArgumentBinder.BindingResult&lt;Any&gt; {
+        val deliveryTag = source.envelope.deliveryTag // <b class="conum">(4)</b>
+        return ArgumentBinder.BindingResult { conversionService.convert(deliveryTag, context) } // <b class="conum">(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.convert.ArgumentConversionContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder
@@ -2930,30 +3055,6 @@ class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinder&lt;De
     BindingResult&lt;Object&gt; bind(ArgumentConversionContext&lt;Object&gt; context, RabbitConsumerState source) {
         long deliveryTag = source.envelope.deliveryTag // <b class="conum">(4)</b>
         return { -&gt; conversionService.convert(deliveryTag, context) } // <b class="conum">(5)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.ArgumentBinder
-import io.micronaut.core.convert.ArgumentConversionContext
-import io.micronaut.core.convert.ConversionService
-import io.micronaut.rabbitmq.bind.RabbitAnnotatedArgumentBinder
-import io.micronaut.rabbitmq.bind.RabbitConsumerState
-import jakarta.inject.Singleton
-
-@Singleton // <b class="conum">(1)</b>
-class DeliveryTagAnnotationBinder(private val conversionService: ConversionService)// <b class="conum">(3)</b>
-    : RabbitAnnotatedArgumentBinder&lt;DeliveryTag&gt; { // <b class="conum">(2)</b>
-
-    override fun getAnnotationType(): Class&lt;DeliveryTag&gt; {
-        return DeliveryTag::class.java
-    }
-
-    override fun bind(context: ArgumentConversionContext&lt;Any&gt;, source: RabbitConsumerState): ArgumentBinder.BindingResult&lt;Any&gt; {
-        val deliveryTag = source.envelope.deliveryTag // <b class="conum">(4)</b>
-        return ArgumentBinder.BindingResult { conversionService.convert(deliveryTag, context) } // <b class="conum">(5)</b>
     }
 }</code></pre>
 </div>
@@ -3008,6 +3109,24 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import java.util.Collections
+
+@RabbitListener
+class ProductListener {
+
+    val messages: MutableSet&lt;Long&gt; = Collections.synchronizedSet(HashSet())
+
+    @Queue("product")
+    fun receive(data: ByteArray, @DeliveryTag tag: Long) { // <b class="conum">(1)</b>
+        messages.add(tag)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
@@ -3025,24 +3144,6 @@ class ProductListener {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-import java.util.Collections
-
-@RabbitListener
-class ProductListener {
-
-    val messages: MutableSet&lt;Long&gt; = Collections.synchronizedSet(HashSet())
-
-    @Queue("product")
-    fun receive(data: ByteArray, @DeliveryTag tag: Long) { // <b class="conum">(1)</b>
-        messages.add(tag)
-    }
-}</code></pre>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_type_binding">Type Binding</h4>
@@ -3051,8 +3152,8 @@ class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ProductInfo {
 
@@ -3084,8 +3185,15 @@ public class ProductInfo {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.annotation.NonNull
-import io.micronaut.core.annotation.Nullable
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">class ProductInfo(val size: String?, // <b class="conum">(1)</b>
+                  val count: Long, // <b class="conum">(2)</b>
+                  val sealed: Boolean)// <b class="conum">(3)</b></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import org.jspecify.annotations.NonNull
+import org.jspecify.annotations.Nullable
 
 class ProductInfo {
 
@@ -3113,13 +3221,6 @@ class ProductInfo {
         productSealed
     }
 }</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">class ProductInfo(val size: String?, // <b class="conum">(1)</b>
-                  val count: Long, // <b class="conum">(2)</b>
-                  val sealed: Boolean)// <b class="conum">(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3205,6 +3306,53 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.ArgumentBinder.BindingResult
+import io.micronaut.core.convert.ArgumentConversionContext
+import io.micronaut.core.convert.ConversionError
+import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
+import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
+import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
+import jakarta.inject.Singleton
+import java.util.Optional
+
+@Singleton // <b class="conum">(1)</b>
+class ProductInfoTypeBinder constructor(private val conversionService: ConversionService) //<b class="conum">(3)</b>
+    : RabbitTypeArgumentBinder&lt;ProductInfo&gt; { // <b class="conum">(2)</b>
+
+    override fun argumentType(): Argument&lt;ProductInfo&gt; {
+        return Argument.of(ProductInfo::class.java)
+    }
+
+    override fun bind(context: ArgumentConversionContext&lt;ProductInfo&gt;, source: RabbitConsumerState): BindingResult&lt;ProductInfo&gt; {
+        val rawHeaders = source.properties.headers ?: return BindingResult { Optional.empty&lt;ProductInfo&gt;() } //<b class="conum">(4)</b>
+
+        val headers = RabbitHeaderConvertibleValues(rawHeaders, conversionService)
+
+        val size = headers.get("productSize", String::class.java).orElse(null)  //<b class="conum">(5)</b>
+        val count = headers.get("x-product-count", Long::class.java) //<b class="conum">(6)</b>
+        val sealed = headers.get("x-product-sealed", Boolean::class.java) // <b class="conum">(7)</b>
+
+        if (headers.conversionErrors.isEmpty() &amp;&amp; count.isPresent &amp;&amp; sealed.isPresent) {
+            return BindingResult&lt;ProductInfo&gt; { Optional.of(ProductInfo(size, count.get(), sealed.get())) } //<b class="conum">(8)</b>
+        } else {
+            return object : BindingResult&lt;ProductInfo&gt; {
+                override fun getValue(): Optional&lt;ProductInfo&gt; {
+                    return Optional.empty()
+                }
+
+                override fun getConversionErrors(): List&lt;ConversionError&gt; {
+                    return headers.conversionErrors //<b class="conum">(9)</b>
+                }
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.convert.ArgumentConversionContext
 import io.micronaut.core.convert.ConversionError
 import io.micronaut.core.convert.ConversionService
@@ -3261,53 +3409,6 @@ class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;ProductInfo&g
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.ArgumentBinder.BindingResult
-import io.micronaut.core.convert.ArgumentConversionContext
-import io.micronaut.core.convert.ConversionError
-import io.micronaut.core.convert.ConversionService
-import io.micronaut.core.type.Argument
-import io.micronaut.rabbitmq.bind.RabbitConsumerState
-import io.micronaut.rabbitmq.bind.RabbitHeaderConvertibleValues
-import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
-import jakarta.inject.Singleton
-import java.util.Optional
-
-@Singleton // <b class="conum">(1)</b>
-class ProductInfoTypeBinder constructor(private val conversionService: ConversionService) //<b class="conum">(3)</b>
-    : RabbitTypeArgumentBinder&lt;ProductInfo&gt; { // <b class="conum">(2)</b>
-
-    override fun argumentType(): Argument&lt;ProductInfo&gt; {
-        return Argument.of(ProductInfo::class.java)
-    }
-
-    override fun bind(context: ArgumentConversionContext&lt;ProductInfo&gt;, source: RabbitConsumerState): BindingResult&lt;ProductInfo&gt; {
-        val rawHeaders = source.properties.headers ?: return BindingResult { Optional.empty&lt;ProductInfo&gt;() } //<b class="conum">(4)</b>
-
-        val headers = RabbitHeaderConvertibleValues(rawHeaders, conversionService)
-
-        val size = headers.get("productSize", String::class.java).orElse(null)  //<b class="conum">(5)</b>
-        val count = headers.get("x-product-count", Long::class.java) //<b class="conum">(6)</b>
-        val sealed = headers.get("x-product-sealed", Boolean::class.java) // <b class="conum">(7)</b>
-
-        if (headers.conversionErrors.isEmpty() &amp;&amp; count.isPresent &amp;&amp; sealed.isPresent) {
-            return BindingResult&lt;ProductInfo&gt; { Optional.of(ProductInfo(size, count.get(), sealed.get())) } //<b class="conum">(8)</b>
-        } else {
-            return object : BindingResult&lt;ProductInfo&gt; {
-                override fun getValue(): Optional&lt;ProductInfo&gt; {
-                    return Optional.empty()
-                }
-
-                override fun getConversionErrors(): List&lt;ConversionError&gt; {
-                    return headers.conversionErrors //<b class="conum">(9)</b>
-                }
-            }
-        }
-    }
-}</code></pre>
-</div>
-</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -3354,7 +3455,7 @@ class ProductInfoTypeBinder constructor(private val conversionService: Conversio
 <h2 id="consumerAcknowledge"><a class="anchor" href="#consumerAcknowledge"></a>7.1.2 Acknowledging Messages</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerMethods/consumerAcknowledge.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3405,6 +3506,30 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
+import java.util.concurrent.atomic.AtomicInteger
+
+@RabbitListener
+class ProductListener {
+
+    val messageCount = AtomicInteger()
+
+    @Queue(value = "product") // <b class="conum">(1)</b>
+    fun receive(data: ByteArray, acknowledgement: RabbitAcknowledgement) { // <b class="conum">(2)</b>
+        val count = messageCount.getAndUpdate { intValue -&gt; intValue + 1 }
+        if (count == 0) {
+            acknowledgement.nack(false, true) // <b class="conum">(3)</b>
+        } else if (count &gt; 3) {
+            acknowledgement.ack(true) // <b class="conum">(4)</b>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
@@ -3421,30 +3546,6 @@ class ProductListener {
         int count = messageCount.getAndUpdate({ intValue -&gt; ++intValue })
         println new String(data)
         if (count  == 0) {
-            acknowledgement.nack(false, true) // <b class="conum">(3)</b>
-        } else if (count &gt; 3) {
-            acknowledgement.ack(true) // <b class="conum">(4)</b>
-        }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
-import java.util.concurrent.atomic.AtomicInteger
-
-@RabbitListener
-class ProductListener {
-
-    val messageCount = AtomicInteger()
-
-    @Queue(value = "product") // <b class="conum">(1)</b>
-    fun receive(data: ByteArray, acknowledgement: RabbitAcknowledgement) { // <b class="conum">(2)</b>
-        val count = messageCount.getAndUpdate { intValue -&gt; intValue + 1 }
-        if (count == 0) {
             acknowledgement.nack(false, true) // <b class="conum">(3)</b>
         } else if (count &gt; 3) {
             acknowledgement.ack(true) // <b class="conum">(4)</b>
@@ -3478,7 +3579,7 @@ class ProductListener {
 <h2 id="consumerExceptions"><a class="anchor" href="#consumerExceptions"></a>7.2 Handling Consumer Exceptions</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerExceptions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3513,7 +3614,7 @@ class ProductListener {
 <h2 id="consumerExecutor"><a class="anchor" href="#consumerExecutor"></a>7.3 Consumer Execution</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerExecutor.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3568,6 +3669,26 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.annotation.Requires
+import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+import java.util.concurrent.CopyOnWriteArraySet
+
+@RabbitListener
+class ProductListener {
+    var threads = CopyOnWriteArraySet&lt;String&gt;()
+
+    @Queue(value = "product", numberOfConsumers = "5") // <b class="conum">(1)</b>
+    fun receive(data: ByteArray?) {
+        threads.add(Thread.currentThread().name) // <b class="conum">(2)</b>
+        Thread.sleep(500)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
@@ -3583,26 +3704,6 @@ class ProductListener {
     void receive(byte[] data) {
         threads &lt;&lt; Thread.currentThread().name // <b class="conum">(2)</b>
         sleep 500
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.annotation.Requires
-import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-import java.util.concurrent.CopyOnWriteArraySet
-
-@RabbitListener
-class ProductListener {
-    var threads = CopyOnWriteArraySet&lt;String&gt;()
-
-    @Queue(value = "product", numberOfConsumers = "5") // <b class="conum">(1)</b>
-    fun receive(data: ByteArray?) {
-        threads.add(Thread.currentThread().name) // <b class="conum">(2)</b>
-        Thread.sleep(500)
     }
 }</code></pre>
 </div>
@@ -3636,7 +3737,7 @@ As with any other case of concurrent execution, operations on data in the instan
 <h2 id="consumerEvents"><a class="anchor" href="#consumerEvents"></a>7.4 Consumer Events</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/consumer/consumerEvents.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/consumer/consumerEvents.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3707,6 +3808,23 @@ public class MyStartingEventListener implements ApplicationEventListener&lt;Rabb
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarting
+import jakarta.inject.Singleton
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartingEventListener : ApplicationEventListener&lt;RabbitConsumerStarting&gt; {
+  private val LOG = LoggerFactory.getLogger(javaClass)
+  override fun onApplicationEvent(event: RabbitConsumerStarting) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
+      event.source, event.method, event.queue)
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.event.ApplicationEventListener
 import io.micronaut.rabbitmq.event.RabbitConsumerStarting
 import jakarta.inject.Singleton
@@ -3720,23 +3838,6 @@ class MyStartingEventListener implements ApplicationEventListener&lt;RabbitConsu
   void onApplicationEvent(RabbitConsumerStarting event) {
     LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
       event.source, event.method, event.queue);
-  }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
-import io.micronaut.rabbitmq.event.RabbitConsumerStarting
-import jakarta.inject.Singleton
-import org.slf4j.LoggerFactory
-
-@Singleton
-class MyStartingEventListener : ApplicationEventListener&lt;RabbitConsumerStarting&gt; {
-  private val LOG = LoggerFactory.getLogger(javaClass)
-  override fun onApplicationEvent(event: RabbitConsumerStarting) {
-    LOG.info("RabbitMQ consumer: {} (method: {}) is subscribing to: {}",
-      event.source, event.method, event.queue)
   }
 }</code></pre>
 </div>
@@ -3766,6 +3867,23 @@ public class MyStartedEventListener implements ApplicationEventListener&lt;Rabbi
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
+import io.micronaut.rabbitmq.event.RabbitConsumerStarted
+import jakarta.inject.Singleton
+import org.slf4j.LoggerFactory
+
+@Singleton
+class MyStartedEventListener : ApplicationEventListener&lt;RabbitConsumerStarted&gt; {
+  private val LOG = LoggerFactory.getLogger(javaClass)
+  override fun onApplicationEvent(event: RabbitConsumerStarted) {
+    LOG.info("RabbitMQ consumer: {} (method: {}) just subscribed to: {}",
+      event.source, event.method, event.queue)
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.context.event.ApplicationEventListener
 import io.micronaut.rabbitmq.event.RabbitConsumerStarted
 import jakarta.inject.Singleton
@@ -3783,28 +3901,11 @@ class MyStartedEventListener implements ApplicationEventListener&lt;RabbitConsum
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
-import io.micronaut.rabbitmq.event.RabbitConsumerStarted
-import jakarta.inject.Singleton
-import org.slf4j.LoggerFactory
-
-@Singleton
-class MyStartedEventListener : ApplicationEventListener&lt;RabbitConsumerStarted&gt; {
-  private val LOG = LoggerFactory.getLogger(javaClass)
-  override fun onApplicationEvent(event: RabbitConsumerStarted) {
-    LOG.info("RabbitMQ consumer: {} (method: {}) just subscribed to: {}",
-      event.source, event.method, event.queue)
-  }
-}</code></pre>
-</div>
-</div>
 
 <h1 id="rpc"><a class="anchor" href="#rpc"></a>8 Directly Reply-To (RPC)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/rpc.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/rpc.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3820,7 +3921,7 @@ class MyStartedEventListener : ApplicationEventListener&lt;RabbitConsumerStarted
 <h2 id="rpcClientSide"><a class="anchor" href="#rpcClientSide"></a>8.1 Client Side</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/rpc/rpcClientSide.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/rpc/rpcClientSide.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3850,25 +3951,6 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
-import io.micronaut.rabbitmq.annotation.RabbitClient
-import io.micronaut.rabbitmq.annotation.RabbitProperty
-import org.reactivestreams.Publisher
-
-@RabbitClient
-@RabbitProperty(name = "replyTo", value = "amq.rabbitmq.reply-to") // <b class="conum">(1)</b>
-interface ProductClient {
-
-    @Binding("product")
-    String send(String data) // <b class="conum">(2)</b>
-
-    @Binding("product")
-    Publisher&lt;String&gt; sendReactive(String data) // <b class="conum">(3)</b>
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitProperty
@@ -3883,6 +3965,25 @@ interface ProductClient {
 
     @Binding("product")
     fun sendReactive(data: String): Publisher&lt;String&gt;  // <b class="conum">(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Binding
+import io.micronaut.rabbitmq.annotation.RabbitClient
+import io.micronaut.rabbitmq.annotation.RabbitProperty
+import org.reactivestreams.Publisher
+
+@RabbitClient
+@RabbitProperty(name = "replyTo", value = "amq.rabbitmq.reply-to") // <b class="conum">(1)</b>
+interface ProductClient {
+
+    @Binding("product")
+    String send(String data) // <b class="conum">(2)</b>
+
+    @Binding("product")
+    Publisher&lt;String&gt; sendReactive(String data) // <b class="conum">(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -3918,7 +4019,7 @@ In order for the publisher to assume RPC should be used instead of just completi
 <h2 id="rpcServerSide"><a class="anchor" href="#rpcServerSide"></a>8.2 Server Side</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/rpc/rpcServerSide.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/rpc/rpcServerSide.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3944,21 +4045,6 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
-import io.micronaut.rabbitmq.annotation.RabbitListener
-
-@RabbitListener
-class ProductListener {
-
-    @Queue("product")
-    String toUpperCase(String data) { // <b class="conum">(1)</b>
-        data.toUpperCase() // <b class="conum">(2)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 
@@ -3968,6 +4054,21 @@ class ProductListener {
     @Queue("product")
     fun toUpperCase(data: String): String { // <b class="conum">(1)</b>
         return data.uppercase() // <b class="conum">(2)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.rabbitmq.annotation.Queue
+import io.micronaut.rabbitmq.annotation.RabbitListener
+
+@RabbitListener
+class ProductListener {
+
+    @Queue("product")
+    String toUpperCase(String data) { // <b class="conum">(1)</b>
+        data.toUpperCase() // <b class="conum">(2)</b>
     }
 }</code></pre>
 </div>
@@ -4016,7 +4117,7 @@ RPC consumer methods must never return a reactive type. Because the resulting pu
 <h2 id="rpcConfiguration"><a class="anchor" href="#rpcConfiguration"></a>8.3 Configuration</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/rpc/rpcConfiguration.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/rpc/rpcConfiguration.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4041,7 +4142,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq
 <h1 id="initialization"><a class="anchor" href="#initialization"></a>9 Creating Queues/Exchanges</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/initialization.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/initialization.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4093,36 +4194,6 @@ public class ChannelPoolListener extends ChannelInitializer { // <b class="conum
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.rabbitmq.client.Channel
-import io.micronaut.rabbitmq.connect.ChannelInitializer
-import jakarta.inject.Singleton
-
-@Singleton // <b class="conum">(1)</b>
-class ChannelPoolListener extends ChannelInitializer { // <b class="conum">(2)</b>
-
-    @Override
-    void initialize(Channel channel, String name) throws IOException { // <b class="conum">(3)</b>
-        channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) // <b class="conum">(4)</b>
-
-        //docs/exchange
-        channel.exchangeDeclare("animals", "headers", false)
-        channel.queueDeclare("snakes", false, false, false, null)
-        channel.queueDeclare("cats", false, false, false, null)
-        Map&lt;String, Object&gt; catArgs = [:]
-        catArgs.put("x-match", "all")
-        catArgs.put("animalType", "Cat")
-        channel.queueBind("cats", "animals", "", catArgs)
-
-        Map&lt;String, Object&gt; snakeArgs = [:]
-        snakeArgs.put("x-match", "all")
-        snakeArgs.put("animalType", "Snake")
-        channel.queueBind("snakes", "animals", "", snakeArgs)
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
 import jakarta.inject.Singleton
@@ -4153,6 +4224,36 @@ class ChannelPoolListener : ChannelInitializer() { // <b class="conum">(2)</b>
 }</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.rabbitmq.client.Channel
+import io.micronaut.rabbitmq.connect.ChannelInitializer
+import jakarta.inject.Singleton
+
+@Singleton // <b class="conum">(1)</b>
+class ChannelPoolListener extends ChannelInitializer { // <b class="conum">(2)</b>
+
+    @Override
+    void initialize(Channel channel, String name) throws IOException { // <b class="conum">(3)</b>
+        channel.queueDeclare("product", false, false, false, ["x-max-priority": 100]) // <b class="conum">(4)</b>
+
+        //docs/exchange
+        channel.exchangeDeclare("animals", "headers", false)
+        channel.queueDeclare("snakes", false, false, false, null)
+        channel.queueDeclare("cats", false, false, false, null)
+        Map&lt;String, Object&gt; catArgs = [:]
+        catArgs.put("x-match", "all")
+        catArgs.put("animalType", "Cat")
+        channel.queueBind("cats", "animals", "", catArgs)
+
+        Map&lt;String, Object&gt; snakeArgs = [:]
+        snakeArgs.put("x-match", "all")
+        snakeArgs.put("animalType", "Snake")
+        channel.queueBind("snakes", "animals", "", snakeArgs)
+    }
+}</code></pre>
+</div>
+</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -4177,7 +4278,7 @@ class ChannelPoolListener : ChannelInitializer() { // <b class="conum">(2)</b>
 <h1 id="serdes"><a class="anchor" href="#serdes"></a>10 Message Serialization/Deserialization (SerDes)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/serdes.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/serdes.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4196,7 +4297,7 @@ class ChannelPoolListener : ChannelInitializer() { // <b class="conum">(2)</b>
 <h2 id="custom"><a class="anchor" href="#custom"></a>10.1 Custom SerDes</h2>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/serdes/custom.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/serdes/custom.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4268,6 +4369,53 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.convert.ConversionService
+import io.micronaut.core.type.Argument
+import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.intercept.MutableBasicProperties
+import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
+import jakarta.inject.Singleton
+import java.nio.charset.Charset
+
+@Singleton // <b class="conum">(1)</b>
+class ProductInfoSerDes(private val conversionService: ConversionService)// <b class="conum">(3)</b>
+    : RabbitMessageSerDes&lt;ProductInfo&gt; { // <b class="conum">(2)</b>
+
+    override fun deserialize(consumerState: RabbitConsumerState, argument: Argument&lt;ProductInfo&gt;): ProductInfo? { // <b class="conum">(4)</b>
+        val body = String(consumerState.body, CHARSET)
+        val parts = body.split("\\|".toRegex())
+        if (parts.size == 3) {
+            var size: String? = parts[0]
+            if (size == "null") {
+                size = null
+            }
+
+            val count = conversionService.convert(parts[1], Long::class.java)
+            val sealed = conversionService.convert(parts[2], Boolean::class.java)
+
+            if (count.isPresent &amp;&amp; sealed.isPresent) {
+                return ProductInfo(size, count.get(), sealed.get())
+            }
+        }
+        return null
+    }
+
+    override fun serialize(data: ProductInfo?, properties: MutableBasicProperties): ByteArray { // <b class="conum">(5)</b>
+        return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
+    }
+
+    override fun supports(argument: Argument&lt;ProductInfo&gt;): Boolean { // <b class="conum">(6)</b>
+        return argument.type.isAssignableFrom(ProductInfo::class.java)
+    }
+
+    companion object {
+        private val CHARSET = Charset.forName("UTF-8")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
@@ -4322,53 +4470,6 @@ class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt; { // <
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.convert.ConversionService
-import io.micronaut.core.type.Argument
-import io.micronaut.rabbitmq.bind.RabbitConsumerState
-import io.micronaut.rabbitmq.intercept.MutableBasicProperties
-import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
-import jakarta.inject.Singleton
-import java.nio.charset.Charset
-
-@Singleton // <b class="conum">(1)</b>
-class ProductInfoSerDes(private val conversionService: ConversionService)// <b class="conum">(3)</b>
-    : RabbitMessageSerDes&lt;ProductInfo&gt; { // <b class="conum">(2)</b>
-
-    override fun deserialize(consumerState: RabbitConsumerState, argument: Argument&lt;ProductInfo&gt;): ProductInfo? { // <b class="conum">(4)</b>
-        val body = String(consumerState.body, CHARSET)
-        val parts = body.split("\\|".toRegex())
-        if (parts.size == 3) {
-            var size: String? = parts[0]
-            if (size == "null") {
-                size = null
-            }
-
-            val count = conversionService.convert(parts[1], Long::class.java)
-            val sealed = conversionService.convert(parts[2], Boolean::class.java)
-
-            if (count.isPresent &amp;&amp; sealed.isPresent) {
-                return ProductInfo(size, count.get(), sealed.get())
-            }
-        }
-        return null
-    }
-
-    override fun serialize(data: ProductInfo?, properties: MutableBasicProperties): ByteArray { // <b class="conum">(5)</b>
-        return (data?.size + "|" + data?.count + "|" + data?.sealed).toByteArray(CHARSET)
-    }
-
-    override fun supports(argument: Argument&lt;ProductInfo&gt;): Boolean { // <b class="conum">(6)</b>
-        return argument.type.isAssignableFrom(ProductInfo::class.java)
-    }
-
-    companion object {
-        private val CHARSET = Charset.forName("UTF-8")
-    }
-}</code></pre>
-</div>
-</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -4413,7 +4514,7 @@ Because the <code>getOrder</code> method was not overridden, the default order o
 <h1 id="health"><a class="anchor" href="#health"></a>11 RabbitMQ Health Indicator</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/health.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/health.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4467,7 +4568,7 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 <h1 id="metrics"><a class="anchor" href="#metrics"></a>12 RabbitMQ Metrics</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/metrics.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/metrics.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4494,7 +4595,7 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 <h1 id="rabbitmqGuides"><a class="anchor" href="#rabbitmqGuides"></a>13 Guides</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/rabbitmqGuides.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/rabbitmqGuides.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4507,10 +4608,49 @@ To disable the RabbitMQ health indicator entirely, add <code>endpoints.health.ra
 <p><a href="https://guides.micronaut.io/latest/tag-rabbitmq.html" class="bare">https://guides.micronaut.io/latest/tag-rabbitmq.html</a></p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>14 Repository</h1>
+<h1 id="breaks"><a class="anchor" href="#breaks"></a>14 Breaking Changes</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/4.8.x/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/breaks.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This section documents breaking changes between Micronaut RabbitMq versions:</p>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_rabbitmq_5_0_0">Micronaut RabbitMq 5.0.0</h3>
+<div class="sect3">
+<h4 id="_deprecations">Deprecations</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>The method <code>io.micronaut.rabbitmq.bind.RabbitMessageCloseable.withAcknowledge(Boolean)</code> deprecated previously has been removed.
+<code>withAcknowledgmentAction(AcknowledgmentAction)</code> is used instead.</p>
+</li>
+<li>
+<p>The Factory method <code>io.micronaut.rabbitmq.connect.RabbitConnectionFactory.connection(RabbitConnectionFactoryConfig, BeanContext)</code> deprecated previously has been removed.
+<code>connection(RabbitConnectionFactoryConfig, TemporarilyDownConnectionManager, BeanContext)</code> is used instead.</p>
+</li>
+<li>
+<p>The Singleton constructor <code>io.micronaut.rabbitmq.intercept.RabbitMQConsumerAdvice(BeanContext, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List&lt;ChannelPool&gt;</code> deprecated previously has been removed.
+<code>RabbitMQConsumerAdvice(BeanContext, ApplicationEventPublisher, ApplicationEventPublisher, RabbitBinderRegistry, RabbitListenerExceptionHandler, RabbitMessageSerDesRegistry, ConversionService, List)</code> is used instead.</p>
+</li>
+<li>
+<p>The constructor <code>io.micronaut.rabbitmq.reactive.RabbitPublishState(String, String, AMQP.BasicProperties, byte[])</code> deprecated previously has been removed.
+Use <code>RabbitPublishState(String, String, boolean, AMQP.BasicProperties, byte[])</code> instead.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>15 Repository</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-rabbitmq/edit/5.0.x/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
