@@ -79,6 +79,7 @@ class TemporarilyDownAutorecoveringConnection extends AutorecoveringConnection i
         );
     }
 
+    @SuppressWarnings({"deprecation", "java:S1874"})
     private static FrameHandlerFactory getFrameHandlerFactory(RabbitConnectionFactoryConfig factory, ExecutorService executor) {
         final int connectionTimeout = factory.getConnectionTimeout();
         final NioParams nioParams = factory.getNioParams();
