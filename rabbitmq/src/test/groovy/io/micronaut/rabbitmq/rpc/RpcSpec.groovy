@@ -14,4 +14,22 @@ class RpcSpec extends AbstractRabbitMQTest {
         Mono.from(producer.rpcCall("hello")).block() == "HELLO"
         producer.rpcBlocking("world") == "WORLD"
     }
+
+    void "test RPC call with CompletableFuture return type"() {
+        startContext()
+
+        RpcPublisher producer = applicationContext.getBean(RpcPublisher)
+
+        expect:
+        producer.rpcFuture("hello").get() == "HELLO"
+    }
+
+    void "test RPC call with CompletionStage return type"() {
+        startContext()
+
+        RpcPublisher producer = applicationContext.getBean(RpcPublisher)
+
+        expect:
+        producer.rpcStage("world").toCompletableFuture().get() == "WORLD"
+    }
 }
