@@ -9,6 +9,33 @@ import spock.lang.Specification
 
 class ChannelInitializerSpec extends Specification {
 
+    void "channel pool initializer is an interface"() {
+        expect:
+        ChannelPoolInitializer.interface
+    }
+
+    void "channel pool initializer bean initializes a channel"() {
+        given:
+        Channel channel = Mock()
+        ChannelPool pool = Mock() {
+            getName() >> "default"
+            getChannel() >> channel
+        }
+        BeanCreatedEvent<ChannelPool> event = Stub() {
+            getBean() >> pool
+        }
+        ChannelPoolInitializer initializer = Mock()
+        ChannelPoolInitializers listener = new ChannelPoolInitializers([initializer])
+
+        when:
+        ChannelPool created = listener.onCreated(event)
+
+        then:
+        created.is(pool)
+        1 * initializer.initialize(channel, "default")
+        1 * pool.returnChannel(channel)
+    }
+
     void "resource locked initializer failure is not swallowed"() {
         given:
         Channel channel = Mock()
