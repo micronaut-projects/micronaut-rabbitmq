@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -159,12 +160,14 @@ public class ReactorReactivePublisher implements ReactivePublisher {
      * @see Channel#basicPublish(String, String, AMQP.BasicProperties, byte[])
      */
     protected Mono<RabbitConsumerState> publishRpcInternal(Channel channel, RabbitPublishState publishState) {
+        AtomicReference<Disposable> replyConsumer = new AtomicReference<>();
         return returnChannelOnTerminate(channel, Mono.<RabbitConsumerState>create(subscriber -> {
             Disposable listener = null;
             try {
                 String correlationId = UUID.randomUUID().toString();
                 AMQP.BasicProperties properties = publishState.getProperties().builder().correlationId(correlationId).build();
                 listener = createConsumer(channel, publishState, correlationId, subscriber);
+                replyConsumer.set(listener);
 
                 channel.basicPublish(
                         publishState.getExchange(),
@@ -179,7 +182,18 @@ public class ReactorReactivePublisher implements ReactivePublisher {
                 }
                 subscriber.error(new MessagingClientException("Failed to publish the message", e));
             }
-        }));
+        })).doOnCancel(() -> {
+            // RabbitMQ permits only one direct reply-to consumer per channel, so the
+            // consumer must be cancelled before returnChannelOnTerminate hands the
+            // channel back to the pool. This hook is registered outside that wrapper
+            // so that it runs first. Disposal is idempotent, leaving the paths that
+            // already dispose (delivery, broker cancel/shutdown, publish failure)
+            // unaffected.
+            Disposable listener = replyConsumer.get();
+            if (listener != null) {
+                listener.dispose();
+            }
+        });
     }
 
     /**
