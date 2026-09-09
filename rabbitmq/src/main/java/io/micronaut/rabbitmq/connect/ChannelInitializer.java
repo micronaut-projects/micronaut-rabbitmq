@@ -32,7 +32,7 @@ import java.io.IOException;
  * @author James Kleeh
  * @since 1.1.0
  */
-public abstract class ChannelInitializer implements BeanCreatedEventListener<ChannelPool> {
+public abstract class ChannelInitializer implements BeanCreatedEventListener<ChannelPool>, ChannelPoolInitializer {
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInitializer.class);
 
     /**
@@ -42,17 +42,22 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
      * @param name The name of the channel pool, like configured under `rabbitmq.servers`
      * @throws IOException If any error occurs
      */
+    @Override
     public void initialize(Channel channel, String name) throws IOException {
         //no-op
     }
 
     @Override
     public ChannelPool onCreated(BeanCreatedEvent<ChannelPool> event) {
+        return initialize(event, this);
+    }
+
+    static ChannelPool initialize(BeanCreatedEvent<ChannelPool> event, ChannelPoolInitializer initializer) {
         ChannelPool pool = event.getBean();
         Channel channel = null;
         try {
             channel = pool.getChannel();
-            initialize(channel, pool.getName());
+            initializer.initialize(channel, pool.getName());
         } catch (Throwable e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error("Initialization of the channel has failed due to error", e);
@@ -63,7 +68,7 @@ public abstract class ChannelInitializer implements BeanCreatedEventListener<Cha
                 temp.getConnection().addEventuallyUpListener(c -> {
                     Channel ch = pool.getChannel();
                     try {
-                        initialize(ch, pool.getName());
+                        initializer.initialize(ch, pool.getName());
                     } finally {
                         pool.returnChannel(ch);
                     }
