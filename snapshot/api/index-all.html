@@ -160,6 +160,10 @@ threads but not at the same time.</div>
 </dd>
 <dt><a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html#%3Cinit%3E()" class="member-name-link">ChannelPoolConfiguration()</a> - Constructor for class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/RabbitConnectionFactoryConfig.ChannelPoolConfiguration.html" title="class in io.micronaut.rabbitmq.connect">RabbitConnectionFactoryConfig.ChannelPoolConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/rabbitmq/connect/ChannelPoolInitializer.html" class="type-name-link" title="interface in io.micronaut.rabbitmq.connect">ChannelPoolInitializer</a> - Interface in <a href="io/micronaut/rabbitmq/connect/package-summary.html">io.micronaut.rabbitmq.connect</a></dt>
+<dd>
+<div class="block">Initializes a channel before consumers or producers are created.</div>
+</dd>
 <dt><a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnection.html#check()" class="member-name-link">check()</a> - Method in interface io.micronaut.rabbitmq.connect.recovery.<a href="io/micronaut/rabbitmq/connect/recovery/TemporarilyDownConnection.html" title="interface in io.micronaut.rabbitmq.connect.recovery">TemporarilyDownConnection</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/rabbitmq/bind/RabbitMessageCloseable.html#close()" class="member-name-link">close()</a> - Method in class io.micronaut.rabbitmq.bind.<a href="io/micronaut/rabbitmq/bind/RabbitMessageCloseable.html" title="class in io.micronaut.rabbitmq.bind">RabbitMessageCloseable</a></dt>
@@ -463,6 +467,10 @@ of the connection for this pool.</div>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
 <dt><a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html#initialize(com.rabbitmq.client.Channel,java.lang.String)" class="member-name-link">initialize(Channel, String)</a> - Method in class io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelInitializer.html" title="class in io.micronaut.rabbitmq.connect">ChannelInitializer</a></dt>
+<dd>
+<div class="block">Do any work with a channel.</div>
+</dd>
+<dt><a href="io/micronaut/rabbitmq/connect/ChannelPoolInitializer.html#initialize(com.rabbitmq.client.Channel,java.lang.String)" class="member-name-link">initialize(Channel, String)</a> - Method in interface io.micronaut.rabbitmq.connect.<a href="io/micronaut/rabbitmq/connect/ChannelPoolInitializer.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPoolInitializer</a></dt>
 <dd>
 <div class="block">Do any work with a channel.</div>
 </dd>

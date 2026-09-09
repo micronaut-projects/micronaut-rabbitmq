@@ -79,13 +79,13 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code>io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/EventListener.html" title="class or interface in java.util" class="external-link">EventListener</a></code></dd>
+<dd><code>io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;, <a href="ChannelPoolInitializer.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPoolInitializer</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/EventListener.html" title="class or interface in java.util" class="external-link">EventListener</a></code></dd>
 </dl>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">ChannelInitializer</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;</span></div>
+implements io.micronaut.context.event.BeanCreatedEventListener&lt;<a href="ChannelPool.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPool</a>&gt;, <a href="ChannelPoolInitializer.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPoolInitializer</a></span></div>
 <div class="block">A base class to extend from to do initialization work with
 a channel before any consumers or producers are created.</div>
 <dl class="notes">
@@ -173,6 +173,8 @@ a channel before any consumers or producers are created.</div>
                 throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <div class="block">Do any work with a channel.</div>
 <dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="ChannelPoolInitializer.html#initialize(com.rabbitmq.client.Channel,java.lang.String)">initialize</a></code>&nbsp;in interface&nbsp;<code><a href="ChannelPoolInitializer.html" title="interface in io.micronaut.rabbitmq.connect">ChannelPoolInitializer</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>channel</code> - The channel to use</dd>
 <dd><code>name</code> - The name of the channel pool, like configured under `rabbitmq.servers`</dd>
