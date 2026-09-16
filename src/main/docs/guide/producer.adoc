@@ -12,4 +12,9 @@ snippet::io.micronaut.rabbitmq.docs.exchange.AnimalClient[tags="imports,clazz", 
 <2> The header value is used to route the message to a queue.
 <3> A helper method was created to provide the header value automatically.
 
+[.lang-python]
+****
+Python has no method overloading, so the helper method of the Python example is named `send_animal`. Methods with a body are not implemented by `@RabbitClient` and are invoked as declared.
+****
+
 IMPORTANT: Exchanges must already exist before you can publish messages to them.

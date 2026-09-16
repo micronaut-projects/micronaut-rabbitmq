@@ -1,6 +1,7 @@
 package io.micronaut.rabbitmq.docs.consumer.concurrent;
 
 import io.micronaut.context.annotation.Requires;
+// tag::imports[]
 import io.micronaut.rabbitmq.annotation.Binding;
 import io.micronaut.rabbitmq.annotation.RabbitClient;
 // end::imports[]

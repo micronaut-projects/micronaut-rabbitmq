@@ -1,4 +1,4 @@
-package io.micronaut.rabbitmq;
+package io.micronaut.rabbitmq.docs;
 
 // tag::clazz[]
 import com.rabbitmq.client.Channel;

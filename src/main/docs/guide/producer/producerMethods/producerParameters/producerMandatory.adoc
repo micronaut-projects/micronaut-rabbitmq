@@ -16,4 +16,9 @@ snippet::io.micronaut.rabbitmq.docs.parameters.MyReturnListener[tags="imports,cl
 <1> Add the return listener to the channel
 <2> Implement custom logic here
 
+[.lang-python]
+****
+A Python class cannot extend the `ChannelInitializer` Java class, so the Python example implements the api:configuration.rabbitmq.connect.ChannelPoolInitializer[] interface instead.
+****
+
 TIP: You can find more details about this mechanism https://www.rabbitmq.com/publishers.html#unroutable[here].
