@@ -8,5 +8,4 @@ from .Animal import Animal
 @Serdeable
 @dataclass
 class Cat(Animal):
-    name: str
     lives: int

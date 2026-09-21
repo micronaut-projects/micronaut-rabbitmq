@@ -10,6 +10,29 @@ from org.reactivestreams import Subscriber, Subscription
 from .ProductClient import ProductClient
 
 
+# TODO(python): a class defined inside a method cannot extend an imported Java interface with core 5.2.3
+# ("TypeError: invalid instantiation of foreign object" when it is instantiated; it worked with the generated
+# import modules of 5.2.2), so the subscriber of the Java example's anonymous class is a module-level class.
+class AcknowledgementSubscriber(Subscriber):
+
+    def __init__(self, counts: dict[str, int]) -> None:
+        self.counts = counts
+
+    def onSubscribe(self, subscription: Subscription) -> None:
+        pass
+
+    def onNext(self, item: object) -> None:
+        raise RuntimeError("Should never be called")
+
+    def onError(self, throwable: Exception) -> None:
+        # if an error occurs
+        self.counts["error"] += 1
+
+    def onComplete(self) -> None:
+        # if the publish was acknowledged
+        self.counts["success"] += 1
+
+
 @MicronautTest(environments=["rabbitmq"])
 @Property(name="spec.name", value="PublisherAcknowledgeSpec")
 class PublisherAcknowledgeSpec:
@@ -23,23 +46,7 @@ class PublisherAcknowledgeSpec:
         publisher = self.product_client.send_publisher(b"publisher body")
         future = self.product_client.send_future(b"future body")
 
-        class AcknowledgementSubscriber(Subscriber):
-
-            def onSubscribe(self, subscription: Subscription) -> None:
-                pass
-
-            def onNext(self, item: object) -> None:
-                raise RuntimeError("Should never be called")
-
-            def onError(self, throwable: Exception) -> None:
-                # if an error occurs
-                counts["error"] += 1
-
-            def onComplete(self) -> None:
-                # if the publish was acknowledged
-                counts["success"] += 1
-
-        publisher.subscribe(AcknowledgementSubscriber())
+        publisher.subscribe(AcknowledgementSubscriber(counts))
 
         def completed(value, throwable) -> None:
             if throwable is None:

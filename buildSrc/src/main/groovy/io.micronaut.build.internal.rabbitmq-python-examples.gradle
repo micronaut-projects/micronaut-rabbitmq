@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-    // The Java test helpers of the Python examples (src/test/java: the RabbitMQ test container
-    // context configurer and the PythonRuntimeInitializer) are processed by javac
+    // The Java test helper of the Python examples (src/test/java: the RabbitMQ test container
+    // context configurer) is processed by javac
     testAnnotationProcessor platform(mn.micronaut.core.bom)
     testAnnotationProcessor mn.micronaut.inject.java
     // Annotation processors of the Python sources MUST be testImplementation (not testAnnotationProcessor):

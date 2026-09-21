@@ -7,8 +7,6 @@ from micronaut.messaging.annotation import MessageHeader
 from micronaut.rabbitmq.annotation import RabbitClient
 
 from .Animal import Animal
-from .Cat import Cat
-from .Snake import Snake
 # end::imports[]
 
 
@@ -18,7 +16,7 @@ from .Snake import Snake
 class AnimalClient(ABC):
 
     @abstractmethod
-    def send(self, animal_type: Annotated[str, MessageHeader("animalType")], animal: Cat | Snake) -> None:  # <2>
+    def send(self, animal_type: Annotated[str, MessageHeader("animalType")], animal: Animal) -> None:  # <2>
         ...
 
     def send_animal(self, animal: Animal) -> None:  # <3>

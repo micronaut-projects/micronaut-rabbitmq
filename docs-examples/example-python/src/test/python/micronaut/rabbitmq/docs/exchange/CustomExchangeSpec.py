@@ -1,6 +1,5 @@
 from typing import Annotated
 
-import java
 from jakarta.inject import Inject
 from micronaut.context.annotation import Property
 from micronaut.rabbitmq.docs.Await import Await
@@ -11,12 +10,6 @@ from .AnimalClient import AnimalClient
 from .AnimalListener import AnimalListener
 from .Cat import Cat
 from .Snake import Snake
-
-# TODO(python): java.type needed because the deserialized animals reach the listener as instances of the generated
-# Java classes and are filtered with java.instanceof(...), whose type argument must be a Java class; the imported
-# Python classes fail with "instanceof second argument 'type' is not a Java class"
-CatClass = java.type("micronaut.rabbitmq.docs.exchange.Cat")
-SnakeClass = java.type("micronaut.rabbitmq.docs.exchange.Snake")
 
 
 @MicronautTest(environments=["rabbitmq"])
@@ -33,8 +26,8 @@ class CustomExchangeSpec:
         self.client.send_animal(Snake("Monty the Python", True))
 
         received = self.listener.received_animals
-        cats = lambda: [cat for cat in received if java.instanceof(cat, CatClass)]
-        snakes = lambda: [snake for snake in received if java.instanceof(snake, SnakeClass)]
+        cats = lambda: [cat for cat in received if isinstance(cat, Cat)]
+        snakes = lambda: [snake for snake in received if isinstance(snake, Snake)]
         Await.until(lambda: len(received) == 4
                     and any(cat.name == "Whiskers" and cat.lives == 9 for cat in cats())
                     and any(cat.name == "Mr. Bigglesworth" and cat.lives == 8 for cat in cats())

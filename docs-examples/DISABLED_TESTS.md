@@ -15,7 +15,7 @@ runtime for the RabbitMQ test container.
 - Last generated active `@Disabled` count: 0.
 - Last generated command: `rg -n "@Disabled\(" docs-examples/example-python/src/test/python`.
 - Last full-suite command: `./gradlew :micronaut-docs-examples:micronaut-example-python:test -Ppython-ci`.
-- Last full-suite result: build successful, 15 tests executed, 0 skipped, 0 failures.
+- Last full-suite result (micronaut-core 5.2.3, micronaut-build 8.1.2): build successful, 15 tests executed, 0 skipped, 0 failures.
 
 ## Migration Rules
 
@@ -47,10 +47,10 @@ runtime for the RabbitMQ test container.
   instead of Awaitility.
 - Java classes are imported (`from java.lang import Long`, `from reactor.core.publisher import Mono`,
   `from micronaut.core.bind.ArgumentBinder import BindingResult`), logging uses the Python `logging`
-  module (`LOG = logging.getLogger(__name__)`); `java.type(...)` is only used where a Python class
-  must be passed to Java as a runtime `java.lang.Class` (see "java.type usages" below).
-- A Python class cannot extend a Java class: the `ChannelInitializer` subclasses of the Java examples
-  (`ChannelPoolListener`, `MyReturnListener`) implement the `ChannelPoolInitializer` interface.
+  module (`LOG = logging.getLogger(__name__)`); `java.type(...)` is only used where a Python-defined
+  annotation must be passed to Java as a runtime `java.lang.Class` (see "java.type usages" below).
+- The `ChannelInitializer` subclasses of the Java examples (`ChannelPoolListener`, `MyReturnListener`)
+  implement the `ChannelPoolInitializer` interface (see "Workarounds Kept In Snippets").
 
 ## Active `@Disabled` Tests
 
@@ -65,12 +65,9 @@ None.
 | Target | Reason |
 | --- | --- |
 | `io.micronaut.rabbitmq.docs.RabbitMQTestConfigurer` (Java, `src/test/java`) | `TestPropertyProvider.getProperties()` is called by Micronaut Test before the application context, and with it the GraalPy runtime, exists, so a Python test class cannot provide the container's connection properties; the `@ContextConfigurer` adding the `rabbitmq.uri`/`username`/`password` property source (and the `rabbitmq.servers.product-cluster.*` properties of the `ConnectionSpec` in the `rabbitmq-cluster` environment) in `configure(ApplicationContext)` is written in Java. |
-| `io.micronaut.rabbitmq.docs.PythonRuntimeInitializer` (Java, `src/test/java`) | `@Executable(processOnStartup = true)` processors such as the RabbitMQ consumer advice are created before the `@Context` beans, so the Python beans they depend on (argument binders, message SerDes, `@RabbitListener` beans) would be instantiated before the GraalPy runtime exists (`GraalPy context has not been initialized`); the initializer is a `TypeConverterRegistrar` injecting the GraalPy context, which is created before those processors. |
-| `io.micronaut.rabbitmq.docs.consumer.custom.annotation.DeliveryTagAnnotationBinder` | Declaring the binder as `RabbitAnnotatedArgumentBinder[DeliveryTag]` generates `bind` with the return type `BindingResult<DeliveryTag>` instead of `BindingResult<Object>` (the annotation type argument is used as the value type), which does not compile; the Python class implements the raw `RabbitAnnotatedArgumentBinder`, and `bind` declares `-> BindingResult[object]` explicitly because a Python lambda returned from a method without a return annotation is not converted to the `BindingResult` functional interface (`PolyglotMapAndFunction cannot be cast to ArgumentBinder$BindingResult`). |
-| `io.micronaut.rabbitmq.docs.consumer.custom.type.ProductInfoTypeBinder` | Same: `bind` declares `-> BindingResult[ProductInfo]` explicitly so the returned lambda is converted to the functional interface. |
-| `io.micronaut.rabbitmq.docs.exchange.AnimalClient`, `Animal`, `Cat`, `Snake` | A Python object passed to Java through a parameter declared with a Python base class (`animal: Animal`) is wrapped by the base class stub and loses its runtime type, so the JSON SerDes finds no introspection for `Animal`; the client method is declared as `animal: Cat \| Snake` (generated as `Object`) so the `Cat`/`Snake` introspections are used. The generated stub of a dataclass extending a Python dataclass only declares the constructor parameters of the subclass (`Cat(lives)` does not compile against `Animal(name)`), so `Animal` is a plain base class and `Cat`/`Snake` declare `name` themselves. |
-| `io.micronaut.rabbitmq.docs.exchange.CustomExchangeSpec` | The deserialized `Cat`/`Snake` bodies reach the Python listener as instances of the generated Java classes (foreign objects with public fields) rather than as Python objects, so the test filters them with `java.instanceof(...)` instead of `isinstance(...)`. |
-| `io.micronaut.rabbitmq.docs.serdes.ProductInfoSerDes` | A `-> bytes \| None` return annotation generates `pythonResult.asByte()` (a single byte) instead of a `byte[]` conversion; `serialize` is declared `-> bytes` (a `None` result is still passed to Java as `null`). |
+| `io.micronaut.rabbitmq.docs.ChannelPoolListener`, `io.micronaut.rabbitmq.docs.parameters.MyReturnListener` | Extending the Java class `ChannelInitializer` (core 5.2.3 supports Java class bases) fails to compile because the overridden `initialize(Channel, String)` declares `throws IOException` and the generated base-method dispatcher does not handle it: `Pyronaut processing failed: unreported exception java.io.IOException; must be caught or declared to be thrown` at `super.initialize(...)` in the generated `micronautInvokeJavaBaseMethod` of `ChannelPoolListener.java`. The Python classes implement the `ChannelPoolInitializer` interface instead. `TODO(python)`. |
+| `io.micronaut.rabbitmq.docs.publisher.acknowledge.PublisherAcknowledgeSpec` | A class defined inside a method cannot extend an imported Java interface (`Subscriber`) with core 5.2.3: instantiating it fails with `TypeError: invalid instantiation of foreign object` (the runtime module keeps the host interface as the base; with the generated import modules of 5.2.2 the local class worked). The subscriber of the Java example's anonymous class is a module-level class taking the counters. `TODO(python)`. |
+| `io.micronaut.rabbitmq.docs.consumer.custom.annotation.DeliveryTagAnnotationBinder`, `io.micronaut.rabbitmq.docs.consumer.custom.type.ProductInfoTypeBinder` | `bind` declares its `BindingResult[...]` return type explicitly (like the Java `@Override`) so the returned lambda is converted to the functional interface. |
 | `io.micronaut.rabbitmq.docs.parameters.MandatoryProductClient`, `MyReturnListener`, `io.micronaut.rabbitmq.docs.event.MyStartingEventListener`, `MyStartedEventListener` | Like in the Java, Kotlin and Groovy examples these snippets are compiled but not exercised by a test (`spec.name` `MandatorySpec` / `RabbitListenerEventsSpec` have no test class). |
 
 ## Intentionally Unsupported Snippet Targets
@@ -83,5 +80,16 @@ Every remaining `java.type(...)` call carries a `# TODO(python)` comment naming 
 
 | Location | Reason |
 | --- | --- |
-| `exchange/CustomExchangeSpec.py` (`CatClass`, `SnakeClass`) | The deserialized `Cat`/`Snake` bodies reach the Python listener as instances of the generated Java classes and are filtered with `java.instanceof(...)`, whose type argument must be a Java class; the imported Python classes fail with `instanceof second argument 'type' is not a Java class`. |
-| `consumer/custom/annotation/DeliveryTagAnnotationBinder.py` (`DeliveryTagClass`) | `RabbitAnnotatedArgumentBinder.getAnnotationType()` returns the annotation type to Java as a runtime `java.lang.Class`; returning the imported Python annotation function fails with `Cannot convert '<function DeliveryTag>' (language: Python, type: function) to Java type 'java.lang.Class'`. |
+| `consumer/custom/annotation/DeliveryTagAnnotationBinder.py` (`DeliveryTagClass`) | `RabbitAnnotatedArgumentBinder.getAnnotationType()` returns the annotation type to Java as a runtime `java.lang.Class`; returning the Python-defined annotation function still fails with core 5.2.3: `Cannot convert '<function DeliveryTag at 0x...>'(language: Python, type: function) to Java type 'java.lang.Class': Unsupported target type.` (raised while `RabbitMQConsumerAdvice` is instantiated). Python *classes* passed as `Class` arguments work. |
+
+## Verified with micronaut-core 5.2.3 (workarounds removed)
+
+- `PythonRuntimeInitializer` (Java) removed: the GraalPy runtime is created on demand for the Python beans the
+  `processOnStartup` consumer advice instantiates.
+- `RabbitAnnotatedArgumentBinder[DeliveryTag]` generic binder generates `BindingResult<Object> bind(...)`.
+- `ProductInfoSerDes.serialize(...) -> bytes | None`.
+- `Animal` is a `@dataclass` base, `Cat(Animal)`/`Snake(Animal)` only declare their own fields, and
+  `AnimalClient.send(..., animal: Animal)` keeps the runtime type of the passed `Cat`/`Snake` (JSON serialization
+  uses the subclass introspection).
+- The deserialized `Cat`/`Snake` bodies reach the Python listener as Python objects (`isinstance(cat, Cat)` in
+  `CustomExchangeSpec`, no `java.type` needed).

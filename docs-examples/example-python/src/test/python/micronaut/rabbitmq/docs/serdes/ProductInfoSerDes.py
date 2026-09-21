@@ -35,7 +35,7 @@ class ProductInfoSerDes(RabbitMessageSerDes[ProductInfo]):  # <2>
                 return ProductInfo(size, count.get(), sealed.get())
         return None
 
-    def serialize(self, data: ProductInfo | None, properties: MutableBasicProperties) -> bytes:  # <5>
+    def serialize(self, data: ProductInfo | None, properties: MutableBasicProperties) -> bytes | None:  # <5>
         if data is None:
             return None
         size = "null" if data.size is None else data.size

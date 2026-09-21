@@ -8,5 +8,4 @@ from .Animal import Animal
 @Serdeable
 @dataclass
 class Snake(Animal):
-    name: str
     venomous: bool
