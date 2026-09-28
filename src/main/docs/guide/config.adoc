@@ -22,7 +22,7 @@ It is possible to configure multiple connections to the same server, different s
 One may want to configure multiple connections to the same server in order to have one or more sets of consumers to be executed on a different thread pool. Additionally, the below config could be used to connect to different servers with the same consumer executor by simply omitting the `consumer-executor` configuration option or supplying the same value.
 
 For example:
-[source,yaml]
+[configuration]
 ----
 rabbitmq:
     servers:
@@ -42,7 +42,7 @@ IMPORTANT: When the configuration option `rabbitmq.servers` is used, no other op
 
 RabbitMQ also supports a fail over connection strategy where the first server that connects successfully will be used among a list of servers. To use this option in Micronaut, simply supply a list of `host:port` addresses.
 
-[source,yaml]
+[configuration]
 ----
 rabbitmq:
     addresses:

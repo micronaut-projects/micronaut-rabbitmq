@@ -3,7 +3,7 @@ RabbitMQ allows an link:{jdkapi}/java.base/java/util/concurrent/ExecutorService.
 For example:
 
 .Configuring the `consumer` thread pool
-[source,yaml]
+[configuration]
 ----
 micronaut:
     executors:

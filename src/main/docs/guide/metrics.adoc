@@ -2,7 +2,7 @@ The Java RabbitMQ client has built in support for Micrometer. If Micrometer is e
 
 The RabbitMQ metrics binder is configurable. For example:
 
-[source, yaml]
+[configuration]
 ----
 micronaut:
     metrics:
