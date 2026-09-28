@@ -329,6 +329,15 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-rabbitmq
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+runtime = [
+    <span class="hljs-string">"io.micronaut.rabbitmq:micronaut-rabbitmq"</span>,
+]</code></pre>
+</div>
+</div>
 </p>
 </div>
 <div class="sect1">
@@ -351,6 +360,19 @@ public interface ProductClient {
     @Binding("product") // <b class="conum">(2)</b>
     void send(byte[] data); // <b class="conum">(3)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, RabbitClient
+
+@RabbitClient  # <b class="conum">(1)</b>
+class ProductClient(ABC):
+
+    @Binding("product")  # <b class="conum">(2)</b>
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:  # <b class="conum">(3)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -401,6 +423,11 @@ interface ProductClient {
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">productClient.send("quickstart".getBytes());</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">        self.product_client.send(b"quickstart")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -456,6 +483,22 @@ public class ProductListener {
         System.out.println("Java received " + data.length + " bytes from RabbitMQ");
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener  # <b class="conum">(1)</b>
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_lengths: list[str] = []
+
+    @Queue("product")  # <b class="conum">(2)</b>
+    def receive(self, data: bytes) -&gt; None:  # <b class="conum">(3)</b>
+        self.message_lengths.append(bytes(data).decode())
+        print(f"Python received {len(data)} bytes from RabbitMQ")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1246,6 +1289,23 @@ public class ConnectionFactoryInterceptor implements BeanCreatedEventListener&lt
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from com.rabbitmq.client import ConnectionFactory
+from com.rabbitmq.client.impl import DefaultCredentialsProvider
+from jakarta.inject import Singleton
+from micronaut.context.event import BeanCreatedEvent, BeanCreatedEventListener
+
+
+@Singleton
+class ConnectionFactoryInterceptor(BeanCreatedEventListener[ConnectionFactory]):
+
+    def onCreated(self, event: BeanCreatedEvent[ConnectionFactory]) -&gt; ConnectionFactory:
+        connection_factory = event.getBean()
+        connection_factory.setCredentialsProvider(DefaultCredentialsProvider("guest", "guest"))
+        return connection_factory</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.rabbitmq.docs.config
 
 import com.rabbitmq.client.ConnectionFactory
@@ -1407,6 +1467,24 @@ public interface AnimalClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.messaging.annotation import MessageHeader
+from micronaut.rabbitmq.annotation import RabbitClient
+
+from .Animal import Animal
+
+@RabbitClient("animals")  # <b class="conum">(1)</b>
+class AnimalClient(ABC):
+
+    @abstractmethod
+    def send(self, animal_type: Annotated[str, MessageHeader("animalType")], animal: Animal) -&gt; None:  # <b class="conum">(2)</b>
+        ...
+
+    def send_animal(self, animal: Animal) -&gt; None:  # <b class="conum">(3)</b>
+        self.send(type(animal).__name__, animal)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -1452,6 +1530,13 @@ abstract class AnimalClient {
 <td>A helper method was created to provide the header value automatically.</td>
 </tr>
 </table>
+</div>
+<div class="sidebarblock lang-python">
+<div class="content">
+<div class="paragraph">
+<p>Python has no method overloading, so the helper method of the Python example is named <code>send_animal</code>. Methods with a body are not implemented by <code>@RabbitClient</code> and are invoked as declared.</p>
+</div>
+</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1569,6 +1654,23 @@ public interface ProductClient {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, RabbitClient
+
+@RabbitClient
+class ProductClient(ABC):
+
+    @Binding("product")  # <b class="conum">(1)</b>
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:
+        ...
+
+    @abstractmethod
+    def send_to(self, binding: Annotated[str, Binding], data: bytes) -&gt; None:  # <b class="conum">(2)</b>
+        ...</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.RabbitClient
 
@@ -1625,6 +1727,19 @@ public interface ProductClient {
     @Binding(value = "product", connection = "product-cluster") // <b class="conum">(2)</b>
     void send(byte[] data); // <b class="conum">(3)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, RabbitClient
+
+@RabbitClient  # <b class="conum">(1)</b>
+class ProductClient(ABC):
+
+    @Binding(value="product", connection="product-cluster")  # <b class="conum">(2)</b>
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:  # <b class="conum">(3)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1706,6 +1821,25 @@ public interface MandatoryProductClient {
     @Binding("product")
     void send(@Mandatory boolean mandatory, byte[] data); // <b class="conum">(2)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, Mandatory, RabbitClient
+
+@RabbitClient
+class MandatoryProductClient(ABC):
+
+    @Binding("product")
+    @Mandatory  # <b class="conum">(1)</b>
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_mandatory(self, mandatory: Annotated[bool, Mandatory], data: bytes) -&gt; None:  # <b class="conum">(2)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1796,6 +1930,30 @@ class MyReturnListener extends ChannelInitializer implements ReturnListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from com.rabbitmq.client import AMQP, Channel, ReturnListener
+from jakarta.inject import Singleton
+from micronaut.rabbitmq.connect import ChannelPoolInitializer
+
+@Singleton
+class MyReturnListener(ChannelPoolInitializer, ReturnListener):
+
+    def initialize(self, channel: Channel, name: str) -&gt; None:
+        channel.addReturnListener(self)  # <b class="conum">(1)</b>
+
+    def handleReturn(
+        self,
+        reply_code: int,
+        reply_text: str,
+        exchange: str,
+        routing_key: str,
+        properties: AMQP.BasicProperties,
+        body: bytes
+    ) -&gt; None:
+        pass  # <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.ReturnListener
@@ -1867,6 +2025,13 @@ class MyReturnListener extends ChannelInitializer implements ReturnListener {
 </tr>
 </table>
 </div>
+<div class="sidebarblock lang-python">
+<div class="content">
+<div class="paragraph">
+<p>A Python class cannot extend the <code>ChannelInitializer</code> Java class, so the Python example implements the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPoolInitializer.html">ChannelPoolInitializer</a> interface instead.</p>
+</div>
+</div>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -1911,6 +2076,30 @@ public interface ProductClient {
     @Binding("product")
     void send(@RabbitProperty("userId") String user, @RabbitProperty String contentType, byte[] data); // <b class="conum">(3)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, RabbitClient, RabbitProperty
+
+@RabbitClient
+@RabbitProperty(name="appId", value="myApp")  # <b class="conum">(1)</b>
+@RabbitProperty(name="userId", value="admin")
+class ProductClient(ABC):
+
+    @Binding("product")
+    @RabbitProperty(name="contentType", value="application/json")  # <b class="conum">(2)</b>
+    @RabbitProperty(name="userId", value="guest")
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_with_properties(self, user: Annotated[str, RabbitProperty("userId")],
+                             content_type: Annotated[str | None, RabbitProperty("contentType")],
+                             data: bytes) -&gt; None:  # <b class="conum">(3)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2028,6 +2217,38 @@ public interface ProductClient {
     void send(@RabbitHeaders Map&lt;String, Object&gt; headers, // <b class="conum">(4)</b>
               byte[] data);
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.lang import Long
+from micronaut.messaging.annotation import MessageHeader
+from micronaut.rabbitmq.annotation import Binding, RabbitClient, RabbitHeaders
+
+@RabbitClient
+@MessageHeader(name="x-product-sealed", value="true")  # <b class="conum">(1)</b>
+@MessageHeader(name="productSize", value="large")
+class ProductClient(ABC):
+
+    @Binding("product")
+    @MessageHeader(name="x-product-count", value="10")  # <b class="conum">(2)</b>
+    @MessageHeader(name="productSize", value="small")
+    @abstractmethod
+    def send(self, data: bytes) -&gt; None:
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_with_headers(self, product_size: Annotated[str | None, MessageHeader("productSize")],  # <b class="conum">(3)</b>
+                          count: Annotated[Long, MessageHeader("x-product-count")],
+                          data: bytes) -&gt; None:
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_with_header_map(self, headers: Annotated[dict[str, object], RabbitHeaders],  # <b class="conum">(4)</b>
+                             data: bytes) -&gt; None:
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2160,6 +2381,26 @@ public interface ProductClient {
     @Binding("product")
     CompletableFuture&lt;Void&gt; sendFuture(byte[] data); // <b class="conum">(2)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.util.concurrent import CompletableFuture
+from micronaut.rabbitmq.annotation import Binding, RabbitClient
+from org.reactivestreams import Publisher
+
+@RabbitClient
+class ProductClient(ABC):
+
+    @Binding("product")
+    @abstractmethod
+    def send_publisher(self, data: bytes) -&gt; Publisher[None]:  # <b class="conum">(1)</b>
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_future(self, data: bytes) -&gt; CompletableFuture[None]:  # <b class="conum">(2)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2351,6 +2592,21 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_lengths: list[int] = []
+
+    @Queue("product")  # <b class="conum">(1)</b>
+    def receive(self, data: bytes) -&gt; None:
+        self.message_lengths.append(len(data))</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
@@ -2419,6 +2675,22 @@ public class ProductListener {
         System.out.println("Java received " + data.length + " bytes from RabbitMQ");
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_lengths: list[str] = []
+
+    @Queue(value="product", connection="product-cluster")  # <b class="conum">(1)</b>
+    def receive(self, data: bytes) -&gt; None:
+        self.message_lengths.append(bytes(data).decode())
+        print(f"Python received {len(data)} bytes from RabbitMQ")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2500,6 +2772,22 @@ public class ProductListener {
         System.out.println("Java received " + data.length + " bytes from RabbitMQ");
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_lengths: list[str] = []
+
+    @Queue(value="product", executor="product-listener")  # <b class="conum">(1)</b>
+    def receive(self, data: bytes) -&gt; None:
+        self.message_lengths.append(bytes(data).decode())
+        print(f"Python received {len(data)} bytes from RabbitMQ")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2630,6 +2918,26 @@ public class ProductListener {
         messageProperties.add(user + "|" + contentType + "|" + appId);
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.lang import Integer
+from micronaut.rabbitmq.annotation import Queue, RabbitListener, RabbitProperty
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_properties: list[str] = []
+
+    @Queue("product")
+    @RabbitProperty(name="x-priority", value="10", type=Integer)  # <b class="conum">(1)</b>
+    def receive(self, data: bytes,
+                user: Annotated[str, RabbitProperty("userId")],  # <b class="conum">(2)</b>
+                content_type: Annotated[str | None, RabbitProperty("contentType")],  # <b class="conum">(3)</b>
+                appId: str) -&gt; None:  # <b class="conum">(4)</b>
+        self.message_properties.append(f"{user}|{content_type}|{appId}")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2765,6 +3073,33 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.lang import Long
+from micronaut.messaging.annotation import MessageHeader
+from micronaut.rabbitmq.annotation import Queue, RabbitHeaders, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_properties: list[str] = []
+
+    @Queue("product")
+    def receive(self, data: bytes,
+                sealed: Annotated[bool, MessageHeader("x-product-sealed")],  # <b class="conum">(1)</b>
+                count: Annotated[Long, MessageHeader("x-product-count")],  # <b class="conum">(2)</b>
+                product_size: Annotated[str | None, MessageHeader("productSize")]) -&gt; None:  # <b class="conum">(3)</b>
+        self.message_properties.append(f"{str(sealed).lower()}|{count}|{product_size}")
+
+    @Queue("product")
+    def receive_headers(self, data: bytes,
+                        headers: Annotated[dict[str, object], RabbitHeaders]) -&gt; None:  # <b class="conum">(4)</b>
+        product_size = headers.get("productSize")
+        self.message_properties.append(
+            f"{headers.get('x-product-sealed')}|{headers.get('x-product-count')}|{product_size}")</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.messaging.annotation.MessageHeader
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitHeaders
@@ -2892,6 +3227,26 @@ public class ProductListener {
                 envelope.getExchange(), envelope.getRoutingKey(), basicProperties.getContentType()));
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from com.rabbitmq.client import BasicProperties, Channel, Envelope
+from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.messages: list[str] = []
+
+    @Queue("product")
+    def receive(self, data: bytes,
+                envelope: Envelope,  # <b class="conum">(1)</b>
+                basic_properties: BasicProperties,  # <b class="conum">(2)</b>
+                channel: Channel) -&gt; None:  # <b class="conum">(3)</b>
+        self.messages.append(f"exchange: [{envelope.getExchange()}], routingKey: [{envelope.getRoutingKey()}], "
+                             f"contentType: [{basic_properties.getContentType()}]")</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3036,6 +3391,15 @@ public @interface DeliveryTag {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.core.bind.annotation import Bindable
+
+@Bindable  # <b class="conum">(1)</b>
+def DeliveryTag(target):
+    return target</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.core.bind.annotation.Bindable
 
 @MustBeDocumented
@@ -3099,6 +3463,29 @@ public class DeliveryTagAnnotationBinder implements RabbitAnnotatedArgumentBinde
         return () -&gt; conversionService.convert(deliveryTag, context); // <b class="conum">(5)</b>
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from jakarta.inject import Singleton
+from micronaut.core.bind.ArgumentBinder import BindingResult
+from micronaut.core.convert import ArgumentConversionContext, ConversionService
+from micronaut.rabbitmq.bind import RabbitAnnotatedArgumentBinder, RabbitConsumerState
+
+from .DeliveryTag import DeliveryTag
+
+@Singleton  # <b class="conum">(1)</b>
+class DeliveryTagAnnotationBinder(RabbitAnnotatedArgumentBinder[DeliveryTag]):  # <b class="conum">(2)</b>
+
+    def __init__(self, conversion_service: ConversionService):  # <b class="conum">(3)</b>
+        self.conversion_service = conversion_service
+
+    def getAnnotationType(self) -&gt; type[DeliveryTag]:
+        return DeliveryTagClass
+
+    def bind(self, context: ArgumentConversionContext[object], source: RabbitConsumerState) -&gt; BindingResult[object]:
+        delivery_tag = source.getEnvelope().getDeliveryTag()  # <b class="conum">(4)</b>
+        return lambda: self.conversion_service.convert(delivery_tag, context)  # <b class="conum">(5)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3205,6 +3592,24 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.lang import Long
+from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+from .DeliveryTag import DeliveryTag
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.messages: set[int] = set()
+
+    @Queue("product")
+    def receive(self, data: bytes, tag: Annotated[Long, DeliveryTag]) -&gt; None:  # <b class="conum">(1)</b>
+        self.messages.add(tag)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import java.util.Collections
@@ -3277,6 +3682,20 @@ public class ProductInfo {
         return sealed;
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from dataclasses import dataclass
+
+from java.lang import Long
+
+
+@dataclass
+class ProductInfo:
+    size: str | None  # <b class="conum">(1)</b>
+    count: Long  # <b class="conum">(2)</b>
+    sealed: bool  # <b class="conum">(3)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3398,6 +3817,56 @@ public class ProductInfoTypeBinder implements RabbitTypeArgumentBinder&lt;Produc
         }
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from jakarta.inject import Singleton
+from java.lang import Boolean, Long, String
+from java.util import Optional
+from micronaut.core.bind.ArgumentBinder import BindingResult
+from micronaut.core.convert import ArgumentConversionContext, ConversionError, ConversionService
+from micronaut.core.type import Argument
+from micronaut.rabbitmq.bind import RabbitConsumerState, RabbitHeaderConvertibleValues, RabbitTypeArgumentBinder
+
+from .ProductInfo import ProductInfo
+
+@Singleton  # <b class="conum">(1)</b>
+class ProductInfoTypeBinder(RabbitTypeArgumentBinder[ProductInfo]):  # <b class="conum">(2)</b>
+
+    def __init__(self, conversion_service: ConversionService):  # <b class="conum">(3)</b>
+        self.conversion_service = conversion_service
+
+    def argumentType(self) -&gt; Argument[ProductInfo]:
+        return Argument.of(ProductInfo)
+
+    def bind(self, context: ArgumentConversionContext[ProductInfo], source: RabbitConsumerState) -&gt; BindingResult[ProductInfo]:
+        raw_headers = source.getProperties().getHeaders()  # <b class="conum">(4)</b>
+
+        if raw_headers is None:
+            return BindingResult.empty()
+
+        headers = RabbitHeaderConvertibleValues(raw_headers, self.conversion_service)
+
+        size = headers.get("productSize", String).orElse(None)  # <b class="conum">(5)</b>
+        count = headers.get("x-product-count", Long)  # <b class="conum">(6)</b>
+        sealed = headers.get("x-product-sealed", Boolean)  # <b class="conum">(7)</b>
+
+        if headers.getConversionErrors().isEmpty() and count.isPresent() and sealed.isPresent():
+            return lambda: Optional.of(ProductInfo(size, count.get(), sealed.get()))  # <b class="conum">(8)</b>
+        else:
+            return self.ConversionErrorsResult(headers)
+
+    class ConversionErrorsResult(BindingResult):
+
+        def __init__(self, headers: RabbitHeaderConvertibleValues):
+            self.headers = headers
+
+        def getValue(self) -&gt; Optional[ProductInfo]:
+            return Optional.empty()
+
+        def getConversionErrors(self) -&gt; list[ConversionError]:
+            return self.headers.getConversionErrors()  # <b class="conum">(9)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3602,6 +4071,27 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+from micronaut.rabbitmq.bind import RabbitAcknowledgement
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.message_count = 0
+
+    @Queue(value="product")  # <b class="conum">(1)</b>
+    def receive(self, data: bytes, acknowledgement: RabbitAcknowledgement) -&gt; None:  # <b class="conum">(2)</b>
+        count = self.message_count
+        self.message_count += 1
+        if count == 0:
+            acknowledgement.nack(False, True)  # <b class="conum">(3)</b>
+        elif count &gt; 3:
+            acknowledgement.ack(True)  # <b class="conum">(4)</b></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
 import io.micronaut.rabbitmq.bind.RabbitAcknowledgement
@@ -3765,6 +4255,24 @@ public class ProductListener {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from java.lang import Thread
+from micronaut.context.annotation import Requires
+from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    def __init__(self) -&gt; None:
+        self.threads: set[str] = set()
+
+    @Queue(value="product", numberOfConsumers="5")  # <b class="conum">(1)</b>
+    def receive(self, data: bytes) -&gt; None:
+        self.threads.add(Thread.currentThread().getName())  # <b class="conum">(2)</b>
+        time.sleep(0.5)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.annotation.Requires
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitListener
@@ -3904,6 +4412,24 @@ public class MyStartingEventListener implements ApplicationEventListener&lt;Rabb
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import logging
+
+from jakarta.inject import Singleton
+from micronaut.context.event import ApplicationEventListener
+from micronaut.rabbitmq.event import RabbitConsumerStarting
+
+LOG = logging.getLogger(__name__)
+
+@Singleton
+class MyStartingEventListener(ApplicationEventListener[RabbitConsumerStarting]):
+
+    def onApplicationEvent(self, event: RabbitConsumerStarting) -&gt; None:
+        LOG.info("RabbitMQ consumer: %s (method: %s) is subscribing to: %s",
+                 event.getSource(), event.getMethod(), event.getQueue())</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.context.event.ApplicationEventListener
 import io.micronaut.rabbitmq.event.RabbitConsumerStarting
 import jakarta.inject.Singleton
@@ -3959,6 +4485,24 @@ public class MyStartedEventListener implements ApplicationEventListener&lt;Rabbi
       event.getSource(), event.getMethod(), event.getQueue());
   }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import logging
+
+from jakarta.inject import Singleton
+from micronaut.context.event import ApplicationEventListener
+from micronaut.rabbitmq.event import RabbitConsumerStarted
+
+LOG = logging.getLogger(__name__)
+
+@Singleton
+class MyStartedEventListener(ApplicationEventListener[RabbitConsumerStarted]):
+
+    def onApplicationEvent(self, event: RabbitConsumerStarted) -&gt; None:
+        LOG.info("RabbitMQ consumer: %s (method: %s) just subscribed to: %s",
+                 event.getSource(), event.getMethod(), event.getQueue())</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -4043,6 +4587,26 @@ public interface ProductClient {
     @Binding("product")
     Publisher&lt;String&gt; sendReactive(String data); // <b class="conum">(3)</b>
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Binding, RabbitClient, RabbitProperty
+from org.reactivestreams import Publisher
+
+@RabbitClient
+@RabbitProperty(name="replyTo", value="amq.rabbitmq.reply-to")  # <b class="conum">(1)</b>
+class ProductClient(ABC):
+
+    @Binding("product")
+    @abstractmethod
+    def send(self, data: str) -&gt; str:  # <b class="conum">(2)</b>
+        ...
+
+    @Binding("product")
+    @abstractmethod
+    def send_reactive(self, data: str) -&gt; Publisher[str]:  # <b class="conum">(3)</b>
+        ...</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -4137,6 +4701,18 @@ public class ProductListener {
         return data.toUpperCase(); // <b class="conum">(2)</b>
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from micronaut.rabbitmq.annotation import Queue, RabbitListener
+
+@RabbitListener
+class ProductListener:
+
+    @Queue("product")
+    def to_upper_case(self, data: str) -&gt; str:  # <b class="conum">(1)</b>
+        return data.upper()  # <b class="conum">(2)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -4290,6 +4866,32 @@ public class ChannelPoolListener extends ChannelInitializer { // <b class="conum
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from com.rabbitmq.client import Channel
+from jakarta.inject import Singleton
+from micronaut.rabbitmq.connect import ChannelPoolInitializer
+
+
+@Singleton  # <b class="conum">(1)</b>
+class ChannelPoolListener(ChannelPoolInitializer):  # <b class="conum">(2)</b>
+
+    def initialize(self, channel: Channel, name: str) -&gt; None:  # <b class="conum">(3)</b>
+        # docs/quickstart
+        args = {"x-max-priority": 100}
+        channel.queueDeclare("product", False, False, False, args)  # <b class="conum">(4)</b>
+
+        # docs/exchange
+        channel.exchangeDeclare("animals", "headers", False)
+        channel.queueDeclare("snakes", False, False, False, None)
+        channel.queueDeclare("cats", False, False, False, None)
+        cat_args = {"x-match": "all", "animalType": "Cat"}
+        channel.queueBind("cats", "animals", "", cat_args)
+
+        snake_args = {"x-match": "all", "animalType": "Snake"}
+        channel.queueBind("snakes", "animals", "", snake_args)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.rabbitmq.client.Channel
 import io.micronaut.rabbitmq.connect.ChannelInitializer
 import jakarta.inject.Singleton
@@ -4369,6 +4971,13 @@ class ChannelPoolListener extends ChannelInitializer { // <b class="conum">(2)</
 <td>Declare a queue or perform any operations desired</td>
 </tr>
 </table>
+</div>
+<div class="sidebarblock lang-python">
+<div class="content">
+<div class="paragraph">
+<p>A Python class cannot extend the <code>ChannelInitializer</code> Java class, so the Python example implements the <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPoolInitializer.html">ChannelPoolInitializer</a> interface instead, which is applied to every <a href="../api/io/micronaut/configuration/rabbitmq/connect/ChannelPool.html">ChannelPool</a> by this library in the same way.</p>
+</div>
+</div>
 </div>
 
 <h1 id="serdes"><a class="anchor" href="#serdes"></a>10 Message Serialization/Deserialization (SerDes)</h1>
@@ -4461,6 +5070,50 @@ public class ProductInfoSerDes implements RabbitMessageSerDes&lt;ProductInfo&gt;
         return argument.getType().isAssignableFrom(ProductInfo.class);
     }
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from jakarta.inject import Singleton
+from java.lang import Boolean, Long
+from micronaut.core.convert import ConversionService
+from micronaut.core.type import Argument
+from micronaut.rabbitmq.bind import RabbitConsumerState
+from micronaut.rabbitmq.intercept import MutableBasicProperties
+from micronaut.rabbitmq.serdes import RabbitMessageSerDes
+
+from .ProductInfo import ProductInfo
+
+@Singleton  # <b class="conum">(1)</b>
+class ProductInfoSerDes(RabbitMessageSerDes[ProductInfo]):  # <b class="conum">(2)</b>
+
+    def __init__(self, conversion_service: ConversionService):  # <b class="conum">(3)</b>
+        self.conversion_service = conversion_service
+
+    def deserialize(self, consumer_state: RabbitConsumerState, argument: Argument[ProductInfo]) -&gt; ProductInfo | None:  # <b class="conum">(4)</b>
+        body = bytes(consumer_state.getBody()).decode("utf-8")
+        parts = body.split("|")
+        if len(parts) == 3:
+            size = parts[0]
+            if size == "null":
+                size = None
+
+            count = self.conversion_service.convert(parts[1], Long)
+            sealed = self.conversion_service.convert(parts[2], Boolean)
+
+            if count.isPresent() and sealed.isPresent():
+                return ProductInfo(size, count.get(), sealed.get())
+        return None
+
+    def serialize(self, data: ProductInfo | None, properties: MutableBasicProperties) -&gt; bytes | None:  # <b class="conum">(5)</b>
+        if data is None:
+            return None
+        size = "null" if data.size is None else data.size
+        sealed = str(data.sealed).lower()
+        return f"{size}|{data.count}|{sealed}".encode("utf-8")
+
+    def supports(self, argument: Argument[ProductInfo]) -&gt; bool:  # <b class="conum">(6)</b>
+        return argument.getType().isAssignableFrom(ProductInfo)</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
