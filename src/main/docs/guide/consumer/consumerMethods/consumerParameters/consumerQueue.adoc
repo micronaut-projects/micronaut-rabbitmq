@@ -27,7 +27,7 @@ Micronaut will look for an link:{jdkapi}/java.base/java/util/concurrent/Executor
 For example:
 
 .Configuring the `product-listener` thread pool
-[source,yaml]
+[configuration]
 ----
 micronaut:
     executors:
