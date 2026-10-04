@@ -910,6 +910,12 @@ class ProductListener {
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.netty-conf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ConnectionFactory$NettyConfiguration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 <a id="io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig" href="#io.micronaut.rabbitmq.connect.ClusterRabbitConnectionFactoryConfig">&#128279;</a>
@@ -1248,6 +1254,12 @@ class ProductListener {
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rabbitmq.servers.*.netty-conf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.rabbitmq.client.ConnectionFactory$NettyConfiguration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 <div class="admonitionblock note">
@@ -1399,7 +1411,15 @@ rabbitmq.servers.server-b.consumer-executor=b-pool</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">rabbitmq = {servers = {server-a = {host = "localhost", port = 5672, consumer-executor = "a-pool"}, server-b = {host = "localhost", port = 5672, consumer-executor = "b-pool"}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[rabbitmq.servers.server-a]
+host = "localhost"
+port = 5672
+consumer-executor = "a-pool"
+
+[rabbitmq.servers.server-b]
+host = "localhost"
+port = 5672
+consumer-executor = "b-pool"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1502,7 +1522,10 @@ rabbitmq.password=guest</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">rabbitmq = {addresses = ["localhost:12345", "localhost:12346"], username = "guest", password = "guest"}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[rabbitmq]
+addresses = ["localhost:12345", "localhost:12346"]
+username = "guest"
+password = "guest"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2987,7 +3010,9 @@ micronaut.executors.product-listener.nThreads=25</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {executors = {product-listener = {type = "fixed", nThreads = 25}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.executors.product-listener]
+type = "fixed"
+nThreads = 25</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -4412,7 +4437,9 @@ micronaut.executors.consumer.nThreads=25</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {executors = {consumer = {type = "fixed", nThreads = 25}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.executors.consumer]
+type = "fixed"
+nThreads = 25</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -5586,7 +5613,10 @@ micronaut.metrics.binders.rabbitmq.prefix=String</code></pre>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">micronaut = {metrics = {binders = {rabbitmq = {enabled = "Boolean", tags = "String[]", prefix = "String"}}}}</code></pre>
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut.metrics.binders.rabbitmq]
+enabled = "Boolean"
+tags = "String[]"
+prefix = "String"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
