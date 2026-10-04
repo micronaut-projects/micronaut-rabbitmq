@@ -1,14 +1,14 @@
 [versions]
-micronaut = "5.2.3"
-micronaut-platform = "5.1.5"
+micronaut = "5.2.13"
+micronaut-platform = "5.2.1"
 micronaut-test = "5.0.0"
 micronaut-gradle-plugin = "5.0.2"
 
 awaitility = '4.3.0'
 jsr305 = "3.0.2"
-managed-amqp-client = '5.34.0'
-micronaut-micrometer = "6.0.2"
-micronaut-serde = "3.1.1"
+managed-amqp-client = '5.37.0'
+micronaut-micrometer = "6.1.0"
+micronaut-serde = "3.2.4"
 micronaut-cache = "6.1.1"
 
 [libraries]
