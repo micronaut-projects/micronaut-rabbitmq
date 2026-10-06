@@ -91,6 +91,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final ConversionService conversionService;
     private final Map<String, ChannelPool> channelPools;
     private final List<RecoverableConsumerWrapper> consumers = new CopyOnWriteArrayList<>();
+    private final List<Runnable> pendingRegistrations = new CopyOnWriteArrayList<>();
 
     /**
      * Default constructor.
@@ -235,6 +236,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                 if (e instanceof TemporarilyDownException temp) {
                     // We will try to register consumers again when it's eventually up
                     temp.getConnection().addEventuallyUpListener(registerConsumersAndPublishEvent);
+                    pendingRegistrations.add(() -> temp.getConnection().removeEventuallyUpListener(registerConsumersAndPublishEvent));
                 }
             }
         }
@@ -309,6 +311,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     @PreDestroy
     @Override
     public void close() throws Exception {
+        // a connection that is still down, and outlives this advice, does not register its consumers when it is up
+        pendingRegistrations.forEach(Runnable::run);
+        pendingRegistrations.clear();
         consumers.forEach(RecoverableConsumerWrapper::cancel);
     }
 

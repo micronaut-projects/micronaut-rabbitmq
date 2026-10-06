@@ -29,9 +29,16 @@ import jakarta.inject.Named;
  * @since 1.0
  */
 @Requires(missingProperty = ClusterRabbitConnectionFactoryConfig.PREFIX)
-@ConfigurationProperties("rabbitmq")
+@ConfigurationProperties(SingleRabbitConnectionFactoryConfig.PREFIX)
 @Named(SingleRabbitConnectionFactoryConfig.DEFAULT_NAME)
 public class SingleRabbitConnectionFactoryConfig extends RabbitConnectionFactoryConfig {
+
+    /**
+     * The prefix of the RabbitMQ configuration, under which the cluster configuration is too.
+     *
+     * @since 5.2.0
+     */
+    public static final String PREFIX = "rabbitmq";
 
     public static final String DEFAULT_NAME = "default";
 

@@ -32,6 +32,17 @@ public interface TemporarilyDownConnection extends Connection {
     void addEventuallyUpListener(EventuallyUpListener listener);
 
     /**
+     * Removes a listener added with {@link #addEventuallyUpListener(EventuallyUpListener)}, so that it is not notified
+     * when the connection is eventually up, such as the listener of a consumer that was closed in the meantime.
+     *
+     * @param listener The listener
+     * @since 5.2.0
+     */
+    default void removeEventuallyUpListener(EventuallyUpListener listener) {
+        // a connection that keeps no listeners has nothing to remove
+    }
+
+    /**
      * Callback interface to perform any action when the connection is eventually up.
      */
     @FunctionalInterface

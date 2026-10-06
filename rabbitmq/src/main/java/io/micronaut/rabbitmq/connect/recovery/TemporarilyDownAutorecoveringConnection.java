@@ -333,6 +333,11 @@ class TemporarilyDownAutorecoveringConnection extends AutorecoveringConnection i
         this.eventuallyUpListeners.add(listener);
     }
 
+    @Override
+    public void removeEventuallyUpListener(EventuallyUpListener listener) {
+        this.eventuallyUpListeners.remove(listener);
+    }
+
     private <E extends Throwable> boolean checkInitialized(Function<Throwable, E> mapper) throws E {
         if (isStillDown()) {
             try {
@@ -367,7 +372,13 @@ class TemporarilyDownAutorecoveringConnection extends AutorecoveringConnection i
     }
 
     private void notifyInitialized() {
-        for (EventuallyUpListener listener : eventuallyUpListeners) {
+        // notified once: the connection is initialized once, and what the listeners hold is released
+        List<EventuallyUpListener> listeners;
+        synchronized (eventuallyUpListeners) {
+            listeners = new ArrayList<>(eventuallyUpListeners);
+            eventuallyUpListeners.clear();
+        }
+        for (EventuallyUpListener listener : listeners) {
             try {
                 listener.onConnectionInitialized(this);
             } catch (Exception e) {
