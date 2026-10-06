@@ -1,6 +1,7 @@
 package io.micronaut.rabbitmq.reload
 
 import com.rabbitmq.client.Channel
+import groovy.transform.PackageScope
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.DefaultBeanContext
 import io.micronaut.context.annotation.Requires
@@ -286,6 +287,22 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
         waitFor { assert consumers() == 1 }
     }
 
+    void "in development mode an in-place change of a class with a listener annotation on a package-private method restarts the consumers"() {
+        given:
+        devContext(true)
+        RabbitMQConsumerAdvice advice = applicationContext.getBean(RabbitMQConsumerAdvice)
+
+        expect: 'no bean definition says the class is a listener: only the redefined class does'
+        !applicationContext.getBeanDefinitions(PackagePrivateQueue).any()
+
+        when:
+        applicationContext.publishEvent(classChange([] as Set, [new ClassChange(PackagePrivateQueue.name, ClassChange.Kind.MODIFIED)], ReloadStrategy.RELOAD))
+
+        then:
+        !applicationContext.getBean(RabbitMQConsumerAdvice).is(advice)
+        waitFor { assert consumers() == 1 }
+    }
+
     private void devContext(boolean track) {
         applicationContext = ApplicationContext.builder()
             .properties(["rabbitmq.host": rabbitContainer.host,
@@ -316,6 +333,16 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
 
     private ClassChangeEvent classChange(Set<ClassLoader> retired, List<ClassChange> changes, ReloadStrategy strategy) {
         return new ClassChangeEvent(this, 1, retired, RabbitMQReloadSpec.classLoader, changes, strategy)
+    }
+
+    /**
+     * As a class redefined in place could be, with a listener annotation newly on a package-private method.
+     */
+    static class PackagePrivateQueue {
+        @PackageScope
+        @Queue('dev-reload-package-private')
+        void receive(String value) {
+        }
     }
 
     @Singleton
