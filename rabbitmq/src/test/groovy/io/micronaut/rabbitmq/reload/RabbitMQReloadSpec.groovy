@@ -22,7 +22,16 @@ import io.micronaut.rabbitmq.intercept.RabbitMQConsumerAdvice
 import io.micronaut.rabbitmq.intercept.RabbitMQIntroductionAdvice
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry
+import io.micronaut.context.annotation.Factory
+import io.micronaut.context.event.BeanCreatedEvent
+import io.micronaut.context.event.BeanCreatedEventListener
+import io.micronaut.core.bind.ArgumentBinder
+import io.micronaut.core.convert.ArgumentConversionContext
+import io.micronaut.rabbitmq.bind.RabbitConsumerState
+import io.micronaut.rabbitmq.bind.RabbitTypeArgumentBinder
 import jakarta.inject.Singleton
+
+import java.util.concurrent.atomic.AtomicInteger
 
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -33,6 +42,7 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
 
     private static final String RELOADER = 'io.micronaut.rabbitmq.intercept.DevelopmentRabbitMQReloader'
     static final String QUEUE = 'dev-reload'
+    static final String METHOD_QUEUE = 'dev-reload-method'
 
     void "in development mode an in-place change of a listener class restarts the consumers on a new advice and a new listener, and a restart or an unrelated change does not"() {
         given:
@@ -230,6 +240,52 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
         waitFor { assert listener.received == ['one'] }
     }
 
+    void "in development mode a definition of a bean whose listener is on a method only, registered while running, restarts the consumers"() {
+        given:
+        devContext(true)
+        RabbitMQConsumerAdvice advice = applicationContext.getBean(RabbitMQConsumerAdvice)
+        MethodListener listener = applicationContext.getBean(MethodListener)
+        BeanDefinition<?> definition = applicationContext.getBeanDefinition(MethodListener)
+        waitFor { assert consumers(METHOD_QUEUE) == 1 }
+
+        when: 'the launcher swaps the definition of a bean that has @Queue on a method and no @RabbitListener'
+        ((DefaultBeanContext) applicationContext).notifyDefinitionChange([definition], [definition])
+
+        then: 'the advice and the listener are new, and one consumer consumes for it'
+        !applicationContext.getBean(RabbitMQConsumerAdvice).is(advice)
+        !applicationContext.getBean(MethodListener).is(listener)
+        waitFor { assert consumers(METHOD_QUEUE) == 1 }
+    }
+
+    void "in development mode a definition of a bean that is both a serializer and a binder restarts the consumers once"() {
+        given:
+        devContext(true)
+        BeanDefinition<?> definition = applicationContext.getBeanDefinition(SerDesAndBinder)
+        int created = AdviceCreations.count.get()
+
+        when:
+        ((DefaultBeanContext) applicationContext).notifyDefinitionChange([definition], [definition])
+
+        then: 'the consumer advice was created again exactly once'
+        AdviceCreations.count.get() == created + 1
+        waitFor { assert consumers() == 1 }
+    }
+
+    void "in development mode an in-place change of a factory that produces a serializer recreates the registries"() {
+        given:
+        devContext(true)
+        RabbitMessageSerDesRegistry serDes = applicationContext.getBean(RabbitMessageSerDesRegistry)
+        RabbitMQConsumerAdvice advice = applicationContext.getBean(RabbitMQConsumerAdvice)
+
+        when:
+        applicationContext.publishEvent(classChange([] as Set, [new ClassChange(SerDesFactory.name, ClassChange.Kind.MODIFIED)], ReloadStrategy.RELOAD))
+
+        then:
+        !applicationContext.getBean(RabbitMessageSerDesRegistry).is(serDes)
+        !applicationContext.getBean(RabbitMQConsumerAdvice).is(advice)
+        waitFor { assert consumers() == 1 }
+    }
+
     private void devContext(boolean track) {
         applicationContext = ApplicationContext.builder()
             .properties(["rabbitmq.host": rabbitContainer.host,
@@ -244,11 +300,11 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
     /**
      * The consumers the broker has for the queue.
      */
-    private long consumers() {
+    private long consumers(String queue = QUEUE) {
         ChannelPool pool = applicationContext.getBean(ChannelPool)
         Channel channel = pool.getChannel()
         try {
-            return channel.consumerCount(QUEUE)
+            return channel.consumerCount(queue)
         } finally {
             pool.returnChannel(channel)
         }
@@ -268,6 +324,7 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
         @Override
         void initialize(Channel channel, String name) throws IOException {
             channel.queueDeclare(QUEUE, false, false, false, [:])
+            channel.queueDeclare(METHOD_QUEUE, false, false, false, [:])
         }
     }
 
@@ -305,6 +362,81 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
         @Override
         boolean supports(Argument<UUID> type) {
             return type.type == UUID
+        }
+    }
+
+    @Singleton
+    @Requires(property = 'spec.name', value = 'RabbitMQReloadSpec')
+    static class MethodListener {
+        @Queue(METHOD_QUEUE)
+        void receive(String value) {
+        }
+    }
+
+    @Singleton
+    @Requires(property = 'spec.name', value = 'RabbitMQReloadSpec')
+    static class SerDesAndBinder implements RabbitMessageSerDes<Locale>, RabbitTypeArgumentBinder<Locale> {
+        @Override
+        Locale deserialize(RabbitConsumerState state, Argument<Locale> type) {
+            return Locale.forLanguageTag(new String(state.body))
+        }
+
+        @Override
+        byte[] serialize(Locale data, MutableBasicProperties properties) {
+            return data?.toLanguageTag()?.bytes
+        }
+
+        @Override
+        boolean supports(Argument<Locale> type) {
+            return type.type == Locale
+        }
+
+        @Override
+        Argument<Locale> argumentType() {
+            return Argument.of(Locale)
+        }
+
+        @Override
+        ArgumentBinder.BindingResult<Locale> bind(ArgumentConversionContext<Locale> context, RabbitConsumerState source) {
+            return ArgumentBinder.BindingResult.UNSATISFIED
+        }
+    }
+
+    @Factory
+    @Requires(property = 'spec.name', value = 'RabbitMQReloadSpec')
+    static class SerDesFactory {
+        @Singleton
+        FactorySerDes serDes() {
+            return new FactorySerDes()
+        }
+    }
+
+    static class FactorySerDes implements RabbitMessageSerDes<Currency> {
+        @Override
+        Currency deserialize(RabbitConsumerState state, Argument<Currency> type) {
+            return Currency.getInstance(new String(state.body))
+        }
+
+        @Override
+        byte[] serialize(Currency data, MutableBasicProperties properties) {
+            return data?.currencyCode?.bytes
+        }
+
+        @Override
+        boolean supports(Argument<Currency> type) {
+            return type.type == Currency
+        }
+    }
+
+    @Singleton
+    @Requires(property = 'spec.name', value = 'RabbitMQReloadSpec')
+    static class AdviceCreations implements BeanCreatedEventListener<RabbitMQConsumerAdvice> {
+        static final AtomicInteger count = new AtomicInteger()
+
+        @Override
+        RabbitMQConsumerAdvice onCreated(BeanCreatedEvent<RabbitMQConsumerAdvice> event) {
+            count.incrementAndGet()
+            return event.bean
         }
     }
 }
