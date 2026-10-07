@@ -92,6 +92,8 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     private final Map<String, ChannelPool> channelPools;
     private final List<RecoverableConsumerWrapper> consumers = new CopyOnWriteArrayList<>();
     private final List<Runnable> pendingRegistrations = new CopyOnWriteArrayList<>();
+    private final Object registration = new Object();
+    private boolean closed;
 
     /**
      * Default constructor.
@@ -218,11 +220,17 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
             };
 
             final EventuallyUpListener registerConsumersAndPublishEvent = c -> {
-                for (int idx = 0; idx < numberOfConsumers; idx++) {
-                    String consumerTag = methodTag + "[" + idx + "]";
-                    LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
-                    consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
-                            exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
+                synchronized (registration) {
+                    // a connection that comes up as this advice closes registers nothing for it
+                    if (closed) {
+                        return;
+                    }
+                    for (int idx = 0; idx < numberOfConsumers; idx++) {
+                        String consumerTag = methodTag + "[" + idx + "]";
+                        LOG.debug("Registering a consumer to queue [{}] with client tag [{}]", queue, consumerTag);
+                        consumers.add(new RecoverableConsumerWrapper(queue, consumerTag, executorService,
+                                exclusive, arguments, channelPool, prefetch, deliverCallback, autoAcknowledgment));
+                    }
                 }
                 startedEventPublisher.publishEvent(new RabbitConsumerStarted(bean, method.getMethodName(), queue));
             };
@@ -311,6 +319,9 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
     @PreDestroy
     @Override
     public void close() throws Exception {
+        synchronized (registration) {
+            closed = true;
+        }
         // a connection that is still down, and outlives this advice, does not register its consumers when it is up
         pendingRegistrations.forEach(Runnable::run);
         pendingRegistrations.clear();
