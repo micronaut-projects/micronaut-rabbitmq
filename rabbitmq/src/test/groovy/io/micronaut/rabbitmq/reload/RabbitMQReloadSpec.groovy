@@ -310,7 +310,7 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
                          "spec.name": getClass().simpleName,
                          "micronaut.dev.enabled": true])
             .environments("test")
-            .trackBeanDependencies(track)
+            .beanDependencyTrackingEnabled(track)
             .start()
     }
 
@@ -332,7 +332,7 @@ class RabbitMQReloadSpec extends AbstractRabbitMQTest {
     }
 
     private ClassChangeEvent classChange(Set<ClassLoader> retired, List<ClassChange> changes, ReloadStrategy strategy) {
-        return new ClassChangeEvent(this, 1, retired, RabbitMQReloadSpec.classLoader, changes, strategy)
+        return new ClassChangeEvent(this, retired, RabbitMQReloadSpec.classLoader, changes, strategy)
     }
 
     /**
