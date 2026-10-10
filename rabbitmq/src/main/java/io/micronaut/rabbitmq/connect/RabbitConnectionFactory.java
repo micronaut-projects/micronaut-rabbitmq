@@ -17,15 +17,17 @@ package io.micronaut.rabbitmq.connect;
 
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Connection;
-import io.micronaut.context.BeanContext;
+import io.micronaut.context.BeanDependencyResolver;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Retain;
 import io.micronaut.context.event.BeanPreDestroyEvent;
 import io.micronaut.context.event.BeanPreDestroyEventListener;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import org.jspecify.annotations.NonNull;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnectionManager;
+import io.micronaut.scheduling.executor.ExecutorConfiguration;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -52,19 +54,24 @@ public class RabbitConnectionFactory implements BeanPreDestroyEventListener<Exec
     private final ConcurrentLinkedQueue<ActiveConnection> activeConnections = new ConcurrentLinkedQueue<>();
 
     /**
+     * Creates the connection. Development mode retains it across a restart, with the consumer executor service it
+     * dispatches on, until the configuration of either changes: the consumers of the stopped generation are cancelled
+     * as it stops, and the next generation consumes on the same connection.
+     *
      * @param connectionFactory The factory to create the connection
      * @param temporarilyDownConnectionManager The temporarily down connection manager
-     * @param beanContext The bean context to dynamically retrieve the executor service
+     * @param dependencies Resolves the executor service the configuration names, as a dependency of the connection
      * @return The connection
-     * @since 4.2.0
+     * @since 5.2.0
      */
     @Singleton
     @EachBean(RabbitConnectionFactoryConfig.class)
+    @Retain(invalidatedBy = {SingleRabbitConnectionFactoryConfig.PREFIX, ExecutorConfiguration.PREFIX})
     Connection connection(RabbitConnectionFactoryConfig connectionFactory,
                           TemporarilyDownConnectionManager temporarilyDownConnectionManager,
-                          BeanContext beanContext) {
+                          BeanDependencyResolver dependencies) {
         try {
-            ExecutorService executorService = beanContext.getBean(ExecutorService.class, Qualifiers.byName(connectionFactory.getConsumerExecutor()));
+            ExecutorService executorService = dependencies.getBean(ExecutorService.class, Qualifiers.byName(connectionFactory.getConsumerExecutor()));
             Connection connection = newConnection(connectionFactory, temporarilyDownConnectionManager, executorService);
             activeConnections.add(new ActiveConnection(connection, connectionFactory, executorService));
             return connection;
