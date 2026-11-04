@@ -79,7 +79,7 @@ class StaticPublisherState {
         this.reactivePublisher = reactivePublisher;
         Class<?> javaReturnType = returnType.getType();
         this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);
-        if (this.reactive) {
+        if (this.reactive || returnType.isAsync()) {
             this.dataType = returnType.getFirstTypeVariable()
                     .orElse(Argument.VOID);
         } else {
