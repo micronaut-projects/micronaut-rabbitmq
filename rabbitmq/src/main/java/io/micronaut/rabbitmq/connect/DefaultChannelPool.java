@@ -21,6 +21,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.RecoveryDelayHandler;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.context.annotation.Retain;
+import io.micronaut.scheduling.executor.ExecutorConfiguration;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author James Kleeh
  * @since 1.1.0
  */
+@Retain(invalidatedBy = {SingleRabbitConnectionFactoryConfig.PREFIX, ExecutorConfiguration.PREFIX})
 @EachBean(Connection.class)
 public class DefaultChannelPool implements AutoCloseable, ChannelPool {
 

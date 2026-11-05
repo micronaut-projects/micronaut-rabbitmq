@@ -9,6 +9,7 @@ import io.micronaut.rabbitmq.annotation.Binding
 import io.micronaut.rabbitmq.annotation.Queue
 import io.micronaut.rabbitmq.annotation.RabbitClient
 import io.micronaut.rabbitmq.annotation.RabbitListener
+import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownConnection
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownException
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownIOException
 import io.micronaut.rabbitmq.connect.recovery.TemporarilyDownRuntimeException
@@ -236,8 +237,12 @@ class TemporarilyDownConsumersSpec extends Specification {
 
         when: "the server is eventually up"
         boolean wasNotified = false
+        boolean removedWasNotified = false
         connection.addEventuallyUpListener {throw new RuntimeException('testing') }
         connection.addEventuallyUpListener {wasNotified = true }
+        TemporarilyDownConnection.EventuallyUpListener removed = { removedWasNotified = true } as TemporarilyDownConnection.EventuallyUpListener
+        connection.addEventuallyUpListener(removed)
+        connection.removeEventuallyUpListener(removed)
         rabbitmq.start()
         then: "details can be retrieved from connection"
         conditions.eventually {
@@ -245,6 +250,7 @@ class TemporarilyDownConsumersSpec extends Specification {
             assert !connection.stillDown
         }
         wasNotified
+        !removedWasNotified
         connection.address != null
         connection.port == port
         connection.channelMax == 2047
