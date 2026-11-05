@@ -24,3 +24,7 @@ snippet::io.micronaut.rabbitmq.docs.consumer.concurrent.ProductListener[tags="im
 <2> Multiple messages received in a short time window will result in the `threads` collection containing something like `[pool-2-thread-9, pool-2-thread-7, pool-2-thread-10, pool-2-thread-8, pool-2-thread-6]`
 
 IMPORTANT: As with any other case of concurrent execution, operations on data in the instance of the consumer must be thread safe.
+
+=== Shutdown
+
+When the application context stops, all consumers are cancelled at once as soon as the `ShutdownEvent` is published, before any bean is destroyed. The shutdown then waits for the messages that are being handled, so listeners finish while the beans they use are still available. If graceful shutdown is enabled (`micronaut.lifecycle.graceful-shutdown.enabled`), this happens within its grace period and `RabbitMQConsumerAdvice` reports the messages still being handled as active tasks.

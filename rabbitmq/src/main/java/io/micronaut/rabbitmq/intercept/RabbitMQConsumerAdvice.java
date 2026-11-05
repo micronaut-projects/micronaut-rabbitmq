@@ -52,6 +52,7 @@ import io.micronaut.rabbitmq.exception.RabbitListenerException;
 import io.micronaut.rabbitmq.exception.RabbitListenerExceptionHandler;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import io.micronaut.rabbitmq.serdes.RabbitMessageSerDesRegistry;
+import io.micronaut.runtime.graceful.GracefulShutdownCapable;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -65,7 +66,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -78,7 +83,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.1.0
  */
 @Singleton
-public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>, AutoCloseable {
+public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>, AutoCloseable, GracefulShutdownCapable {
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMQConsumerAdvice.class);
 
@@ -306,6 +311,47 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         return null;
     }
 
+    /**
+     * Cancels every consumer at once, so the broker stops delivering, and completes once all in-flight deliveries
+     * have been handled. Channels are returned to their pool by {@link #close()}.
+     *
+     * @return A future that completes when no delivery is being handled any more
+     * @since 5.1.1
+     */
+    @Override
+    public CompletionStage<?> shutdownGracefully() {
+        List<RecoverableConsumerWrapper> toStop = List.copyOf(consumers);
+        toStop.forEach(RecoverableConsumerWrapper::stopConsuming);
+        return CompletableFuture.allOf(toStop.stream()
+                .map(consumer -> consumer.drained)
+                .toArray(CompletableFuture[]::new));
+    }
+
+    /**
+     * Cancels every consumer at once and waits until all in-flight deliveries have been handled. Consumers stay
+     * registered and their channels are returned to the pool by {@link #close()}.
+     *
+     * @throws InterruptedException if interrupted while waiting
+     * @throws ExecutionException never, the drain does not complete exceptionally
+     * @see RabbitMQConsumerShutdownListener
+     */
+    void stopConsumers() throws InterruptedException, ExecutionException {
+        shutdownGracefully().toCompletableFuture().get();
+    }
+
+    /**
+     * Reports the deliveries still being handled by the listeners.
+     *
+     * @return The number of deliveries currently being handled
+     * @since 5.1.1
+     */
+    @Override
+    public OptionalLong reportActiveTasks() {
+        return OptionalLong.of(consumers.stream()
+                .mapToLong(consumer -> consumer.handlingDeliveryCount.get())
+                .sum());
+    }
+
     @PreDestroy
     @Override
     public void close() throws Exception {
@@ -356,9 +402,10 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         private final Integer prefetch;
         private final DeliverCallback deliverCallback;
         private final AtomicInteger handlingDeliveryCount = new AtomicInteger();
+        private final CompletableFuture<Void> drained = new CompletableFuture<>();
         private final boolean autoAcknowledgment;
         private com.rabbitmq.client.DefaultConsumer consumer;
-        private boolean canceled = false;
+        private volatile boolean canceled = false;
 
         /**
          * Create the consumer and register ({@code Channel.basicConsume}) it with a dedicated channel from the
@@ -393,20 +440,46 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
         }
 
         /**
-         * Cancel the consumer and return the associated channel to the pool.
+         * Cancel the consumer subscription without waiting for in-flight deliveries. The channel is kept.
+         * {@link #drained} completes once no delivery is being handled any more.
+         */
+        void stopConsuming() {
+            synchronized (this) {
+                if (!canceled) {
+                    canceled = true;
+                    if (consumer != null) {
+                        try {
+                            consumer.getChannel().basicCancel(consumerTag);
+                        } catch (IOException | AlreadyClosedException e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+            completeIfDrained();
+        }
+
+        private void deliveryHandled() {
+            handlingDeliveryCount.decrementAndGet();
+            completeIfDrained();
+        }
+
+        private void completeIfDrained() {
+            if (canceled && handlingDeliveryCount.get() == 0) {
+                drained.complete(null);
+            }
+        }
+
+        /**
+         * Cancel the consumer, wait for in-flight deliveries and return the associated channel to the pool.
          */
         public synchronized void cancel() {
-            canceled = true;
+            stopConsuming();
             if (consumer == null) {
                 return;
             }
 
             Channel channel = consumer.getChannel();
-            try {
-                channel.basicCancel(consumerTag);
-            } catch (IOException | AlreadyClosedException e) {
-                // ignore
-            }
             try {
                 while (handlingDeliveryCount.get() > 0) {
                     this.wait(500);
@@ -523,10 +596,12 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     // The client will be unable to acknowledge these messages. So it is safe to silently discard
                     // them, without bothering the callback handler.
                     // In addition, consuming of queued messages is stopped when the consumer is canceled.
+                    // Count first, so a delivery that passes the check is always awaited by a concurrent shutdown.
+                    handlingDeliveryCount.incrementAndGet();
                     if (canceled || !getChannel().isOpen()) {
+                        deliveryHandled();
                         return;
                     }
-                    handlingDeliveryCount.incrementAndGet();
                     if (executorService != null) {
                         executorService.submit(() -> callbackHandle(envelope, properties, body));
                     } else {
@@ -538,7 +613,7 @@ public class RabbitMQConsumerAdvice implements ExecutableMethodProcessor<Queue>,
                     try {
                         deliverCallback.handle(getChannel(), new Delivery(envelope, properties, body));
                     } finally {
-                        handlingDeliveryCount.decrementAndGet();
+                        deliveryHandled();
                     }
                 }
             };
