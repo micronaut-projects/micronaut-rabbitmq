@@ -20,7 +20,7 @@ The workflow [`.github/workflows/publish-github-packages.yml`](.github/workflows
 is manual (`workflow_dispatch`) and uses the workflow's `GITHUB_TOKEN`, so no secrets have to be configured.
 
 > **Use this workflow, not "Publish snapshot release"** — that one is the upstream workflow that pushes
-> `-SNAPSHOT` builds to Sonatype/Maven Central and cannot work in a fork (see §8).
+> `-SNAPSHOT` builds to Sonatype/Maven Central and cannot work in a fork (see §9).
 
 From the GitHub UI: **Actions → Publish to GitHub Packages → Run workflow**.
 
@@ -46,7 +46,7 @@ not sent to an email or to the repository's *Releases*; look here instead:
 * <https://github.com/stCarolas?tab=packages>
 * direct link: <https://github.com/stCarolas/micronaut-rabbitmq/pkgs/maven/io.micronaut.rabbitmq.micronaut-rabbitmq>
 
-A freshly published package is **private**; §5 explains how to change that.
+A freshly published package is **private**; §6 explains how to change that.
 
 If nothing shows up, check that the run you are looking at is *Publish to GitHub Packages* and not
 `Java CI` — the workflow list shows both.
@@ -84,7 +84,7 @@ a `file:` URL does not need credentials:
 
 Publishing only to the local Maven repository keeps working as before: `./gradlew publishToMavenLocal`.
 
-## 3. Consume it in a service
+## 3. Consume it in a service (Gradle)
 
 Put the fork registry **before** `mavenCentral()` and authenticate. Groovy DSL:
 
@@ -156,18 +156,134 @@ Credentials for the service:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # or a PAT with read:packages
   ```
 
-Maven consumers need the repository plus a `server` entry in `settings.xml`; enable snapshots for
-`-SNAPSHOT` versions:
+## 4. Consume it in a service (Maven)
+
+Declare the registry and the dependency in `pom.xml`:
 
 ```xml
-<repository>
-  <id>github-rabbitmq</id>
-  <url>https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq</url>
-  <snapshots><enabled>true</enabled></snapshots>
-</repository>
+<project>
+  <!-- ... -->
+  <repositories>
+    <repository>
+      <id>github-rabbitmq</id>
+      <url>https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.micronaut.rabbitmq</groupId>
+      <artifactId>micronaut-rabbitmq</artifactId>
+      <version>5.1.1-fork.2</version>
+    </dependency>
+  </dependencies>
+</project>
 ```
 
-## 4. Versions: publish a new one instead of reusing one
+Authentication is configured in `~/.m2/settings.xml`, and the `<server>` id must match the repository
+`<id>`. GitHub Packages does not accept your account password here — use a personal access token
+(classic) with the `read:packages` scope:
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <server>
+      <id>github-rabbitmq</id>
+      <username>stCarolas</username>
+      <!-- Maven interpolates ${env.*} from the environment -->
+      <password>${env.GITHUB_TOKEN}</password>
+    </server>
+  </servers>
+</settings>
+```
+
+```bash
+export GITHUB_TOKEN=<classic PAT with read:packages>
+mvn -U clean package          # -U forces a refresh of -SNAPSHOT metadata
+```
+
+To make the registry available to every build on the machine, use a profile instead of editing each
+`pom.xml`:
+
+```xml
+<settings>
+  <profiles>
+    <profile>
+      <id>github-rabbitmq</id>
+      <repositories>
+        <repository>
+          <id>github-rabbitmq</id>
+          <url>https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq</url>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>github-rabbitmq</activeProfile>
+  </activeProfiles>
+</settings>
+```
+
+Align the other versions with the fork by importing the BOM:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.micronaut.rabbitmq</groupId>
+      <artifactId>micronaut-rabbitmq-bom</artifactId>
+      <version>5.1.1-fork.2</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+If the project already imports the Micronaut platform BOM: entries declared directly in your own
+`<dependencyManagement>` take precedence over imported BOMs, and between imported BOMs the one declared
+**first** wins. So either declare `micronaut-rabbitmq` explicitly or import the fork BOM before the
+Micronaut platform. A `<version>` on the dependency itself is always used for that dependency.
+
+In a CI pipeline, generate the settings file from a secret instead of committing it:
+```yaml
+      - name: Configure GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<XML
+          <settings>
+            <servers>
+              <server>
+                <id>github-rabbitmq</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          PACKAGES_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
+```
+
+Check that a specific version resolves without running a full build:
+
+```bash
+mvn dependency:get \
+  -Dartifact=io.micronaut.rabbitmq:micronaut-rabbitmq:5.1.1-fork.2 \
+  -DremoteRepositories=github-rabbitmq::default::https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq
+```
+
+The repository id in `-DremoteRepositories` must match the `<server>` id so Maven picks up the
+credentials.
+
+## 5. Versions: publish a new one instead of reusing one
 
 GitHub Packages treats a version as immutable: uploading the same coordinates twice fails with
 `409 Conflict` (`Failed to publish publication 'maven' to repository 'GitHubPackages'`). In practice
@@ -204,7 +320,7 @@ micronaut-build requires it to start with a digit:
 ./gradlew publishAllPublicationsToGitHubPackagesRepository -PprojectVersion=5.1.1-fork.7
 ```
 
-## 5. One-time GitHub setup
+## 6. One-time GitHub setup
 
 1. **Allow the workflow to write packages** — the workflow already requests `packages: write`
    explicitly, which is enough on a standard personal repository. If the *organization* restricts
@@ -216,7 +332,7 @@ micronaut-build requires it to start with a digit:
    read access to individual users/repositories. Note that the Maven and Gradle registries always
    require authentication, public package or not.
 
-## 6. How it is wired in this repository
+## 7. How it is wired in this repository
 
 Only three places are involved, and none of them change the upstream behaviour:
 
@@ -247,17 +363,17 @@ The POM still points at the upstream SCM (`githubSlug=micronaut-projects/microna
 cosmetic; set `githubSlug=stCarolas/micronaut-rabbitmq` in `gradle.properties` if the fork should
 advertise itself.
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause / fix |
 | --- | --- |
-| `Received status code 409 from server: Conflict` | That version already exists. Publish a new version, or delete the existing package version (see §4). |
+| `Received status code 409 from server: Conflict` | That version already exists. Publish a new version, or delete the existing package version (see §5). |
 | `Received status code 401 from server: Unauthorized` | Wrong token for publishing (`write:packages` needed) or wrong username. |
 | `Received status code 403 from server: Forbidden` | Workflow permissions do not allow `packages: write`, or the token lacks the `write:packages` scope. |
 | `Could not find io.micronaut.rabbitmq:micronaut-rabbitmq:<version>` | Repository URL uses the wrong (non-lowercase) owner/repository, the repository is declared in `settings.gradle` instead of the build script (or vice versa), the package is private and not accessible, or the version was never published. |
 | `Received status code 422 from server: Unprocessable Entity` | The artifactId must only contain lowercase letters, digits and hyphens — not an issue for this project unless you rename a module. |
 | Build still resolves the upstream release | `mavenCentral()` is declared before the fork registry and the requested version exists there; request the fork version explicitly or move the registry first. |
-| `Java CI` fails at *Publish to Sonatype Snapshots* with `Task 'publishToSonatype' not found` | Upstream's Maven Central snapshot deployment; the fork has no Sonatype secrets. Already guarded in `gradle.yml` (see §8). |
+| `Java CI` fails at *Publish to Sonatype Snapshots* with `Task 'publishToSonatype' not found` | Upstream's Maven Central snapshot deployment; the fork has no Sonatype secrets. Already guarded in `gradle.yml` (see §9). |
 
 Verify what is in the registry from the command line:
 
@@ -266,7 +382,7 @@ curl -s -u stCarolas:"$GITHUB_TOKEN" \
   https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq/io/micronaut/rabbitmq/micronaut-rabbitmq/maven-metadata.xml
 ```
 
-## 8. Upstream Maven Central workflows in this fork
+## 9. Upstream Maven Central workflows in this fork
 
 These files come from the Micronaut project template and target Maven Central, so they cannot run in a
 fork. They are left untouched (except for the guards described below) to keep the diff against
@@ -283,7 +399,7 @@ upstream small:
 Sonatype credentials are present, which is why a fork without those secrets fails with
 `Task 'publishToSonatype' not found in root project 'rabbitmq-parent' and its subprojects`.
 
-## 9. Related documentation
+## 10. Related documentation
 
 * [Working with the Gradle registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry)
 * [Working with the Apache Maven registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
