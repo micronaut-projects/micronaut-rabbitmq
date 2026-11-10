@@ -24,6 +24,12 @@ jobs:
     env:
       TESTCONTAINERS_RYUK_DISABLED: true
       SONAR_TOKEN_AVAILABLE: ${{ secrets.SONAR_TOKEN != '' }}
+      # Fork: this repository publishes to GitHub Packages (publish-github-packages.yml), never to
+      # Maven Central. micronaut-build only registers the Sonatype repository and the
+      # `publishToSonatype` task when SONATYPE_USERNAME/PASSWORD are set, so the upstream deployment
+      # steps below are skipped instead of failing with "Task 'publishToSonatype' not found".
+      SONATYPE_AVAILABLE: ${{ secrets.SONATYPE_USERNAME != '' && secrets.SONATYPE_PASSWORD != '' }}
+      GH_TOKEN_AVAILABLE: ${{ secrets.GH_TOKEN != '' }}
     steps:
        # https://github.com/actions/virtual-environments/issues/709
       - name: Remove system JDKs
@@ -98,7 +104,7 @@ jobs:
           path: "**/build/reports/binary-compatibility-*.html"
 
       - name: "📦 Publish to Sonatype Snapshots"
-        if: success() && github.event_name == 'push' && matrix.java == '25'
+        if: success() && github.event_name == 'push' && matrix.java == '25' && env.SONATYPE_AVAILABLE == 'true'
         env:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
           DEVELOCITY_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
@@ -116,7 +122,7 @@ jobs:
           if_false: ${{ github.repository }}
 
       - name: "📑 Publish to Github Pages"
-        if: success() && github.event_name == 'push' && matrix.java == '25'
+        if: success() && github.event_name == 'push' && matrix.java == '25' && env.GH_TOKEN_AVAILABLE == 'true'
         uses: micronaut-projects/github-pages-deploy-action@76d63aafbab7108d74e83be4e5b3b0501382e829 # master
         env:
           TARGET_REPOSITORY: ${{ steps.docs_target.outputs.value }}

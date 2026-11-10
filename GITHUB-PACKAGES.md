@@ -19,6 +19,9 @@ expects are absent, so the signing and Sonatype publishing blocks stay disabled.
 The workflow [`.github/workflows/publish-github-packages.yml`](.github/workflows/publish-github-packages.yml)
 is manual (`workflow_dispatch`) and uses the workflow's `GITHUB_TOKEN`, so no secrets have to be configured.
 
+> **Use this workflow, not "Publish snapshot release"** — that one is the upstream workflow that pushes
+> `-SNAPSHOT` builds to Sonatype/Maven Central and cannot work in a fork (see §8).
+
 From the GitHub UI: **Actions → Publish to GitHub Packages → Run workflow**.
 
 From the command line:
@@ -191,9 +194,10 @@ micronaut-build requires it to start with a digit:
 
 ## 5. One-time GitHub setup
 
-1. **Allow the workflow to write packages** — *Settings → Actions → General → Workflow permissions*:
-   "Read and write permissions", or make sure an organization policy allows `packages: write` for
-   the repository. Without it the upload fails with `403 Forbidden`.
+1. **Allow the workflow to write packages** — the workflow already requests `packages: write`
+   explicitly, which is enough on a standard personal repository. If the *organization* restricts
+   `GITHUB_TOKEN` to read-only, relax *Settings → Actions → General → Workflow permissions* or use a
+   personal access token with `write:packages` instead. Without it the upload fails with `403`.
 2. **Package visibility** — a package published from a repository starts out **private**, even when
    the repository is public. If services or people outside your account need to read it, open the
    package page and use *Danger Zone → Change visibility* (public is irreversible), or grant
@@ -241,6 +245,7 @@ advertise itself.
 | `Could not find io.micronaut.rabbitmq:micronaut-rabbitmq:<version>` | Repository URL uses the wrong (non-lowercase) owner/repository, the repository is declared in `settings.gradle` instead of the build script (or vice versa), the package is private and not accessible, or the version was never published. |
 | `Received status code 422 from server: Unprocessable Entity` | The artifactId must only contain lowercase letters, digits and hyphens — not an issue for this project unless you rename a module. |
 | Build still resolves the upstream release | `mavenCentral()` is declared before the fork registry and the requested version exists there; request the fork version explicitly or move the registry first. |
+| `Java CI` fails at *Publish to Sonatype Snapshots* with `Task 'publishToSonatype' not found` | Upstream's Maven Central snapshot deployment; the fork has no Sonatype secrets. Already guarded in `gradle.yml` (see §8). |
 
 Verify what is in the registry from the command line:
 
@@ -249,7 +254,24 @@ curl -s -u stCarolas:"$GITHUB_TOKEN" \
   https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq/io/micronaut/rabbitmq/micronaut-rabbitmq/maven-metadata.xml
 ```
 
-## 8. Related documentation
+## 8. Upstream Maven Central workflows in this fork
+
+These files come from the Micronaut project template and target Maven Central, so they cannot run in a
+fork. They are left untouched (except for the guards described below) to keep the diff against
+upstream small:
+
+| Workflow | Trigger | Status in the fork |
+| --- | --- | --- |
+| `Java CI` (`gradle.yml`) | push / PR | Builds and tests run normally. The *Publish to Sonatype Snapshots* and *Publish to Github Pages* steps are skipped unless `SONATYPE_USERNAME`/`SONATYPE_PASSWORD`/`GH_TOKEN` secrets exist. |
+| `Publish snapshot release` (`publish-snapshot.yml`) | manual | Fails by design: no Sonatype credentials. Use *Publish to GitHub Packages* instead. |
+| `Release` (`release.yml`) | GitHub release published | Fails by design: it bundles and uploads to Maven Central. |
+| `Maven Central Sync` (`central-sync.yml`) | manual | Fails by design: it closes/releases a Sonatype staging repository. |
+
+`micronaut-build` only registers the `sonatype` repository and the `publishToSonatype` task when
+Sonatype credentials are present, which is why a fork without those secrets fails with
+`Task 'publishToSonatype' not found in root project 'rabbitmq-parent' and its subprojects`.
+
+## 9. Related documentation
 
 * [Working with the Gradle registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry)
 * [Working with the Apache Maven registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
