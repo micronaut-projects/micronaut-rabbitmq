@@ -1,0 +1,63 @@
+/*
+ * Publishes the publications of this project to the GitHub Packages Maven registry of the fork.
+ *
+ * The registry is registered only when its location (and, for a remote registry, the credentials)
+ * are available. In practice that means inside GitHub Actions (GITHUB_REPOSITORY/GITHUB_ACTOR/
+ * GITHUB_TOKEN are provided by the runner) or on a developer machine that declares the properties
+ * below in ~/.gradle/gradle.properties. Regular builds, upstream CI, `publishToMavenLocal` and
+ * `publishToSonatype` are unaffected.
+ *
+ * Optional Gradle properties (system properties are intentionally *not* used for credentials):
+ *
+ *  - githubPackagesUrl        full registry URL, e.g. https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq
+ *  - githubPackagesRepository OWNER/REPOSITORY shorthand used to build the URL above
+ *  - gpr.user                 GitHub user name (falls back to the GITHUB_ACTOR environment variable)
+ *  - gpr.key                  token with the `write:packages` scope, e.g. a PAT (falls back to GITHUB_TOKEN)
+ *
+ * A `file:` URL is accepted without credentials, which makes it possible to smoke test the
+ * publication locally before pushing to the real registry.
+ *
+ * See GITHUB-PACKAGES.md for usage instructions.
+ */
+plugins {
+    id 'maven-publish'
+}
+
+def githubPackagesUrl = providers.gradleProperty('githubPackagesUrl')
+        .orElse(providers.gradleProperty('githubPackagesRepository')
+                .map { "https://maven.pkg.github.com/${it.toLowerCase()}".toString() })
+        .orElse(providers.environmentVariable('GITHUB_REPOSITORY')
+                .map { "https://maven.pkg.github.com/${it.toLowerCase()}".toString() })
+
+def githubPackagesUser = providers.gradleProperty('gpr.user')
+        .orElse(providers.environmentVariable('GITHUB_ACTOR'))
+
+def githubPackagesPassword = providers.gradleProperty('gpr.key')
+        .orElse(providers.environmentVariable('GITHUB_TOKEN'))
+
+if (githubPackagesUrl.present) {
+    String registryUrl = githubPackagesUrl.get()
+    boolean remoteRegistry = registryUrl.toLowerCase(Locale.ENGLISH).startsWith('http')
+    boolean credentialsAvailable = githubPackagesUser.present && githubPackagesPassword.present
+
+    if (remoteRegistry && !credentialsAvailable) {
+        logger.info("GitHub Packages repository not configured for ${project.path}: " +
+                "set gpr.user/gpr.key (or GITHUB_ACTOR/GITHUB_TOKEN) to enable publishing")
+    } else {
+        logger.lifecycle("GitHub Packages repository enabled for ${project.path}: ${registryUrl}")
+        publishing {
+            repositories {
+                maven {
+                    name = 'GitHubPackages'
+                    url = uri(registryUrl)
+                    if (remoteRegistry) {
+                        credentials {
+                            username = githubPackagesUser.get()
+                            password = githubPackagesPassword.get()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

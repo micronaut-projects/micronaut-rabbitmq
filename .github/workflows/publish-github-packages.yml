@@ -1,0 +1,115 @@
+# Fork-specific workflow: it is intentionally NOT one of the files synced from
+# https://github.com/micronaut-projects/micronaut-project-template, so it can be kept and
+# adapted in this fork. It publishes this repository's artifacts to the GitHub Packages
+# Maven registry so that downstream services can consume the modified library.
+#
+# User documentation: GITHUB-PACKAGES.md
+name: Publish to GitHub Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: >-
+          Version to publish, for example 5.1.1-fork.1 or 5.1.1-stcarolas-SNAPSHOT.
+          Leave empty to derive <projectVersion without -SNAPSHOT>-fork.<run_number>,
+          which is unique per run and therefore always deployable.
+        required: false
+        type: string
+  # Uncomment to publish a fresh <projectVersion>-fork.<run_number> version on every push
+  # instead of publishing on demand:
+  # push:
+  #   branches:
+  #     - 5.1.x
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    if: github.repository != 'micronaut-projects/micronaut-rabbitmq'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: "🔧 Set up JDK"
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: 'temurin'
+          java-version: |
+            25
+
+      - name: "🔧 Set up Gradle"
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6
+
+      - name: "🏷 Resolve version"
+        id: version
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          base="$(sed -n 's/^projectVersion=//p' gradle.properties | head -n1 | tr -d '[:space:]')"
+          base="${base%-SNAPSHOT}"
+          requested="$(printf '%s' "${REQUESTED_VERSION}" | tr -d '[:space:]')"
+          if [ -n "${requested}" ]; then
+            version="${requested}"
+          else
+            version="${base}-fork.${{ github.run_number }}"
+          fi
+          echo "Resolved version: ${version}"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: "🚀 Publish to GitHub Packages"
+        env:
+          # GITHUB_REPOSITORY, GITHUB_ACTOR and GITHUB_TOKEN are read by
+          # io.micronaut.build.internal.rabbitmq-github-packages.gradle.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: >
+          ./gradlew publishAllPublicationsToGitHubPackagesRepository
+          -PprojectVersion="${VERSION}"
+          -PskipSigning
+          --no-daemon
+          --stacktrace
+
+      - name: "📝 Summarize"
+        if: success()
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          registry="https://maven.pkg.github.com/${GITHUB_REPOSITORY,,}"
+          cat >> "${GITHUB_STEP_SUMMARY}" <<EOF
+          ## Published the fork artifacts to GitHub Packages
+
+          Version: **${VERSION}**
+
+          Registry: ${registry}
+
+          | Coordinate | Artifact |
+          | --- | --- |
+          | \`io.micronaut.rabbitmq:micronaut-rabbitmq:${VERSION}\` | library |
+          | \`io.micronaut.rabbitmq:micronaut-rabbitmq-bom:${VERSION}\` | BOM |
+
+          Consume it in a service:
+
+          \`\`\`groovy
+          repositories {
+              maven {
+                  url = uri("${registry}")
+                  credentials {
+                      username = findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                      password = findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+                  }
+              }
+          }
+          dependencies {
+              implementation("io.micronaut.rabbitmq:micronaut-rabbitmq:${VERSION}")
+          }
+          \`\`\`
+
+          GitHub Packages versions are immutable: re-uploading an existing version fails with \`409\`.
+          Publish a new version instead, see GITHUB-PACKAGES.md.
+          EOF
