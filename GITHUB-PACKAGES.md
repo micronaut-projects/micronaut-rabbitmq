@@ -39,6 +39,18 @@ gh run watch --repo stCarolas/micronaut-rabbitmq
 
 The published version is printed in the run summary ("Published the fork artifacts to GitHub Packages").
 
+**The package appears only after this workflow has run at least once** — `Java CI` never publishes. It is
+not sent to an email or to the repository's *Releases*; look here instead:
+
+* repo page → right sidebar → **Packages**
+* <https://github.com/stCarolas?tab=packages>
+* direct link: <https://github.com/stCarolas/micronaut-rabbitmq/pkgs/maven/io.micronaut.rabbitmq.micronaut-rabbitmq>
+
+A freshly published package is **private**; §5 explains how to change that.
+
+If nothing shows up, check that the run you are looking at is *Publish to GitHub Packages* and not
+`Java CI` — the workflow list shows both.
+
 ## 2. Publish from your machine
 
 Use a personal access token (classic) with the `write:packages` scope. Keep it out of the repository:

@@ -75,18 +75,35 @@ jobs:
           --no-daemon
           --stacktrace
 
+      - name: "🔎 Verify the upload"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          pom="https://maven.pkg.github.com/${GITHUB_REPOSITORY,,}/io/micronaut/rabbitmq/micronaut-rabbitmq/${VERSION}/micronaut-rabbitmq-${VERSION}.pom"
+          code="$(curl -s -o /dev/null -w '%{http_code}' -u "${GITHUB_ACTOR}:${GITHUB_TOKEN}" "${pom}")"
+          echo "GET ${pom} -> ${code}"
+          if [ "${code}" != "200" ]; then
+            echo "::error::The published POM is not retrievable (HTTP ${code}). Check the packages:write permission and the package visibility."
+            exit 1
+          fi
+
       - name: "📝 Summarize"
         if: success()
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           registry="https://maven.pkg.github.com/${GITHUB_REPOSITORY,,}"
+          package_page="https://github.com/${GITHUB_REPOSITORY}/pkgs/maven/io.micronaut.rabbitmq.micronaut-rabbitmq"
           cat >> "${GITHUB_STEP_SUMMARY}" <<EOF
           ## Published the fork artifacts to GitHub Packages
 
           Version: **${VERSION}**
 
           Registry: ${registry}
+
+          Package page: ${package_page}
 
           | Coordinate | Artifact |
           | --- | --- |
@@ -109,6 +126,10 @@ jobs:
               implementation("io.micronaut.rabbitmq:micronaut-rabbitmq:${VERSION}")
           }
           \`\`\`
+
+          The new package is **private** until you change its visibility: package page → *Package settings*
+          → *Danger Zone* → *Change visibility*. Until then only you (and repositories granted access)
+          can resolve it.
 
           GitHub Packages versions are immutable: re-uploading an existing version fails with \`409\`.
           Publish a new version instead, see GITHUB-PACKAGES.md.
