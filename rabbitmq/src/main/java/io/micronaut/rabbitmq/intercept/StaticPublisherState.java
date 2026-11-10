@@ -26,6 +26,8 @@ import io.micronaut.rabbitmq.serdes.RabbitMessageSerDes;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
 
 /**
  * Stores the static state for publishing messages with {@link io.micronaut.rabbitmq.annotation.RabbitClient}.
@@ -79,7 +81,7 @@ class StaticPublisherState {
         this.reactivePublisher = reactivePublisher;
         Class<?> javaReturnType = returnType.getType();
         this.reactive = Publishers.isConvertibleToPublisher(javaReturnType);
-        if (this.reactive) {
+        if (this.reactive || isCompletionStage(javaReturnType)) {
             this.dataType = returnType.getFirstTypeVariable()
                     .orElse(Argument.VOID);
         } else {
@@ -87,6 +89,11 @@ class StaticPublisherState {
         }
         this.returnType = returnType;
         this.serDes = serDes;
+    }
+
+    private boolean isCompletionStage(Class<?> javaReturnType) {
+        return CompletionStage.class.isAssignableFrom(javaReturnType)
+                || Future.class.isAssignableFrom(javaReturnType);
     }
 
     /**
@@ -147,7 +154,10 @@ class StaticPublisherState {
     }
 
     /**
-     * @return The type of data being requested
+     * @return The type of data being requested, which is the type variable of the
+     * return type when it is a {@link org.reactivestreams.Publisher} or a
+     * {@link CompletionStage} (e.g. {@code CompletableFuture<String>} yields {@code String}),
+     * otherwise the return type itself
      */
     Argument<?> getDataType() {
         return dataType;

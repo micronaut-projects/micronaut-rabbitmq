@@ -1,5 +1,6 @@
 plugins {
     id "io.micronaut.build.internal.bom"
+    id "io.micronaut.build.internal.rabbitmq-github-packages"
 }
 
 // Required as a workaround to https://github.com/micronaut-projects/micronaut-build/pull/376

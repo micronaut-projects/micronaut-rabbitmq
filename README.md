@@ -9,3 +9,25 @@
  ## Documentation
 
  See the [latest](https://micronaut-projects.github.io/micronaut-rabbitmq/latest/guide) or [snapshot](https://micronaut-projects.github.io/micronaut-rabbitmq/snapshot/guide/index.html) documentation for more information.
+
+ ## Fork publishing
+
+ This fork publishes its artifacts to the GitHub Packages Maven registry, so services can consume the
+ modified library without waiting for an upstream release:
+
+ ```groovy
+ repositories {
+     maven {
+         url = uri("https://maven.pkg.github.com/stcarolas/micronaut-rabbitmq")
+         credentials {
+             username = findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+             password = findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+         }
+     }
+ }
+ dependencies {
+     implementation("io.micronaut.rabbitmq:micronaut-rabbitmq:5.1.1-fork.2")
+ }
+ ```
+
+ See [GITHUB-PACKAGES.md](GITHUB-PACKAGES.md) for how to publish a new version and for troubleshooting.
